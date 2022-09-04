@@ -1,18 +1,19 @@
 FROM nginx:1.23.1
 
+## Declare local variables
+ARG TEMP_FOLDER=tmp
+
+## Set environment variables
+ENV LANG en_US.UTF-8
+ENV LANGUAGE en_US.UTF-8
+ENV LC_ALL en_US.UTF-8
+
 # Set working directory
-WORKDIR /app
+WORKDIR /$TEMP_FOLDER
 
-# Copy over static assets
-COPY public public/
-
-# Copy over entrypoint
-COPY docker/entrypoints/nginx-entrypoint.sh /usr/local/bin/nginx-entrypoint.sh
-
-# Copy Nginx config template
 RUN rm /etc/nginx/conf.d/default.conf
-COPY infractructure/nginx/conf.d/default.conf /etc/nginx/conf.d/default.conf
+# Copy Nginx config template
+COPY ./infrastructure/nginx/conf.d/default.conf /etc/nginx/conf.d/default.conf
 
-# Nginx init
-RUN ["chmod", "+x", "/usr/local/bin/nginx-entrypoint.sh"]
-ENTRYPOINT ["/usr/local/bin/nginx-entrypoint.sh"]
+# Start Nginxm
+ENTRYPOINT ["nginx", "-g", "daemon off;"]

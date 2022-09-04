@@ -11,6 +11,9 @@ grpc:
     reflection-service-enabled: true
 
 spring:
+  # Lazy bean initialization (speed uo startup)
+  main:
+    lazy-initialization: true
   config:
     location: classpath:/application-dev.yml
   banner:
@@ -36,6 +39,12 @@ management:
   endpoint:
     health:
       show-details: always
+
+# Logging configuration
+logging:
+  level:
+    # Autoconfigure logging configuration
+    org.springframework.boot.autoconfigure: debug
 
 # OpenApi configuration
 api:

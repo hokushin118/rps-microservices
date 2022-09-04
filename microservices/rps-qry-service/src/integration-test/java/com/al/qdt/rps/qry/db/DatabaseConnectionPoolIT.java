@@ -1,6 +1,6 @@
 package com.al.qdt.rps.qry.db;
 
-import com.al.qdt.rps.qry.base.AbstractIntegrationTest;
+import com.al.qdt.rps.qry.base.AbstractIntegrationTests;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Order;
@@ -16,7 +16,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 @Slf4j
 @DisplayName("Integration testing of the datasource")
 @Tag(value = "database")
-class DatabaseConnectionPoolIT extends AbstractIntegrationTest {
+class DatabaseConnectionPoolIT extends AbstractIntegrationTests {
     static final String DATASOURCE_NAME = "com.zaxxer.hikari.HikariDataSource";
 
     @Autowired

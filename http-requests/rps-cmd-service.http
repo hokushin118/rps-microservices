@@ -1,0 +1,11 @@
+# Play new game
+POST http://{{host}}/rps-cmd-api/v1/games HTTP/1.1
+content-type: application/json
+
+{
+  "id": "748873ec-f887-4090-93ff-f8b8cbb34c7a",
+  "username": "User1",
+  "hand": "ROCK"
+}
+
+###

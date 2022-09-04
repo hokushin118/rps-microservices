@@ -7,7 +7,7 @@ grpc:
 
 spring:
   config:
-    location: classpath:/application-it.yml
+    location: classpath:/application.yml
   banner:
     location: classpath:/it/banner.txt
 

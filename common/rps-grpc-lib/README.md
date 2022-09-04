@@ -15,3 +15,25 @@ The RPS Game gRPC library project contains Rock Paper Scissors game messages and
 ```
      > mvn clean install
 ```
+### gRPC
+gRPC is a modern, lightweight communication protocol from Google. gRPC is a high-performance, open source, universal RPC framework that can run in any environment.
+
+gRPC advantages:
+* It is polyglot.
+* Bi-directional support: gRPC takes advantage of HTTP/2’s bi-directional communication support, removing the need to separately support request/response alongside websockets, SSE, or other push-based approaches on top of HTTP/1.
+* It is strongly typed.
+* It is platform agnostic.
+* Reduced network latency: gRPC builds on HTTP/2, which allows for faster and long-lived connections, reducing the time for setup/teardown common for individual HTTP/1.x requests.
+* Flexible schemas with backward compatibility that can evolve over time.
+* Support for comments and documentation.
+* Protocol buffers are binary or machine readable and can be used to exchange messages between services and not over browsers. Payload size is also very tiny.
+* Infrastructure support: Those selecting gRPC are often using Kubernetes on Google Kubernetes Engine (GKE), which provides built-in proxy and load balancing support.
+  
+gRPC disadvantages:
+* Longer learning curve.
+* Quite limited when it comes to browser support.
+* Longer bootstrap time – initial setup takes time compared to REST.
+* Lacks human readability – leading to complexity in troubleshooting problems.
+* Limited community support.
+
+[gRPC - A Modern Framework for Microservices Communication](https://www.capitalone.com/tech/software-engineering/grpc-framework-for-microservices-communication)

@@ -72,8 +72,13 @@ management:
     health:
       show-details: always
 
-# Show bind values
-logging.level.org.hibernate.type.descriptor.sql: trace
+# Logging configuration
+logging:
+  level:
+    # Autoconfigure logging configuration
+    org.springframework.boot.autoconfigure: debug
+    # Show bind values
+    org.hibernate.type.descriptor.sql: trace
 
 # OpenApi configuration
 api:

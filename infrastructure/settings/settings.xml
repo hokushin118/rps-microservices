@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<settings xmlns="http://maven.apache.org/SETTINGS/1.0.0"
+          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+          xsi:schemaLocation="http://maven.apache.org/SETTINGS/1.0.0 http://maven.apache.org/xsd/settings-1.0.0.xsd">
+
+    <!--
+    Encrypting Maven credentials with Maven
+
+    1. Encrypt a “master” password:
+    mvn &#45;&#45;encrypt-master-password
+    Master password: <<type some random but lengthy string as input>>
+
+    2. Save the results in a file named settings-security.xml in your Maven home directory, i.e. ~/.m2/settings-security.xml.
+    Encrypt your GitHub Personal Token (PAT):
+    mvn &#45;&#45;encrypt-password
+    Password: <<your GitHub Personal Token>>
+
+    3. Update your settings.xml with the generated cipher.
+
+    -->
+
+    <profiles>
+        <profile>
+            <id>github</id>
+            <repositories>
+                <!-- Maven Central Repository -->
+                <repository>
+                    <id>central</id>
+                    <url>https://repo1.maven.org/maven2</url>
+                    <releases>
+                        <enabled>true</enabled>
+                    </releases>
+                    <snapshots>
+                        <enabled>true</enabled>
+                    </snapshots>
+                </repository>
+                <!-- GitHub Packages Repository -->
+                <repository>
+                    <id>github</id>
+                    <url>https://maven.pkg.github.com/hokushin118/rps
+                    </url>
+                    <snapshots>
+                        <enabled>true</enabled>
+                    </snapshots>
+                </repository>
+            </repositories>
+        </profile>
+    </profiles>
+</settings>

@@ -21,9 +21,11 @@ spring:
   main:
     allow-bean-definition-overriding: true
 
+  # Disables MongoDB auto-configuration
   autoconfigure:
-    # Excluding MongoDB
-    exclude: org.springframework.boot.autoconfigure.mongo.MongoAutoConfiguration, org.springframework.boot.autoconfigure.data.mongo.MongoDataAutoConfiguration
+    exclude:
+      - org.springframework.boot.autoconfigure.mongo.MongoAutoConfiguration
+      - org.springframework.boot.autoconfigure.data.mongo.MongoDataAutoConfiguration
 
   jmx:
     enabled: false
@@ -139,3 +141,7 @@ app:
     dlq-partition-number: 0
     retries-number: 2
     retries-delay-interval: 1
+  # Cache configuration
+  caching:
+    # Time-To-Live (TTL) value
+    ttl-value: 43200000 # 12 x 3600 x 1000 = 12 hours

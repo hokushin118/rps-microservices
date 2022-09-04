@@ -1,6 +1,6 @@
 package com.al.qdt.score.qry.db
 
-import com.al.qdt.score.qry.base.AbstractIntegration
+import com.al.qdt.score.qry.base.AbstractIntegrationTests
 import org.springframework.beans.factory.annotation.Autowired
 import spock.lang.Subject
 import spock.lang.Title
@@ -8,7 +8,7 @@ import spock.lang.Title
 import javax.sql.DataSource
 
 @Title("Integration testing of the datasource")
-class DatabaseConnectionPoolITSpec extends AbstractIntegration {
+class DatabaseConnectionPoolITSpec extends AbstractIntegrationTests {
     static final DATASOURCE_NAME = "com.zaxxer.hikari.HikariDataSource"
 
     @Subject

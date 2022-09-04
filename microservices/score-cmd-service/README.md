@@ -4,7 +4,9 @@ The Score Command microservice provides REST and gRPC APIs for the Rock Paper Sc
 
 ### Prerequisites
 
+* Docker Desktop
 * Java 11 or higher
+* (Optional) IntelliJ IDEA
 
 ### Technology stack
 
@@ -106,6 +108,13 @@ The Score Command microservice provides REST and gRPC APIs for the Rock Paper Sc
 ```
   http://localhost:8083/score-cmd-api/swagger-ui/index.html
 ```
+
+* Open any browser and navigate to the microservice Actuator. Actuator endpoints let you monitor and interact with the microservice. All endpoints are exposed over HTTP under dev profile.
+
+```
+http://localhost:8083/score-cmd-api/actuator
+```
+
 Note: NGINX is used as API gateway so if you deploy the microservices on docker containers you should remove port number from the url.
 ### Useful links
 

@@ -37,6 +37,12 @@ management:
     health:
       show-details: always
 
+# Logging configuration
+logging:
+  level:
+    # Autoconfigure logging configuration
+    org.springframework.boot.autoconfigure: debug
+
 # OpenApi configuration
 api:
   dev:
