@@ -1,0 +1,39 @@
+# ConfigMap holds information about Logstash configuration files
+apiVersion: v1 # K8S API version
+kind: ConfigMap
+metadata:
+  name: logstash-configmap
+  namespace: kube-elk # The name of the namespace
+  labels:
+    app: logstash
+    tier: infrastructure
+data:
+  logstash.yml: |
+    http.host: "0.0.0.0"
+    xpack.monitoring.elasticsearch.hosts: [ "http://elasticsearch:9200" ]
+  logstash.conf: |-
+    # Read input from filebeat by listening to port 5044 on which filebeat will send the data
+    input {
+      beats {
+          port => "5044"
+      }
+    }
+
+    filter {
+      if [message] =~ /^\{.*\}$/ {
+        json {
+          source => "message"
+        }
+      }
+      if [ClientHost] {
+        geoip {
+          source => "ClientHost"
+        }
+      }
+    }
+
+    output {
+      stdout { codec => rubydebug }
+      # Sending properly parsed log events to elasticsearch
+      elasticsearch { hosts => ["localhost:9200"] }
+    }

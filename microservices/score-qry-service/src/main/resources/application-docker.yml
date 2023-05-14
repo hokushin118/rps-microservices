@@ -22,22 +22,22 @@ spring:
 
   # MariaDB database connection configuration
   datasource:
-    url: jdbc:mariadb://mariadb:3306/scoreDB?useUnicode=true&characterEncoding=UTF-8&serverTimezone=UTC
-    username: root
-    password: 12345
+    url: jdbc:mariadb://${MARIADB_URL}/${SCORE_DATABASE}?useUnicode=true&characterEncoding=UTF-8&serverTimezone=UTC
+    username: ${MARIADB_ROOT_USER}
+    password: ${MARIADB_ROOT_PASSWORD}
     driver-class-name: org.mariadb.jdbc.Driver
 
   # Flyway configuration
   flyway:
-    url: jdbc:mariadb://mariadb:3306
-    user: root
-    password: 12345
-    schemas: scoreDB
+    url: jdbc:mariadb://${MARIADB_HOSTNAME}:${MARIADB_PORT}
+    user: ${MARIADB_ROOT_USER}
+    password: ${MARIADB_ROOT_PASSWORD}
+    schemas: ${SCORE_DATABASE}
 
   # Kafka properties
   kafka:
     consumer:
-      bootstrap-servers: kafka-1:9093,kafka-2:9094,kafka-3:9095
+      bootstrap-servers: ${KAFKA_HOSTNAME_1}:${KAFKA_BROKER_PORT_1},${KAFKA_HOSTNAME_2}:${KAFKA_BROKER_PORT_2},${KAFKA_HOSTNAME_3}:${KAFKA_BROKER_PORT_3}
 
   # Cache configuration
   cache:
@@ -47,9 +47,9 @@ spring:
 
   # Redis configuration
   redis:
-    host: redis
-    password: 12345
-    port: 6379
+    host: ${REDIS_HOSTNAME}
+    password: ${REDIS_PASSWORD}
+    port: ${REDIS_PORT}
 
 # Actuator configuration
 management:
@@ -66,7 +66,7 @@ management:
 api:
   dev:
     server:
-      base-url: http://host.docker.internal${server.servlet.context-path}
+      base-url: http://${OPEN_API_URL}${server.servlet.context-path}
   prod:
     server:
-      base-url: http://host.docker.internal${server.servlet.context-path}
+      base-url: http://${OPEN_API_URL}${server.servlet.context-path}

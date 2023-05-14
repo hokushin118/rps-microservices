@@ -2,7 +2,7 @@ package com.al.qdt.rps.cmd.domain.mappers;
 
 import com.al.qdt.common.api.dto.GameDto;
 import com.al.qdt.common.enums.Hand;
-import com.al.qdt.common.infrastructure.mappers.CommonConfig;
+import com.al.qdt.common.domain.mappers.CommonConfig;
 import com.al.qdt.rps.cmd.api.commands.PlayGameCommand;
 import com.al.qdt.rps.cmd.api.exceptions.InvalidUserInputException;
 import org.mapstruct.Mapper;

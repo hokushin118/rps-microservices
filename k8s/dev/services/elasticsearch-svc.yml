@@ -1,0 +1,21 @@
+# Elasticsearch headless ClusterIP service
+apiVersion: v1 # K8S API version
+kind: Service
+metadata:
+  name: elasticsearch-svc
+  namespace: kube-elk # The name of the namespace
+  labels:
+    app: elasticsearch
+    tier: infrastructure
+spec:
+  selector:
+    app: elasticsearch
+    tier: infrastructure
+  ports:
+    - name: rest-9200 # The REST API port
+      protocol: TCP
+      port: 9200 # The port that the service is running on in the cluster
+    - name: inter-node-9300 # The port for inter node communications
+      protocol: TCP
+      port: 9300 # The port that the service is running on in the cluster
+  clusterIP: None # Headless service

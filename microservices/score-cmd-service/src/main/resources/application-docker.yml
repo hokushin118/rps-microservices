@@ -17,12 +17,12 @@ spring:
   # Mongo properties
   data:
     mongodb:
-      host: mongodb
+      host: ${MONGO_HOSTNAME}
 
   # Kafka properties
   kafka:
     producer:
-      bootstrap-servers: kafka-1:9093,kafka-2:9094,kafka-3:9095
+      bootstrap-servers: ${KAFKA_HOSTNAME_1}:${KAFKA_BROKER_PORT_1},${KAFKA_HOSTNAME_2}:${KAFKA_BROKER_PORT_2},${KAFKA_HOSTNAME_3}:${KAFKA_BROKER_PORT_3}
 
 # Actuator configuration
 management:
@@ -39,7 +39,7 @@ management:
 api:
   dev:
     server:
-      base-url: http://host.docker.internal${server.servlet.context-path}
+      base-url: http://${OPEN_API_URL}${server.servlet.context-path}
   prod:
     server:
-      base-url: http://host.docker.internal${server.servlet.context-path}
+      base-url: http://${OPEN_API_URL}${server.servlet.context-path}

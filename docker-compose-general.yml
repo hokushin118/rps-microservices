@@ -5,7 +5,7 @@ services:
     container_name: mongodb
     image: mongo:${MONGO_VERSION}
     hostname: ${MONGO_HOSTNAME}
-    restart: always
+    restart: on-failure
     ports: # Important: In a production environment you should remove the external port that kept here for debugging purposes.
       - 27017:27017 # docker host port / container port
     expose:
@@ -26,7 +26,7 @@ services:
   mongo-express:
     container_name: mongo-express
     image: mongo-express:latest
-    restart: always
+    restart: on-failure
     ports: # Important: In a production environment you should remove the external port that kept here for debugging purposes.
       - 8088:8081 # external port / container port
     env_file:
@@ -52,7 +52,7 @@ services:
     container_name: mariadb
     image: bitnami/mariadb:${MARIADB_VERSION}
     hostname: ${MARIADB_HOSTNAME}
-    restart: always
+    restart: on-failure
     ports: # Important: In a production environment you should remove the external port that kept here for debugging purposes.
       - 3306:3306 # external port / container port
     env_file:
@@ -86,7 +86,7 @@ services:
     container_name: redis
     image: bitnami/redis:latest
     hostname: ${REDIS_HOSTNAME}
-    restart: always
+    restart: on-failure
     ports: # Important: In a production environment you should remove the external port that kept here for debugging purposes.
       - 6379:6379 # external port / container port
     env_file:

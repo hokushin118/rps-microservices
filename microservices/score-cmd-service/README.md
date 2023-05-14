@@ -116,6 +116,67 @@ http://localhost:8083/score-cmd-api/actuator
 ```
 
 Note: NGINX is used as API gateway so if you deploy the microservices on docker containers you should remove port number from the url.
+
+### Installing the Score command microservice on K8S cluster
+
+#### 1. Creating namespace for RPS game microservices
+
+To create a rps-app-dev namespace on the k8s cluster, run:
+
+```
+     > kubectl apply -f ./k8s/dev/namespaces/rps-app-ns.yml
+```
+
+To check the status, run:
+
+```
+     > kubectl get namespaces --show-labels
+```
+
+#### 2. Deploying the Score command microservice
+
+To deploy the Score command microservice to Kubernetes, first deploy the microservice K8S service with the following command:
+
+```
+     > kubectl apply -f ./k8s/dev/services/score-cmd-service-svc.yml
+```
+
+To check the service deployment status, run:
+
+```
+     > kubectl get services -n rps-app-dev
+```
+
+Then deploy the Score command microservice with the following command:
+
+```
+     > kubectl apply -f ./k8s/dev/deployments/score-cmd-service-deployment.yml
+```
+
+To check the pod status, run:
+
+```
+     > kubectl get pods -n rps-app-dev
+```
+
+To check the state of the deployment, first forward the Score command microservice to your local environment with the following command:
+
+```
+     > kubectl port-forward svc/score-cmd-service-svc 8083 -n rps-app-dev
+```
+
+And open any browser and navigate to the microservice Open API 3.0 definition (REST API).
+
+```
+     > http://localhost:8083/score-cmd-api/swagger-ui/index.html
+```
+
+You may also check the log of the Score command microservice with this command:
+
+```
+     > kubectl logs <pod name> -n rps-app-dev
+```
+
 ### Useful links
 
 For testing gRPC API (make sure that you are using correct grpc port for a profile), please consider the following

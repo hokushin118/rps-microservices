@@ -88,15 +88,18 @@ to activate it.
 ```
     > docker compose -f docker-compose-general.yml -f docker-compose-kafka.yml -f docker-compose-metrics.yml -f docker-compose-api ps
 ```
+
 * Navigate to the health checker microservice:
 
 ```
     > localhost/status/hc-ui
 ```
+
 and make sure that all the RPS game microservices are up and running.
 
 ![health-checks](img/hc.png)
 ** Status gets refreshed every 10 seconds
+
 ### 3. Building of the necessary common libraries
 
 * Navigate to the common/rps-grpc-lib directory on your computer.
@@ -174,7 +177,10 @@ and make sure that all the RPS game microservices are up and running.
   http://localhost:8081/rps-cmd-api/swagger-ui/index.html or
   http://host.docker.internal/rps-cmd-api/swagger-ui/index.html
 ```
-Note: NGINX is used as API gateway so if you deploy the microservices on docker containers you should remove port number from the url.
+
+Note: NGINX is used as API gateway so if you deploy the microservices on docker containers you should remove port number
+from the url.
+
 ### 5. Running the RPS game query microservice from the command line
 
 * Navigate to the root directory of the microservice on your computer.
@@ -284,6 +290,198 @@ Note: NGINX is used as API gateway so if you deploy the microservices on docker 
   http://host.docker.internal/score-qry-api/swagger-ui/index.html
 ```
 
+### Kubernetes (K8S)
+
+Make sure that k8s is enabled in the Docker Desktop. If not, click on the __Settings__ icon, then on the __Kubernetes__ tab and check the __Enable Kubernetes__
+checkbox. 
+
+![enable_kubernetes](img/desktop-docker-k8s.png)
+
+Open a __Command Prompt__ and check if access is available for your Docker Desktop cluster:
+
+```
+     > kubectl cluster-info
+```
+
+Check the state of your Docker Desktop cluster:
+
+```
+     > kubectl get nodes
+```
+
+You should see a single node in the output called _docker-desktop_. That’s a full k8s cluster, with a single
+node.
+
+To create a project namespace on the k8s cluster, run:
+
+```
+     > kubectl apply -f ./k8s/dev/namespaces/rps-app-ns.yml
+```
+
+To check the status, run:
+
+```
+     > kubectl get namespaces --show-labels
+```
+
+### Elasticsearch, Logstash, and Kibana (ELK Stack) on K8S cluster
+
+There are several ways we can implement the __ELK Stack__ architecture pattern:
+
+Beats —> Elasticsearch —> Kibana 
+
+Beats —> Logstash —> Elasticsearch —> Kibana 
+
+Beats —> Kafka —> Logstash —> Elasticsearch —> Kibana 
+
+Here we implement the first approach. The last one is the better option for production environment.
+
+#### 1. Creating namespace for ELK services
+
+To create a kube-elk namespace on the k8s cluster, run:
+
+```
+     > kubectl apply -f ./k8s/dev/namespaces/kube-elk-ns.yml
+```
+
+To check the status, run:
+
+```
+     > kubectl get namespaces --show-labels
+```
+
+#### 2. Deploying Elasticsearch cluster
+
+To deploy elasticsearch cluster to Kubernetes, first run:
+
+```
+     > kubectl apply -f ./k8s/dev/rbacs/elasticsearch-rbac.yml
+```
+
+Then run:
+
+```
+     > kubectl apply -f ./k8s/dev/services/elasticsearch-svc.yml
+```
+
+And then run:
+
+```
+     > kubectl apply -f ./k8s/dev/sets/elasticsearch-statefulset.yml
+```
+
+To monitor the deployment status, run:
+
+```
+     > kubectl rollout status sts/elasticsearch-sts -n kube-elk
+```
+
+To check the pod status, run:
+
+```
+     > kubectl get pods -n kube-elk
+```
+
+To check the state of the deployment, first forward elasticsearch service to your local environment with the following command:
+
+```
+     > kubectl port-forward <elasticsearch pod name> 9200:9200 -n kube-elk or
+     > kubectl port-forward svc/elasticsearch-svc 9200 -n kube-elk
+```
+
+And then send an HTTP GET request using curl with this command:
+
+```
+     > curl localhost:9200
+```
+
+You may also check the health of your Elasticsearch cluster with this command:
+
+```
+     > curl localhost:9200/_cluster/health?pretty
+```
+
+You may also check the log of your Elasticsearch cluster pod with this command:
+
+```
+     > kubectl logs <pod name> -n kube-elk
+```
+Or container inside your Elasticsearch cluster pod with this command:
+
+```
+     > kubectl logs <pod name> -c <container name> -n kube-elk
+```
+
+#### 3. Deploying Filebeat
+
+To deploy Filebeat to Kubernetes, first run:
+
+```
+     > kubectl apply -f ./k8s/dev/rbacs/filebeat-rbac.yml
+```
+
+Then run:
+
+```
+     > kubectl apply -f ./k8s/dev/configmaps/filebeat-configmap.yml
+```
+
+And then run:
+
+```
+     > kubectl apply -f ./k8s/dev/sets/filebeat-daemonset.yml
+```
+
+To check the status, run:
+
+```
+     > kubectl get ds/filebeat-dst -n kube-elk
+```
+
+#### 4. Deploying Kibana
+
+To deploy Kibana to Kubernetes, first run:
+
+```
+     > kubectl apply -f ./k8s/dev/services/kibana-svc.yml
+```
+
+And then run:
+
+```
+     > kubectl apply -f ./k8s/dev/deployments/kibana-deployment.yml
+```
+
+To check the state of the deployment, first forward kibana service to your local environment with the following command:
+
+```
+     > kubectl port-forward svc/kibana 5601 -n kube-elk
+```
+
+And then perform the following request against the Elasticsearch REST API:
+
+```
+     > curl localhost:9200/_cat/indices?v 
+```
+
+And then access the Kibana UI in any browser:
+
+```
+     > http://localhost:5601
+```
+
+__Note:__ If you are running a single node cluster (Docker Desktop or MiniKube) you might need to perform the following request against the Elasticsearch REST API::
+
+```
+     > curl --location --request PUT 'localhost:9200/_settings' \
+       --header 'Content-Type: application/json' \
+       --data '{
+           "index": {
+               "number_of_replicas": 0
+           }
+       }'
+```
+
 ### Useful links
 
 For testing gRPC API (make sure that you are using correct grpc port for a profile), please consider the following
@@ -305,6 +503,18 @@ For testing MongoDB, you can also consider the following options:
 To get an idea of HTTP/2 performance, you can follow the link below:
 
 * [HTTP/2 Demo](http://www.http2demo.io)
+
+Kubernetes
+
+* [K8S Cluster-level Logging Architecture](https://kubernetes.io/docs/concepts/cluster-administration/logging/#using-a-node-logging-agent)
+* [K8S Dashboard](https://kubernetes.io/docs/tasks/access-application-cluster/web-ui-dashboard)
+* [K8S Ingress Installation Guide](https://kubernetes.github.io/ingress-nginx/deploy/#quick-start)
+
+ELK
+
+* [Elastic Stack Guidelines](https://www.elastic.co/guide/index.html)
+* [The Beats Family](https://www.elastic.co/beats)
+* [Online Grok Pattern Generator / Debugger Tool](https://www.javainuse.com/grok)
 
 ### Microservice patterns used
 

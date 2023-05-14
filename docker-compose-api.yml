@@ -9,7 +9,7 @@ services:
     build:
       context: .
       dockerfile: ./docker/nginx/Dockerfile
-    restart: always
+    restart: on-failure
     ports: # Important: In a production environment you should remove the external port that kept here for debugging purposes.
       - 80:80 # NGINX HTTP, external port / container port
     #      - 443:443 # NGINX HTTPS, external port / container port
@@ -33,7 +33,7 @@ services:
       context: .
       dockerfile: ./docker/webstatus/Dockerfile
     hostname: webstatus
-    restart: always
+    restart: on-failure
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
       - Logging:LogLevel:Default=Debug
@@ -58,9 +58,12 @@ services:
       context: .
       dockerfile: ./docker/rps-cmd-service/Dockerfile
     hostname: ${RPS_CMD_SRV_HOSTNAME}
-    restart: always
+    restart: on-failure
     environment:
       - JVM_OPTS=-Xmx8g -Xms8g -XX:MaxPermSize=1024m
+    labels:
+      collect_logs_with_filebeat: true
+      decode_log_event_to_json: true
     ports: # Important: In a production environment you should remove the external port that kept here for debugging purposes.
       - 8081:80 # external port / container port
       - 6566:6565 # external port / container port
@@ -82,9 +85,12 @@ services:
       context: .
       dockerfile: ./docker/rps-qry-service/Dockerfile
     hostname: ${RPS_QRY_SRV_HOSTNAME}
-    restart: always
+    restart: on-failure
     environment:
       - JVM_OPTS=-Xmx8g -Xms8g -XX:MaxPermSize=1024m
+    labels:
+      collect_logs_with_filebeat: true
+      decode_log_event_to_json: true
     ports: # Important: In a production environment you should remove the external port that kept here for debugging purposes.
       - 8082:80 # external port / container port
       - 6567:6565 # external port / container port
@@ -106,9 +112,12 @@ services:
       context: .
       dockerfile: ./docker/score-cmd-service/Dockerfile
     hostname: ${SCORE_CMD_SRV_HOSTNAME}
-    restart: always
+    restart: on-failure
     environment:
       - JVM_OPTS=-Xmx8g -Xms8g -XX:MaxPermSize=1024m
+    labels:
+      collect_logs_with_filebeat: true
+      decode_log_event_to_json: true
     ports: # Important: In a production environment you should remove the external port that kept here for debugging purposes.
       - 8083:80 # external port / container port
       - 6568:6565 # external port / container port
@@ -130,9 +139,12 @@ services:
       context: .
       dockerfile: ./docker/score-qry-service/Dockerfile
     hostname: ${SCORE_QRY_SRV_HOSTNAME}
-    restart: always
+    restart: on-failure
     environment:
       - JVM_OPTS=-Xmx8g -Xms8g -XX:MaxPermSize=1024m
+    labels:
+      collect_logs_with_filebeat: true
+      decode_log_event_to_json: true
     ports: # Important: In a production environment you should remove the external port that kept here for debugging purposes.
       - 8084:80 # external port / container port
       - 6569:6565 # external port / container port

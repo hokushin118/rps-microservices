@@ -1,4 +1,4 @@
-package com.al.qdt.common.infrastructure.mappers;
+package com.al.qdt.common.domain.mappers;
 
 import com.al.qdt.rps.grpc.v1.common.Hand;
 import com.google.protobuf.Timestamp;

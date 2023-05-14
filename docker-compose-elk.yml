@@ -4,20 +4,21 @@ services:
   # Elasticsearch stores and indexes the data.
   elasticsearch:
     container_name: elasticsearch
-    image: elasticsearch:${ELASTIC_VERSION}
-    hostname: ${ELASTIC_HOSTNAME}
-    restart: always
+    image: elastic/elasticsearch:${ELASTICSEARCH_VERSION}
+    hostname: ${ELASTICSEARCH_HOSTNAME}
+    restart: on-failure
     ports: # Important: In a production environment you should remove the external port that kept here for debugging purposes.
       - 9200:9200 # Elasticsearch HTTP, external port / container port
       - 9300:9300 # Elasticsearch TCP transport, external port / container port
     env_file:
       - .env
     environment:
-      - ES_JAVA_OPTS=-Xms512m -Xmx512m
+      - ES_JAVA_OPTS=-Xms1500m -Xmx1500m
+      - ELASTICSEARCH_USERNAME=${ELASTICSEARCH_USERNAME}
       # Bootstrap password.
       # Used to initialize the keystore during the initial startup of
       # Elasticsearch. Ignored on subsequent runs.
-      - ELASTIC_PASSWORD=${ELASTIC_PASSWORD}
+      - ELASTICSEARCH_PASSWORD=${ELASTICSEARCH_PASSWORD}
       # Use single node discovery in order to disable production mode and avoid bootstrap checks.
       # see: https://www.elastic.co/guide/en/elasticsearch/reference/current/bootstrap-checks.html
       - discovery.type=single-node
@@ -33,9 +34,9 @@ services:
   # Logstash is used to collect, parse, transform, and buffer data from a variety of sources.
   logstash:
     container_name: logstash
-    image: logstash:${ELASTIC_VERSION}
+    image: elastic/logstash:${LOGSTASH_VERSION}
     hostname: ${LOGSTASH_HOSTNAME}
-    restart: always
+    restart: on-failure
     ports: # Important: In a production environment you should remove the external port that kept here for debugging purposes.
       - 5044:5044 # Logstash Beats input, external port / container port
       - 50000:50000/tcp # external port / container port
@@ -59,9 +60,9 @@ services:
   # Kibana acts as an analytics and visualization layer on top of Elasticsearch.
   kibana:
     container_name: kibana
-    image: kibana:${ELASTIC_VERSION}
+    image: elastic/kibana:${KIBANA_VERSION}
     hostname: ${KIBANA_HOSTNAME}
-    restart: always
+    restart: on-failure
     ports: # Important: In a production environment you should remove the external port that kept here for debugging purposes.
       - 5601:5601 # external port / container port
     env_file:
@@ -77,11 +78,12 @@ services:
     deploy:
       replicas: 1
 
+  # Filebeat is a log data shipper for local log files. It monitors all the logs in the log directory and forwards them to Logstash.
   filebeat:
     container_name: filebeat
-    image: elastic/filebeat:${ELASTIC_VERSION}
+    image: elastic/filebeat:${FILEBEAT_VERSION}
     hostname: ${FILEBEAT_HOSTNAME}
-    restart: always
+    restart: on-failure
     user: root # Allow access to log files and docker.sock
     env_file:
       - .env

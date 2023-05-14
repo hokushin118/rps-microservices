@@ -104,6 +104,7 @@ springdoc:
   # enables pretty-printed output of the OpenApi specification
   writer-with-default-pretty-printer: true
 
+
 # OpenApi configuration
 api:
   dev:
@@ -133,3 +134,8 @@ app:
   kafka:
     max-in-flight-request-per-connection: 5
     is-idempotence-enabled: true
+
+# Logging configuration
+logging:
+  file:
+    path: ./var/log
