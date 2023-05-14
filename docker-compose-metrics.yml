@@ -6,7 +6,7 @@ services:
     container_name: prometheus
     image: prom/prometheus
     hostname: ${PROMETHEUS_HOSTNAME}
-    restart: always
+    restart: on-failure
     ports: # Important: In a production environment you should remove the external port that kept here for debugging purposes.
       - 9090:9090 # external port / container port
     env_file:
@@ -31,7 +31,7 @@ services:
     container_name: grafana
     image: grafana/grafana
     hostname: ${GF_HOSTNAME}
-    restart: always
+    restart: on-failure
     user: "104" # setting up the user to use over the Docker container to allow reads/writes over disk
     ports: # Important: In a production environment you should remove the external port that kept here for debugging purposes.
       - 3000:3000 # external port / container port

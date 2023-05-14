@@ -717,7 +717,7 @@
                 <version>${maven-surefire-plugin.version}</version>
                 <configuration>
                     <skip>${junit-tests.skip}</skip>
-                    <argLine>${surefire.jacoco.args}</argLine>
+                    <argLine>${surefire.jacoco.args} -Xmx4096m</argLine>
                     <includes>
                         <include>**/*Test.java</include>
                         <include>**/*Spec.java</include>
@@ -727,6 +727,9 @@
                         <exclude>**/*IT.java</exclude>
                         <exclude>**/*ITSpec.java</exclude>
                     </excludes>
+                    <useSystemClassLoader>false</useSystemClassLoader>
+                    <forkCount>3</forkCount>
+                    <reuseForks>true</reuseForks>
                     <testFailureIgnore>true</testFailureIgnore>
                     <!-- base directory where all reports are written to -->
                     <reportsDirectory>${project.build.directory}/test-reports/unit</reportsDirectory>
@@ -798,6 +801,7 @@
             </plugin>
 
             <!-- Plugin for building Docker image -->
+            <!-- https://github.com/GoogleContainerTools/jib/blob/master/jib-maven-plugin/README.md -->
             <plugin>
                 <groupId>com.google.cloud.tools</groupId>
                 <artifactId>jib-maven-plugin</artifactId>

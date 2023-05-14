@@ -1,0 +1,17 @@
+# PersistentVolumes for the Elasticsearch pods
+# https://www.elastic.co/guide/en/cloud-on-k8s/current/k8s-volume-claim-templates.html
+apiVersion: v1 # K8S API version
+kind: PersistentVolumeClaim
+metadata:
+  name: elasticsearch-pvc
+  namespace: kube-elk # The name of the namespace
+  labels:
+    app: elasticsearch
+    tier: infrastructure
+spec:
+  accessModes:
+    - ReadWriteOnce
+  storageClassName: standard
+  resources:
+    requests:
+      storage: 5Gi

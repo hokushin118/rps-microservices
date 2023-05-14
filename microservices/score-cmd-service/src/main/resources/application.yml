@@ -117,3 +117,8 @@ app:
   kafka:
     max-in-flight-request-per-connection: 5
     is-idempotence-enabled: true
+
+# Logging configuration
+logging:
+  file:
+    path: ./var/log

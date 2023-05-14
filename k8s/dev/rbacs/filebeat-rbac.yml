@@ -1,0 +1,45 @@
+# Filebeat RBAC authn and authz
+apiVersion: v1 # K8S API version
+kind: ServiceAccount
+metadata:
+  name: filebeat
+  namespace: kube-elk # The name of the namespace
+  labels:
+    app: filebeat
+    tier: infrastructure
+
+---
+kind: ClusterRole
+apiVersion: rbac.authorization.k8s.io/v1 # K8S API version
+metadata:
+  # "namespace" omitted since ClusterRoles are not namespaced
+  name: filebeat
+rules:
+  - apiGroups: [ "" ] # "" indicates the core API group
+    # at the HTTP level, the name of the resource for accessing
+    resources:
+      - namespaces
+      - pods
+    verbs:
+      - get
+      - watch
+      - list
+
+---
+# This cluster role binding allows anyone with "filebeat" service account to read pods in the "kube-elk" and "rps-app-dev" namespaces.
+kind: ClusterRoleBinding
+apiVersion: rbac.authorization.k8s.io/v1 # K8S API version
+metadata:
+  name: filebeat
+  labels:
+    app: filebeat
+    tier: infrastructure
+subjects:
+  - kind: ServiceAccount
+    name: filebeat
+    namespace: kube-elk
+    apiGroup:  ""
+roleRef: # "roleRef" specifies the binding to a Role / ClusterRole
+  kind: ClusterRole # this must be ClusterRole
+  name: filebeat # this must match the name of the Role or ClusterRole you wish to bind to
+  apiGroup:  ""

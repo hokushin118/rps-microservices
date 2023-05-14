@@ -7,7 +7,7 @@ import com.al.qdt.common.infrastructure.config.FilterConfig;
 import com.al.qdt.common.infrastructure.config.MicrometerConfig;
 import com.al.qdt.common.infrastructure.config.OpenApiConfig;
 import com.al.qdt.common.infrastructure.config.ProtoConfig;
-import com.al.qdt.common.infrastructure.config.WebMvcQryConfig;
+import com.al.qdt.common.infrastructure.config.MvcQryConfig;
 import com.al.qdt.common.infrastructure.kafka.KafkaConsumerConfig;
 import com.al.qdt.rps.qry.domain.repositories.GameRepository;
 import org.springframework.boot.autoconfigure.flyway.FlywayMigrationStrategy;
@@ -29,7 +29,7 @@ import javax.persistence.EntityManagerFactory;
 @Import({AppQryConfig.class,
         AsyncConfig.class,
         FilterConfig.class,
-        WebMvcQryConfig.class,
+        MvcQryConfig.class,
         OpenApiConfig.class,
         KafkaConsumerConfig.class,
         ProtoConfig.class,

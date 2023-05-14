@@ -6,9 +6,10 @@ import com.al.qdt.common.infrastructure.config.ErrorHandlingConfig;
 import com.al.qdt.common.infrastructure.config.FilterConfig;
 import com.al.qdt.common.infrastructure.config.MicrometerConfig;
 import com.al.qdt.common.infrastructure.config.MongoConfig;
+import com.al.qdt.common.infrastructure.config.MvcCmdConfig;
+import com.al.qdt.common.infrastructure.config.ObjectMapperConfig;
 import com.al.qdt.common.infrastructure.config.OpenApiConfig;
 import com.al.qdt.common.infrastructure.config.ProtoConfig;
-import com.al.qdt.common.infrastructure.config.WebMvcCmdConfig;
 import com.al.qdt.common.infrastructure.kafka.KafkaProducerConfig;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
@@ -20,8 +21,9 @@ import org.springframework.context.annotation.Import;
 @Import({AppCmdConfig.class,
         AsyncConfig.class,
         FilterConfig.class,
-        WebMvcCmdConfig.class,
+        MvcCmdConfig.class,
         OpenApiConfig.class,
+        ObjectMapperConfig.class,
         MongoConfig.class,
         KafkaProducerConfig.class,
         ProtoConfig.class,

@@ -1,7 +1,7 @@
 package com.al.qdt.rps.cmd.domain.mappers;
 
-import com.al.qdt.common.infrastructure.mappers.CommonConfig;
-import com.al.qdt.common.infrastructure.mappers.ConverterMapper;
+import com.al.qdt.common.domain.mappers.CommonConfig;
+import com.al.qdt.common.domain.mappers.ConverterMapper;
 import com.al.qdt.rps.cmd.api.commands.PlayGameCommand;
 import com.al.qdt.rps.grpc.v1.dto.GameDto;
 import org.mapstruct.Mapper;

@@ -50,6 +50,8 @@ ARG TEMP_FOLDER
 # https://developers.redhat.com/articles/2021/11/11/best-practices-building-images-pass-red-hat-container-certification#best_practice__6__embed_identifying_information_inside_your_image
 LABEL summary = $APP_NAME \
       description="The Rock Paper Scissors game command microservice"
+LABEL "collect_logs_with_filebeat"="true"
+LABEL "decode_log_event_to_json_object"="true"
 
 # Set /tmp as the working directory
 WORKDIR /$TEMP_FOLDER

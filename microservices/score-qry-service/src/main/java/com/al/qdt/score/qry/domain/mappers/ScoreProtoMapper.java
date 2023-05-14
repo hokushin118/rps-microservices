@@ -1,6 +1,6 @@
 package com.al.qdt.score.qry.domain.mappers;
 
-import com.al.qdt.common.infrastructure.mappers.CommonConfig;
+import com.al.qdt.common.domain.mappers.CommonConfig;
 import com.al.qdt.rps.grpc.v1.dto.ScoreDto;
 import com.al.qdt.score.qry.domain.entities.Score;
 import org.mapstruct.Mapper;

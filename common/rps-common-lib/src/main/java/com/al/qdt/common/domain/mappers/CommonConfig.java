@@ -1,4 +1,4 @@
-package com.al.qdt.common.infrastructure.mappers;
+package com.al.qdt.common.domain.mappers;
 
 import org.mapstruct.CollectionMappingStrategy;
 import org.mapstruct.MapperConfig;

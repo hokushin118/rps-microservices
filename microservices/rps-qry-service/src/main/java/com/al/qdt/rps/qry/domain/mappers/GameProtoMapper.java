@@ -1,6 +1,6 @@
 package com.al.qdt.rps.qry.domain.mappers;
 
-import com.al.qdt.common.infrastructure.mappers.CommonConfig;
+import com.al.qdt.common.domain.mappers.CommonConfig;
 import com.al.qdt.rps.grpc.v1.dto.GameDto;
 import com.al.qdt.rps.qry.domain.entities.Game;
 import org.mapstruct.Mapper;

@@ -14,7 +14,7 @@ services:
     container_name: zk-1
     image: bitnami/zookeeper:${ZOOKEEPER_VERSION}
     hostname: ${ZOOKEEPER_HOSTNAME_1}
-    restart: always
+    restart: on-failure
     ports: # Important: In a production environment you should remove the external port that kept here for debugging purposes.
       - 2181:2181 # external port / container port
     environment:
@@ -36,7 +36,7 @@ services:
     container_name: zk-2
     image: bitnami/zookeeper:${ZOOKEEPER_VERSION}
     hostname: ${ZOOKEEPER_HOSTNAME_2}
-    restart: always
+    restart: on-failure
     ports: # Important: In a production environment you should remove the external port that kept here for debugging purposes.
       - 2182:2181 # external port / container port
     environment:
@@ -58,7 +58,7 @@ services:
     container_name: zk-3
     image: bitnami/zookeeper:${ZOOKEEPER_VERSION}
     hostname: ${ZOOKEEPER_HOSTNAME_3}
-    restart: always
+    restart: on-failure
     ports: # Important: In a production environment you should remove the external port that kept here for debugging purposes.
       - 2183:2181 # external port / container port
     environment:
@@ -80,7 +80,7 @@ services:
     container_name: kafka-1
     image: bitnami/kafka:${KAFKA_VERSION}
     hostname: ${KAFKA_HOSTNAME_1}
-    restart: always
+    restart: on-failure
     ports: # Important: In a production environment you should remove the external port that kept here for debugging purposes.
       - 9093:9093 # external port / container port
     environment:
@@ -110,7 +110,7 @@ services:
     container_name: kafka-2
     image: bitnami/kafka:${KAFKA_VERSION}
     hostname: ${KAFKA_HOSTNAME_2}
-    restart: always
+    restart: on-failure
     ports: # Important: In a production environment you should remove the external port that kept here for debugging purposes.
       - 9094:9094 # external port / container port
     environment:
@@ -140,7 +140,7 @@ services:
     container_name: kafka-3
     image: bitnami/kafka:${KAFKA_VERSION}
     hostname: ${KAFKA_HOSTNAME_3}
-    restart: always
+    restart: on-failure
     ports: # Important: In a production environment you should remove the external port that kept here for debugging purposes.
       - 9095:9095 # external port / container port
     environment:

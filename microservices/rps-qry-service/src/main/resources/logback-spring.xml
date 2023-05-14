@@ -1,6 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <configuration>
-    <property name="APP_LOG" value="./logs/app.log"/>
+    <!-- Provides conversion rules, pattern properties and common logger configurations -->
+    <include resource="org/springframework/boot/logging/logback/default.xml"/>
+    <!-- Adds a ConsoleAppender using the CONSOLE_LOG_PATTERN -->
+    <include resource="org/springframework/boot/logging/logback/console-appender.xml" />
+
+    <property name="APP_LOG" value="${LOG_PATH:-.}/rps-qry-service.log"/>
     <property name="CONSOLE_LOG_PATTERN"
               value="%d{dd-MM-yyyy HH:mm:ss.SSS} [%thread] %-5level [%X{X-Request-ID}] %logger{36}.%M - %msg%n"/>
 
@@ -10,12 +15,87 @@
         </encoder>
     </appender>
 
-    <root level="INFO">
-        <appender-ref ref="STDOUT"/>
-    </root>
+    <springProfile name="docker">
+
+        <!-- Appender to log to console in a JSON format -->
+        <appender name="jsonConsole" class="ch.qos.logback.core.ConsoleAppender">
+            <encoder class="net.logstash.logback.encoder.LoggingEventCompositeJsonEncoder">
+                <providers>
+                    <timestamp>
+                        <timeZone>UTC</timeZone>
+                    </timestamp>
+                    <version/>
+                    <logLevel/>
+                    <message/>
+                    <loggerName/>
+                    <threadName/>
+                    <context/>
+                    <stackTrace>
+                        <throwableConverter class="net.logstash.logback.stacktrace.ShortenedThrowableConverter">
+                            <maxDepthPerThrowable>30</maxDepthPerThrowable>
+                            <maxLength>2048</maxLength>
+                            <shortenedClassNameLength>20</shortenedClassNameLength>
+                            <rootCauseFirst>true</rootCauseFirst>
+                            <inlineHash>false</inlineHash>
+                            <!-- generated class names -->
+                            <exclude>\$\$FastClassByCGLIB\$\$</exclude>
+                            <exclude>\$\$EnhancerBySpringCGLIB\$\$</exclude>
+                            <exclude>^sun\.reflect\..*\.invoke</exclude>
+                            <!-- JDK internals -->
+                            <exclude>^com\.sun\.</exclude>
+                            <exclude>^sun\.net\.</exclude>
+                            <!-- dynamic invocation -->
+                            <exclude>^net\.sf\.cglib\.proxy\.MethodProxy\.invoke</exclude>
+                            <exclude>^org\.springframework\.cglib\.</exclude>
+                            <exclude>^org\.springframework\.transaction\.</exclude>
+                            <exclude>^org\.springframework\.validation\.</exclude>
+                            <exclude>^org\.springframework\.app\.</exclude>
+                            <exclude>^org\.springframework\.aop\.</exclude>
+                            <exclude>^java\.lang\.reflect\.Method\.invoke</exclude>
+                            <!-- Spring plumbing -->
+                            <exclude>^org\.springframework\.ws\..*\.invoke</exclude>
+                            <exclude>^org\.springframework\.ws\.transport\.</exclude>
+                            <exclude>^org\.springframework\.ws\.soap\.saaj\.SaajSoapMessage\.</exclude>
+                            <exclude>^org\.springframework\.ws\.client\.core\.WebServiceTemplate\.</exclude>
+                            <exclude>^org\.springframework\.web\.filter\.</exclude>
+                            <!-- Tomcat internals -->
+                            <exclude>^org\.apache\.tomcat\.</exclude>
+                            <exclude>^org\.apache\.catalina\.</exclude>
+                            <exclude>^org\.apache\.coyote\.</exclude>
+                            <exclude>^java\.util\.concurrent\.ThreadPoolExecutor\.runWorker</exclude>
+                            <exclude>^java\.lang\.Thread\.run$</exclude>
+                        </throwableConverter>
+                    </stackTrace>
+                    <pattern>
+                        <omitEmptyFields>true</omitEmptyFields>
+                        <pattern>
+                            {
+                            "trace": {
+                            "trace_id": "%mdc{traceId}",
+                            "span_id": "%mdc{spanId}",
+                            "parent_span_id": "%mdc{parentId}",
+                            "exportable": "%mdc{sampled}"
+                            }
+                            }
+                        </pattern>
+                    </pattern>
+                    <mdc>
+                        <excludeMdcKeyName>traceId</excludeMdcKeyName>
+                        <excludeMdcKeyName>spanId</excludeMdcKeyName>
+                        <excludeMdcKeyName>parentId</excludeMdcKeyName>
+                        <excludeMdcKeyName>sampled</excludeMdcKeyName>
+                    </mdc>
+                </providers>
+            </encoder>
+        </appender>
+
+        <root level="INFO">
+            <appender-ref ref="jsonConsole"/>
+        </root>
+    </springProfile>
 
     <springProfile name="dev,prod">
-        <property name="OUTBOUND_LOG" value="./logs/app-outbound.log"/>
+        <property name="OUTBOUND_LOG" value="${LOG_PATH:-.}/rps-qry-service-outbound.log"/>
         <property name="FILE_LOG_PATTERN"
                   value="%d{dd-MM-yyyy HH:mm:ss.SSS} [%thread] %-5level [%X{X-Request-ID}] %logger{36}.%M - %msg%n"/>
 
@@ -36,6 +116,7 @@
             </rollingPolicy>
         </appender>
 
+        <!-- Logging messages of class at a different level to the root level -->
         <logger name="org.springframework" additivity="false" level="INFO">
             <appender-ref ref="FILE"/>
             <appender-ref ref="STDOUT"/>
@@ -50,6 +131,11 @@
             <appender-ref ref="OUTBOUND_LOGS"/>
             <appender-ref ref="STDOUT"/>
         </logger>
+
+        <root level="INFO">
+            <appender-ref ref="STDOUT"/>
+            <appender-ref ref="FILE"/>
+        </root>
     </springProfile>
 
     <springProfile name="it">
@@ -60,5 +146,9 @@
         <logger name="com.al.qdt.rps.qry" additivity="false" level="INFO">
             <appender-ref ref="STDOUT"/>
         </logger>
+
+        <root level="INFO">
+            <appender-ref ref="STDOUT"/>
+        </root>
     </springProfile>
 </configuration>
