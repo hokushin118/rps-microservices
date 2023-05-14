@@ -1,0 +1,18 @@
+apiVersion: v1 # K8S API version
+kind: Service
+metadata:
+  name: score-cmd-service-svc
+  namespace: rps-app-dev # The name of the namespace
+  labels:
+    app: score-cmd-service
+    tier: backend
+spec:
+  selector:
+    app: score-cmd-service
+    tier: backend
+  ports:
+    - name: http-8083
+      protocol: TCP
+      port: 8083 # The port that the service is running on in the cluster
+      targetPort: 8083 # The port exposed by the service
+  type: ClusterIP # Type of the service, here our application is only accessible in the K8S private network and can’t be accessed from the outside world

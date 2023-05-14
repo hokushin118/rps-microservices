@@ -1,0 +1,49 @@
+# Elasticsearch RBAC authn and authz
+apiVersion: v1 # K8S API version
+kind: ServiceAccount
+metadata:
+  name: elasticsearch
+  namespace: kube-elk # The name of the namespace
+  labels:
+    app: elasticsearch
+    tier: infrastructure
+
+---
+kind: ClusterRole
+apiVersion: rbac.authorization.k8s.io/v1 # K8S API version
+metadata:
+  # "namespace" omitted since ClusterRoles are not namespaced
+  name: elasticsearch
+  labels:
+    app: elasticsearch
+    tier: infrastructure
+rules:
+  - apiGroups: [ "" ] # "" indicates the core API group
+    # at the HTTP level, the name of the resource for accessing
+    resources:
+      - services
+      - namespaces
+      - endpoints
+    verbs:
+      - get
+
+---
+# This role binding allows "elasticsearch" to read pods in the "kube-elk" namespace.
+# You need to already have a Role named "elasticsearch" in that namespace.
+kind: ClusterRoleBinding
+apiVersion: rbac.authorization.k8s.io/v1 # K8S API version
+metadata:
+  name: elasticsearch
+  namespace: kube-elk # The name of the namespace
+  labels:
+    app: elasticsearch
+    tier: infrastructure
+subjects:
+  - kind: ServiceAccount
+    name: elasticsearch
+    namespace: kube-elk
+    apiGroup:  ""
+roleRef: # "roleRef" specifies the binding to a Role / ClusterRole
+  kind: ClusterRole # this must be Role or ClusterRole
+  name: elasticsearch # this must match the name of the Role or ClusterRole you wish to bind to
+  apiGroup:  ""

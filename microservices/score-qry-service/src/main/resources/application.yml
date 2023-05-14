@@ -51,6 +51,8 @@ spring:
   flyway:
     # Path to the migration scripts
     locations: classpath:${spring.profiles.active}/db/migration/{vendor}
+#    baseline-on-migrate: true
+#    baseline-version: 0
 
   # Jackson properties
   jackson:
@@ -145,3 +147,8 @@ app:
   caching:
     # Time-To-Live (TTL) value
     ttl-value: 43200000 # 12 x 3600 x 1000 = 12 hours
+
+# Logging configuration
+logging:
+  file:
+    path: ./var/log

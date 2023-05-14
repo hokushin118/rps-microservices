@@ -27,8 +27,7 @@
             <!-- Docker account username -->
             <username>hokushin</username>
             <!-- Docker account password -->
-            <password>{r4FBArVsajUHPYa12iI3HJr5qcX525myxqy3Yibvs+tOIPAtVnPTCYxoNt/E4B+bYn3VYiJCUJqHn3BnIPFMcw==}
-            </password>
+            <password>{NShiaXM+ZagHSgUIciHv2EjdYekwdYf7tHtcwIvP7ZU=}</password>
         </server>
 
         <server>
@@ -43,7 +42,9 @@
         <server>
             <id>packagecloud.snapshots</id>
             <!-- PackageCloud Token -->
-            <password>{vH9IQQ+bRKYHaXz0ANvAbF7DPRi/HjiKUgnWIz0N3ex+uXF4LzfU2QA/v60vsyC+U8Q5a0S/JOE/d6Cm8hxGgxdXmS0TvWstWPz+8NQ5g+8=}</password>
+            <password>
+                {vH9IQQ+bRKYHaXz0ANvAbF7DPRi/HjiKUgnWIz0N3ex+uXF4LzfU2QA/v60vsyC+U8Q5a0S/JOE/d6Cm8hxGgxdXmS0TvWstWPz+8NQ5g+8=}
+            </password>
         </server>
     </servers>
 
@@ -65,8 +66,7 @@
                 <!-- GitHub Packages Repository -->
                 <repository>
                     <id>github</id>
-                    <url>https://maven.pkg.github.com/hokushin118/rps
-                    </url>
+                    <url>https://maven.pkg.github.com/hokushin118/rps</url>
                     <snapshots>
                         <enabled>true</enabled>
                     </snapshots>
