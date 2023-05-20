@@ -21,8 +21,12 @@ spec:
         app: filebeat
         tier: infrastructure
     spec: # specification for pods
+      serviceAccount: filebeat
       serviceAccountName: filebeat
-      terminationGracePeriodSeconds: 30
+      tolerations: # This will ensure that the DaemonSet also gets rolled out to the Kubernetes masters
+        - key: node-role.kubernetes.io/master
+          effect: NoSchedule
+      terminationGracePeriodSeconds: 30 # It gives Filebeat 30 seconds to shut down gracefully upon receiving a SIGTERM signal
       containers:
         - name: filebeat
           image: elastic/filebeat:6.8.23
@@ -35,18 +39,18 @@ spec:
               valueFrom:
                 fieldRef:
                   fieldPath: spec.nodeName
-            - name: LOGSTASH_HOST
-              value: logstash
-            - name: LOGSTASH_PORT
+            - name: FILEBEAT_LOGSTASH_URL
+              value: "logstash-svc.kube-elk.svc.cluster.local"
+            - name: FILEBEAT_LOGSTASH_PORT
               value: "5044"
-            - name: ELASTICSEARCH_HOST
-              value: elasticsearch
-            - name: ELASTICSEARCH_PORT
+            - name: FILEBEAT_ELASTICSEARCH_URL
+              value: "http://elasticsearch-svc.kube-elk.svc.cluster.local"
+            - name: FILEBEAT_ELASTICSEARCH_PORT
               value: "9200"
-            - name: ELASTICSEARCH_USERNAME
-              value: elastic
-            - name: ELASTICSEARCH_PASSWORD
-              value: changeme
+            - name: FILEBEAT_ELASTICSEARCH_USERNAME
+              value: "elastic"
+            - name: FILEBEAT_ELASTICSEARCH_PASSWORD
+              value: "changeme"
             - name: ELASTIC_CLOUD_ID
               value:
             - name: ELASTIC_CLOUD_AUTH
@@ -57,10 +61,10 @@ spec:
             #privileged: true
           resources:
             limits:
-              memory: 200Mi
+              memory: 512Mi # 512 MiB memory limit on the Filebeat Pod
             requests:
-              cpu: 100m
-              memory: 100Mi
+              cpu: 100m # guarantees 0.1 vCPU to the Filebeat Pod
+              memory: 200Mi # guarantees 200 MiB to the Filebeat Pod
           volumeMounts:
             - name: config
               mountPath: /etc/filebeat.yml

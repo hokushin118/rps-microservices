@@ -15,7 +15,10 @@ spec:
     - name: rest-9200 # The REST API port
       protocol: TCP
       port: 9200 # The port that the service is running on in the cluster
+      targetPort: 9200
     - name: inter-node-9300 # The port for inter node communications
       protocol: TCP
       port: 9300 # The port that the service is running on in the cluster
-  clusterIP: None # Headless service
+      targetPort: 9300
+  clusterIP: None
+  type: ClusterIP # Type of the service, here our application is only accessible in the K8S private network and can’t be accessed from the outside world

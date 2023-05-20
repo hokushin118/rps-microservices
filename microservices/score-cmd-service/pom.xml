@@ -822,10 +822,6 @@
                         <tags>
                             <tag>latest</tag>
                         </tags>
-                        <auth>
-                            <username>hokushin</username>
-                            <password>SaKuRa81!</password>
-                        </auth>
                     </to>
                     <container>
                         <!-- Startup flags to be passed to the JVM -->

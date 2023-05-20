@@ -61,6 +61,8 @@ services:
     restart: on-failure
     environment:
       - JVM_OPTS=-Xmx8g -Xms8g -XX:MaxPermSize=1024m
+      - SERVER_PORT=${RPS_CMD_SERVER_PORT}
+      - GRPC_SERVER_PORT=${RPS_CMD_GRPC_SERVER_PORT}
     labels:
       collect_logs_with_filebeat: true
       decode_log_event_to_json: true
@@ -88,6 +90,8 @@ services:
     restart: on-failure
     environment:
       - JVM_OPTS=-Xmx8g -Xms8g -XX:MaxPermSize=1024m
+      - SERVER_PORT=${RPS_QRY_SERVER_PORT}
+      - GRPC_SERVER_PORT=${RPS_QRY_GRPC_SERVER_PORT}
     labels:
       collect_logs_with_filebeat: true
       decode_log_event_to_json: true
@@ -115,6 +119,8 @@ services:
     restart: on-failure
     environment:
       - JVM_OPTS=-Xmx8g -Xms8g -XX:MaxPermSize=1024m
+      - SERVER_PORT=${SCORE_CMD_SERVER_PORT}
+      - GRPC_SERVER_PORT=${SCORE_CMD_GRPC_SERVER_PORT}
     labels:
       collect_logs_with_filebeat: true
       decode_log_event_to_json: true
@@ -142,6 +148,8 @@ services:
     restart: on-failure
     environment:
       - JVM_OPTS=-Xmx8g -Xms8g -XX:MaxPermSize=1024m
+      - SERVER_PORT=${SCORE_QRY_SERVER_PORT}
+      - GRPC_SERVER_PORT=${SCORE_QRY_GRPC_SERVER_PORT}
     labels:
       collect_logs_with_filebeat: true
       decode_log_event_to_json: true

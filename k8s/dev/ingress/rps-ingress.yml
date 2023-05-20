@@ -1,0 +1,41 @@
+# Simple Fanout Ingress for RPS microservices
+# DNS > LB > Ingress > Service > Pods > Container
+apiVersion: networking.k8s.io/v1 # K8S API version
+kind: Ingress
+metadata:
+  name: rps-ingress
+  namespace: rps-app-dev # The name of the namespace
+spec:
+  ingressClassName: nginx # Ingress Controller
+  rules:
+    - host: rps.internal
+      http:
+        paths:
+          - path: /rps-cmd-api
+            pathType: Prefix
+            backend:
+              service:
+                name: rps-cmd-service-svc
+                port:
+                  number: 8080
+          - path: /rps-qry-api
+            pathType: Prefix
+            backend:
+              service:
+                name: rps-qry-service-svc
+                port:
+                  number: 8080
+          - path: /score-cmd-api
+            pathType: Prefix
+            backend:
+              service:
+                name: score-cmd-service-svc
+                port:
+                  number: 8080
+          - path: /score-qry-api
+            pathType: Prefix
+            backend:
+              service:
+                name: score-qry-service-svc
+                port:
+                  number: 8080
