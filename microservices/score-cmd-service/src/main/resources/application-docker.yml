@@ -1,10 +1,10 @@
 server:
-  port: 8083
+  port: ${SCORE_CMD_SERVER_PORT}
 
 # gRPC server configuration
 grpc:
   server:
-    port: 6568
+    port: ${SCORE_CMD_GRPC_SERVER_PORT}
     # Turn off the service listing (for both actuator and grpc)
     reflection-service-enabled: off
 

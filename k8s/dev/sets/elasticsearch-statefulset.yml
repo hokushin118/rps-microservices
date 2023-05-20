@@ -7,19 +7,22 @@ metadata:
   namespace: kube-elk # The name of the namespace
   labels:
     app: elasticsearch
+    tier: infrastructure
 spec:
   serviceName: elasticsearch-svc # link to elasticsearch service
-  replicas: 1 # Number of replicas that will be created
+  replicas: 3 # Number of replicas that will be created
   minReadySeconds: 5 # by default is 0
   updateStrategy:
     type: RollingUpdate
   selector:
     matchLabels:
       app: elasticsearch
+      tier: infrastructure
   template: # a blueprint for pods
     metadata:
       labels:
         app: elasticsearch
+        tier: infrastructure
     spec: # specification for pods
       serviceAccountName: elasticsearch
       containers:
@@ -29,9 +32,9 @@ spec:
           resources:
             # need more cpu upon initialization, therefore burstable class
             limits:
-              cpu: 1000m
+              cpu: 1000m # max 1 vCPU to the Elasticsearch Pod
             requests:
-              cpu: 100m
+              cpu: 100m # guarantees 0.1 vCPU to the Elasticsearch Pod
           ports:
             - name: rest-9200 # The REST API port
               protocol: TCP
@@ -44,13 +47,13 @@ spec:
               mountPath: /usr/share/elasticsearch/data
           env:
             - name: cluster.name # Elasticsearch cluster name
-              value: k8s-logs
+              value: "k8s-logs"
             - name: node.name # Elasticsearch cluster node name
               valueFrom:
                 fieldRef:
                   fieldPath: metadata.name
             - name: ES_JAVA_OPTS
-              value: "-Xms1500m -Xmx1500m"
+              value: "-Xms512m -Xmx512m"
       volumes:
         - name: data
           emptyDir: { }

@@ -1,3 +1,4 @@
+# Kibana ClusterIP service
 apiVersion: v1 # K8S API version
 kind: Service
 metadata:

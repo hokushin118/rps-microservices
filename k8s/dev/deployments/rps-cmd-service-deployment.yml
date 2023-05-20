@@ -1,4 +1,4 @@
-# RPS Game Command Microservice deployment configuration
+# RPS Game Command microservice deployment configuration
 apiVersion: apps/v1 # K8S API version
 kind: Deployment
 metadata: # Describes information about the app
@@ -29,19 +29,20 @@ spec:
         co.elastic.logs.json-logging/json.add_error_key: "true"
         co.elastic.logs.json-logging/json.message_key: "message"
     spec: # specification for pods
+      terminationGracePeriodSeconds: 10 # It gives microservice 10 seconds to shut down gracefully upon receiving a SIGTERM signal
       containers:
         - name: rps-cmd-service
           image: hokushin/rps-cmd-service:latest
           imagePullPolicy: IfNotPresent
           ports:
-            - containerPort: 8080 # The port that the container is running on in the cluster
+            - name: http-8080
+              protocol: TCP
+              containerPort: 8080 # The port that the container is running on in the cluster
           resources:
             limits:
               cpu: 100m
-#              memory: 100Mi
             requests:
               cpu: 50m
-#              memory: 50Mi
           env: # Setting environmental variables
             - name: KAFKA_HOSTNAME_1
               value: "kafka-1"
@@ -59,6 +60,10 @@ spec:
               value: "mongodb"
             - name: OPEN_API_URL
               value: "rps-cmd-service"
+            - name: RPS_CMD_SERVER_PORT
+              value: "8080"
+            - name: RPS_CMD_GRPC_SERVER_PORT
+              value: "6565"
 #          readinessProbe:
 #            httpGet:
 #              port: 8080
@@ -73,7 +78,3 @@ spec:
 #            initialDelaySeconds: 30
 #            timeoutSeconds: 1
 #            periodSeconds: 5
-          lifecycle:
-            preStop:
-              exec:
-                command: [ "sh", "-c", "sleep 10" ]

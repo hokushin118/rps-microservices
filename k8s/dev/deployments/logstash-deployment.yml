@@ -31,21 +31,26 @@ spec:
           image: elastic/logstash:6.8.23
           imagePullPolicy: IfNotPresent
           ports:
-            - containerPort: 5044
+            - name: tcp-5044
+              protocol: TCP
+              containerPort: 5044 # The port that the container is running on in the cluster
+          env: # Setting environmental variables
+            - name: TCP_PORT
+              value: "5044"
+            - name: LS_JAVA_OPTS
+              value: "-Xmx2g -Xms2g"
           volumeMounts:
             - name: config-volume
               mountPath: /usr/share/logstash/config
             - name: logstash-pipeline-volume
               mountPath: /usr/share/logstash/pipeline
-#          command:
-#            - logstash
           resources:
             limits:
               cpu: 100m
-#              memory: 100Mi
+            #              memory: 100Mi
             requests:
               cpu: 50m
-#              memory: 50Mi
+      #              memory: 50Mi
       volumes:
         # Previously defined ConfigMap object
         - name: config-volume
