@@ -1,3 +1,4 @@
+# Logstash ClusterIP service
 apiVersion: v1 # K8S API version
 kind: Service
 metadata:
@@ -15,4 +16,8 @@ spec:
       protocol: TCP
       port: 5044 # The port that the service is running on in the cluster
       targetPort: 5044 # The port exposed by the service
+    - name: tcp-9600
+      protocol: TCP
+      port: 9600 # The port that the service is running on in the cluster
+      targetPort: 9600 # The port exposed by the service
   type: ClusterIP # Type of the service, here our application is only accessible in the K8S private network and can’t be accessed from the outside world

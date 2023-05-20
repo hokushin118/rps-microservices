@@ -9,8 +9,9 @@ metadata:
     tier: infrastructure
 
 ---
-kind: ClusterRole
+# Here we define a ClusterRole called elasticsearch to which we grant the get permission on the services, endpoints and namespaces object.
 apiVersion: rbac.authorization.k8s.io/v1 # K8S API version
+kind: ClusterRole
 metadata:
   # "namespace" omitted since ClusterRoles are not namespaced
   name: elasticsearch
@@ -30,8 +31,8 @@ rules:
 ---
 # This role binding allows "elasticsearch" to read pods in the "kube-elk" namespace.
 # You need to already have a Role named "elasticsearch" in that namespace.
-kind: ClusterRoleBinding
 apiVersion: rbac.authorization.k8s.io/v1 # K8S API version
+kind: ClusterRoleBinding
 metadata:
   name: elasticsearch
   namespace: kube-elk # The name of the namespace
@@ -42,8 +43,7 @@ subjects:
   - kind: ServiceAccount
     name: elasticsearch
     namespace: kube-elk
-    apiGroup:  ""
 roleRef: # "roleRef" specifies the binding to a Role / ClusterRole
   kind: ClusterRole # this must be Role or ClusterRole
   name: elasticsearch # this must match the name of the Role or ClusterRole you wish to bind to
-  apiGroup:  ""
+  apiGroup:  rbac.authorization.k8s.io

@@ -1,0 +1,24 @@
+# ConfigMap holds information about Kibana configuration files
+apiVersion: v1 # K8S API version
+kind: ConfigMap
+metadata:
+  name: kibana-configmap
+  namespace: kube-elk # The name of the namespace
+  labels:
+    app: kibana
+    tier: infrastructure
+data:
+  # kibana.yml is mounted into the Kibana container
+  # see https://github.com/elastic/kibana/blob/master/config/kibana.yml
+  kibana.yml: |-
+    server.name: kibana
+    server.host: "0.0.0.0"
+    elasticsearch.url: ${ELASTICSEARCH_URL:http://elasticsearch-svc.kube-elk.svc.cluster.local}
+    elasticsearch.ssl.verificationMode: none
+    status.allowAnonymous: true
+    # xpack.monitoring.enabled: false
+    # xpack.monitoring.ui.container.elasticsearch.enabled: false
+    # xpack.monitoring.kibana.collection.enabled: false
+    # xpack.security.enabled: false
+    # logging.silent: false
+    # logging.quiet: false

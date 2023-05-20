@@ -9,14 +9,20 @@ import com.al.qdt.rps.grpc.v1.services.RpsCmdServiceGrpc;
 import io.grpc.internal.testing.StreamRecorder;
 import lombok.SneakyThrows;
 import net.devh.boot.grpc.client.inject.GrpcClient;
-import org.junit.jupiter.api.*;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Nested;
+import org.junit.jupiter.api.Order;
+import org.junit.jupiter.api.Tag;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.EnumSource;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.concurrent.ExecutionException;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
 
 @DisplayName("Integration testing of the RpsGrpcServiceV1T class")
 @Tag(value = "grpc")

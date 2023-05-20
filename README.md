@@ -297,6 +297,22 @@ checkbox.
 
 ![enable_kubernetes](img/desktop-docker-k8s.png)
 
+You can also use [minikube](https://minikube.sigs.k8s.io/docs/start) for local K8S development. 
+
+```
+     > minikube start \
+            --addons=ingress,dashboard \
+            --cni=flannel \
+            --install-addons=true \
+                --kubernetes-version=stable \
+                --vm-driver=docker --wait=false \
+                --cpus=4 --memory=6g --nodes=1 \
+                --extra-config=apiserver.service-node-port-range=1-65535 \
+            --embed-certs \
+            --no-vtx-check \
+            --docker-env HTTP_PROXY=https://minikube.sigs.k8s.io/docs/reference/networking/proxy/
+```
+
 Open a __Command Prompt__ and check if access is available for your Docker Desktop cluster:
 
 ```
@@ -328,11 +344,11 @@ To check the status, run:
 
 There are several ways we can implement the __ELK Stack__ architecture pattern:
 
-Beats —> Elasticsearch —> Kibana 
+1. Beats —> Elasticsearch —> Kibana 
 
-Beats —> Logstash —> Elasticsearch —> Kibana 
+2. Beats —> Logstash —> Elasticsearch —> Kibana 
 
-Beats —> Kafka —> Logstash —> Elasticsearch —> Kibana 
+3. Beats —> Kafka —> Logstash —> Elasticsearch —> Kibana 
 
 Here we implement the first approach. The last one is the better option for production environment.
 
@@ -350,7 +366,22 @@ To check the status, run:
      > kubectl get namespaces --show-labels
 ```
 
+You should see the following output:
+
+```
+      NAME                   STATUS   AGE     LABELS
+      default                Active   2d13h   kubernetes.io/metadata.name=default
+      ingress-nginx          Active   2d13h   app.kubernetes.io/instance=ingress-nginx,app.kubernetes.io/name=ingress-nginx,kubernetes.io/metadata.name=ingress-nginx
+      kube-elk               Active   2d12h   kubernetes.io/metadata.name=kube-elk,name=kube-elk
+      kube-node-lease        Active   2d13h   kubernetes.io/metadata.name=kube-node-lease
+      kube-public            Active   2d13h   kubernetes.io/metadata.name=kube-public
+      kube-system            Active   2d13h   kubernetes.io/metadata.name=kube-system
+      kubernetes-dashboard   Active   2d13h   addonmanager.kubernetes.io/mode=Reconcile,kubernetes.io/metadata.name=kubernetes-dashboard,kubernetes.io/minikube-addons=dashboard
+```
+
 #### 2. Deploying Elasticsearch cluster
+
+_Elasticsearch is used for storing and searching logs._
 
 To deploy elasticsearch cluster to Kubernetes, first run:
 
@@ -382,14 +413,16 @@ To check the pod status, run:
      > kubectl get pods -n kube-elk
 ```
 
-To check the state of the deployment, first forward elasticsearch service to your local environment with the following command:
+You should see the following output:
 
 ```
-     > kubectl port-forward <elasticsearch pod name> 9200:9200 -n kube-elk or
-     > kubectl port-forward svc/elasticsearch-svc 9200 -n kube-elk
+      NAME                                   READY   STATUS    RESTARTS         AGE
+      elasticsearch-sts-0                    1/1     Running   0                16m
+      elasticsearch-sts-1                    1/1     Running   0                15m
+      elasticsearch-sts-2                    1/1     Running   0                15m
 ```
 
-And then send an HTTP GET request using curl with this command:
+To check the state of the deployment, send an HTTP GET request using curl with this command:
 
 ```
      > curl localhost:9200
@@ -401,11 +434,40 @@ You may also check the health of your Elasticsearch cluster with this command:
      > curl localhost:9200/_cluster/health?pretty
 ```
 
+You should see the following output:
+
+```
+    {
+      "cluster_name" : "k8s-logs",
+      "status" : "green",
+      "timed_out" : false,
+      "number_of_nodes" : 1,
+      "number_of_data_nodes" : 1,
+      "active_primary_shards" : 0,
+      "active_shards" : 0,
+      "relocating_shards" : 0,
+      "initializing_shards" : 0,
+      "unassigned_shards" : 0,
+      "delayed_unassigned_shards" : 0,
+      "number_of_pending_tasks" : 0,
+      "number_of_in_flight_fetch" : 0,
+      "task_max_waiting_in_queue_millis" : 0,
+      "active_shards_percent_as_number" : 100.0
+    }
+```
+
+You may also check the state of your Elasticsearch cluster with this command:
+
+```
+     > curl localhost:9200/_cluster/state?pretty
+```
+
 You may also check the log of your Elasticsearch cluster pod with this command:
 
 ```
      > kubectl logs <pod name> -n kube-elk
 ```
+
 Or container inside your Elasticsearch cluster pod with this command:
 
 ```
@@ -413,6 +475,8 @@ Or container inside your Elasticsearch cluster pod with this command:
 ```
 
 #### 3. Deploying Filebeat
+
+_Filebeat is used to farm all the logs from all our nodes and pushing them to Logstash._
 
 To deploy Filebeat to Kubernetes, first run:
 
@@ -432,15 +496,36 @@ And then run:
      > kubectl apply -f ./k8s/dev/sets/filebeat-daemonset.yml
 ```
 
-To check the status, run:
+Verify that the Filebeat DaemonSet rolled out successfully using kubectl:
 
 ```
-     > kubectl get ds/filebeat-dst -n kube-elk
+     > kubectl get ds -n kube-elk
+```
+
+You should see the following status output:
+
+```
+      NAME           DESIRED   CURRENT   READY   UP-TO-DATE   AVAILABLE   NODE SELECTOR   AGE
+      filebeat-dst   1         1         1       1            1           <none>          135m
+```
+
+To verify that Elasticsearch is indeed receiving this data, query the Filebeat index with this command:
+
+```
+     > curl http://localhost:9200/filebeat-*/_search?pretty
 ```
 
 #### 4. Deploying Kibana
 
+_Kibana is used for viewing logs._
+
 To deploy Kibana to Kubernetes, first run:
+
+```
+     > kubectl apply -f ./k8s/dev/configmaps/kibana-configmap.yml
+```
+
+Then run:
 
 ```
      > kubectl apply -f ./k8s/dev/services/kibana-svc.yml
@@ -452,22 +537,27 @@ And then run:
      > kubectl apply -f ./k8s/dev/deployments/kibana-deployment.yml
 ```
 
-To check the state of the deployment, first forward kibana service to your local environment with the following command:
+To access the Kibana interface, we have to forward a local port to the Kubernetes node running Kibana:
 
 ```
-     > kubectl port-forward svc/kibana 5601 -n kube-elk
+     > kubectl port-forward <kibana pod> 5601:5601 - n kube-elk
 ```
 
-And then perform the following request against the Elasticsearch REST API:
+To check the state of the deployment, perform the following request against the Elasticsearch REST API:
 
 ```
      > curl localhost:9200/_cat/indices?v 
 ```
 
-And then access the Kibana UI in any browser:
+You should see the following output:
 
 ```
-     > http://localhost:5601
+      health status index                      uuid                   pri rep docs.count docs.deleted store.size pri.store.size
+      green  open   .kibana                    fP_HM1riQWGKpkl8FuGFTA   1   0          2            0     10.4kb         10.4kb
+      green  open   .kibana_1                  g2SMz8XjShmSzTwmOQu9Fw   1   0          0            0       261b           261b
+      green  open   .kibana_2                  2Poc2zmRRwawJNBO8Xeamg   1   0          0            0       261b           261b
+      green  open   .kibana_task_manager       RgTFfA6lQ_CoSVUW8NbZGQ   1   0          2            0     19.2kb         19.2kb
+      green  open   filebeat-6.8.23-2023.05.20 EUSLOZMWQGSyWMrh2EJiRA   5   0     122481            0     34.2mb         34.2mb
 ```
 
 __Note:__ If you are running a single node cluster (Docker Desktop or MiniKube) you might need to perform the following request against the Elasticsearch REST API::
@@ -481,6 +571,20 @@ __Note:__ If you are running a single node cluster (Docker Desktop or MiniKube) 
            }
        }'
 ```
+
+And then access the Kibana UI in any browser:
+
+```
+     > http://localhost:5601
+```
+
+Navigate to the Kibana dashboard and in the __Discovery__ page, in the search bar enter:
+
+```
+     > kubernetes.pod_name:<name of the pod>
+```
+
+You should see a list of log entries for the specified pod.
 
 ### Useful links
 

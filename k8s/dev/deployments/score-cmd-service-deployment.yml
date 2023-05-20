@@ -1,4 +1,4 @@
-# Score Command Microservice deployment configuration
+# Score Command microservice deployment configuration
 apiVersion: apps/v1 # K8S API version
 kind: Deployment
 metadata: # Describes information about the app
@@ -29,36 +29,41 @@ spec:
         co.elastic.logs.json-logging/json.add_error_key: "true"
         co.elastic.logs.json-logging/json.message_key: "message"
     spec: # specification for pods
+      terminationGracePeriodSeconds: 10 # It gives microservice 10 seconds to shut down gracefully upon receiving a SIGTERM signal
       containers:
         - name: score-cmd-service
           image: hokushin/score-cmd-service:latest
           imagePullPolicy: IfNotPresent
           ports:
-            - containerPort: 8080 # The port that the container is running on in the cluster
+            - name: http-8080
+              protocol: TCP
+              containerPort: 8080 # The port that the container is running on in the cluster
           resources:
             limits:
               cpu: 100m
-              memory: 100Mi
             requests:
               cpu: 50m
-              memory: 50Mi
           env: # Setting environmental variables
             - name: KAFKA_HOSTNAME_1
-              value: kafka-1
+              value: "kafka-1"
             - name: KAFKA_BROKER_PORT_1
-              value: 9093
+              value: "9093"
             - name: KAFKA_HOSTNAME_2
-              value: kafka-2
+              value: "kafka-2"
             - name: KAFKA_BROKER_PORT_2
-              value: 9094
+              value: "9094"
             - name: KAFKA_HOSTNAME_3
-              value: kafka-3
+              value: "kafka-3"
             - name: KAFKA_BROKER_PORT_3
-              value: 9095
+              value: "9095"
             - name: MONGO_HOSTNAME
-              value: mongodb
+              value: "mongodb"
             - name: OPEN_API_URL
-              value: score-cmd-service
+              value: "score-cmd-service"
+            - name: SCORE_CMD_SERVER_PORT
+              value: "8080"
+            - name: SCORE_CMD_GRPC_SERVER_PORT
+              value: "6565"
 #          readinessProbe:
 #            httpGet:
 #              port: 8080
@@ -73,7 +78,3 @@ spec:
 #            initialDelaySeconds: 30
 #            timeoutSeconds: 1
 #            periodSeconds: 5
-          lifecycle:
-            preStop:
-              exec:
-                command: [ "sh", "-c", "sleep 10" ]

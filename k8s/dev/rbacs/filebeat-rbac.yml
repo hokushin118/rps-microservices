@@ -9,17 +9,21 @@ metadata:
     tier: infrastructure
 
 ---
-kind: ClusterRole
+# Here we define a ClusterRole called filebeat to which we grant the get, list, and watch permissions on the pods and namespaces object.
 apiVersion: rbac.authorization.k8s.io/v1 # K8S API version
+kind: ClusterRole
 metadata:
   # "namespace" omitted since ClusterRoles are not namespaced
   name: filebeat
+  labels:
+    app: filebeat
+    tier: infrastructure
 rules:
   - apiGroups: [ "" ] # "" indicates the core API group
     # at the HTTP level, the name of the resource for accessing
     resources:
-      - namespaces
       - pods
+      - namespaces
     verbs:
       - get
       - watch
@@ -27,8 +31,8 @@ rules:
 
 ---
 # This cluster role binding allows anyone with "filebeat" service account to read pods in the "kube-elk" and "rps-app-dev" namespaces.
-kind: ClusterRoleBinding
 apiVersion: rbac.authorization.k8s.io/v1 # K8S API version
+kind: ClusterRoleBinding
 metadata:
   name: filebeat
   labels:
@@ -38,8 +42,7 @@ subjects:
   - kind: ServiceAccount
     name: filebeat
     namespace: kube-elk
-    apiGroup:  ""
 roleRef: # "roleRef" specifies the binding to a Role / ClusterRole
   kind: ClusterRole # this must be ClusterRole
   name: filebeat # this must match the name of the Role or ClusterRole you wish to bind to
-  apiGroup:  ""
+  apiGroup: rbac.authorization.k8s.io

@@ -123,7 +123,39 @@ Note: NGINX is used as API gateway so if you deploy the microservices on docker 
 
 ### Installing the RPS game query microservice on K8S cluster
 
-#### 1. Creating namespace for RPS game microservices
+#### 1. Adding custom entry to the etc/host file for the RPS game microservices (if not exists)
+
+Retrieve ip of the dev node:
+
+```
+     > minikube ip
+```
+
+You should see the following output:
+
+```
+      > 192.168.49.2
+```
+
+Add a custom entry to the etc/hosts file using the nano text editor:
+
+```
+     > sudo nano /etc/hosts
+```
+
+You should add the following custom domains to the hosts file:
+
+```
+      192.168.49.2 rps.internal
+```
+
+You may check the custom domain name with ping command:
+
+```
+     > ping rps.internal
+```
+
+#### 2. Creating namespace for RPS game microservices (if not exists)
 
 To create a rps-app-dev namespace on the k8s cluster, run:
 
@@ -137,7 +169,32 @@ To check the status, run:
      > kubectl get namespaces --show-labels
 ```
 
-#### 2. Deploying the RPS game query microservice
+#### 3. Deploying Simple Fanout Ingress for RPS microservices (if not exists)
+
+To create a [Simple Fanout Ingress](https://kubernetes.io/docs/concepts/services-networking/ingress) for the RPS microservices, run:
+
+```
+     > kubectl apply -f ./k8s/dev/ingress/rps-ingress.yml
+```
+
+__Note:__ A RPS application [Simple Fanout Ingress](https://kubernetes.io/docs/concepts/services-networking/ingress) configuration routes traffic from a single IP address to more than one.
+
+![Simple Fanout Ingress](https://d33wubrfki0l68.cloudfront.net/36c8934ba20b97859854610063337d2072ea291a/28e8b/docs/images/ingressfanout.svg)
+
+Make sure the RPS application ingress has been created:
+
+```
+     > kubectl get ingress -n rps-app-dev
+```
+
+You should see the following output:
+
+```
+      NAME                    CLASS   HOSTS                    ADDRESS        PORTS   AGE
+      rps-ingress             nginx   rps.internal             192.168.49.2   80      40h
+```
+
+#### 4. Deploying the RPS game query microservice
 
 To deploy the RPS game query microservice to Kubernetes, first deploy the microservice K8S service with the following command:
 
@@ -169,22 +226,16 @@ To check the pod status, run:
      > kubectl get pods -n rps-app-dev
 ```
 
-To check the state of the deployment, first forward the RPS game query microservice to your local environment with the following command:
-
-```
-     > kubectl port-forward svc/rps-qry-service-svc 8082 -n rps-app-dev
-```
-
-And open any browser and navigate to the microservice Open API 3.0 definition (REST API).
-
-```
-     > http://localhost:8082/rps-qry-api/swagger-ui/index.html
-```
-
 You may also check the log of the RPS game query microservice with this command:
 
 ```
      > kubectl logs <pod name> -n rps-app-dev
+```
+
+Open any browser and navigate to the microservice Open API 3.0 definition (REST API).
+
+```
+     > http://rps.internal/rps-qry-api/swagger-ui/index.html
 ```
 
 ### Useful links
