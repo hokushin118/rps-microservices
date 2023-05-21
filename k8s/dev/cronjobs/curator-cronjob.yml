@@ -7,7 +7,7 @@ metadata:
   name: curator-cronjob
   namespace: kube-elk # The name of the namespace
   labels:
-    app: kibana
+    app: elasticsearch
     tier: infrastructure
 spec:
   schedule: "0 0 1 * *"

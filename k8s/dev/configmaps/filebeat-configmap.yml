@@ -8,6 +8,7 @@ metadata:
     app: filebeat
     tier: infrastructure
 data:
+
   filebeat.yml: |-
     filebeat.config:
       inputs:
