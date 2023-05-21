@@ -45,8 +45,6 @@ spec:
           volumeMounts:
             - name: data
               mountPath: /usr/share/elasticsearch/data
-          #              persistentVolumeClaim:
-          #                claimName: elasticsearch-pv-claim
           env:
             - name: cluster.name # Elasticsearch cluster name
               value: "k8s-logs"
@@ -84,3 +82,13 @@ spec:
           command: [ "sh", "-c", "ulimit -n 65536" ]
           securityContext:
             privileged: true
+  # PersistentVolumes for the Elasticsearch pods
+  volumeClaimTemplates:
+    - metadata:
+        name: data
+      spec:
+        accessModes:
+          - ReadWriteOnce
+        resources:
+          requests:
+            storage: 5Gi

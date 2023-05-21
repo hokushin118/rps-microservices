@@ -1,0 +1,7 @@
+# Creating a namespace for ELK (dev environment)
+apiVersion: v1 # K8S API version
+kind: Namespace
+metadata:
+  name: kube-db
+  labels:
+    name: kube-db

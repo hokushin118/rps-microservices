@@ -616,6 +616,182 @@ You should see the following status output:
 
 ```
 
+### MariaDB database on K8S cluster
+
+#### 1. Creating namespace for databases
+
+To create a kube-db namespace on the k8s cluster, run:
+
+```
+     > kubectl apply -f ./k8s/dev/namespaces/kube-db-ns.yml
+```
+
+To check the status, run:
+
+```
+     > kubectl get namespaces --show-labels
+```
+
+You should see the following output:
+
+```
+      NAME                   STATUS   AGE     LABELS
+      default                Active   2d13h   kubernetes.io/metadata.name=default
+      ingress-nginx          Active   2d13h   app.kubernetes.io/instance=ingress-nginx,app.kubernetes.io/name=ingress-nginx,kubernetes.io/metadata.name=ingress-nginx
+      kube-db                Active   99m     kubernetes.io/metadata.name=kube-db,name=kube-db
+      kube-elk               Active   2d12h   kubernetes.io/metadata.name=kube-elk,name=kube-elk
+      kube-node-lease        Active   2d13h   kubernetes.io/metadata.name=kube-node-lease
+      kube-public            Active   2d13h   kubernetes.io/metadata.name=kube-public
+      kube-system            Active   2d13h   kubernetes.io/metadata.name=kube-system
+      kubernetes-dashboard   Active   2d13h   addonmanager.kubernetes.io/mode=Reconcile,kubernetes.io/metadata.name=kubernetes-dashboard,kubernetes.io/minikube-addons=dashboard
+```
+
+#### 2. Deploying MariaDB cluster
+
+To deploy MariaDB cluster to Kubernetes, first run:
+
+```
+     > kubectl apply -f ./k8s/dev/configmaps/mariadb-configmap.yml
+```
+
+Then run:
+
+```
+     > kubectl apply -f ./k8s/dev/services/mariadb-svc.yml
+```
+
+Then run:
+
+```
+     > kubectl apply -f ./k8s/dev/secrets/mariadb-secret.yml
+```
+
+And then run:
+
+```
+     > kubectl apply -f ./k8s/dev/sets/mariadb-statefulset.yml
+```
+
+To monitor the deployment status, run:
+
+```
+     > kubectl rollout status sts/mariadb-sts -n kube-db
+```
+
+You should see the following output:
+
+```
+      partitioned roll out complete: 3 new pods have been updated...
+```
+
+To check the pod status, run:
+
+```
+     > kubectl get pods -n kube-db
+```
+
+You should see the following output:
+
+```
+      NAME            READY   STATUS    RESTARTS   AGE
+      mariadb-sts-0   1/1     Running   0          108s
+      mariadb-sts-1   1/1     Running   0          105s
+      mariadb-sts-2   1/1     Running   0          102s
+```
+
+#### 3. Testing MariaDB cluster replication
+
+Create data on primary with these commands:
+
+```
+     > kubectl -n kube-db exec -it mariadb-sts-0 -- mariadb -uroot -p12345 
+```
+
+You should see the following output:
+
+```
+      Defaulted container "mariadb" out of: mariadb, init-mariadb (init)
+      Welcome to the MariaDB monitor.  Commands end with ; or \g.
+      Your MariaDB connection id is 6
+      Server version: 10.11.3-MariaDB-1:10.11.3+maria~ubu2204-log mariadb.org binary distribution
+      
+      Copyright (c) 2000, 2018, Oracle, MariaDB Corporation Ab and others.
+      
+      Type 'help;' or '\h' for help. Type '\c' to clear the current input statement.
+      
+      MariaDB [(none)]> show databases;
+      +--------------------+
+      | Database           |
+      +--------------------+
+      | information_schema |
+      | mysql              |
+      | performance_schema |
+      | primary_db         |
+      | sys                |
+      +--------------------+
+      5 rows in set (0.001 sec)
+      
+      MariaDB [(none)]> use primary_db;
+      Database changed
+      MariaDB [primary_db]> create table my_table (t int); insert into my_table values (5),(15),(25);
+      Query OK, 0 rows affected (0.041 sec)
+      
+      Query OK, 3 rows affected (0.007 sec)
+      Records: 3  Duplicates: 0  Warnings: 0
+      MariaDB [primary_db]> exit
+      Bye
+```
+
+Check data on replicas with these commands:
+
+```
+     > kubectl -n kube-db exec -it mariadb-sts-1 -- mariadb -uroot -p12345 
+```
+
+You should see the following output:
+
+```
+      Defaulted container "mariadb" out of: mariadb, init-mariadb (init)
+      Welcome to the MariaDB monitor.  Commands end with ; or \g.
+      Your MariaDB connection id is 6
+      Server version: 10.11.3-MariaDB-1:10.11.3+maria~ubu2204 mariadb.org binary distribution
+      
+      Copyright (c) 2000, 2018, Oracle, MariaDB Corporation Ab and others.
+      
+      Type 'help;' or '\h' for help. Type '\c' to clear the current input statement.
+      
+      MariaDB [(none)]> show databases;
+      +--------------------+
+      | Database           |
+      +--------------------+
+      | information_schema |
+      | mysql              |
+      | performance_schema |
+      | primary_db         |
+      | sys                |
+      +--------------------+
+      5 rows in set (0.001 sec)
+      
+      MariaDB [(none)]> use primary_db;
+      Database changed
+      MariaDB [primary_db]> show tables;
+      +----------------------+
+      | Tables_in_primary_db |
+      +----------------------+
+      | my_table             |
+      +----------------------+
+      1 row in set (0.000 sec)
+      MariaDB [primary_db]> select * from my_table;
+      +------+
+      | t    |
+      +------+
+      |    5 |
+      |   15 |
+      |   25 |
+      +------+
+      3 rows in set (0.000 sec)
+```
+
 ### Useful links
 
 For testing gRPC API (make sure that you are using correct grpc port for a profile), please consider the following
@@ -643,6 +819,7 @@ Kubernetes
 * [K8S Cluster-level Logging Architecture](https://kubernetes.io/docs/concepts/cluster-administration/logging/#using-a-node-logging-agent)
 * [K8S Dashboard](https://kubernetes.io/docs/tasks/access-application-cluster/web-ui-dashboard)
 * [K8S Ingress Installation Guide](https://kubernetes.github.io/ingress-nginx/deploy/#quick-start)
+* [K8S Overview for MariaDB Users](https://mariadb.com/kb/en/kubernetes-overview-for-mariadb-users)
 
 ELK
 

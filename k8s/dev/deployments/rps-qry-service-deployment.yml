@@ -57,7 +57,11 @@ spec:
             - name: KAFKA_BROKER_PORT_3
               value: "9095"
             - name: MARIADB_URL
-              value: "mariadb"
+              value: "mariadb-sts-0.mariadb-svc.kube-db.svc.cluster.local"
+            - name: MARIADB_HOSTNAME
+              value: "mariadb-sts-0.mariadb-svc.kube-db.svc.cluster.local"
+            - name: MARIADB_PORT
+              value: "3306"
             - name: MARIADB_ROOT_USER
               value: "root"
             - name: MARIADB_ROOT_PASSWORD
