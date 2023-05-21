@@ -1,0 +1,18 @@
+# MariaDB headless ClusterIP service
+apiVersion: v1 # K8S API version
+kind: Service
+metadata:
+  name: mariadb-svc
+  namespace: kube-db # The name of the namespace
+  labels:
+    app: mariadb
+    tier: database
+spec:
+  selector:
+    app: mariadb
+    tier: database
+  ports:
+    - name: tcp-3306
+      protocol: TCP
+      port: 3306 # The port that the service is running on in the cluster
+  clusterIP: None # Headless service

@@ -8,6 +8,7 @@ metadata:
     app: logstash
     tier: infrastructure
 data:
+
   logstash.yml: |-
     http.host: "0.0.0.0"
     xpack.monitoring.elasticsearch.hosts: [ '${ELASTICSEARCH_URL:http://elasticsearch-svc.kube-elk.svc.cluster.local}' ]

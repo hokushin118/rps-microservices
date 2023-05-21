@@ -1,12 +1,14 @@
-apiVersion: v1
+# ConfigMap holds information about Elasticsearch curator configuration files
+apiVersion: v1 # K8S API version
 kind: ConfigMap
 metadata:
   name: curator-configmap
   namespace: kube-elk # The name of the namespace
   labels:
-    app: filebeat
+    app: elasticsearch
     tier: infrastructure
 data:
+
   config.yml: |
     client:
     hosts:
