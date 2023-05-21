@@ -1,0 +1,42 @@
+# CronJob is meant for performing regular scheduled actions such as backups, report generation, and so on.
+# This cron job deletes Elasticserach indices older than 20 days
+# https://kubernetes.io/docs/concepts/workloads/controllers/cron-jobs/
+apiVersion: batch/v1
+kind: CronJob # K8S API version
+metadata:
+  name: curator-cronjob
+  namespace: kube-elk # The name of the namespace
+  labels:
+    app: kibana
+    tier: infrastructure
+spec:
+  schedule: "0 0 1 * *"
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          containers:
+            - name: curator
+              image: bitnami/elasticsearch-curator:5.8.4
+              imagePullPolicy: IfNotPresent
+              command: [ "/bin/sh", "-c" ]
+              args:
+                - curator --config /curator/config.yml /curator/actions.yml;
+              env:
+                - name: CURATOR_ELASTICSEARCH_URL
+                  value: "http://elasticsearch-svc.kube-elk.svc.cluster.local"
+              volumeMounts:
+                - name: config-volume
+                  mountPath: /curator
+                  readOnly: true
+          # Previously defined ConfigMap object
+          volumes:
+            - name: config-volume
+              configMap:
+                name: curator-configmap
+                items:
+                  - key: "config.yml"
+                    path: "config.yml"
+                  - key: "actions.yml"
+                    path: "actions.yml"
+          restartPolicy: OnFailure
