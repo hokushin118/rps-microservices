@@ -586,6 +586,36 @@ Navigate to the Kibana dashboard and in the __Discovery__ page, in the search ba
 
 You should see a list of log entries for the specified pod.
 
+#### 5. Deploying CronJob
+
+_Elasticsearch cron job is used for clearing Elasticsearch indices._
+
+To deploy Elasticsearch cron job to Kubernetes, first run:
+
+```
+     > kubectl apply -f ./k8s/dev/configmaps/curator-configmap.yml
+```
+
+And then run:
+
+```
+     > kubectl apply -f ./k8s/dev/cronjobs/curator-cronjob.yml
+```
+
+Verify that the Elasticsearch cron job rolled out successfully using kubectl:
+
+```
+     > kubectl get cronjobs -n kube-elk
+```
+
+You should see the following status output:
+
+```
+      NAME              SCHEDULE    SUSPEND   ACTIVE   LAST SCHEDULE   AGE
+      curator-cronjob   0 0 1 * *   False     0        <none>          22m
+
+```
+
 ### Useful links
 
 For testing gRPC API (make sure that you are using correct grpc port for a profile), please consider the following

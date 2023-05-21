@@ -30,6 +30,7 @@ spec:
       containers:
         - name: filebeat
           image: elastic/filebeat:6.8.23
+          imagePullPolicy: IfNotPresent
           args: [
               "-c", "/etc/filebeat.yml",
               "-e",

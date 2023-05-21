@@ -45,6 +45,8 @@ spec:
           volumeMounts:
             - name: data
               mountPath: /usr/share/elasticsearch/data
+          #              persistentVolumeClaim:
+          #                claimName: elasticsearch-pv-claim
           env:
             - name: cluster.name # Elasticsearch cluster name
               value: "k8s-logs"
@@ -63,6 +65,7 @@ spec:
       initContainers:
         - name: fix-permissions # By default k8s mounts the data directory as root, which renders it inaccessible to Elasticsearch
           image: busybox
+          imagePullPolicy: IfNotPresent
           command: [ 'sh', '-c', 'chown 1000:1000 /usr/share/elasticsearch/data' ]
           securityContext:
             privileged: true
@@ -71,11 +74,13 @@ spec:
               mountPath: /usr/share/elasticsearch/data
         - name: increase-vm-max-map # To prevent OOM errors
           image: busybox
+          imagePullPolicy: IfNotPresent
           command: [ "sysctl", "-w", "vm.max_map_count=262144" ]
           securityContext:
             privileged: true
         - name: increase-fd-ulimit # Increase the max number of open file descriptors
           image: busybox
+          imagePullPolicy: IfNotPresent
           command: [ "sh", "-c", "ulimit -n 65536" ]
           securityContext:
             privileged: true

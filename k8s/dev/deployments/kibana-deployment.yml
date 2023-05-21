@@ -51,4 +51,4 @@ spec:
         - name: config-volume
           configMap:
             name: kibana-configmap
-      restartPolicy: Always
+      restartPolicy: OnFailure
