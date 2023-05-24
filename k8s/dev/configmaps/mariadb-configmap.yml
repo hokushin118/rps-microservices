@@ -5,25 +5,25 @@ metadata:
   name: mariadb-configmap
   namespace: kube-db # The name of the namespace
   labels:
-    app: filebeat
+    app: mariadb
     tier: database
 data:
 
-  primary.cnf: |
+  primary.cnf: |-
     [mariadb]
     log-bin                         # enable binary logging
     log-basename=rps-mariadb        # used to be independent of hostname changes (otherwise is in datadir/mysql)
 
-  replica.cnf: |
+  replica.cnf: |-
     [mariadb]
     log-basename=rps-mariadb         # used to be independent of hostname changes (otherwise is in datadir/mysql)
 
-  primary.sql: |
+  primary.sql: |-
     CREATE USER 'repluser'@'%' IDENTIFIED BY 'replsecret';
     GRANT REPLICATION REPLICA ON *.* TO 'repluser'@'%';
     CREATE DATABASE primary_db;
 
-  secondary.sql: |
+  secondary.sql: |-
     # We have to know name of sts (`mariadb-sts`) and
     # service `mariadb-service` in advance as an FQDN.
     # No need to use master_port

@@ -1,3 +1,4 @@
+# MariaDB Statefulset for Kubernetes
 apiVersion: apps/v1 # K8S API version
 kind: StatefulSet
 metadata:
@@ -7,12 +8,14 @@ metadata:
     app: mariadb
     tier: database
 spec:
-  serviceName: mariadb-svc # link to mariadb service
-  replicas: 3 # Number of replicas that will be created
   selector:
     matchLabels:
       app: mariadb
       tier: database
+  serviceName: mariadb-svc # link to mariadb service
+  replicas: 3 # Number of replicas that will be created
+  updateStrategy:
+    type: RollingUpdate
   template: # a blueprint for pods
     metadata:
       labels:
@@ -54,7 +57,7 @@ spec:
               ls /etc/mysql/conf.d/
               cat /etc/mysql/conf.d/server-id.cnf
           volumeMounts:
-            - name: mariadb-config-map
+            - name: mariadb-configmap
               mountPath: /mnt/config-map
             - name: mariadb-config
               mountPath: /etc/mysql/conf.d/
@@ -80,14 +83,16 @@ spec:
               value: "1"
           # Mount volume from persistent volume claim
           volumeMounts:
-            - name: datadir
+            - name: mariadb-persistent-storage
               mountPath: /var/lib/mysql/
             - name: mariadb-config
               mountPath: /etc/mysql/conf.d/
+              readOnly: true
             - name: initdb
               mountPath: /docker-entrypoint-initdb.d
+              readOnly: true
       volumes:
-        - name: mariadb-config-map
+        - name: mariadb-configmap
           configMap:
             name: mariadb-configmap
             #defaultMode: 0544
@@ -98,7 +103,7 @@ spec:
   # PersistentVolumes for the MariaDB pods
   volumeClaimTemplates:
     - metadata:
-        name: datadir
+        name: mariadb-persistent-storage
       spec:
         accessModes:
           - ReadWriteOnce

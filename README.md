@@ -292,12 +292,12 @@ from the url.
 
 ### Kubernetes (K8S)
 
-Make sure that k8s is enabled in the Docker Desktop. If not, click on the __Settings__ icon, then on the __Kubernetes__ tab and check the __Enable Kubernetes__
-checkbox. 
+Make sure that k8s is enabled in the Docker Desktop. If not, click on the __Settings__ icon, then on the __Kubernetes__
+tab and check the __Enable Kubernetes__ checkbox.
 
 ![enable_kubernetes](img/desktop-docker-k8s.png)
 
-You can also use [minikube](https://minikube.sigs.k8s.io/docs/start) for local K8S development. 
+You can also use [minikube](https://minikube.sigs.k8s.io/docs/start) for local K8S development.
 
 ```
      > minikube start \
@@ -313,6 +313,15 @@ You can also use [minikube](https://minikube.sigs.k8s.io/docs/start) for local K
             --docker-env HTTP_PROXY=https://minikube.sigs.k8s.io/docs/reference/networking/proxy/
 ```
 
+__Note:__ The infrastructure clusters require significant resources (CPUs, memory). I have the following server configuration:
+
+```
+     OS: Ubuntu 22.04.2 LTS (Jammy Jellyfish)
+     Processor: Intel Xeon Processor (Icelake) 2GHz 16Mb
+     vCPU: 4
+     RAM: 32
+```
+
 Open a __Command Prompt__ and check if access is available for your Docker Desktop cluster:
 
 ```
@@ -325,8 +334,7 @@ Check the state of your Docker Desktop cluster:
      > kubectl get nodes
 ```
 
-You should see a single node in the output called _docker-desktop_. That’s a full k8s cluster, with a single
-node.
+You should see a single node in the output called _docker-desktop_. That’s a full k8s cluster, with a single node.
 
 To create a project namespace on the k8s cluster, run:
 
@@ -344,13 +352,14 @@ To check the status, run:
 
 There are several ways we can implement the __ELK Stack__ architecture pattern:
 
-1. Beats —> Elasticsearch —> Kibana 
+1. __Beats__ —> __Elasticsearch__ —> __Kibana__
 
-2. Beats —> Logstash —> Elasticsearch —> Kibana 
+2. __Beats__ —> __Logstash__ —> __Elasticsearch__ —> __Kibana__
 
-3. Beats —> Kafka —> Logstash —> Elasticsearch —> Kibana 
+3. __Beats__ —> __Kafka__ —> __Logstash__ —> __Elasticsearch__ —> __Kibana__
 
-Here we implement the first approach. The last one is the better option for production environment.
+Here we implement the first approach. The last one is the better option for production environment cause Kafka acts as a
+data buffer and helps prevent data loss or interruption while streaming files quickly.
 
 #### 1. Creating namespace for ELK services
 
@@ -381,7 +390,7 @@ You should see the following output:
 
 #### 2. Deploying Elasticsearch cluster
 
-_Elasticsearch is used for storing and searching logs._
+_Elasticsearch is the core component of ELK. It works as a searchable database for log files._
 
 To deploy elasticsearch cluster to Kubernetes, first run:
 
@@ -422,11 +431,25 @@ You should see the following output:
       elasticsearch-sts-2                    1/1     Running   0                15m
 ```
 
-To check the state of the deployment, send an HTTP GET request using curl with this command:
+To access the Elasticsearch locally, we have to forward a local port 9200 to the Kubernetes node running Elasticsearch
+with the following command:
+
+```
+     > kubectl port-forward <kibana pod> 5601:5601 - n kube-elk
+```
+
+The command forwards the connection and keeps it open. Leave the terminal window running and proceed to the next step.
+
+In another terminal tab, test the connection with the following command:
 
 ```
      > curl localhost:9200
 ```
+
+The output prints the deployment information.
+
+Alternatively, access localhost:9200 from the browser. The output shows the cluster details in JSON format, indicating
+the deployment is successful.
 
 You may also check the health of your Elasticsearch cluster with this command:
 
@@ -476,7 +499,7 @@ Or container inside your Elasticsearch cluster pod with this command:
 
 #### 3. Deploying Filebeat
 
-_Filebeat is used to farm all the logs from all our nodes and pushing them to Logstash._
+_Filebeat is used to farm all the logs from all our nodes and pushing them to Elasticsearch._
 
 To deploy Filebeat to Kubernetes, first run:
 
@@ -517,7 +540,7 @@ To verify that Elasticsearch is indeed receiving this data, query the Filebeat i
 
 #### 4. Deploying Kibana
 
-_Kibana is used for viewing logs._
+_Kibana is a visualization tool. It uses a web browser interface to organize and display data._
 
 To deploy Kibana to Kubernetes, first run:
 
@@ -537,13 +560,17 @@ And then run:
      > kubectl apply -f ./k8s/dev/deployments/kibana-deployment.yml
 ```
 
-To access the Kibana interface, we have to forward a local port to the Kubernetes node running Kibana:
+To access the Kibana interface, we have to forward a local port _5601_ to the Kubernetes node running Kibana with the
+following command:
 
 ```
      > kubectl port-forward <kibana pod> 5601:5601 - n kube-elk
 ```
 
-To check the state of the deployment, perform the following request against the Elasticsearch REST API:
+The command forwards the connection and keeps it open. Leave the terminal window running and proceed to the next step.
+
+To check the state of the deployment, in another terminal tab, perform the following request against the Elasticsearch
+REST API:
 
 ```
      > curl localhost:9200/_cat/indices?v 
@@ -560,7 +587,8 @@ You should see the following output:
       green  open   filebeat-6.8.23-2023.05.20 EUSLOZMWQGSyWMrh2EJiRA   5   0     122481            0     34.2mb         34.2mb
 ```
 
-__Note:__ If you are running a single node cluster (Docker Desktop or MiniKube) you might need to perform the following request against the Elasticsearch REST API::
+__Note:__ If you are running a single node cluster (Docker Desktop or MiniKube) you might need to perform the following
+request against the Elasticsearch REST API::
 
 ```
      > curl --location --request PUT 'localhost:9200/_settings' \
@@ -577,6 +605,10 @@ And then access the Kibana UI in any browser:
 ```
      > http://localhost:5601
 ```
+
+In Kibana, navigate to the __Management__ -> __Kibana Index Patterns__. Kibana should display the Filebeat index.
+
+Enter “filebeat-*” as the index pattern, and in the next step select @timestamp as your Time Filter field.
 
 Navigate to the Kibana dashboard and in the __Discovery__ page, in the search bar enter:
 
@@ -618,7 +650,7 @@ You should see the following status output:
 
 ### MariaDB database on K8S cluster
 
-#### 1. Creating namespace for databases
+#### 1. Creating namespace for MariaDB database
 
 To create a kube-db namespace on the k8s cluster, run:
 
@@ -790,6 +822,396 @@ You should see the following output:
       |   25 |
       +------+
       3 rows in set (0.000 sec)
+```
+
+### MongoDB database on K8S cluster
+
+#### 1. Creating namespace for MongoDB database
+
+To create a kube-nosql-db namespace on the k8s cluster, run:
+
+```
+     > kubectl apply -f ./k8s/dev/namespaces/kube-nosql-db-ns.yml
+```
+
+To check the status, run:
+
+```
+     > kubectl get namespaces --show-labels
+```
+
+You should see the following output:
+
+```
+      NAME                   STATUS   AGE     LABELS
+      default                Active   2d13h   kubernetes.io/metadata.name=default
+      ingress-nginx          Active   2d13h   app.kubernetes.io/instance=ingress-nginx,app.kubernetes.io/name=ingress-nginx,kubernetes.io/metadata.name=ingress-nginx
+      kube-db                Active   99m     kubernetes.io/metadata.name=kube-db,name=kube-db
+      kube-elk               Active   2d12h   kubernetes.io/metadata.name=kube-elk,name=kube-elk
+      kube-node-lease        Active   2d13h   kubernetes.io/metadata.name=kube-node-lease
+      kube-nosql-db          Active   3m5s    kubernetes.io/metadata.name=kube-nosql-db,name=kube-nosql-db
+      kube-public            Active   2d13h   kubernetes.io/metadata.name=kube-public
+      kube-system            Active   2d13h   kubernetes.io/metadata.name=kube-system
+      kubernetes-dashboard   Active   2d13h   addonmanager.kubernetes.io/mode=Reconcile,kubernetes.io/metadata.name=kubernetes-dashboard,kubernetes.io/minikube-addons=dashboard
+```
+
+#### 2. Deploying MongoDB cluster
+
+To deploy MongoDB cluster to Kubernetes, first run:
+
+```
+     > kubectl apply -f ./k8s/dev/rbacs/mongodb-rbac.yml
+```
+
+Then run:
+
+```
+     > kubectl apply -f ./k8s/dev/configmaps/mongodb-configmap.yml
+```
+
+Then run:
+
+```
+     > kubectl apply -f ./k8s/dev/services/mongodb-svc.yml
+```
+
+Then run:
+
+```
+     > kubectl apply -f ./k8s/dev/secrets/mongodb-secret.yml
+```
+
+And then run:
+
+```
+     > kubectl apply -f ./k8s/dev/sets/mongodb-statefulset.yml
+```
+
+To monitor the deployment status, run:
+
+```
+     > kubectl rollout status sts/mongodb-sts -n kube-nosql-db
+```
+
+You should see the following output:
+
+```
+      partitioned roll out complete: 3 new pods have been updated...
+```
+
+To check the pod status, run:
+
+```
+     > kubectl get pods -n kube-nosql-db
+```
+
+You should see the following output:
+
+```
+      NAME            READY   STATUS    RESTARTS   AGE
+      mongodb-sts-0   2/2     Running   0          4m26s
+      mongodb-sts-1   2/2     Running   0          4m21s
+      mongodb-sts-2   2/2     Running   0          4m17s
+```
+
+#### 3. Setting up MongoDB replication
+
+Connect to the first replica set member with this command:
+
+```
+     > kubectl -n kube-nosql-db exec -it mongodb-sts-0 -- mongosh
+```
+
+You now have a REPL environment connected to the MongoDB database. Initiate the replication by typing the following command:
+
+```
+     > rs.initiate()
+```
+
+You should see the following output:
+
+```
+      {
+        info2: 'no configuration specified. Using a default configuration for the set',
+        me: 'mongodb-sts-0:27017',
+        ok: 1
+      }
+```
+
+Define the variable called __cfg__. The variable executes rs.conf() command:
+
+```
+     > var cfg = rs.conf()
+```
+
+Use the __cfg__ variable to add the primary server to the configuration:
+
+```
+     > cfg.members[0].host="mongodb-sts-0.mongodb-svc.kube-nosql-db.svc.cluster.local"
+```
+
+The output shows the name of the primary server:
+
+```
+     > mongodb-sts-0.mongodb-svc.kube-nosql-db.svc.cluster.local
+```
+
+Confirm the configuration by executing the following command:
+
+```
+     > rs.reconfig(cfg)
+```
+
+You should see the following output:
+
+```
+      {
+        ok: 1,
+        '$clusterTime': {
+          clusterTime: Timestamp({ t: 1684949311, i: 1 }),
+          signature: {
+            hash: Binary(Buffer.from("0000000000000000000000000000000000000000", "hex"), 0),
+            keyId: Long("0")
+          }
+        },
+        operationTime: Timestamp({ t: 1684949311, i: 1 })
+      }
+```
+
+Add the second _mongodb-sts-1_, and the third _mongodb-sts-2_ pods to the replication configuration:
+
+```
+     > rs.add("mongodb-sts-1.mongodb-svc.kube-nosql-db.svc.cluster.local")
+     > rs.add("mongodb-sts-2.mongodb-svc.kube-nosql-db.svc.cluster.local")
+```
+
+Verify MongoDB replication status with this command:
+
+```
+     > rs.status()
+```
+
+You should see the following output:
+
+```
+      {
+        set: 'rs0',
+        date: ISODate("2023-05-24T17:32:43.699Z"),
+        myState: 1,
+        term: Long("1"),
+        syncSourceHost: '',
+        syncSourceId: -1,
+        heartbeatIntervalMillis: Long("2000"),
+        majorityVoteCount: 2,
+        writeMajorityCount: 2,
+        votingMembersCount: 3,
+        writableVotingMembersCount: 3,
+        optimes: {
+          lastCommittedOpTime: { ts: Timestamp({ t: 1684949555, i: 1 }), t: Long("1") },
+          lastCommittedWallTime: ISODate("2023-05-24T17:32:35.877Z"),
+          readConcernMajorityOpTime: { ts: Timestamp({ t: 1684949555, i: 1 }), t: Long("1") },
+          appliedOpTime: { ts: Timestamp({ t: 1684949555, i: 1 }), t: Long("1") },
+          durableOpTime: { ts: Timestamp({ t: 1684949555, i: 1 }), t: Long("1") },
+          lastAppliedWallTime: ISODate("2023-05-24T17:32:35.877Z"),
+          lastDurableWallTime: ISODate("2023-05-24T17:32:35.877Z")
+        },
+        lastStableRecoveryTimestamp: Timestamp({ t: 1684949505, i: 1 }),
+        electionCandidateMetrics: {
+          lastElectionReason: 'electionTimeout',
+          lastElectionDate: ISODate("2023-05-24T17:23:45.751Z"),
+          electionTerm: Long("1"),
+          lastCommittedOpTimeAtElection: { ts: Timestamp({ t: 1684949025, i: 1 }), t: Long("-1") },
+          lastSeenOpTimeAtElection: { ts: Timestamp({ t: 1684949025, i: 1 }), t: Long("-1") },
+          numVotesNeeded: 1,
+          priorityAtElection: 1,
+          electionTimeoutMillis: Long("10000"),
+          newTermStartDate: ISODate("2023-05-24T17:23:45.817Z"),
+          wMajorityWriteAvailabilityDate: ISODate("2023-05-24T17:23:45.867Z")
+        },
+        members: [
+          {
+            _id: 0,
+            name: 'mongodb-sts-0.mongodb-svc.kube-nosql-db.svc.cluster.local:27017',
+            health: 1,
+            state: 1,
+            stateStr: 'PRIMARY',
+            uptime: 664,
+            optime: { ts: Timestamp({ t: 1684949555, i: 1 }), t: Long("1") },
+            optimeDate: ISODate("2023-05-24T17:32:35.000Z"),
+            lastAppliedWallTime: ISODate("2023-05-24T17:32:35.877Z"),
+            lastDurableWallTime: ISODate("2023-05-24T17:32:35.877Z"),
+            syncSourceHost: '',
+            syncSourceId: -1,
+            infoMessage: '',
+            electionTime: Timestamp({ t: 1684949025, i: 2 }),
+            electionDate: ISODate("2023-05-24T17:23:45.000Z"),
+            configVersion: 6,
+            configTerm: 1,
+            self: true,
+            lastHeartbeatMessage: ''
+          },
+          {
+            _id: 1,
+            name: 'mongodb-sts-1.mongodb-svc.kube-nosql-db.svc.cluster.local:27017',
+            health: 1,
+            state: 2,
+            stateStr: 'SECONDARY',
+            uptime: 58,
+            optime: { ts: Timestamp({ t: 1684949555, i: 1 }), t: Long("1") },
+            optimeDurable: { ts: Timestamp({ t: 1684949555, i: 1 }), t: Long("1") },
+            optimeDate: ISODate("2023-05-24T17:32:35.000Z"),
+            optimeDurableDate: ISODate("2023-05-24T17:32:35.000Z"),
+            lastAppliedWallTime: ISODate("2023-05-24T17:32:35.877Z"),
+            lastDurableWallTime: ISODate("2023-05-24T17:32:35.877Z"),
+            lastHeartbeat: ISODate("2023-05-24T17:32:42.417Z"),
+            lastHeartbeatRecv: ISODate("2023-05-24T17:32:42.419Z"),
+            pingMs: Long("0"),
+            lastHeartbeatMessage: '',
+            syncSourceHost: 'mongodb-sts-0.mongodb-svc.kube-nosql-db.svc.cluster.local:27017',
+            syncSourceId: 0,
+            infoMessage: '',
+            configVersion: 6,
+            configTerm: 1
+          },
+          {
+            _id: 2,
+            name: 'mongodb-sts-2.mongodb-svc.kube-nosql-db.svc.cluster.local:27017',
+            health: 1,
+            state: 2,
+            stateStr: 'SECONDARY',
+            uptime: 29,
+            optime: { ts: Timestamp({ t: 1684949555, i: 1 }), t: Long("1") },
+            optimeDurable: { ts: Timestamp({ t: 1684949555, i: 1 }), t: Long("1") },
+            optimeDate: ISODate("2023-05-24T17:32:35.000Z"),
+            optimeDurableDate: ISODate("2023-05-24T17:32:35.000Z"),
+            lastAppliedWallTime: ISODate("2023-05-24T17:32:35.877Z"),
+            lastDurableWallTime: ISODate("2023-05-24T17:32:35.877Z"),
+            lastHeartbeat: ISODate("2023-05-24T17:32:42.418Z"),
+            lastHeartbeatRecv: ISODate("2023-05-24T17:32:43.419Z"),
+            pingMs: Long("0"),
+            lastHeartbeatMessage: '',
+            syncSourceHost: 'mongodb-sts-1.mongodb-svc.kube-nosql-db.svc.cluster.local:27017',
+            syncSourceId: 1,
+            infoMessage: '',
+            configVersion: 6,
+            configTerm: 1
+          }
+        ],
+        ok: 1,
+        '$clusterTime': {
+          clusterTime: Timestamp({ t: 1684949555, i: 1 }),
+          signature: {
+            hash: Binary(Buffer.from("0000000000000000000000000000000000000000", "hex"), 0),
+            keyId: Long("0")
+          }
+        },
+        operationTime: Timestamp({ t: 1684949555, i: 1 })
+      }
+```
+
+__Note:__ The _members_ section of the status output shows three replicas. The pod mongodb-sts-0 is listed as the __
+Primary__ replica, while the other two pods, _mongodb-sts-1_ and _mongodb-sts-2_, are listed as the __Secondary__
+replicas.
+
+The ReplicaSet deployment of MongoDB is set up and ready to operate.
+
+Quit the replicaset member with the following command:
+
+```
+     > exit
+```
+
+#### 4. Testing MongoDB cluster replication
+
+Connect to the first (primary) replica set member shell with the following command:
+
+```
+     > kubectl -n kube-nosql-db exec -it mongodb-sts-0 -- mongosh
+```
+
+Display all databases with the following command:
+
+```
+     > show dbs
+```
+
+You should see the following output:
+
+```
+      admin    80.00 KiB
+      config  176.00 KiB
+      local   404.00 KiB
+```
+
+Switch to test database and add test entries with the following commands:
+
+```
+     > use test
+     > db.games.insertOne({name: "RPS game" })
+     > db.games.insertOne({name: "Tic-Tac-Toe game" })
+```
+
+Display all data from the test database with the following commands:
+
+```
+     > db.games.find()
+```
+
+You should see the following output:
+
+```
+      [
+        { _id: ObjectId("646e5000e56aacc3a0551974"), name: 'RPS game' },
+        { _id: ObjectId("646e505be56aacc3a0551975"), name: 'Tic-Tac-Toe game' }
+      ]
+```
+
+Quit the primary replicaset member with the following command:
+
+```
+     > exit
+```
+
+Connect to the secondary replica set member shell with the following command:
+
+```
+     > kubectl -n kube-nosql-db exec -it mongodb-sts-1 -- mongosh
+```
+
+Set a read preference to the secondary replica set member with the following command:
+
+```
+     > db.getMongo().setReadPref('primaryPreferred')
+```
+
+Display all databases with the following command:
+
+```
+     > show dbs
+```
+
+You should see the following output:
+
+```
+      admin    80.00 KiB
+      config  176.00 KiB
+      local   404.00 KiB
+      test     72.00 KiB
+```
+
+Display all data from the test database with the following commands:
+
+```
+     > db.games.find()
+```
+
+You should see the following output:
+
+```
+      [
+        { _id: ObjectId("646e5000e56aacc3a0551974"), name: 'RPS game' },
+        { _id: ObjectId("646e505be56aacc3a0551975"), name: 'Tic-Tac-Toe game' }
+      ]
 ```
 
 ### Useful links
