@@ -205,7 +205,13 @@ To check the service deployment status, run:
      > kubectl get services -n rps-app-dev
 ```
 
-Then deploy the RPS game command microservice with the following command:
+Then deploy the microservice K8S secret with the following command:
+
+```
+     > kubectl apply -f ./k8s/dev/secrets/rps-cmd-service-secret.yml
+```
+
+And then deploy the RPS game command microservice with the following command:
 
 ```
      > kubectl apply -f ./k8s/dev/deployments/rps-cmd-service-deployment.yml
