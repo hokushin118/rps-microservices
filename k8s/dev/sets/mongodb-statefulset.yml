@@ -1,0 +1,83 @@
+# MongoDB Statefulset for Kubernetes
+# https://kubernetes.io/blog/2017/01/running-mongodb-on-kubernetes-with-statefulsets
+apiVersion: apps/v1 # K8S API version
+kind: StatefulSet
+metadata:
+  name: mongodb-sts
+  namespace: kube-nosql-db # The name of the namespace
+  labels:
+    app: mongodb
+    tier: database
+spec:
+  selector:
+    matchLabels:
+      app: mongodb
+      tier: database
+  serviceName: mongodb-svc # link to mongodb service
+  replicas: 3 # Number of replicas that will be created
+  updateStrategy:
+    type: RollingUpdate
+  template: # a blueprint for pods
+    metadata:
+      labels:
+        app: mongodb
+        tier: database
+    spec: # specification for pods
+      serviceAccountName: mongodb
+      terminationGracePeriodSeconds: 10 # It gives database 10 seconds to shut down gracefully upon receiving a SIGTERM signal
+      containers:
+        - name: mongodb
+          image: mongo:6.0.6
+          imagePullPolicy: IfNotPresent
+          command: [ "/bin/sh" ]
+          args: [ "-c", "mongod --replSet=rs0 --bind_ip_all" ]
+          ports:
+            - name: tcp-27017
+              protocol: TCP
+              containerPort: 27017
+          # Mount volume from persistent volume claim
+          volumeMounts:
+            - name: mongodb-persistent-storage
+              mountPath: /data/db/
+            - name: mongodb-config
+              mountPath: /config/
+              readOnly: true
+            - name: initdb
+              mountPath: /docker-entrypoint-initdb.d
+              readOnly: true
+        - name: mongo-sidecar
+          image: cvallance/mongo-k8s-sidecar
+          imagePullPolicy: IfNotPresent
+          env:
+            - name: MONGO_INITDB_DATABASE # the database
+              value: "rpsDB"
+            - name: MONGO_INITDB_ROOT_USERNAME # the database admin user
+              value: "root"
+            - name: MONGO_INITDB_ROOT_PASSWORD # the database admin user password
+              valueFrom:
+                secretKeyRef: # Using Secrets
+                  name: mongodb-secret
+                  key: mongodb-root-password
+            - name: MONGO_SIDECAR_POD_LABELS
+              value: "app=mongodb,tier=database"
+      volumes:
+        - name: mongodb-configmap
+          configMap:
+            name: mongodb-configmap
+            items:
+              - key: mongo.conf
+                path: mongo.conf
+        - name: mongodb-config
+          emptyDir: { }
+        - name: initdb
+          emptyDir: { }
+  # PersistentVolumes for the MongoDB pods
+  volumeClaimTemplates:
+    - metadata:
+        name: mongodb-persistent-storage
+      spec:
+        accessModes:
+          - ReadWriteOnce
+        resources:
+          requests:
+            storage: 5Gi

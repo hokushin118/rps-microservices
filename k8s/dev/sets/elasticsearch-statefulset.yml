@@ -9,15 +9,15 @@ metadata:
     app: elasticsearch
     tier: infrastructure
 spec:
+  selector:
+    matchLabels:
+      app: elasticsearch
+      tier: infrastructure
   serviceName: elasticsearch-svc # link to elasticsearch service
   replicas: 3 # Number of replicas that will be created
   minReadySeconds: 5 # by default is 0
   updateStrategy:
     type: RollingUpdate
-  selector:
-    matchLabels:
-      app: elasticsearch
-      tier: infrastructure
   template: # a blueprint for pods
     metadata:
       labels:

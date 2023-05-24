@@ -9,7 +9,7 @@ metadata:
     tier: infrastructure
 data:
 
-  config.yml: |
+  config.yml: |-
     client:
     hosts:
         - ['${CURATOR_ELASTICSEARCH_URL:elasticsearch-svc.kube-elk.svc.cluster.local}']
@@ -30,7 +30,8 @@ data:
     logfile:
     logformat: default
     blacklist: ['elasticsearch', 'urllib3']
-  actions.yml: |
+
+  actions.yml: |-
     actions:
         1:
             action: delete_indices

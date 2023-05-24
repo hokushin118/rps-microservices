@@ -1,0 +1,14 @@
+# ConfigMap holds information about MongoDB configuration files
+apiVersion: v1 # K8S API version
+kind: ConfigMap
+metadata:
+  name: mongodb-configmap
+  namespace: kube-nosql-db # The name of the namespace
+  labels:
+    app: mongodb
+    tier: database
+data:
+
+  mongo.conf: |-
+    storage:
+      dbPath: /data/db
