@@ -192,7 +192,13 @@ You should see the following output:
 
 #### 4. Deploying the Score command microservice
 
-To deploy the Score command microservice to Kubernetes, first deploy the microservice K8S service with the following command:
+To deploy the Score command microservice to Kubernetes, first deploy the microservice K8S config map with the following command:
+
+```
+     > kubectl apply -f ./k8s/dev/configmaps/score-cmd-service-configmap.yml
+```
+
+Then deploy the microservice K8S service with the following command:
 
 ```
      > kubectl apply -f ./k8s/dev/services/score-cmd-service-svc.yml

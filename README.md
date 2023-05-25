@@ -313,7 +313,8 @@ You can also use [minikube](https://minikube.sigs.k8s.io/docs/start) for local K
             --docker-env HTTP_PROXY=https://minikube.sigs.k8s.io/docs/reference/networking/proxy/
 ```
 
-__Note:__ The infrastructure clusters require significant resources (CPUs, memory). I have the following server configuration:
+__Note:__ The infrastructure clusters require significant resources (CPUs, memory). I have the following server
+configuration:
 
 ```
      OS: Ubuntu 22.04.2 LTS (Jammy Jellyfish)
@@ -322,31 +323,35 @@ __Note:__ The infrastructure clusters require significant resources (CPUs, memor
      RAM: 32
 ```
 
-Open a __Command Prompt__ and check if access is available for your Docker Desktop cluster:
+Open a __Command Prompt__ and check if access is available for your Minikube cluster:
 
 ```
      > kubectl cluster-info
 ```
 
-Check the state of your Docker Desktop cluster:
+You should see the following output:
+
+```
+      Kubernetes control plane is running at https://192.168.49.2:8443
+      CoreDNS is running at https://192.168.49.2:8443/api/v1/namespaces/kube-system/services/kube-dns:dns/proxy
+      
+      To further debug and diagnose cluster problems, use 'kubectl cluster-info dump'.
+```
+
+Check the state of your Minikube cluster:
 
 ```
      > kubectl get nodes
 ```
 
-You should see a single node in the output called _docker-desktop_. That’s a full k8s cluster, with a single node.
-
-To create a project namespace on the k8s cluster, run:
+The output will list all of a cluster’s nodes and the version of Kubernetes each one is running.
 
 ```
-     > kubectl apply -f ./k8s/dev/namespaces/rps-app-ns.yml
+      NAME       STATUS   ROLES           AGE     VERSION
+      minikube   Ready    control-plane   7d14h   v1.26.3
 ```
 
-To check the status, run:
-
-```
-     > kubectl get namespaces --show-labels
-```
+You should see a single node in the output called _minikube_. That’s a full k8s cluster, with a single node.
 
 ### Elasticsearch, Logstash, and Kibana (ELK Stack) on K8S cluster
 
@@ -368,6 +373,10 @@ To create a kube-elk namespace on the k8s cluster, run:
 ```
      > kubectl apply -f ./k8s/dev/namespaces/kube-elk-ns.yml
 ```
+
+__Note:__ In Kubernetes, [namespaces](https://kubernetes.io/docs/concepts/overview/working-with-objects/namespaces)
+provides a mechanism for isolating groups of resources within a single cluster. However not all objects are in a
+namespace.
 
 To check the status, run:
 
@@ -398,11 +407,16 @@ To deploy elasticsearch cluster to Kubernetes, first run:
      > kubectl apply -f ./k8s/dev/rbacs/elasticsearch-rbac.yml
 ```
 
-Then run:
+Then deploy a headless service for _Elasticsearch_ pods using the following command:
 
 ```
      > kubectl apply -f ./k8s/dev/services/elasticsearch-svc.yml
 ```
+
+__Note:__ You cannot directly access the application running in the pod. If you want to access the application, you need
+a Service object in the Kubernetes cluster.
+_Headless_ service means that only internal pods can communicate with each other. They are not exposed to external
+requests outside of the Kubernetes cluster.
 
 And then run:
 
@@ -686,10 +700,29 @@ To deploy MariaDB cluster to Kubernetes, first run:
      > kubectl apply -f ./k8s/dev/configmaps/mariadb-configmap.yml
 ```
 
-Then run:
+Then deploy a headless service for _MariaDB_ pods using the following command:
 
 ```
      > kubectl apply -f ./k8s/dev/services/mariadb-svc.yml
+```
+
+__Note:__ You cannot directly access the application running in the pod. If you want to access the application, you need
+a Service object in the Kubernetes cluster.
+
+_Headless_ service means that only internal pods can communicate with each other. They are not exposed to external
+requests outside of the Kubernetes cluster.
+
+Get the list of running services under the __kube-db__ namespace with the following command:
+
+```
+     > kubectl get service -n kube-db
+```
+
+You should see the following output:
+
+```
+      NAME          TYPE        CLUSTER-IP   EXTERNAL-IP   PORT(S)    AGE
+      mariadb-svc   ClusterIP   None         <none>        3306/TCP   113s
 ```
 
 Then run:
@@ -869,10 +902,29 @@ Then run:
      > kubectl apply -f ./k8s/dev/configmaps/mongodb-configmap.yml
 ```
 
-Then run:
+Then deploy a headless service for _MongoDB_ pods using the following command:
 
 ```
      > kubectl apply -f ./k8s/dev/services/mongodb-svc.yml
+```
+
+__Note:__ You cannot directly access the application running in the pod. If you want to access the application, you need
+a Service object in the Kubernetes cluster.
+
+_Headless_ service means that only internal pods can communicate with each other. They are not exposed to external
+requests outside of the Kubernetes cluster.
+
+Get the list of running services under the __kube-nosql-db__ namespace with the following command:
+
+```
+     > kubectl get service -n kube-nosql-db
+```
+
+You should see the following output:
+
+```
+      NAME          TYPE        CLUSTER-IP   EXTERNAL-IP   PORT(S)     AGE
+      mongodb-svc   ClusterIP   None         <none>        27017/TCP   2m36s
 ```
 
 Then run:
@@ -922,7 +974,8 @@ Connect to the first replica set member with this command:
      > kubectl -n kube-nosql-db exec -it mongodb-sts-0 -- mongosh
 ```
 
-You now have a REPL environment connected to the MongoDB database. Initiate the replication by typing the following command:
+You now have a REPL environment connected to the MongoDB database. Initiate the replication by typing the following
+command:
 
 ```
      > rs.initiate()
@@ -947,13 +1000,13 @@ Define the variable called __cfg__. The variable executes rs.conf() command:
 Use the __cfg__ variable to add the primary server to the configuration:
 
 ```
-     > cfg.members[0].host="mongodb-sts-0.mongodb-svc.kube-nosql-db.svc.cluster.local"
+     > cfg.members[0].host="mongodb-sts-0.mongodb-svc.kube-nosql-db"
 ```
 
 The output shows the name of the primary server:
 
 ```
-     > mongodb-sts-0.mongodb-svc.kube-nosql-db.svc.cluster.local
+     > mongodb-sts-0.mongodb-svc.kube-nosql-db
 ```
 
 Confirm the configuration by executing the following command:
@@ -981,8 +1034,8 @@ You should see the following output:
 Add the second _mongodb-sts-1_, and the third _mongodb-sts-2_ pods to the replication configuration:
 
 ```
-     > rs.add("mongodb-sts-1.mongodb-svc.kube-nosql-db.svc.cluster.local")
-     > rs.add("mongodb-sts-2.mongodb-svc.kube-nosql-db.svc.cluster.local")
+     > rs.add("mongodb-sts-1.mongodb-svc.kube-nosql-db")
+     > rs.add("mongodb-sts-2.mongodb-svc.kube-nosql-db")
 ```
 
 Verify MongoDB replication status with this command:
@@ -1031,7 +1084,7 @@ You should see the following output:
         members: [
           {
             _id: 0,
-            name: 'mongodb-sts-0.mongodb-svc.kube-nosql-db.svc.cluster.local:27017',
+            name: 'mongodb-sts-0.mongodb-svc.kube-nosql-db:27017',
             health: 1,
             state: 1,
             stateStr: 'PRIMARY',
@@ -1052,7 +1105,7 @@ You should see the following output:
           },
           {
             _id: 1,
-            name: 'mongodb-sts-1.mongodb-svc.kube-nosql-db.svc.cluster.local:27017',
+            name: 'mongodb-sts-1.mongodb-svc.kube-nosql-db:27017',
             health: 1,
             state: 2,
             stateStr: 'SECONDARY',
@@ -1067,7 +1120,7 @@ You should see the following output:
             lastHeartbeatRecv: ISODate("2023-05-24T17:32:42.419Z"),
             pingMs: Long("0"),
             lastHeartbeatMessage: '',
-            syncSourceHost: 'mongodb-sts-0.mongodb-svc.kube-nosql-db.svc.cluster.local:27017',
+            syncSourceHost: 'mongodb-sts-0.mongodb-svc.kube-nosql-db:27017',
             syncSourceId: 0,
             infoMessage: '',
             configVersion: 6,
@@ -1075,7 +1128,7 @@ You should see the following output:
           },
           {
             _id: 2,
-            name: 'mongodb-sts-2.mongodb-svc.kube-nosql-db.svc.cluster.local:27017',
+            name: 'mongodb-sts-2.mongodb-svc.kube-nosql-db:27017',
             health: 1,
             state: 2,
             stateStr: 'SECONDARY',
@@ -1090,7 +1143,7 @@ You should see the following output:
             lastHeartbeatRecv: ISODate("2023-05-24T17:32:43.419Z"),
             pingMs: Long("0"),
             lastHeartbeatMessage: '',
-            syncSourceHost: 'mongodb-sts-1.mongodb-svc.kube-nosql-db.svc.cluster.local:27017',
+            syncSourceHost: 'mongodb-sts-1.mongodb-svc.kube-nosql-db:27017',
             syncSourceId: 1,
             infoMessage: '',
             configVersion: 6,
@@ -1143,11 +1196,11 @@ You should see the following output:
       local   404.00 KiB
 ```
 
-Switch to test database and add test entries with the following commands:
+Switch to the __test__ database (if not) and add test entries with the following commands:
 
 ```
      > use test
-     > db.games.insertOne({name: "RPS game" })
+     > db.games.insertOne({name: "RPS game", language: "Java" })
      > db.games.insertOne({name: "Tic-Tac-Toe game" })
 ```
 
@@ -1161,8 +1214,15 @@ You should see the following output:
 
 ```
       [
-        { _id: ObjectId("646e5000e56aacc3a0551974"), name: 'RPS game' },
-        { _id: ObjectId("646e505be56aacc3a0551975"), name: 'Tic-Tac-Toe game' }
+        {
+          _id: ObjectId("646fcef5743c434ea9a58b12"),
+          name: 'RPS game',
+          language: 'Java'
+        },
+        {
+          _id: ObjectId("646fcf00743c434ea9a58b13"),
+          name: 'Tic-Tac-Toe game'
+        }
       ]
 ```
 
@@ -1209,9 +1269,85 @@ You should see the following output:
 
 ```
       [
-        { _id: ObjectId("646e5000e56aacc3a0551974"), name: 'RPS game' },
-        { _id: ObjectId("646e505be56aacc3a0551975"), name: 'Tic-Tac-Toe game' }
+        {
+          _id: ObjectId("646fcef5743c434ea9a58b12"),
+          name: 'RPS game',
+          language: 'Java'
+        },
+        {
+          _id: ObjectId("646fcf00743c434ea9a58b13"),
+          name: 'Tic-Tac-Toe game'
+        }
       ]
+```
+
+### Redis database on K8S cluster
+
+#### 1. Creating namespace for Redis database
+
+To create a kube-cache namespace on the k8s cluster, run:
+
+```
+     > kubectl apply -f ./k8s/dev/namespaces/kube-cache-ns.yml
+```
+
+To check the status, run:
+
+```
+     > kubectl get namespaces --show-labels
+```
+
+You should see the following output:
+
+```
+      NAME                   STATUS   AGE     LABELS
+      default                Active   2d13h   kubernetes.io/metadata.name=default
+      ingress-nginx          Active   2d13h   app.kubernetes.io/instance=ingress-nginx,app.kubernetes.io/name=ingress-nginx,kubernetes.io/metadata.name=ingress-nginx
+      kube-cache             Active   25s     kubernetes.io/metadata.name=kube-cache,name=kube-cache
+      kube-db                Active   99m     kubernetes.io/metadata.name=kube-db,name=kube-db
+      kube-elk               Active   2d12h   kubernetes.io/metadata.name=kube-elk,name=kube-elk
+      kube-node-lease        Active   2d13h   kubernetes.io/metadata.name=kube-node-lease
+      kube-public            Active   2d13h   kubernetes.io/metadata.name=kube-public
+      kube-system            Active   2d13h   kubernetes.io/metadata.name=kube-system
+      kubernetes-dashboard   Active   2d13h   addonmanager.kubernetes.io/mode=Reconcile,kubernetes.io/metadata.name=kubernetes-dashboard,kubernetes.io/minikube-addons=dashboard
+```
+TODO:
+#### 2. Deploying Redis cluster
+
+To deploy _Redis_ cluster to Kubernetes, first run:
+
+```
+     > kubectl apply -f ./k8s/dev/configmaps/redis-configmap.yml
+```
+
+Then deploy a headless service for _Redis_ pods using the following command:
+
+```
+     > kubectl apply -f ./k8s/dev/services/redis-svc.yml
+```
+
+__Note:__ You cannot directly access the application running in the pod. If you want to access the application, you need
+a Service object in the Kubernetes cluster.
+
+_Headless_ service means that only internal pods can communicate with each other. They are not exposed to external
+requests outside of the Kubernetes cluster.
+
+To get the list of running services under the _Redis_ namespace, run:
+
+```
+     > kubectl get service -n kube-cache
+```
+
+You should see the following output:
+
+```
+
+```
+
+Then run:
+
+```
+     > kubectl apply -f ./k8s/dev/secrets/redis-secret.yml
 ```
 
 ### Useful links

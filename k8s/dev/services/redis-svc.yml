@@ -1,0 +1,18 @@
+# Redis headless ClusterIP service
+apiVersion: v1 # K8S API version
+kind: Service
+metadata:
+  name: redis-svc
+  namespace: kube-cache # The name of the namespace
+  labels:
+    app: redis
+    tier: cache
+spec:
+  selector:
+    app: redis
+    tier: cache
+  ports:
+    - name: tcp-6379
+      protocol: TCP
+      port: 6379 # The port that the service is running on in the cluster
+  clusterIP: None # Headless service

@@ -1,0 +1,14 @@
+# ConfigMap holds information about Redis configuration files
+apiVersion: v1 # K8S API version
+kind: ConfigMap
+metadata:
+  name: redis-configmap
+  namespace: kube-cache # The name of the namespace
+  labels:
+    app: redis
+    tier: cache
+data:
+
+  redis.conf: |-
+    masterauth 12345
+    requirepass 12345

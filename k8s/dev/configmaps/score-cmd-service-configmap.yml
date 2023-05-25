@@ -1,0 +1,15 @@
+# ConfigMap holds information about Score Command microservice configuration files
+apiVersion: v1 # K8S API version
+kind: ConfigMap
+metadata:
+  name: score-cmd-service-configmap
+  namespace: rps-app-dev # The name of the namespace
+  labels:
+    app: score-cmd-service
+    tier: backend
+    environment: development
+data:
+
+  mongodb-url: mongodb-sts-0.mongodb-svc.kube-nosql-db
+  mongodb-port: "27017"
+  mongodb-database: rpsDB
