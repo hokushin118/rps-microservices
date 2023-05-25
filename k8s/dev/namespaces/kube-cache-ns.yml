@@ -1,0 +1,7 @@
+# Creating a namespace for Redis (dev environment)
+apiVersion: v1 # K8S API version
+kind: Namespace
+metadata:
+  name: kube-cache
+  labels:
+    name: kube-cache

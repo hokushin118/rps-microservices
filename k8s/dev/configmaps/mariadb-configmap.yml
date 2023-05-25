@@ -9,16 +9,16 @@ metadata:
     tier: database
 data:
 
-  primary.cnf: |-
+  primary.cnf: |
     [mariadb]
     log-bin                         # enable binary logging
     log-basename=rps-mariadb        # used to be independent of hostname changes (otherwise is in datadir/mysql)
 
-  replica.cnf: |-
+  replica.cnf: |
     [mariadb]
     log-basename=rps-mariadb         # used to be independent of hostname changes (otherwise is in datadir/mysql)
 
-  primary.sql: |-
+  primary.sql: |
     CREATE USER 'repluser'@'%' IDENTIFIED BY 'replsecret';
     GRANT REPLICATION REPLICA ON *.* TO 'repluser'@'%';
     CREATE DATABASE primary_db;
@@ -28,7 +28,7 @@ data:
     # service `mariadb-service` in advance as an FQDN.
     # No need to use master_port
     CHANGE MASTER TO
-    MASTER_HOST='mariadb-sts-0.mariadb-svc.kube-db.svc.cluster.local',
+    MASTER_HOST='mariadb-sts-0.mariadb-svc.kube-db',
     MASTER_USER='repluser',
     MASTER_PASSWORD='replsecret',
     MASTER_CONNECT_RETRY=10;

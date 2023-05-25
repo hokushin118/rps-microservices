@@ -1,4 +1,4 @@
-# Score Command microservice NodePort service
+# Score Command microservice ClusterIP service
 apiVersion: v1 # K8S API version
 kind: Service
 metadata:
@@ -7,13 +7,15 @@ metadata:
   labels:
     app: score-cmd-service
     tier: backend
+    environment: development
 spec:
   selector:
     app: score-cmd-service
     tier: backend
+    environment: development
   ports:
     - name: http-8080
       protocol: TCP
       port: 8080 # The port that the service is running on in the cluster
       targetPort: 8080 # The port exposed by the service
-  type: NodePort # Type of the service, here our application is accessible from outside the K8S cluster
+  type: ClusterIP # Type of the service, here our application is only accessible in the K8S private network and can’t be accessed from the outside world
