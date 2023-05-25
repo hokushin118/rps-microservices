@@ -12,3 +12,5 @@ data:
   mongo.conf: |-
     storage:
       dbPath: /data/db
+
+  mongodb-database: rpsDB

@@ -7,12 +7,14 @@ metadata: # Describes information about the app
   labels:
     app: score-qry-service
     tier: backend
+    environment: development
 spec:
   replicas: 1 # Number of replicas that will be created for this deployment
   selector:
     matchLabels:
       app: score-qry-service
       tier: backend
+      environment: development
   strategy:
     type: RollingUpdate # It replaces the existing version of pods with a new version, updating pods slowly one by one, without cluster downtime
     rollingUpdate:
@@ -23,6 +25,7 @@ spec:
       labels:
         app: score-qry-service
         tier: backend
+        environment: development
       annotations: # https://www.elastic.co/guide/en/beats/filebeat/current/running-on-kubernetes.html
         co.elastic.logs/enabled: "true"
         co.elastic.logs.json-logging/json.keys_under_root: "true"
@@ -57,20 +60,35 @@ spec:
             - name: KAFKA_BROKER_PORT_3
               value: "9095"
             - name: MARIADB_URL
-              value: "mariadb-sts-0.mariadb-svc.kube-db.svc.cluster.local"
+              valueFrom:
+                configMapKeyRef: # Using ConfigMap
+                  name: score-qry-service-configmap
+                  key: mariadb-url
             - name: MARIADB_HOSTNAME
-              value: "mariadb-sts-0.mariadb-svc.kube-db.svc.cluster.local"
+              valueFrom:
+                configMapKeyRef: # Using ConfigMap
+                  name: score-qry-service-configmap
+                  key: mariadb-url
             - name: MARIADB_PORT
-              value: "3306"
+              valueFrom:
+                configMapKeyRef: # Using ConfigMap
+                  name: score-qry-service-configmap
+                  key: mariadb-port
             - name: MARIADB_ROOT_USER
-              value: "root"
+              valueFrom:
+                secretKeyRef: # Using Secrets
+                  name: score-qry-service-secret
+                  key: mariadb-root-username
             - name: MARIADB_ROOT_PASSWORD
               valueFrom:
                 secretKeyRef: # Using Secrets
                   name: score-qry-service-secret
                   key: mariadb-root-password
             - name: SCORE_DATABASE
-              value: "scoreDB"
+              valueFrom:
+                configMapKeyRef: # Using ConfigMap
+                  name: score-qry-service-configmap
+                  key: mariadb-database
             - name: REDIS_HOSTNAME
               value: "redis"
             - name: REDIS_PASSWORD

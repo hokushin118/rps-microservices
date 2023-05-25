@@ -196,7 +196,13 @@ You should see the following output:
 
 #### 4. Deploying the RPS game query microservice
 
-To deploy the RPS game query microservice to Kubernetes, first deploy the microservice K8S service with the following command:
+To deploy the RPS game query microservice to Kubernetes, first deploy the microservice K8S config map with the following command:
+
+```
+     > kubectl apply -f ./k8s/dev/configmaps/rps-qry-service-configmap.yml
+```
+
+Then deploy the microservice K8S service with the following command:
 
 ```
      > kubectl apply -f ./k8s/dev/services/rps-qry-service-svc.yml

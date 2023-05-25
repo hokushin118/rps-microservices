@@ -50,9 +50,15 @@ spec:
           imagePullPolicy: IfNotPresent
           env:
             - name: MONGO_INITDB_DATABASE # the database
-              value: "rpsDB"
+              valueFrom:
+                configMapKeyRef: # Using ConfigMap
+                  name: mongodb-configmap
+                  key: mongodb-database
             - name: MONGO_INITDB_ROOT_USERNAME # the database admin user
-              value: "root"
+              valueFrom:
+                secretKeyRef: # Using Secrets
+                  name: mongodb-secret
+                  key: mongodb-root-username
             - name: MONGO_INITDB_ROOT_PASSWORD # the database admin user password
               valueFrom:
                 secretKeyRef: # Using Secrets
