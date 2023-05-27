@@ -43,7 +43,7 @@ spec:
               protocol: TCP
               containerPort: 9300
           volumeMounts:
-            - name: data
+            - name: elasticsearch-persistent-storage
               mountPath: /usr/share/elasticsearch/data
           env:
             - name: cluster.name # Elasticsearch cluster name
@@ -55,7 +55,7 @@ spec:
             - name: ES_JAVA_OPTS
               value: "-Xms512m -Xmx512m"
       volumes:
-        - name: data
+        - name: elasticsearch-persistent-storage
           emptyDir: { }
       # Elasticsearch requires vm.max_map_count to be at least 262144.
       # If your OS already sets up this number to a higher value, feel free
@@ -68,7 +68,7 @@ spec:
           securityContext:
             privileged: true
           volumeMounts:
-            - name: data
+            - name: elasticsearch-persistent-storage
               mountPath: /usr/share/elasticsearch/data
         - name: increase-vm-max-map # To prevent OOM errors
           image: busybox
@@ -85,7 +85,9 @@ spec:
   # PersistentVolumes for the Elasticsearch pods
   volumeClaimTemplates:
     - metadata:
-        name: data
+        name: elasticsearch-persistent-storage
+        annotations:
+          volume.beta.kubernetes.io/storage-class: "standard"
       spec:
         accessModes:
           - ReadWriteOnce

@@ -25,7 +25,7 @@ services:
 
   mongo-express:
     container_name: mongo-express
-    image: mongo-express:latest
+    image: mongo-express::0.54.0
     restart: on-failure
     ports: # Important: In a production environment you should remove the external port that kept here for debugging purposes.
       - 8088:8081 # external port / container port
@@ -41,6 +41,7 @@ services:
       - ME_CONFIG_MONGODB_ADMINPASSWORD=${ME_CONFIG_MONGODB_ADMINPASSWORD}
       - ME_CONFIG_MONGODB_PORT=${ME_CONFIG_MONGODB_PORT}
       - ME_CONFIG_MONGODB_AUTH_DATABASE=${ME_CONFIG_MONGODB_AUTH_DATABASE}
+      - ME_CONFIG_MONGODB_ENABLE_ADMIN=${ME_CONFIG_MONGODB_ENABLE_ADMIN}
     depends_on:
       - mongo
     networks:

@@ -35,10 +35,12 @@ spec:
               containerPort: 5601
           env: # Setting environmental variables
             - name: ELASTICSEARCH_URL
-              value: "http://elasticsearch-svc.kube-elk.svc.cluster.local"
+              value: "http://elasticsearch-svc.kube-elk"
+          # Mount volume from persistent volume claim
           volumeMounts:
-            - name: config-volume
-              mountPath: /usr/share/kibana/config
+            - name: config-volume # a mount for config
+              mountPath: /etc/kibana/config
+              readOnly: true
           resources:
             limits:
               cpu: 1000m # max 1 vCPU to the Kibana Pod
