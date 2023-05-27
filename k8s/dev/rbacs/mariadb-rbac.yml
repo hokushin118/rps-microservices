@@ -1,0 +1,51 @@
+# MongoDB RBAC authn and authz
+apiVersion: v1 # K8S API version
+kind: ServiceAccount
+metadata:
+  name: mariadb
+  namespace: kube-db # The name of the namespace
+  labels:
+    app: mariadb
+    tier: database
+
+---
+# Here we define a ClusterRole called mariadb to which we grant the get, list and watch permissions on the pods, services and endpoints.
+apiVersion: rbac.authorization.k8s.io/v1 # K8S API version
+kind: ClusterRole
+metadata:
+  # "namespace" omitted since ClusterRoles are not namespaced
+  name: mariadb
+  labels:
+    app: mariadb
+    tier: database
+rules:
+  - apiGroups: [ "" ] # "" indicates the core API group
+    # at the HTTP level, the name of the resource for accessing
+    resources:
+      - pods
+      - services
+      - endpoints
+    verbs:
+      - get
+      - list
+      - watch
+
+---
+# This role binding allows "mariadb" to read pods in the "kube-db" namespace.
+# You need to already have a Role named "mariadb" in that namespace.
+apiVersion: rbac.authorization.k8s.io/v1 # K8S API version
+kind: ClusterRoleBinding
+metadata:
+  name: mariadb
+  namespace: kube-db # The name of the namespace
+  labels:
+    app: mariadb
+    tier: database
+subjects:
+  - kind: ServiceAccount
+    name: mariadb
+    namespace: kube-db
+roleRef: # "roleRef" specifies the binding to a Role / ClusterRole
+  kind: ClusterRole # this must be Role or ClusterRole
+  name: mariadb # this must match the name of the Role or ClusterRole you wish to bind to
+  apiGroup: rbac.authorization.k8s.io

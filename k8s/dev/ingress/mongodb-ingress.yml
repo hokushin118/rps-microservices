@@ -1,0 +1,24 @@
+# Simple Single Service Ingress for MongoDB Express
+# DNS > LB > Ingress > Service > Pods > Container
+apiVersion: networking.k8s.io/v1 # K8S API version
+kind: Ingress
+metadata:
+  name: mongodb-ingress
+  namespace: kube-nosql-db # The name of the namespace
+spec:
+  ingressClassName: nginx # Ingress Controller
+  # tls:
+  # - hosts:
+  #   - mongodb.internal
+  #     secretName: mongodb-secret-tls
+  rules:
+    - host: mongodb.internal
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: mongodb-express-svc
+                port:
+                  number: 8081

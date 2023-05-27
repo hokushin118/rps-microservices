@@ -14,3 +14,6 @@ data:
       dbPath: /data/db
 
   mongodb-database: rpsDB
+  mongodb-database-url: mongodb-sts-0.mongodb-svc.kube-nosql-db
+  mongodb-auth-database: admin
+  is-mongodb-config-admin-enabled: "true"
