@@ -24,7 +24,7 @@ spec:
     spec:
       initContainers:
         - name: init-mariadb
-          image: mariadb:10.11.3
+          image: mariadb:10.6
           imagePullPolicy: IfNotPresent
           command:
             - bash
@@ -34,7 +34,7 @@ spec:
               echo 'Starting init-mariadb';
               # Check config map to directory that already exists
               # (but must be used as a volume for main container)
-              ls /mnt/config-map
+              ls /etc/mysql/config
               # Statefulset has sticky identity, number should be last
               [[ `hostname` =~ -([0-9]+)$ ]] || exit 1
               ordinal=${BASH_REMATCH[1]}
@@ -42,23 +42,23 @@ spec:
               # mariadb-config volume (emptyDir) depending on pod number
               if [[ $ordinal -eq 0 ]]; then
                 # This file holds SQL for connecting to primary
-                cp /mnt/config-map/primary.cnf /etc/mysql/conf.d/server-id.cnf
+                cp /etc/mysql/config/primary.cnf /etc/mysql/conf.d/server-id.cnf
                 # Create the users needed for replication on primary on a volume
                 # initdb (emptyDir)
-                cp /mnt/config-map/primary.sql /docker-entrypoint-initdb.d
+                cp /etc/mysql/config/primary.sql /docker-entrypoint-initdb.d
               else
                 # This file holds SQL for connecting to secondary
-                cp /mnt/config-map/replica.cnf /etc/mysql/conf.d/server-id.cnf
+                cp /etc/mysql/config/replica.cnf /etc/mysql/conf.d/server-id.cnf
                 # On replicas use secondary configuration on initdb volume
-                cp /mnt/config-map/secondary.sql /docker-entrypoint-initdb.d
+                cp /etc/mysql/config/secondary.sql /docker-entrypoint-initdb.d
               fi
               # Add an offset to avoid reserved server-id=0 value.
               echo server-id=$((3000 + $ordinal)) >> etc/mysql/conf.d/server-id.cnf
               ls /etc/mysql/conf.d/
               cat /etc/mysql/conf.d/server-id.cnf
           volumeMounts:
-            - name: mariadb-configmap
-              mountPath: /mnt/config-map
+            - name: config-volume # a mount for config
+              mountPath: /etc/mysql/config
             - name: mariadb-config
               mountPath: /etc/mysql/conf.d/
             - name: initdb
@@ -66,7 +66,7 @@ spec:
       restartPolicy: Always
       containers:
         - name: mariadb
-          image: mariadb:10.11.3
+          image: mariadb:10.6
           imagePullPolicy: IfNotPresent
           ports:
             - name: tcp-3306
@@ -83,19 +83,26 @@ spec:
               value: "1"
           # Mount volume from persistent volume claim
           volumeMounts:
-            - name: mariadb-persistent-storage
+            - name: mariadb-persistent-storage # a mount for data
               mountPath: /var/lib/mysql/
-            - name: mariadb-config
+            - name: mariadb-config # a mount for config
               mountPath: /etc/mysql/conf.d/
+              readOnly: true
+            - name: secrets-volume # a mount for secrets
+              mountPath: /etc/mysql/secrets
               readOnly: true
             - name: initdb
               mountPath: /docker-entrypoint-initdb.d
               readOnly: true
       volumes:
-        - name: mariadb-configmap
+        - name: config-volume
           configMap:
             name: mariadb-configmap
             #defaultMode: 0544
+        - name: secrets-volume
+          secret:
+            secretName: mariadb-secret
+            optional: true
         - name: mariadb-config
           emptyDir: { }
         - name: initdb
@@ -104,9 +111,11 @@ spec:
   volumeClaimTemplates:
     - metadata:
         name: mariadb-persistent-storage
+        annotations:
+          volume.beta.kubernetes.io/storage-class: "standard"
       spec:
         accessModes:
           - ReadWriteOnce
         resources:
           requests:
-            storage: 300M
+            storage: 5Gi

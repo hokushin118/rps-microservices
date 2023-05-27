@@ -90,6 +90,23 @@ spec:
               value: "8080"
             - name: SCORE_CMD_GRPC_SERVER_PORT
               value: "6565"
+          # Mount volume from persistent volume claim
+          volumeMounts:
+            - name: config-volume # a mount for config
+              mountPath: /etc/score-cmd-service/config
+              readOnly: true
+            - name: secrets-volume # a mount for secrets
+              mountPath: /etc/score-cmd-service/secrets
+              readOnly: true
+      volumes:
+        - name: config-volume
+          configMap:
+            name: score-cmd-service-configmap
+            #defaultMode: 0544
+        - name: secrets-volume
+          secret:
+            secretName: score-cmd-service-secret
+            optional: true
 #          readinessProbe:
 #            httpGet:
 #              port: 8080

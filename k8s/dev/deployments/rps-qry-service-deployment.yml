@@ -104,17 +104,34 @@ spec:
               value: "8080"
             - name: RPS_QRY_GRPC_SERVER_PORT
               value: "6565"
-          #          readinessProbe:
-          #            httpGet:
-          #              port: 8080
-          #              path: /actuator/health/readiness
-          #            initialDelaySeconds: 5
-          #            timeoutSeconds: 1
-          #            periodSeconds: 5
-          #          livenessProbe:
-          #            httpGet:
-          #              port: 8080
-          #              path: /actuator/health/liveness
-          #            initialDelaySeconds: 30
-          #            timeoutSeconds: 1
-          #            periodSeconds: 5
+          # Mount volume from persistent volume claim
+          volumeMounts:
+            - name: config-volume # a mount for config
+              mountPath: /etc/rps-qry-service/config
+              readOnly: true
+            - name: secrets-volume # a mount for secrets
+              mountPath: /etc/rps-qry-service/secrets
+              readOnly: true
+      volumes:
+        - name: config-volume
+          configMap:
+            name: rps-qry-service-configmap
+            #defaultMode: 0544
+        - name: secrets-volume
+          secret:
+            secretName: rps-qry-service-secret
+            optional: true
+      #          readinessProbe:
+      #            httpGet:
+      #              port: 8080
+      #              path: /actuator/health/readiness
+      #            initialDelaySeconds: 5
+      #            timeoutSeconds: 1
+      #            periodSeconds: 5
+      #          livenessProbe:
+      #            httpGet:
+      #              port: 8080
+      #              path: /actuator/health/liveness
+      #            initialDelaySeconds: 30
+      #            timeoutSeconds: 1
+      #            periodSeconds: 5

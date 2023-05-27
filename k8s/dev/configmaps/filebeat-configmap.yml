@@ -56,14 +56,14 @@ data:
     cloud.auth: ${ELASTIC_CLOUD_AUTH}
 
     # Send events directly to Elasticsearch cluster
-    output.elasticsearch:
-     hosts: ['${FILEBEAT_ELASTICSEARCH_URL:elasticsearch-svc.kube-elk.svc.cluster.local}']
-     username: ${FILEBEAT_ELASTICSEARCH_USERNAME}
-     password: ${FILEBEAT_ELASTICSEARCH_PASSWORD}
+    # output.elasticsearch:
+    #  hosts: ['${FILEBEAT_ELASTICSEARCH_URL:elasticsearch-svc.kube-elk}']
+    #  username: ${FILEBEAT_ELASTICSEARCH_USERNAME}
+    #  password: ${FILEBEAT_ELASTICSEARCH_PASSWORD}
 
     # Send events to Logstash
-    # output.logstash:
-    #  hosts: ['${FILEBEAT_LOGSTASH_URL:logstash-svc.kube-elk.svc.cluster.local}']
+    output.logstash:
+     hosts: ['${FILEBEAT_LOGSTASH_URL:logstash-svc.kube-elk}']
 
 ---
 apiVersion: v1 # K8S API version

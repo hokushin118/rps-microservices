@@ -122,41 +122,9 @@ Note: NGINX is used as API gateway so if you deploy the microservices on docker 
 
 ### Installing the Score query microservice on K8S cluster
 
-#### 1. Adding custom entry to the etc/host file for the RPS game microservices (if not exists)
+#### 1. Creating namespace for RPS game microservices (if not exists)
 
-Retrieve ip of the dev node:
-
-```
-     > minikube ip
-```
-
-You should see the following output:
-
-```
-      > 192.168.49.2
-```
-
-Add a custom entry to the etc/hosts file using the nano text editor:
-
-```
-     > sudo nano /etc/hosts
-```
-
-You should add the following custom domains to the hosts file:
-
-```
-      192.168.49.2 rps.internal
-```
-
-You may check the custom domain name with ping command:
-
-```
-     > ping rps.internal
-```
-
-#### 2. Creating namespace for RPS game microservices (if not exists)
-
-To create a rps-app-dev namespace on the k8s cluster, run:
+To create a _rps-app-dev_ namespace on the k8s cluster, run:
 
 ```
      > kubectl apply -f ./k8s/dev/namespaces/rps-app-ns.yml
@@ -168,7 +136,7 @@ To check the status, run:
      > kubectl get namespaces --show-labels
 ```
 
-#### 3. Deploying Simple Fanout Ingress for RPS microservices (if not exists)
+#### 2. Deploying Simple Fanout Ingress for RPS microservices (if not exists)
 
 To create a [Simple Fanout Ingress](https://kubernetes.io/docs/concepts/services-networking/ingress) for the RPS microservices, run:
 
@@ -191,6 +159,36 @@ You should see the following output:
 ```
       NAME                    CLASS   HOSTS                    ADDRESS        PORTS   AGE
       rps-ingress             nginx   rps.internal             192.168.49.2   80      40h
+```
+
+Copy the ip address (192.168.49.2) to the clipboard, you will need it in the next step.
+
+#### 3. Adding custom entry to the etc/host file for the RPS game microservices (if not exists)
+
+Add a custom entry to the etc/hosts file using the nano text editor:
+
+```
+     > sudo nano /etc/hosts
+```
+
+You should add the following ip address (copied in the previous step) and custom domain to the hosts file:
+
+```
+      192.168.49.2 rps.internal
+```
+
+You may check the custom domain name with ping command:
+
+```
+     > ping rps.internal
+```
+
+You should see the following output:
+
+```
+      64 bytes from rps.internal (192.168.49.2): icmp_seq=1 ttl=64 time=0.072 ms
+      64 bytes from rps.internal (192.168.49.2): icmp_seq=2 ttl=64 time=0.094 ms
+      64 bytes from rps.internal (192.168.49.2): icmp_seq=3 ttl=64 time=0.042 ms
 ```
 
 #### 4. Deploying the Score query microservice
@@ -218,6 +216,8 @@ Then deploy the microservice K8S secret with the following command:
 ```
      > kubectl apply -f ./k8s/dev/secrets/score-qry-service-secret.yml
 ```
+
+Now the secrets can be referenced in our deployment.
 
 And then deploy the Score query microservice with the following command:
 

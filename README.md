@@ -292,12 +292,21 @@ from the url.
 
 ### Kubernetes (K8S)
 
+#### Prerequisites
+
 Make sure that k8s is enabled in the Docker Desktop. If not, click on the __Settings__ icon, then on the __Kubernetes__
 tab and check the __Enable Kubernetes__ checkbox.
 
 ![enable_kubernetes](img/desktop-docker-k8s.png)
 
 You can also use [minikube](https://minikube.sigs.k8s.io/docs/start) for local K8S development.
+
+Make sure Minikube and kubectl are installed.
+
+[kubectl installation](https://kubernetes.io/docs/tasks/tools/install-kubectl)
+[Minikube installation](https://minikube.sigs.k8s.io/docs/start)
+
+Start minikube cluster:
 
 ```
      > minikube start \
@@ -363,7 +372,7 @@ There are several ways we can implement the __ELK Stack__ architecture pattern:
 
 3. __Beats__ —> __Kafka__ —> __Logstash__ —> __Elasticsearch__ —> __Kibana__
 
-Here we implement the first approach. The last one is the better option for production environment cause Kafka acts as a
+Here we implement the first and second approaches. The last one is the better option for production environment cause Kafka acts as a
 data buffer and helps prevent data loss or interruption while streaming files quickly.
 
 #### 1. Creating namespace for ELK services
@@ -449,7 +458,20 @@ To access the Elasticsearch locally, we have to forward a local port 9200 to the
 with the following command:
 
 ```
-     > kubectl port-forward <kibana pod> 5601:5601 - n kube-elk
+     > kubectl port-forward <elasticsearch pod> 9200:9200 -n kube-elk
+```
+
+In our case:
+
+```
+     > kubectl port-forward elasticsearch-sts-0 9200:9200 -n kube-elk
+```
+
+You should see the following output:
+
+```
+      Forwarding from 127.0.0.1:9200 -> 9200
+      Forwarding from [::1]:9200 -> 9200
 ```
 
 The command forwards the connection and keeps it open. Leave the terminal window running and proceed to the next step.
@@ -527,6 +549,20 @@ Then run:
      > kubectl apply -f ./k8s/dev/configmaps/filebeat-configmap.yml
 ```
 
+__Note:__ If you are running the __Beats__ —> __Elasticsearch__ —> __Kibana__ scenario, go to the filebeat-configmap.yml file and make the changes below before deploying:
+
+```
+    # Send events directly to Elasticsearch cluster
+    output.elasticsearch:
+     hosts: ['${FILEBEAT_ELASTICSEARCH_URL:elasticsearch-svc.kube-elk}']
+     username: ${FILEBEAT_ELASTICSEARCH_USERNAME}
+     password: ${FILEBEAT_ELASTICSEARCH_PASSWORD}
+
+    # Send events to Logstash
+    # output.logstash:
+    #  hosts: ['${FILEBEAT_LOGSTASH_URL:logstash-svc.kube-elk}']
+```
+
 And then run:
 
 ```
@@ -552,7 +588,92 @@ To verify that Elasticsearch is indeed receiving this data, query the Filebeat i
      > curl http://localhost:9200/filebeat-*/_search?pretty
 ```
 
-#### 4. Deploying Kibana
+You can also make sure that filebeat container is up and running by viewing logs:
+
+```
+     > kubectl logs <filebeat pod name> -c filebeat -n kube-elk -f
+```
+
+#### 4. Deploying Logstash
+
+_Logstash is used for ingesting data from a multitude of sources, transforming it, and then sending it to Elasticsearch._
+
+__Note:__ Skip this step if you are running the __Beats__ —> __Elasticsearch__ —> __Kibana__ scenario.
+
+To deploy Logstash to Kubernetes, first run:
+
+```
+     > kubectl apply -f ./k8s/dev/services/logstash-svc.yml
+```
+
+Then run:
+
+```
+     > kubectl apply -f ./k8s/dev/configmaps/logstash-configmap.yml
+```
+
+And then run:
+
+```
+     > kubectl apply -f ./k8s/dev/deployments/logstash-deployment.yml
+```
+
+To check the status, run:
+
+```
+     > kubectl get deployment/logstash-deployment -n kube-elk
+```
+
+You should see the following output:
+
+```
+      NAME                  READY   UP-TO-DATE   AVAILABLE   AGE
+      logstash-deployment   1/1     1            1           26m
+```
+
+Make sure that logstash container is up and running by viewing pod's _logstash_ container logs:
+
+```
+     > kubectl logs <logstash pod name> -c logstash -n kube-elk -f
+```
+
+Logstash also provides [monitoring APIs](https://www.elastic.co/guide/en/logstash/current/monitoring-logstash.html) for retrieving runtime metrics about Logstash.
+By default, the monitoring API attempts to bind to port _tcp:9600_. So, to access the Logstash monitoring API, we have to forward a local port _9600_ to the Kubernetes node running Logstash with the
+following command:
+
+```
+     > kubectl port-forward <logstash pod name> 9600:9600 -n kube-elk
+```
+
+You should see the following output:
+
+```
+      Forwarding from 127.0.0.1:9600 -> 9600
+      Forwarding from [::1]:9600 -> 9600
+```
+
+Now You can use the root resource to retrieve general information about the Logstash instance, including the host and version with the following command:
+
+```
+     > curl localhost:9600/?pretty
+```
+
+You should see the following output:
+
+```
+      {
+        "host" : "logstash",
+        "version" : "6.8.23",
+        "http_address" : "0.0.0.0:9600",
+        "id" : "5db8766c-2737-47cc-80c6-26c3621604ec",
+        "name" : "logstash",
+        "build_date" : "2022-01-06T20:30:42Z",
+        "build_sha" : "2d726680d98e4e6dfb093ff1a39cc1c0bf1d1ef5",
+        "build_snapshot" : false
+      }
+```
+
+#### 5. Deploying Kibana
 
 _Kibana is a visualization tool. It uses a web browser interface to organize and display data._
 
@@ -578,7 +699,7 @@ To access the Kibana interface, we have to forward a local port _5601_ to the Ku
 following command:
 
 ```
-     > kubectl port-forward <kibana pod> 5601:5601 - n kube-elk
+     > kubectl port-forward <kibana pod> 5601:5601 -n kube-elk
 ```
 
 The command forwards the connection and keeps it open. Leave the terminal window running and proceed to the next step.
@@ -588,17 +709,6 @@ REST API:
 
 ```
      > curl localhost:9200/_cat/indices?v 
-```
-
-You should see the following output:
-
-```
-      health status index                      uuid                   pri rep docs.count docs.deleted store.size pri.store.size
-      green  open   .kibana                    fP_HM1riQWGKpkl8FuGFTA   1   0          2            0     10.4kb         10.4kb
-      green  open   .kibana_1                  g2SMz8XjShmSzTwmOQu9Fw   1   0          0            0       261b           261b
-      green  open   .kibana_2                  2Poc2zmRRwawJNBO8Xeamg   1   0          0            0       261b           261b
-      green  open   .kibana_task_manager       RgTFfA6lQ_CoSVUW8NbZGQ   1   0          2            0     19.2kb         19.2kb
-      green  open   filebeat-6.8.23-2023.05.20 EUSLOZMWQGSyWMrh2EJiRA   5   0     122481            0     34.2mb         34.2mb
 ```
 
 __Note:__ If you are running a single node cluster (Docker Desktop or MiniKube) you might need to perform the following
@@ -614,6 +724,30 @@ request against the Elasticsearch REST API::
        }'
 ```
 
+You should see the following output:
+
+```
+      health status index                      uuid                   pri rep docs.count docs.deleted store.size pri.store.size
+      green  open   .kibana                    fP_HM1riQWGKpkl8FuGFTA   1   0          2            0     10.4kb         10.4kb
+      green  open   .kibana_1                  g2SMz8XjShmSzTwmOQu9Fw   1   0          0            0       261b           261b
+      green  open   .kibana_2                  2Poc2zmRRwawJNBO8Xeamg   1   0          0            0       261b           261b
+      green  open   .kibana_task_manager       RgTFfA6lQ_CoSVUW8NbZGQ   1   0          2            0     19.2kb         19.2kb
+      green  open   logstash-2023.05.27        sNFgElHBTbSbapgYPYk9Cw   5   0     132000            0     28.6mb         28.6mb
+```
+
+__Note:__ If you are running the __Beats__ —> __Logstash__ —> __Elasticsearch__ —> __Kibana__ scenario.
+
+```
+      health status index                      uuid                   pri rep docs.count docs.deleted store.size pri.store.size
+      green  open   .kibana                    fP_HM1riQWGKpkl8FuGFTA   1   0          2            0     10.4kb         10.4kb
+      green  open   .kibana_1                  g2SMz8XjShmSzTwmOQu9Fw   1   0          0            0       261b           261b
+      green  open   .kibana_2                  2Poc2zmRRwawJNBO8Xeamg   1   0          0            0       261b           261b
+      green  open   .kibana_task_manager       RgTFfA6lQ_CoSVUW8NbZGQ   1   0          2            0     19.2kb         19.2kb
+      green  open   filebeat-6.8.23-2023.05.20 EUSLOZMWQGSyWMrh2EJiRA   5   0     122481            0     34.2mb         34.2mb
+```
+
+__Note:__ If you are running the __Beats__ —> __Elasticsearch__ —> __Kibana__ scenario.
+
 And then access the Kibana UI in any browser:
 
 ```
@@ -622,7 +756,7 @@ And then access the Kibana UI in any browser:
 
 In Kibana, navigate to the __Management__ -> __Kibana Index Patterns__. Kibana should display the Filebeat index.
 
-Enter “filebeat-*” as the index pattern, and in the next step select @timestamp as your Time Filter field.
+Enter __"logstash-*"__ or __"filebeat-*"__ (depending on running ELK pattern) as the index pattern, and in the next step select @timestamp as your Time Filter field.
 
 Navigate to the Kibana dashboard and in the __Discovery__ page, in the search bar enter:
 
@@ -697,6 +831,12 @@ You should see the following output:
 To deploy MariaDB cluster to Kubernetes, first run:
 
 ```
+     > kubectl apply -f ./k8s/dev/rbacs/mariadb-rbac.yml
+```
+
+Then run:
+
+```
      > kubectl apply -f ./k8s/dev/configmaps/mariadb-configmap.yml
 ```
 
@@ -731,6 +871,7 @@ Then run:
      > kubectl apply -f ./k8s/dev/secrets/mariadb-secret.yml
 ```
 
+Now the secrets can be referenced in our statefulset.
 And then run:
 
 ```
@@ -933,6 +1074,7 @@ Then run:
      > kubectl apply -f ./k8s/dev/secrets/mongodb-secret.yml
 ```
 
+Now the secrets can be referenced in our statefulset.
 And then run:
 
 ```
@@ -971,25 +1113,37 @@ You should see the following output:
 Connect to the first replica set member with this command:
 
 ```
-     > kubectl -n kube-nosql-db exec -it mongodb-sts-0 -- mongosh
-```
-
-You now have a REPL environment connected to the MongoDB database. Initiate the replication by typing the following
-command:
-
-```
-     > rs.initiate()
+     > kubectl -n kube-nosql-db exec -it mongodb-sts-0 -- mongo
 ```
 
 You should see the following output:
 
 ```
-      {
-        info2: 'no configuration specified. Using a default configuration for the set',
-        me: 'mongodb-sts-0:27017',
-        ok: 1
-      }
+      Defaulted container "mongodb" out of: mongodb, mongo-sidecar
+      MongoDB shell version v4.4.21
+      connecting to: mongodb://127.0.0.1:27017/?compressors=disabled&gssapiServiceName=mongodb
+      Implicit session: session { "id" : UUID("c3a2b74c-75f0-4288-9deb-30a7d0bc4bd6") }
+      MongoDB server version: 4.4.21
+      ---
+      The server generated these startup warnings when booting:
+      2023-05-27T10:11:59.717+00:00: Using the XFS filesystem is strongly recommended with the WiredTiger storage engine. See http://dochub.mongodb.org/core/prodnotes-filesystem
+      2023-05-27T10:12:00.959+00:00: Access control is not enabled for the database. Read and write access to data and configuration is unrestricted
+      2023-05-27T10:12:00.960+00:00: You are running this process as the root user, which is not recommended
+      ---
+      ---
+              Enable MongoDB's free cloud-based monitoring service, which will then receive and display
+              metrics about your deployment (disk utilization, CPU, operation statistics, etc).
+      
+              The monitoring data will be available on a MongoDB website with a unique URL accessible to you
+              and anyone you share the URL with. MongoDB may use this information to make product
+              improvements and to suggest MongoDB products and deployment options to you.
+      
+              To enable free monitoring, run the following command: db.enableFreeMonitoring()
+              To permanently disable this reminder, run the following command: db.disableFreeMonitoring()
+      ---
 ```
+
+You now have a REPL environment connected to the MongoDB database. Initiate the replication.
 
 Define the variable called __cfg__. The variable executes rs.conf() command:
 
@@ -1048,117 +1202,151 @@ You should see the following output:
 
 ```
       {
-        set: 'rs0',
-        date: ISODate("2023-05-24T17:32:43.699Z"),
-        myState: 1,
-        term: Long("1"),
-        syncSourceHost: '',
-        syncSourceId: -1,
-        heartbeatIntervalMillis: Long("2000"),
-        majorityVoteCount: 2,
-        writeMajorityCount: 2,
-        votingMembersCount: 3,
-        writableVotingMembersCount: 3,
-        optimes: {
-          lastCommittedOpTime: { ts: Timestamp({ t: 1684949555, i: 1 }), t: Long("1") },
-          lastCommittedWallTime: ISODate("2023-05-24T17:32:35.877Z"),
-          readConcernMajorityOpTime: { ts: Timestamp({ t: 1684949555, i: 1 }), t: Long("1") },
-          appliedOpTime: { ts: Timestamp({ t: 1684949555, i: 1 }), t: Long("1") },
-          durableOpTime: { ts: Timestamp({ t: 1684949555, i: 1 }), t: Long("1") },
-          lastAppliedWallTime: ISODate("2023-05-24T17:32:35.877Z"),
-          lastDurableWallTime: ISODate("2023-05-24T17:32:35.877Z")
-        },
-        lastStableRecoveryTimestamp: Timestamp({ t: 1684949505, i: 1 }),
-        electionCandidateMetrics: {
-          lastElectionReason: 'electionTimeout',
-          lastElectionDate: ISODate("2023-05-24T17:23:45.751Z"),
-          electionTerm: Long("1"),
-          lastCommittedOpTimeAtElection: { ts: Timestamp({ t: 1684949025, i: 1 }), t: Long("-1") },
-          lastSeenOpTimeAtElection: { ts: Timestamp({ t: 1684949025, i: 1 }), t: Long("-1") },
-          numVotesNeeded: 1,
-          priorityAtElection: 1,
-          electionTimeoutMillis: Long("10000"),
-          newTermStartDate: ISODate("2023-05-24T17:23:45.817Z"),
-          wMajorityWriteAvailabilityDate: ISODate("2023-05-24T17:23:45.867Z")
-        },
-        members: [
-          {
-            _id: 0,
-            name: 'mongodb-sts-0.mongodb-svc.kube-nosql-db:27017',
-            health: 1,
-            state: 1,
-            stateStr: 'PRIMARY',
-            uptime: 664,
-            optime: { ts: Timestamp({ t: 1684949555, i: 1 }), t: Long("1") },
-            optimeDate: ISODate("2023-05-24T17:32:35.000Z"),
-            lastAppliedWallTime: ISODate("2023-05-24T17:32:35.877Z"),
-            lastDurableWallTime: ISODate("2023-05-24T17:32:35.877Z"),
-            syncSourceHost: '',
-            syncSourceId: -1,
-            infoMessage: '',
-            electionTime: Timestamp({ t: 1684949025, i: 2 }),
-            electionDate: ISODate("2023-05-24T17:23:45.000Z"),
-            configVersion: 6,
-            configTerm: 1,
-            self: true,
-            lastHeartbeatMessage: ''
-          },
-          {
-            _id: 1,
-            name: 'mongodb-sts-1.mongodb-svc.kube-nosql-db:27017',
-            health: 1,
-            state: 2,
-            stateStr: 'SECONDARY',
-            uptime: 58,
-            optime: { ts: Timestamp({ t: 1684949555, i: 1 }), t: Long("1") },
-            optimeDurable: { ts: Timestamp({ t: 1684949555, i: 1 }), t: Long("1") },
-            optimeDate: ISODate("2023-05-24T17:32:35.000Z"),
-            optimeDurableDate: ISODate("2023-05-24T17:32:35.000Z"),
-            lastAppliedWallTime: ISODate("2023-05-24T17:32:35.877Z"),
-            lastDurableWallTime: ISODate("2023-05-24T17:32:35.877Z"),
-            lastHeartbeat: ISODate("2023-05-24T17:32:42.417Z"),
-            lastHeartbeatRecv: ISODate("2023-05-24T17:32:42.419Z"),
-            pingMs: Long("0"),
-            lastHeartbeatMessage: '',
-            syncSourceHost: 'mongodb-sts-0.mongodb-svc.kube-nosql-db:27017',
-            syncSourceId: 0,
-            infoMessage: '',
-            configVersion: 6,
-            configTerm: 1
-          },
-          {
-            _id: 2,
-            name: 'mongodb-sts-2.mongodb-svc.kube-nosql-db:27017',
-            health: 1,
-            state: 2,
-            stateStr: 'SECONDARY',
-            uptime: 29,
-            optime: { ts: Timestamp({ t: 1684949555, i: 1 }), t: Long("1") },
-            optimeDurable: { ts: Timestamp({ t: 1684949555, i: 1 }), t: Long("1") },
-            optimeDate: ISODate("2023-05-24T17:32:35.000Z"),
-            optimeDurableDate: ISODate("2023-05-24T17:32:35.000Z"),
-            lastAppliedWallTime: ISODate("2023-05-24T17:32:35.877Z"),
-            lastDurableWallTime: ISODate("2023-05-24T17:32:35.877Z"),
-            lastHeartbeat: ISODate("2023-05-24T17:32:42.418Z"),
-            lastHeartbeatRecv: ISODate("2023-05-24T17:32:43.419Z"),
-            pingMs: Long("0"),
-            lastHeartbeatMessage: '',
-            syncSourceHost: 'mongodb-sts-1.mongodb-svc.kube-nosql-db:27017',
-            syncSourceId: 1,
-            infoMessage: '',
-            configVersion: 6,
-            configTerm: 1
-          }
-        ],
-        ok: 1,
-        '$clusterTime': {
-          clusterTime: Timestamp({ t: 1684949555, i: 1 }),
-          signature: {
-            hash: Binary(Buffer.from("0000000000000000000000000000000000000000", "hex"), 0),
-            keyId: Long("0")
-          }
-        },
-        operationTime: Timestamp({ t: 1684949555, i: 1 })
+              "set" : "rs0",
+              "date" : ISODate("2023-05-27T10:14:52.096Z"),
+              "myState" : 1,
+              "term" : NumberLong(1),
+              "syncSourceHost" : "",
+              "syncSourceId" : -1,
+              "heartbeatIntervalMillis" : NumberLong(2000),
+              "majorityVoteCount" : 2,
+              "writeMajorityCount" : 2,
+              "votingMembersCount" : 3,
+              "writableVotingMembersCount" : 3,
+              "optimes" : {
+                      "lastCommittedOpTime" : {
+                              "ts" : Timestamp(1685182483, 1),
+                              "t" : NumberLong(1)
+                      },
+                      "lastCommittedWallTime" : ISODate("2023-05-27T10:14:43.714Z"),
+                      "readConcernMajorityOpTime" : {
+                              "ts" : Timestamp(1685182483, 1),
+                              "t" : NumberLong(1)
+                      },
+                      "readConcernMajorityWallTime" : ISODate("2023-05-27T10:14:43.714Z"),
+                      "appliedOpTime" : {
+                              "ts" : Timestamp(1685182483, 1),
+                              "t" : NumberLong(1)
+                      },
+                      "durableOpTime" : {
+                              "ts" : Timestamp(1685182483, 1),
+                              "t" : NumberLong(1)
+                      },
+                      "lastAppliedWallTime" : ISODate("2023-05-27T10:14:43.714Z"),
+                      "lastDurableWallTime" : ISODate("2023-05-27T10:14:43.714Z")
+              },
+              "lastStableRecoveryTimestamp" : Timestamp(1685182438, 1),
+              "electionCandidateMetrics" : {
+                      "lastElectionReason" : "electionTimeout",
+                      "lastElectionDate" : ISODate("2023-05-27T10:12:03.578Z"),
+                      "electionTerm" : NumberLong(1),
+                      "lastCommittedOpTimeAtElection" : {
+                              "ts" : Timestamp(0, 0),
+                              "t" : NumberLong(-1)
+                      },
+                      "lastSeenOpTimeAtElection" : {
+                              "ts" : Timestamp(1685182323, 1),
+                              "t" : NumberLong(-1)
+                      },
+                      "numVotesNeeded" : 1,
+                      "priorityAtElection" : 1,
+                      "electionTimeoutMillis" : NumberLong(10000),
+                      "newTermStartDate" : ISODate("2023-05-27T10:12:03.670Z"),
+                      "wMajorityWriteAvailabilityDate" : ISODate("2023-05-27T10:12:03.712Z")
+              },
+              "members" : [
+                      {
+                              "_id" : 0,
+                              "name" : "10.244.1.83:27017",
+                              "health" : 1,
+                              "state" : 1,
+                              "stateStr" : "PRIMARY",
+                              "uptime" : 173,
+                              "optime" : {
+                                      "ts" : Timestamp(1685182483, 1),
+                                      "t" : NumberLong(1)
+                              },
+                              "optimeDate" : ISODate("2023-05-27T10:14:43Z"),
+                              "lastAppliedWallTime" : ISODate("2023-05-27T10:14:43.714Z"),
+                              "lastDurableWallTime" : ISODate("2023-05-27T10:14:43.714Z"),
+                              "syncSourceHost" : "",
+                              "syncSourceId" : -1,
+                              "infoMessage" : "",
+                              "electionTime" : Timestamp(1685182323, 2),
+                              "electionDate" : ISODate("2023-05-27T10:12:03Z"),
+                              "configVersion" : 5,
+                              "configTerm" : 1,
+                              "self" : true,
+                              "lastHeartbeatMessage" : ""
+                      },
+                      {
+                              "_id" : 1,
+                              "name" : "mongodb-sts-1.mongodb-svc.kube-nosql-db:27017",
+                              "health" : 1,
+                              "state" : 2,
+                              "stateStr" : "SECONDARY",
+                              "uptime" : 53,
+                              "optime" : {
+                                      "ts" : Timestamp(1685182483, 1),
+                                      "t" : NumberLong(1)
+                              },
+                              "optimeDurable" : {
+                                      "ts" : Timestamp(1685182483, 1),
+                                      "t" : NumberLong(1)
+                              },
+                              "optimeDate" : ISODate("2023-05-27T10:14:43Z"),
+                              "optimeDurableDate" : ISODate("2023-05-27T10:14:43Z"),
+                              "lastAppliedWallTime" : ISODate("2023-05-27T10:14:43.714Z"),
+                              "lastDurableWallTime" : ISODate("2023-05-27T10:14:43.714Z"),
+                              "lastHeartbeat" : ISODate("2023-05-27T10:14:51.822Z"),
+                              "lastHeartbeatRecv" : ISODate("2023-05-27T10:14:51.853Z"),
+                              "pingMs" : NumberLong(0),
+                              "lastHeartbeatMessage" : "",
+                              "syncSourceHost" : "10.244.1.83:27017",
+                              "syncSourceId" : 0,
+                              "infoMessage" : "",
+                              "configVersion" : 5,
+                              "configTerm" : 1
+                      },
+                      {
+                              "_id" : 2,
+                              "name" : "mongodb-sts-2.mongodb-svc.kube-nosql-db:27017",
+                              "health" : 1,
+                              "state" : 2,
+                              "stateStr" : "SECONDARY",
+                              "uptime" : 34,
+                              "optime" : {
+                                      "ts" : Timestamp(1685182483, 1),
+                                      "t" : NumberLong(1)
+                              },
+                              "optimeDurable" : {
+                                      "ts" : Timestamp(1685182483, 1),
+                                      "t" : NumberLong(1)
+                              },
+                              "optimeDate" : ISODate("2023-05-27T10:14:43Z"),
+                              "optimeDurableDate" : ISODate("2023-05-27T10:14:43Z"),
+                              "lastAppliedWallTime" : ISODate("2023-05-27T10:14:43.714Z"),
+                              "lastDurableWallTime" : ISODate("2023-05-27T10:14:43.714Z"),
+                              "lastHeartbeat" : ISODate("2023-05-27T10:14:51.823Z"),
+                              "lastHeartbeatRecv" : ISODate("2023-05-27T10:14:50.251Z"),
+                              "pingMs" : NumberLong(0),
+                              "lastHeartbeatMessage" : "",
+                              "syncSourceHost" : "mongodb-sts-1.mongodb-svc.kube-nosql-db:27017",
+                              "syncSourceId" : 1,
+                              "infoMessage" : "",
+                              "configVersion" : 5,
+                              "configTerm" : 1
+                      }
+              ],
+              "ok" : 1,
+              "$clusterTime" : {
+                      "clusterTime" : Timestamp(1685182483, 1),
+                      "signature" : {
+                              "hash" : BinData(0,"AAAAAAAAAAAAAAAAAAAAAAAAAAA="),
+                              "keyId" : NumberLong(0)
+                      }
+              },
+              "operationTime" : Timestamp(1685182483, 1)
       }
 ```
 
@@ -1179,7 +1367,7 @@ Quit the replicaset member with the following command:
 Connect to the first (primary) replica set member shell with the following command:
 
 ```
-     > kubectl -n kube-nosql-db exec -it mongodb-sts-0 -- mongosh
+     > kubectl -n kube-nosql-db exec -it mongodb-sts-0 -- mongo
 ```
 
 Display all databases with the following command:
@@ -1213,17 +1401,8 @@ Display all data from the test database with the following commands:
 You should see the following output:
 
 ```
-      [
-        {
-          _id: ObjectId("646fcef5743c434ea9a58b12"),
-          name: 'RPS game',
-          language: 'Java'
-        },
-        {
-          _id: ObjectId("646fcf00743c434ea9a58b13"),
-          name: 'Tic-Tac-Toe game'
-        }
-      ]
+      { "_id" : ObjectId("6471d9141175a02c9a9c27a0"), "name" : "RPS game", "language" : "Java" }
+      { "_id" : ObjectId("6471d9211175a02c9a9c27a1"), "name" : "Tic-Tac-Toe game" }
 ```
 
 Quit the primary replicaset member with the following command:
@@ -1235,13 +1414,13 @@ Quit the primary replicaset member with the following command:
 Connect to the secondary replica set member shell with the following command:
 
 ```
-     > kubectl -n kube-nosql-db exec -it mongodb-sts-1 -- mongosh
+     > kubectl -n kube-nosql-db exec -it mongodb-sts-1 -- mongo
 ```
 
 Set a read preference to the secondary replica set member with the following command:
 
 ```
-     > db.getMongo().setReadPref('primaryPreferred')
+     > rs.secondaryOk()
 ```
 
 Display all databases with the following command:
@@ -1268,17 +1447,89 @@ Display all data from the test database with the following commands:
 You should see the following output:
 
 ```
-      [
-        {
-          _id: ObjectId("646fcef5743c434ea9a58b12"),
-          name: 'RPS game',
-          language: 'Java'
-        },
-        {
-          _id: ObjectId("646fcf00743c434ea9a58b13"),
-          name: 'Tic-Tac-Toe game'
-        }
-      ]
+      { "_id" : ObjectId("6471d9141175a02c9a9c27a0"), "name" : "RPS game", "language" : "Java" }
+      { "_id" : ObjectId("6471d9211175a02c9a9c27a1"), "name" : "Tic-Tac-Toe game" }
+```
+
+### Mongo Express web-based MongoDB admin application on K8S cluster
+
+[Mongo Express](https://github.com/mongo-express/mongo-express) is a basic web-based MongoDB admin interface.
+
+#### 1. Deploying Simple Single Service Ingress for Mongo Express application
+
+To create a [Simple Single Service Ingress](https://kubernetes.io/docs/concepts/services-networking/ingress) for the Mongo Express application, run:
+
+```
+     > kubectl apply -f ./k8s/dev/ingress/mongodb-ingress.yml
+```
+
+__Note:__ A Mongo Express application [Simple Single Service Ingress](https://kubernetes.io/docs/concepts/services-networking/ingress) configuration exposes only one service to external users.
+
+![Simple Single Service Ingress](https://d33wubrfki0l68.cloudfront.net/91ace4ec5dd0260386e71960638243cf902f8206/c3c52/docs/images/ingress.svg)
+
+Make sure the Mongo Express application ingress has been created:
+
+```
+     > kubectl get ingress -n kube-nosql-db
+```
+
+You should see the following output:
+
+```
+      NAME                    CLASS   HOSTS                    ADDRESS        PORTS   AGE
+      mongodb-ingress         nginx   mongodb.internal         192.168.49.2   80      40h
+```
+
+Copy the ip address (192.168.49.2) to the clipboard, you will need it in the next step.
+
+#### 2. Adding custom entry to the etc/host file for the Mongo Express application
+
+Add a custom entry to the etc/hosts file using the nano text editor:
+
+```
+     > sudo nano /etc/hosts
+```
+
+You should add the following ip address (copied in the previous step) and custom domain to the hosts file:
+
+```
+      192.168.49.2 mongodb.internal
+```
+
+You may check the custom domain name with ping command:
+
+```
+     > ping mongodb.internal
+```
+
+You should see the following output:
+
+```
+      64 bytes from mongodb.internal (192.168.49.2): icmp_seq=1 ttl=64 time=0.072 ms
+      64 bytes from mongodb.internal (192.168.49.2): icmp_seq=2 ttl=64 time=0.094 ms
+      64 bytes from mongodb.internal (192.168.49.2): icmp_seq=3 ttl=64 time=0.042 ms
+```
+
+Access the Mongo Express application from any browser by typing:
+
+```
+      > mongodb.internal
+```
+
+#### 3. Deploying Mongo Express application
+
+To deploy Mongo Express to Kubernetes, first run:
+
+```
+     > kubectl apply -f ./k8s/dev/services/mongodb-express-svc.yml
+```
+
+It deploys a ClusterIP service for _Mongo Express_ pods.
+
+Then run:
+
+```
+     > kubectl apply -f ./k8s/dev/deployment/mongodb-express-deployment.yml
 ```
 
 ### Redis database on K8S cluster
@@ -1311,7 +1562,7 @@ You should see the following output:
       kube-system            Active   2d13h   kubernetes.io/metadata.name=kube-system
       kubernetes-dashboard   Active   2d13h   addonmanager.kubernetes.io/mode=Reconcile,kubernetes.io/metadata.name=kubernetes-dashboard,kubernetes.io/minikube-addons=dashboard
 ```
-TODO:
+
 #### 2. Deploying Redis cluster
 
 To deploy _Redis_ cluster to Kubernetes, first run:
@@ -1349,6 +1600,8 @@ Then run:
 ```
      > kubectl apply -f ./k8s/dev/secrets/redis-secret.yml
 ```
+
+Now the secrets can be referenced in our statefulset.
 
 ### Useful links
 

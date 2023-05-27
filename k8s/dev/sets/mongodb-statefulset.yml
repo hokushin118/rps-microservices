@@ -27,20 +27,23 @@ spec:
       terminationGracePeriodSeconds: 10 # It gives database 10 seconds to shut down gracefully upon receiving a SIGTERM signal
       containers:
         - name: mongodb
-          image: mongo:6.0.6
+          image: mongo:4.4
           imagePullPolicy: IfNotPresent
           command: [ "/bin/sh" ]
-          args: [ "-c", "mongod --replSet=rs0 --bind_ip_all" ]
+          args: [ "-c", "mongod --replSet=rs0 --bind_ip_all" ] # create a new replica set with the name ‘rs0’.
           ports:
             - name: tcp-27017
               protocol: TCP
               containerPort: 27017
           # Mount volume from persistent volume claim
           volumeMounts:
-            - name: mongodb-persistent-storage
-              mountPath: /data/db/
-            - name: mongodb-config
-              mountPath: /config/
+            - name: mongodb-persistent-storage # a mount for data
+              mountPath: /data/db
+            - name: config-volume # a mount for config
+              mountPath: /etc/mongodb/config
+              readOnly: true
+            - name: secrets-volume # a mount for secrets
+              mountPath: /etc/mongodb/secrets
               readOnly: true
             - name: initdb
               mountPath: /docker-entrypoint-initdb.d
@@ -67,20 +70,24 @@ spec:
             - name: MONGO_SIDECAR_POD_LABELS
               value: "app=mongodb,tier=database"
       volumes:
-        - name: mongodb-configmap
+        - name: config-volume
           configMap:
             name: mongodb-configmap
             items:
               - key: mongo.conf
                 path: mongo.conf
-        - name: mongodb-config
-          emptyDir: { }
+        - name: secrets-volume
+          secret:
+            secretName: mongodb-secret
+            optional: true
         - name: initdb
           emptyDir: { }
   # PersistentVolumes for the MongoDB pods
   volumeClaimTemplates:
     - metadata:
         name: mongodb-persistent-storage
+        annotations:
+          volume.beta.kubernetes.io/storage-class: "standard"
       spec:
         accessModes:
           - ReadWriteOnce

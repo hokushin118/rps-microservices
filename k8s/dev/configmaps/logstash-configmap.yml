@@ -9,35 +9,29 @@ metadata:
     tier: infrastructure
 data:
 
-  logstash.yml: |-
+  logstash.yml: |
     http.host: "0.0.0.0"
-    xpack.monitoring.elasticsearch.hosts: [ '${ELASTICSEARCH_URL:http://elasticsearch-svc.kube-elk.svc.cluster.local}' ]
+    xpack.monitoring.enabled: "false"
 
-  logstash.conf: |-
-    # Read input from filebeat by listening to port 5044 on which filebeat will send the data
+  logstash.conf: |
     input {
-      tcp {
-          port => '${TCP_PORT:5044}'
-          codec => 'json'
-          ssl_verify => 'false'
+      beats {
+        port => "5044"
       }
     }
 
     filter {
-      if [message] =~ /^\{.*\}$/ {
-        json {
-          source => "message"
-        }
-      }
-      if [ClientHost] {
-        geoip {
-          source => "ClientHost"
-        }
+      mutate {
+        rename => ["host", "hostname"]
+        convert => {"hostname" => "string"}
       }
     }
 
     output {
-      stdout { codec => rubydebug }
-      # Sending properly parsed log events to elasticsearch
-      elasticsearch { hosts => ['${ELASTICSEARCH_URL:http://elasticsearch-svc.kube-elk.svc.cluster.local}'] }
+      stdout {
+        codec => rubydebug
+      }
+      elasticsearch {
+        hosts => "http://elasticsearch-svc.kube-elk"
+      }
     }
