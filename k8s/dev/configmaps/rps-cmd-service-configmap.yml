@@ -10,6 +10,8 @@ metadata:
     environment: development
 data:
 
+  server-port: "8080"
+  grpc-server-port: "6565"
   mongodb-url: mongodb-sts-0.mongodb-svc.kube-nosql-db
   mongodb-port: "27017"
   mongodb-database: rpsDB

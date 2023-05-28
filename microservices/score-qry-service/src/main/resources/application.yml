@@ -27,6 +27,11 @@ spring:
       - org.springframework.boot.autoconfigure.mongo.MongoAutoConfiguration
       - org.springframework.boot.autoconfigure.data.mongo.MongoDataAutoConfiguration
 
+  data:
+    jdbc:
+      repositories:
+        enabled: false
+
   jmx:
     enabled: false
 
