@@ -1,0 +1,7 @@
+# Creating a namespace for Kube-Prometheus-Stack (dev environment)
+apiVersion: v1 # K8S API version
+kind: Namespace
+metadata:
+  name: kube-monitoring
+  labels:
+    name: kube-monitoring
