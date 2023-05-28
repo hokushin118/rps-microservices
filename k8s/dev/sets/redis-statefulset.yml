@@ -1,0 +1,117 @@
+# Redis Statefulset for Kubernetes
+apiVersion: apps/v1 # K8S API version
+kind: StatefulSet
+metadata:
+  name: redis-sts
+  namespace: kube-cache # The name of the namespace
+  labels:
+    app: redis
+    tier: cache
+spec:
+  selector:
+    matchLabels:
+      app: redis
+      tier: cache
+  serviceName: redis-svc # link to redis service
+  replicas: 3 # Number of replicas that will be created
+  updateStrategy:
+    type: RollingUpdate
+  template: # a blueprint for pods
+    metadata:
+      labels:
+        app: redis
+        tier: cache
+    spec: # specification for pods
+      serviceAccountName: redis
+      terminationGracePeriodSeconds: 10 # It gives database 10 seconds to shut down gracefully upon receiving a SIGTERM signal
+      initContainers:
+        - name: init-redis
+          image: redis:4.0.9
+          command:
+            - bash
+            - "-c"
+            - |
+              set -ex
+              # Generate mysql server-id from pod ordinal index.
+              [[ `hostname` =~ -([0-9]+)$ ]] || exit 1
+              ordinal=${BASH_REMATCH[1]}
+              # Copy appropriate conf.d files from config-map to emptyDir.
+              if [[ $ordinal -eq 0 ]]; then
+                cp /etc/redis/config/master.conf /etc/redis.conf
+              else
+                cp /etc/redis/config/slave.conf /etc/redis.conf
+              fi
+          volumeMounts:
+            - name: redis-config
+              mountPath: /etc
+              subPath: redis.conf
+            - name: config-volume # a mount for config
+              mountPath: /etc/redis/config
+              readOnly: true
+      containers:
+        - name: redis
+          image: redis:4.0.9
+          imagePullPolicy: IfNotPresent
+          command: [ "redis-server" ]
+          args: [ "/etc/redis.conf" ]
+          ports:
+            - name: tcp-6379
+              protocol: TCP
+              containerPort: 6379
+          env:
+            # Using Secrets
+            - name: REDIS_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: redis-secret
+                  key: redis-password
+            - name: ALLOW_EMPTY_PASSWORD
+              valueFrom:
+                configMapKeyRef: # Using ConfigMap
+                  name: redis-configmap
+                  key: allow-empty-password
+            - name: REDIS_DISABLE_COMMANDS
+              valueFrom:
+                configMapKeyRef: # Using ConfigMap
+                  name: redis-configmap
+                  key: disable-comands
+          # Mount volume from persistent volume claim
+          volumeMounts:
+            - name: redis-persistent-storage # a mount for data
+              mountPath: /data
+            - name: redis-config
+              mountPath: /etc
+              subPath: redis.conf
+            - name: config-volume # a mount for config
+              mountPath: /etc/redis/config
+              readOnly: true
+            - name: secrets-volume # a mount for secrets
+              mountPath: /etc/redis/secrets
+              readOnly: true
+      volumes:
+        - name: config-volume
+          configMap:
+            name: redis-configmap
+            items:
+              - key: master.conf
+                path: master.conf
+              - key: slave.conf
+                path: slave.conf
+        - name: secrets-volume
+          secret:
+            secretName: redis-secret
+            optional: true
+        - name: redis-config
+          emptyDir: { }
+  # PersistentVolumes for the redis pods
+  volumeClaimTemplates:
+    - metadata:
+        name: redis-persistent-storage
+        annotations:
+          volume.beta.kubernetes.io/storage-class: "standard"
+      spec:
+        accessModes:
+          - ReadWriteOnce
+        resources:
+          requests:
+            storage: 1Gi

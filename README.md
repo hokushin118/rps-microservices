@@ -372,8 +372,8 @@ There are several ways we can implement the __ELK Stack__ architecture pattern:
 
 3. __Beats__ —> __Kafka__ —> __Logstash__ —> __Elasticsearch__ —> __Kibana__
 
-Here we implement the first and second approaches. The last one is the better option for production environment cause Kafka acts as a
-data buffer and helps prevent data loss or interruption while streaming files quickly.
+Here we implement the first and second approaches. The last one is the better option for production environment cause
+Kafka acts as a data buffer and helps prevent data loss or interruption while streaming files quickly.
 
 #### 1. Creating namespace for ELK services
 
@@ -424,8 +424,10 @@ Then deploy a headless service for _Elasticsearch_ pods using the following comm
 
 __Note:__ You cannot directly access the application running in the pod. If you want to access the application, you need
 a Service object in the Kubernetes cluster.
+
 _Headless_ service means that only internal pods can communicate with each other. They are not exposed to external
-requests outside of the Kubernetes cluster.
+requests outside the Kubernetes cluster. _Headless_ services should be used when client applications or pods want to
+communicate with specific (not randomly selected) pod (stateful application scenarios).
 
 And then run:
 
@@ -549,7 +551,8 @@ Then run:
      > kubectl apply -f ./k8s/dev/configmaps/filebeat-configmap.yml
 ```
 
-__Note:__ If you are running the __Beats__ —> __Elasticsearch__ —> __Kibana__ scenario, go to the filebeat-configmap.yml file and make the changes below before deploying:
+__Note:__ If you are running the __Beats__ —> __Elasticsearch__ —> __Kibana__ scenario, go to the filebeat-configmap.yml
+file and make the changes below before deploying:
 
 ```
     # Send events directly to Elasticsearch cluster
@@ -596,7 +599,8 @@ You can also make sure that filebeat container is up and running by viewing logs
 
 #### 4. Deploying Logstash
 
-_Logstash is used for ingesting data from a multitude of sources, transforming it, and then sending it to Elasticsearch._
+_Logstash is used for ingesting data from a multitude of sources, transforming it, and then sending it to
+Elasticsearch._
 
 __Note:__ Skip this step if you are running the __Beats__ —> __Elasticsearch__ —> __Kibana__ scenario.
 
@@ -637,9 +641,10 @@ Make sure that logstash container is up and running by viewing pod's _logstash_ 
      > kubectl logs <logstash pod name> -c logstash -n kube-elk -f
 ```
 
-Logstash also provides [monitoring APIs](https://www.elastic.co/guide/en/logstash/current/monitoring-logstash.html) for retrieving runtime metrics about Logstash.
-By default, the monitoring API attempts to bind to port _tcp:9600_. So, to access the Logstash monitoring API, we have to forward a local port _9600_ to the Kubernetes node running Logstash with the
-following command:
+Logstash also provides [monitoring APIs](https://www.elastic.co/guide/en/logstash/current/monitoring-logstash.html) for
+retrieving runtime metrics about Logstash. By default, the monitoring API attempts to bind to port _tcp:9600_. So, to
+access the Logstash monitoring API, we have to forward a local port _9600_ to the Kubernetes node running Logstash with
+the following command:
 
 ```
      > kubectl port-forward <logstash pod name> 9600:9600 -n kube-elk
@@ -652,7 +657,8 @@ You should see the following output:
       Forwarding from [::1]:9600 -> 9600
 ```
 
-Now You can use the root resource to retrieve general information about the Logstash instance, including the host and version with the following command:
+Now You can use the root resource to retrieve general information about the Logstash instance, including the host and
+version with the following command:
 
 ```
      > curl localhost:9600/?pretty
@@ -756,7 +762,8 @@ And then access the Kibana UI in any browser:
 
 In Kibana, navigate to the __Management__ -> __Kibana Index Patterns__. Kibana should display the Filebeat index.
 
-Enter __"logstash-*"__ or __"filebeat-*"__ (depending on running ELK pattern) as the index pattern, and in the next step select @timestamp as your Time Filter field.
+Enter __"logstash-*"__ or __"filebeat-*"__ (depending on running ELK pattern) as the index pattern, and in the next step
+select @timestamp as your Time Filter field.
 
 Navigate to the Kibana dashboard and in the __Discovery__ page, in the search bar enter:
 
@@ -797,6 +804,8 @@ You should see the following status output:
 ```
 
 ### MariaDB database on K8S cluster
+
+MariaDB Server is one of the most popular open source relational databases.
 
 #### 1. Creating namespace for MariaDB database
 
@@ -850,7 +859,8 @@ __Note:__ You cannot directly access the application running in the pod. If you 
 a Service object in the Kubernetes cluster.
 
 _Headless_ service means that only internal pods can communicate with each other. They are not exposed to external
-requests outside of the Kubernetes cluster.
+requests outside the Kubernetes cluster. _Headless_ services expose the individual pod IPs instead of the service IP and should be used when client applications or pods want to
+communicate with specific (not randomly selected) pod (stateful application scenarios).
 
 Get the list of running services under the __kube-db__ namespace with the following command:
 
@@ -871,8 +881,7 @@ Then run:
      > kubectl apply -f ./k8s/dev/secrets/mariadb-secret.yml
 ```
 
-Now the secrets can be referenced in our statefulset.
-And then run:
+Now the secrets can be referenced in our statefulset. And then run:
 
 ```
      > kubectl apply -f ./k8s/dev/sets/mariadb-statefulset.yml
@@ -907,7 +916,7 @@ You should see the following output:
 
 #### 3. Testing MariaDB cluster replication
 
-Create data on primary with these commands:
+Create data on first (primary) replica set member with these commands:
 
 ```
      > kubectl -n kube-db exec -it mariadb-sts-0 -- mariadb -uroot -p12345 
@@ -948,7 +957,7 @@ You should see the following output:
       Bye
 ```
 
-Check data on replicas with these commands:
+Check data on second (secondary) replica set member with these commands:
 
 ```
      > kubectl -n kube-db exec -it mariadb-sts-1 -- mariadb -uroot -p12345 
@@ -998,7 +1007,11 @@ You should see the following output:
       3 rows in set (0.000 sec)
 ```
 
+Repeat the same steps for the third (secondary) replica set member by changing the name of the pod to _mariadb-sts-2_.
+
 ### MongoDB database on K8S cluster
+
+MongoDB is a source-available cross-platform document-oriented database program.
 
 #### 1. Creating namespace for MongoDB database
 
@@ -1053,7 +1066,8 @@ __Note:__ You cannot directly access the application running in the pod. If you 
 a Service object in the Kubernetes cluster.
 
 _Headless_ service means that only internal pods can communicate with each other. They are not exposed to external
-requests outside of the Kubernetes cluster.
+requests outside the Kubernetes cluster. _Headless_ services expose the individual pod IPs instead of the service IP and expose the individual pod IPs instead of the service IP and should be used when client applications or pods want to
+communicate with specific (not randomly selected) pod (stateful application scenarios). 
 
 Get the list of running services under the __kube-nosql-db__ namespace with the following command:
 
@@ -1074,8 +1088,7 @@ Then run:
      > kubectl apply -f ./k8s/dev/secrets/mongodb-secret.yml
 ```
 
-Now the secrets can be referenced in our statefulset.
-And then run:
+Now the secrets can be referenced in our statefulset. And then run:
 
 ```
      > kubectl apply -f ./k8s/dev/sets/mongodb-statefulset.yml
@@ -1405,13 +1418,13 @@ You should see the following output:
       { "_id" : ObjectId("6471d9211175a02c9a9c27a1"), "name" : "Tic-Tac-Toe game" }
 ```
 
-Quit the primary replicaset member with the following command:
+Quit the primary replica set member with the following command:
 
 ```
      > exit
 ```
 
-Connect to the secondary replica set member shell with the following command:
+Connect to the second (secondary) replica set member shell with the following command:
 
 ```
      > kubectl -n kube-nosql-db exec -it mongodb-sts-1 -- mongo
@@ -1451,19 +1464,24 @@ You should see the following output:
       { "_id" : ObjectId("6471d9211175a02c9a9c27a1"), "name" : "Tic-Tac-Toe game" }
 ```
 
+Repeat the same steps for the third (secondary) replica set member by changing the name of the pod to _mongodb-sts-2_.
+
 ### Mongo Express web-based MongoDB admin application on K8S cluster
 
-[Mongo Express](https://github.com/mongo-express/mongo-express) is a basic web-based MongoDB admin interface.
+[Mongo Express](https://github.com/mongo-express/mongo-express) is an open source, basic web-based MongoDB admin interface.
 
 #### 1. Deploying Simple Single Service Ingress for Mongo Express application
 
-To create a [Simple Single Service Ingress](https://kubernetes.io/docs/concepts/services-networking/ingress) for the Mongo Express application, run:
+To create a [Simple Single Service Ingress](https://kubernetes.io/docs/concepts/services-networking/ingress) for the
+Mongo Express application, run:
 
 ```
      > kubectl apply -f ./k8s/dev/ingress/mongodb-ingress.yml
 ```
 
-__Note:__ A Mongo Express application [Simple Single Service Ingress](https://kubernetes.io/docs/concepts/services-networking/ingress) configuration exposes only one service to external users.
+__Note:__ A Mongo Express
+application [Simple Single Service Ingress](https://kubernetes.io/docs/concepts/services-networking/ingress)
+configuration exposes only one service to external users.
 
 ![Simple Single Service Ingress](https://d33wubrfki0l68.cloudfront.net/91ace4ec5dd0260386e71960638243cf902f8206/c3c52/docs/images/ingress.svg)
 
@@ -1565,7 +1583,15 @@ You should see the following output:
 
 #### 2. Deploying Redis cluster
 
+_Redis_ is an open source, in-memory data structure store used as a distributed cache in the RPS application. It is used to store data in a key-value format, allowing for fast access and retrieval of data. Redis is a popular choice for distributed caching due to its scalability, performance, and flexibility.
+
 To deploy _Redis_ cluster to Kubernetes, first run:
+
+```
+     > kubectl apply -f ./k8s/dev/rbacs/redis-rbac.yml
+```
+
+Then run:
 
 ```
      > kubectl apply -f ./k8s/dev/configmaps/redis-configmap.yml
@@ -1581,7 +1607,8 @@ __Note:__ You cannot directly access the application running in the pod. If you 
 a Service object in the Kubernetes cluster.
 
 _Headless_ service means that only internal pods can communicate with each other. They are not exposed to external
-requests outside of the Kubernetes cluster.
+requests outside the Kubernetes cluster. _Headless_ services expose the individual pod IPs instead of the service IP and should be used when client applications or pods want to
+communicate with specific (not randomly selected) pod (stateful application scenarios).
 
 To get the list of running services under the _Redis_ namespace, run:
 
@@ -1592,7 +1619,8 @@ To get the list of running services under the _Redis_ namespace, run:
 You should see the following output:
 
 ```
-
+      NAME        TYPE        CLUSTER-IP   EXTERNAL-IP   PORT(S)    AGE
+      redis-svc   ClusterIP   None         <none>        6379/TCP   4h11m
 ```
 
 Then run:
@@ -1601,7 +1629,150 @@ Then run:
      > kubectl apply -f ./k8s/dev/secrets/redis-secret.yml
 ```
 
-Now the secrets can be referenced in our statefulset.
+Now the secrets can be referenced in our statefulset. And then run:
+
+```
+     > kubectl apply -f ./k8s/dev/sets/redis-statefulset.yml
+```
+
+To monitor the deployment status, run:
+
+```
+     > kubectl rollout status sts/redis-sts -n kube-cache
+```
+
+You should see the following output:
+
+```
+      statefulset rolling update complete 3 pods at revision redis-sts-85577d848c...
+```
+
+To check the pod status, run:
+
+```
+     > kubectl get pods -n kube-cache
+```
+
+You should see the following output:
+
+```
+      NAME          READY   STATUS    RESTARTS   AGE
+      redis-sts-0   1/1     Running   0          5m40s
+      redis-sts-1   1/1     Running   0          5m37s
+      redis-sts-2   1/1     Running   0          5m34s
+```
+
+#### 3. Testing Redis cluster replication
+
+Connect to the first (master) replica set member shell with the following command:
+
+```
+     > kubectl -n kube-cache exec -it redis-sts-0 -- sh
+```
+
+Then connect to Redis the Redis CLI:
+
+```
+     # redis-cli
+```
+
+You should see the following output:
+
+```
+      127.0.0.1:6379>
+```
+
+Check the replica member replication information with the following command:
+
+```
+     127.0.0.1:6379> info replication
+```
+
+You should see the following output:
+
+```
+      # Replication
+      role:master
+      connected_slaves:2
+      slave0:ip=10.244.1.205,port=6379,state=online,offset=952,lag=1
+      slave1:ip=10.244.1.206,port=6379,state=online,offset=952,lag=1
+      master_replid:e7add4a40b5434360c75163ab01d8871928c5f03
+      master_replid2:0000000000000000000000000000000000000000
+      master_repl_offset:952
+      second_repl_offset:-1
+      repl_backlog_active:1
+      repl_backlog_size:1048576
+      repl_backlog_first_byte_offset:1
+      repl_backlog_histlen:952
+```
+
+Check the roles of the replica member with the following command:
+
+```
+     127.0.0.1:6379> role
+```
+
+You should see the following output:
+
+```
+      1) "master"
+      2) (integer) 728
+      3) 1) 1) "10.244.1.205"
+            2) "6379"
+            3) "728"
+         2) 1) "10.244.1.206"
+            2) "6379"
+            3) "728"
+```
+
+Create some key-value pair data using the following command:
+
+```
+     127.0.0.1:6379> set game1 RPS
+     OK
+     127.0.0.1:6379> set game2 Tic-Tac-Toe
+     OK
+```
+
+Now get the key-value pair list with the following command:
+
+```
+     127.0.0.1:6379> keys *
+```
+
+You should see the following output:
+
+```
+      1) "game1"
+      2) "game2"
+```
+
+Connect to the second (slave) replica set member shell with the following command:
+
+```
+     > kubectl -n kube-cache exec -it redis-sts-1 -- sh
+```
+
+Then connect to Redis the Redis CLI:
+
+```
+     # redis-cli
+```
+
+And type the following command:
+
+```
+      127.0.0.1:6379> keys *
+```
+
+You should see the following output:
+
+```
+      1) "game1"
+      2) "game2"
+```
+
+Repeat the same steps for the third (slave) replica set member by changing the name of the pod to _redis-sts-2_.
 
 ### Useful links
 

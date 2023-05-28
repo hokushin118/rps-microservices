@@ -90,20 +90,32 @@ spec:
                   name: rps-qry-service-configmap
                   key: mariadb-database
             - name: REDIS_HOSTNAME
-              value: "redis"
+              valueFrom:
+                configMapKeyRef: # Using ConfigMap
+                  name: rps-qry-service-configmap
+                  key: redis-url
             - name: REDIS_PASSWORD
               valueFrom:
                 secretKeyRef: # Using Secrets
                   name: rps-qry-service-secret
                   key: redis-password
             - name: REDIS_PORT
-              value: "6379"
+              valueFrom:
+                configMapKeyRef: # Using ConfigMap
+                  name: rps-qry-service-configmap
+                  key: redis-port
             - name: OPEN_API_URL
               value: "rps-qry-service"
             - name: RPS_QRY_SERVER_PORT
-              value: "8080"
+              valueFrom:
+                configMapKeyRef: # Using ConfigMap
+                  name: rps-qry-service-configmap
+                  key: server-port
             - name: RPS_QRY_GRPC_SERVER_PORT
-              value: "6565"
+              valueFrom:
+                configMapKeyRef: # Using ConfigMap
+                  name: rps-qry-service-configmap
+                  key: grpc-server-port
           # Mount volume from persistent volume claim
           volumeMounts:
             - name: config-volume # a mount for config

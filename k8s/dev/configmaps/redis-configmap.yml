@@ -8,7 +8,23 @@ metadata:
     app: redis
     tier: cache
 data:
+  allow-empty-password: "true"
+  disable-comands: FLUSHDB,FLUSHALL,CONFIG
 
-  redis.conf: |-
-    masterauth 12345
-    requirepass 12345
+  master.conf: |
+    bind 0.0.0.0
+    protected-mode yes
+    port 6379
+    tcp-backlog 511
+    timeout 0
+    tcp-keepalive 300
+    daemonize no
+    supervised no
+    pidfile /var/run/redis_6379.pid
+    appendonly yes
+    stop-writes-on-bgsave-error no
+    loglevel warning
+    logfile ""
+
+  slave.conf: |
+    slaveof redis-sts-0.redis-svc 6379
