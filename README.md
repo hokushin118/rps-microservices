@@ -301,10 +301,11 @@ tab and check the __Enable Kubernetes__ checkbox.
 
 You can also use [minikube](https://minikube.sigs.k8s.io/docs/start) for local K8S development.
 
-Make sure Minikube and kubectl are installed.
+Make sure Minikube, kubectl and helm are installed.
 
 [kubectl installation](https://kubernetes.io/docs/tasks/tools/install-kubectl)
 [Minikube installation](https://minikube.sigs.k8s.io/docs/start)
+[Helm installation](https://helm.sh/docs/intro/install)
 
 Start minikube cluster:
 
@@ -362,7 +363,7 @@ The output will list all of a cluster’s nodes and the version of Kubernetes ea
 
 You should see a single node in the output called _minikube_. That’s a full k8s cluster, with a single node.
 
-### Elasticsearch, Logstash, and Kibana (ELK Stack) on K8S cluster
+### Elasticsearch, Logstash and Kibana (ELK Stack) on K8S cluster
 
 There are several ways we can implement the __ELK Stack__ architecture pattern:
 
@@ -859,8 +860,9 @@ __Note:__ You cannot directly access the application running in the pod. If you 
 a Service object in the Kubernetes cluster.
 
 _Headless_ service means that only internal pods can communicate with each other. They are not exposed to external
-requests outside the Kubernetes cluster. _Headless_ services expose the individual pod IPs instead of the service IP and should be used when client applications or pods want to
-communicate with specific (not randomly selected) pod (stateful application scenarios).
+requests outside the Kubernetes cluster. _Headless_ services expose the individual pod IPs instead of the service IP and
+should be used when client applications or pods want to communicate with specific (not randomly selected) pod (stateful
+application scenarios).
 
 Get the list of running services under the __kube-db__ namespace with the following command:
 
@@ -1066,8 +1068,9 @@ __Note:__ You cannot directly access the application running in the pod. If you 
 a Service object in the Kubernetes cluster.
 
 _Headless_ service means that only internal pods can communicate with each other. They are not exposed to external
-requests outside the Kubernetes cluster. _Headless_ services expose the individual pod IPs instead of the service IP and expose the individual pod IPs instead of the service IP and should be used when client applications or pods want to
-communicate with specific (not randomly selected) pod (stateful application scenarios). 
+requests outside the Kubernetes cluster. _Headless_ services expose the individual pod IPs instead of the service IP and
+expose the individual pod IPs instead of the service IP and should be used when client applications or pods want to
+communicate with specific (not randomly selected) pod (stateful application scenarios).
 
 Get the list of running services under the __kube-nosql-db__ namespace with the following command:
 
@@ -1468,7 +1471,8 @@ Repeat the same steps for the third (secondary) replica set member by changing t
 
 ### Mongo Express web-based MongoDB admin application on K8S cluster
 
-[Mongo Express](https://github.com/mongo-express/mongo-express) is an open source, basic web-based MongoDB admin interface.
+[Mongo Express](https://github.com/mongo-express/mongo-express) is an open source, basic web-based MongoDB admin
+interface.
 
 #### 1. Deploying Simple Single Service Ingress for Mongo Express application
 
@@ -1552,6 +1556,10 @@ Then run:
 
 ### Redis database on K8S cluster
 
+_Redis_ is an open source, in-memory data structure store used as a distributed cache in the RPS application. It is used
+to store data in a key-value format, allowing for fast access and retrieval of data. Redis is a popular choice for
+distributed caching due to its scalability, performance, and flexibility.
+
 #### 1. Creating namespace for Redis database
 
 To create a kube-cache namespace on the k8s cluster, run:
@@ -1583,8 +1591,6 @@ You should see the following output:
 
 #### 2. Deploying Redis cluster
 
-_Redis_ is an open source, in-memory data structure store used as a distributed cache in the RPS application. It is used to store data in a key-value format, allowing for fast access and retrieval of data. Redis is a popular choice for distributed caching due to its scalability, performance, and flexibility.
-
 To deploy _Redis_ cluster to Kubernetes, first run:
 
 ```
@@ -1607,8 +1613,9 @@ __Note:__ You cannot directly access the application running in the pod. If you 
 a Service object in the Kubernetes cluster.
 
 _Headless_ service means that only internal pods can communicate with each other. They are not exposed to external
-requests outside the Kubernetes cluster. _Headless_ services expose the individual pod IPs instead of the service IP and should be used when client applications or pods want to
-communicate with specific (not randomly selected) pod (stateful application scenarios).
+requests outside the Kubernetes cluster. _Headless_ services expose the individual pod IPs instead of the service IP and
+should be used when client applications or pods want to communicate with specific (not randomly selected) pod (stateful
+application scenarios).
 
 To get the list of running services under the _Redis_ namespace, run:
 
@@ -1774,6 +1781,196 @@ You should see the following output:
 
 Repeat the same steps for the third (slave) replica set member by changing the name of the pod to _redis-sts-2_.
 
+### Prometheus, Alertmanager and Grafana (Monitoring Stack) on K8S cluster
+
+_Monitoring Stack_ is an open-source [Prometheus](https://prometheus.io), [Alertmanager](https://prometheus.io/docs/alerting/latest/alertmanager) and Grafana monitoring infrastructure in Kubernetes.
+
+There are three necessary services in _Monitoring Stack_ setup:
+
+[Prometheus](https://prometheus.io) endpoint(s) is the application with metrics that we want to track.
+
+[Prometheus](https://prometheus.io) is a monitoring system and time-series database.
+
+[Grafana](https://grafana.com) is a visualization tool that can use [Prometheus](https://prometheus.io) to create dashboards and graphs.
+
+#### 1. Creating namespace for Monitoring Stack
+
+To create a kube-cache namespace on the k8s cluster, run:
+
+```
+     > kubectl apply -f ./k8s/dev/namespaces/kube-monitoring-ns.yml
+```
+
+To check the status, run:
+
+```
+     > kubectl get namespaces --show-labels
+```
+
+You should see the following output:
+
+```
+      NAME                   STATUS   AGE     LABELS
+      default                Active   10d     kubernetes.io/metadata.name=default
+      ingress-nginx          Active   10d     app.kubernetes.io/instance=ingress-nginx,app.kubernetes.io/name=ingress-nginx,kubernetes.io/metadata.name=ingress-nginx
+      kube-cache             Active   3d16h   kubernetes.io/metadata.name=kube-cache,name=kube-cache
+      kube-db                Active   6d19h   kubernetes.io/metadata.name=kube-db,name=kube-db
+      kube-elk               Active   18h     kubernetes.io/metadata.name=kube-elk,name=kube-elk
+      kube-monitoring        Active   29m     kubernetes.io/metadata.name=kube-monitoring,name=kube-monitoring
+      kube-node-lease        Active   10d     kubernetes.io/metadata.name=kube-node-lease
+      kube-nosql-db          Active   26h     kubernetes.io/metadata.name=kube-nosql-db,name=kube-nosql-db
+      kube-public            Active   10d     kubernetes.io/metadata.name=kube-public
+      kube-system            Active   10d     kubernetes.io/metadata.name=kube-system
+      kubernetes-dashboard   Active   10d     addonmanager.kubernetes.io/mode=Reconcile,kubernetes.io/metadata.name=kubernetes-dashboard,kubernetes.io/minikube-addons=dashboard
+```
+
+#### 2. Deploying Monitoring cluster
+
+We used to manually deploy Kubernetes manifest files. Making changes to K8S files as required making the process lengthy
+and prone to errors as there's no consistency of deployments with this approach. With a fresh Kubernetes cluster, you
+need to define the namespace, create storage classes, and then deploy your application to the cluster. The process is
+quite lengthy, and if something goes wrong, it becomes a tedious process to find the problem.
+
+[Helm](https://helm.sh) is a package manager for Kubernetes that allows us to easily install and manage applications on
+Kubernetes clusters.
+
+I am going to use [Helm](https://helm.sh) to deploy the _Monitoring Stack_ to the cluster. _Monitoring Stack_ comes with
+a bunch of standard and third party Kubernetes components. [Helm](https://helm.sh) allows you to deploy the _Monitoring
+Stack_ currently without having strong working knowledge of Kubernetes.
+
+To deploy _Monitoring Stack_ to Kubernetes cluster with [helm charts](https://helm.sh/docs/topics/charts), just run:
+
+```
+     > helm install prometheus prometheus-community/kube-prometheus-stack -n kube-monitoring
+```
+
+You should see the following output:
+
+```
+      NAME: prometheus
+      LAST DEPLOYED: Sun May 28 12:12:25 2023
+      NAMESPACE: kube-monitoring
+      STATUS: deployed
+      REVISION: 1
+      NOTES:
+      kube-prometheus-stack has been installed. Check its status by running:
+        kubectl --namespace kube-monitoring get pods -l "release=prometheus"
+      
+      Visit https://github.com/prometheus-operator/kube-prometheus for instructions on how to create & configure Alertmanager and Prometheus instances using the Operator.
+```
+
+That's it! To check the pod status, run:
+
+```
+     > kubectl get all -n kube-monitoring
+```
+
+You should see all installed _Monitoring Stack__ components.
+
+To access the [Prometheus](https://prometheus.io) locally, we have to forward a local port 9090 to the Kubernetes node running [Prometheus](https://prometheus.io)
+with the following command:
+
+```
+     > kubectl port-forward <prometheus pod name> 9090:9090 -n kube-monitoring
+```
+
+You should see the following output:
+
+```
+      Forwarding from 127.0.0.1:9090 -> 9090
+      Forwarding from [::1]:9090 -> 9090
+```
+
+Now you can access the dashboard in the browser on http://localhost:9090.
+
+[Prometheus HTTP API](https://prometheus.io/docs/prometheus/latest/querying/api)
+
+### Grafana web-based application on K8S cluster
+
+[Grafana](https://grafana.com) is a multi-platform open source analytics and interactive visualization web application.
+
+#### 1. Deploying Simple Single Service Ingress for Grafana application
+
+If you open the grafana service using the following command:
+
+```
+     > kubectl get service prometheus-grafana -n kube-monitoring -o yaml
+```
+
+you will see that the default port for Grafana dashboard is 3000:
+
+```
+        ports:
+        - name: http-web
+          port: 80
+          protocol: TCP
+          targetPort: 3000
+```
+
+So, we can forward port to host by ingress component and thus gain access to the dashboard by browser.
+
+To create a [Simple Single Service Ingress](https://kubernetes.io/docs/concepts/services-networking/ingress) for the
+Grafana application, run:
+
+```
+     > kubectl apply -f ./k8s/dev/ingress/grafana-ingress.yml
+```
+
+__Note:__ A Grafana
+application [Simple Single Service Ingress](https://kubernetes.io/docs/concepts/services-networking/ingress)
+configuration exposes only one service to external users.
+
+![Simple Single Service Ingress](https://d33wubrfki0l68.cloudfront.net/91ace4ec5dd0260386e71960638243cf902f8206/c3c52/docs/images/ingress.svg)
+
+Make sure the Grafana application ingress has been created:
+
+```
+     > kubectl get ingress -n kube-monitoring
+```
+
+You should see the following output:
+
+```
+      NAME                    CLASS   HOSTS                    ADDRESS        PORTS   AGE
+      grafana-ingress         nginx   grafana.internal         192.168.49.2   80      25s
+```
+
+Copy the ip address (192.168.49.2) to the clipboard, you will need it in the next step.
+
+#### 2. Adding custom entry to the etc/host file for the Grafana application
+
+Add a custom entry to the etc/hosts file using the nano text editor:
+
+```
+     > sudo nano /etc/hosts
+```
+
+You should add the following ip address (copied in the previous step) and custom domain to the hosts file:
+
+```
+      192.168.49.2  grafana.internal mongodb.internal
+```
+
+You may check the custom domain name with ping command:
+
+```
+     > ping grafana.internal
+```
+
+You should see the following output:
+
+```
+      64 bytes from grafana.internal (192.168.49.2): icmp_seq=1 ttl=64 time=0.072 ms
+      64 bytes from grafana.internal (192.168.49.2): icmp_seq=2 ttl=64 time=0.094 ms
+      64 bytes from grafana.internal (192.168.49.2): icmp_seq=3 ttl=64 time=0.042 ms
+```
+
+Access the Grafana application from any browser by typing:
+
+```
+      > grafana.internal
+```
+
 ### Useful links
 
 For testing gRPC API (make sure that you are using correct grpc port for a profile), please consider the following
@@ -1786,6 +1983,7 @@ options:
 For testing REST API, you can also consider the following options:
 
 * [Postman GUI client for REST](https://www.postman.com)
+* [Postman Now Supports gRPC](https://blog.postman.com/postman-now-supports-grpc)
 
 For testing MongoDB, you can also consider the following options:
 
@@ -1802,6 +2000,7 @@ Kubernetes
 * [K8S Dashboard](https://kubernetes.io/docs/tasks/access-application-cluster/web-ui-dashboard)
 * [K8S Ingress Installation Guide](https://kubernetes.github.io/ingress-nginx/deploy/#quick-start)
 * [K8S Overview for MariaDB Users](https://mariadb.com/kb/en/kubernetes-overview-for-mariadb-users)
+* [K8S Monitoring Stack Configuration](https://github.com/prometheus-operator/kube-prometheus)
 
 ELK
 
