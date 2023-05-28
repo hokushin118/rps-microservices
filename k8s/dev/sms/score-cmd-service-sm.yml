@@ -8,6 +8,7 @@ metadata:
     app: score-cmd-service
     tier: backend
     environment: development
+    release: prometheus # allows prometheus to discover it
 spec:
   selector:
     matchLabels:
