@@ -1,0 +1,19 @@
+# RPS Game Command microservice Prometheus service monitor
+apiVersion: monitoring.coreos.com/v1 # K8S API version
+kind: ServiceMonitor
+metadata:
+  name: rps-cmd-service-sm
+  namespace: rps-app-dev # The name of the namespace
+  labels:
+    app: rps-cmd-service
+    tier: backend
+    environment: development
+spec:
+  selector:
+    matchLabels:
+      app: rps-cmd-service
+      tier: backend
+      environment: development
+  endpoints: # an endpoint to use to scrape metrics
+    - port: http-8080
+      path: "/actuator/prometheus" # Spring Boot app exposes the Prometheus-formatted metrics to this endpoint

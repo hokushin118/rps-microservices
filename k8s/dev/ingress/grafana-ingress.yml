@@ -1,0 +1,24 @@
+# Simple Single Service Ingress for Grafana UI
+# DNS > LB > Ingress > Service > Pods > Container
+apiVersion: networking.k8s.io/v1 # K8S API version
+kind: Ingress
+metadata:
+  name: grafana-ingress
+  namespace: kube-monitoring # The name of the namespace
+spec:
+  ingressClassName: nginx # Ingress Controller
+  # tls:
+  # - hosts:
+  #   - grafana.internal
+  #     secretName: grafana-secret-tls
+  rules:
+    - host: grafana.internal
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: prometheus-grafana
+                port:
+                  number: 3000

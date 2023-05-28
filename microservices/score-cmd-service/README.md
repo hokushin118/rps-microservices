@@ -240,6 +240,18 @@ Open any browser and navigate to the microservice Open API 3.0 definition (REST 
      > http://rps.internal/score-cmd-api/swagger-ui/index.html
 ```
 
+#### 5. Sending metrics from the Score command microservice to the Monitoring Stack
+
+To send the Score command microservice metrics to the Monitoring Stack, first make sure that the Prometheus endpoint is configured in the application as below:
+
+[Gathering Metrics from Spring Boot on Kubernetes with Prometheus and Grafana](https://tanzu.vmware.com/developer/guides/spring-prometheus)
+
+Then deploy the microservice Prometheus service monitor with the following command:
+
+```
+     > kubectl apply -f ./k8s/dev/sms/score-cmd-service-sm.yml
+```
+
 ### Useful links
 
 For testing gRPC API (make sure that you are using correct grpc port for a profile), please consider the following
