@@ -87,9 +87,15 @@ spec:
             - name: OPEN_API_URL
               value: "score-cmd-service"
             - name: SCORE_CMD_SERVER_PORT
-              value: "8080"
+              valueFrom:
+                configMapKeyRef: # Using ConfigMap
+                  name: score-cmd-service-configmap
+                  key: server-port
             - name: SCORE_CMD_GRPC_SERVER_PORT
-              value: "6565"
+              valueFrom:
+                configMapKeyRef: # Using ConfigMap
+                  name: score-cmd-service-configmap
+                  key: grpc-server-port
           # Mount volume from persistent volume claim
           volumeMounts:
             - name: config-volume # a mount for config

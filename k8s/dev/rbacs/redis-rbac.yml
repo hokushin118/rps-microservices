@@ -1,0 +1,51 @@
+# Redis RBAC authn and authz
+apiVersion: v1 # K8S API version
+kind: ServiceAccount
+metadata:
+  name: redis
+  namespace: kube-cache # The name of the namespace
+  labels:
+    app: redis
+    tier: cache
+
+---
+# Here we define a ClusterRole called redis to which we grant the get, list and watch permissions on the pods, services and endpoints.
+apiVersion: rbac.authorization.k8s.io/v1 # K8S API version
+kind: ClusterRole
+metadata:
+  # "namespace" omitted since ClusterRoles are not namespaced
+  name: redis
+  labels:
+    app: redis
+    tier: cache
+rules:
+  - apiGroups: [ "" ] # "" indicates the core API group
+    # at the HTTP level, the name of the resource for accessing
+    resources:
+      - pods
+      - services
+      - endpoints
+    verbs:
+      - get
+      - list
+      - watch
+
+---
+# This role binding allows "redis" to read pods in the "cache" namespace.
+# You need to already have a Role named "redis" in that namespace.
+apiVersion: rbac.authorization.k8s.io/v1 # K8S API version
+kind: ClusterRoleBinding
+metadata:
+  name: redis
+  namespace: kube-cache # The name of the namespace
+  labels:
+    app: redis
+    tier: cache
+subjects:
+  - kind: ServiceAccount
+    name: redis
+    namespace: kube-cache
+roleRef: # "roleRef" specifies the binding to a Role / ClusterRole
+  kind: ClusterRole # this must be Role or ClusterRole
+  name: redis # this must match the name of the Role or ClusterRole you wish to bind to
+  apiGroup: rbac.authorization.k8s.io
