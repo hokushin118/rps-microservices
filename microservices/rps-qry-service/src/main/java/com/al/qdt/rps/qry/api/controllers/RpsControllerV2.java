@@ -57,6 +57,7 @@ public class RpsControllerV2 {
      * Returns all games.
      *
      * @return collection of games
+     * @version 2
      */
     @Operation(operationId = "all-proto",
             summary = "Returns all games",
@@ -98,6 +99,7 @@ public class RpsControllerV2 {
      *
      * @param id game id, must not be null or empty
      * @return found game
+     * @version 2
      */
     @Operation(operationId = "find-by-id-proto",
             summary = "Finds game by id",
@@ -142,7 +144,7 @@ public class RpsControllerV2 {
     @Timed(value = "game.findById", description = "Time taken to find game by id", longTask = true)
     public GameDto findById(@Parameter(description = "Id of game that needs to be fetched",
             schema = @Schema(type = "string"), example = TEST_ID, required = true)
-                                @Valid @NotNull @PathVariable(value = "id") UUID id) {
+                            @Valid @NotNull @PathVariable(value = "id") UUID id) {
         log.info("REST CONTROLLER: Finding game by id: {}.", id.toString());
         return this.rpsService.findById(id);
     }
@@ -152,6 +154,7 @@ public class RpsControllerV2 {
      *
      * @param username username, must not be null or empty
      * @return found collection of games
+     * @version 2
      */
     @Operation(operationId = "find-by-username-proto",
             summary = "Finds games by username",
@@ -196,7 +199,7 @@ public class RpsControllerV2 {
     @Timed(value = "game.findByUsername", description = "Time taken to find games by winner", longTask = true)
     public ListOfGamesResponse findByUsername(@Parameter(description = "Username of games that need to be fetched",
             schema = @Schema(type = "string"), example = USERNAME_ONE, required = true)
-                                            @Valid @NotNull @PathVariable(value = "username") StringValue username) {
+                                              @Valid @NotNull @PathVariable(value = "username") StringValue username) {
         log.info("REST CONTROLLER: Finding game by username: {}.", username.getValue());
         return this.rpsService.findByUsername(username);
     }

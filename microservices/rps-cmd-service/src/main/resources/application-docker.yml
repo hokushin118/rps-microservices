@@ -19,9 +19,10 @@ spring:
     mongodb:
       host: ${MONGO_HOSTNAME}
       port: ${ME_CONFIG_MONGODB_PORT}
-      database: ${MONGO_INITDB_DATABASE}
-      username: ${MONGO_INITDB_ROOT_USERNAME}
-      password: ${MONGO_INITDB_ROOT_PASSWORD}
+      database: ${RPS_DATABASE}
+      username: ${MONGO_ADMIN_USERNAME}
+      password: ${MONGO_ADMIN_PASSWORD}
+      authentication-database: ${MONGO_INITDB_DATABASE}
 
   # Kafka properties
   kafka:

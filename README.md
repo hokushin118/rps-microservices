@@ -290,6 +290,20 @@ from the url.
   http://host.docker.internal/score-qry-api/swagger-ui/index.html
 ```
 
+***
+
+From experience, Docker Compose is a great option for small-scale applications that don't require a lot of
+infrastructure. It's easy to use and can be deployed quickly. It also a great tool for local development.
+
+However, Docker Compose is not as scalable as Kubernetes and is not that suitable for developing large-scale
+applications. Kubernetes is a more complex but more powerful deployment technique.
+
+Docker Compose vs K8S, pros and cons:
+
+[Docker Swarm vs Kubernetes: how to choose a container orchestration tool](https://circleci.com/blog/docker-swarm-vs-kubernetes)
+
+***
+
 ### Kubernetes (K8S)
 
 #### Prerequisites
@@ -306,6 +320,8 @@ Make sure Minikube, kubectl and helm are installed.
 [kubectl installation](https://kubernetes.io/docs/tasks/tools/install-kubectl)
 [Minikube installation](https://minikube.sigs.k8s.io/docs/start)
 [Helm installation](https://helm.sh/docs/intro/install)
+[How To Install Minikube on Ubuntu 22.04|20.04|18.04](https://computingforgeeks.com/how-to-install-minikube-on-ubuntu-debian-linux)
+[How To Install Docker On Ubuntu 22.04 | 20.04](https://cloudcone.com/docs/article/how-to-install-docker-on-ubuntu-22-04-20-04)
 
 Start minikube cluster:
 
@@ -331,6 +347,41 @@ configuration:
      Processor: Intel Xeon Processor (Icelake) 2GHz 16Mb
      vCPU: 4
      RAM: 32
+```
+
+Make sure Minikube is up and running with the following command:
+
+```
+     > minikube status
+```
+
+You should see the following output:
+
+```
+      minikube
+      type: Control Plane
+      host: Running
+      kubelet: Running
+      apiserver: Running
+      kubeconfig: Configured
+```
+
+Now that you are certain everything is up and running deploy the Kubernetes Dashboard with the command:
+
+```
+     > minikube dashboard
+```
+
+If you want to access the K8S Dashboard from outside the cluster, run the following command:
+
+```
+      > kubectl proxy --address='0.0.0.0' --accept-hosts='^*$'
+```
+
+And then access the K8S Dashboard in any browser:
+
+```
+      http://<ip of your hosting server>:8001/api/v1/namespaces/kubernetes-dashboard/services/http:kubernetes-dashboard:/proxy/#/workloads?namespace=default
 ```
 
 Open a __Command Prompt__ and check if access is available for your Minikube cluster:
@@ -361,7 +412,9 @@ The output will list all of a cluster’s nodes and the version of Kubernetes ea
       minikube   Ready    control-plane   7d14h   v1.26.3
 ```
 
-You should see a single node in the output called _minikube_. That’s a full k8s cluster, with a single node.
+You should see a single node in the output called _minikube_. That’s a full K8S cluster, with a single node.
+
+First, we have to set up our infrastucture. 
 
 ### Elasticsearch, Logstash and Kibana (ELK Stack) on K8S cluster
 
@@ -378,7 +431,7 @@ Kafka acts as a data buffer and helps prevent data loss or interruption while st
 
 #### 1. Creating namespace for ELK services
 
-To create a kube-elk namespace on the k8s cluster, run:
+To create a _kube-elk_ namespace on the K8S cluster, run:
 
 ```
      > kubectl apply -f ./k8s/dev/namespaces/kube-elk-ns.yml
@@ -810,7 +863,7 @@ MariaDB Server is one of the most popular open source relational databases.
 
 #### 1. Creating namespace for MariaDB database
 
-To create a kube-db namespace on the k8s cluster, run:
+To create a _kube-db_ namespace on the k8s cluster, run:
 
 ```
      > kubectl apply -f ./k8s/dev/namespaces/kube-db-ns.yml
@@ -918,6 +971,8 @@ You should see the following output:
 
 #### 3. Testing MariaDB cluster replication
 
+At this point, your MariaDB cluster is ready for work. Test it as follows:
+
 Create data on first (primary) replica set member with these commands:
 
 ```
@@ -1017,7 +1072,7 @@ MongoDB is a source-available cross-platform document-oriented database program.
 
 #### 1. Creating namespace for MongoDB database
 
-To create a kube-nosql-db namespace on the k8s cluster, run:
+To create a _kube-nosql-db_ namespace on the k8s cluster, run:
 
 ```
      > kubectl apply -f ./k8s/dev/namespaces/kube-nosql-db-ns.yml
@@ -1106,22 +1161,25 @@ To monitor the deployment status, run:
 You should see the following output:
 
 ```
+      Waiting for 3 pods to be ready...
+      Waiting for 2 pods to be ready...
+      Waiting for 1 pods to be ready...
       partitioned roll out complete: 3 new pods have been updated...
 ```
 
 To check the pod status, run:
 
 ```
-     > kubectl get pods -n kube-nosql-db
+     > kubectl get pods -n kube-nosql-db -o wide
 ```
 
 You should see the following output:
 
 ```
-      NAME            READY   STATUS    RESTARTS   AGE
-      mongodb-sts-0   2/2     Running   0          4m26s
-      mongodb-sts-1   2/2     Running   0          4m21s
-      mongodb-sts-2   2/2     Running   0          4m17s
+      NAME            READY   STATUS    RESTARTS   AGE   IP            NODE       NOMINATED NODE   READINESS GATES
+      mongodb-sts-0   2/2     Running   0          85s   10.244.0.8    minikube   <none>           <none>
+      mongodb-sts-1   2/2     Running   0          62s   10.244.0.9    minikube   <none>           <none>
+      mongodb-sts-2   2/2     Running   0          58s   10.244.0.10   minikube   <none>           <none>
 ```
 
 #### 3. Setting up MongoDB replication
@@ -1372,13 +1430,58 @@ replicas.
 
 The ReplicaSet deployment of MongoDB is set up and ready to operate.
 
-Quit the replicaset member with the following command:
+Quit the replica set member with the following command:
 
 ```
      > exit
 ```
 
-#### 4. Testing MongoDB cluster replication
+#### 4. Setting up MongoDB admin credentials
+
+Now let's create the admin account.
+
+Connect to the first (primary) replica set member shell with the following command:
+
+```
+     > kubectl -n kube-nosql-db exec -it mongodb-sts-0 -- mongo
+```
+
+Switch to admin database with the following command:
+
+```
+     > use admin
+```
+
+Create admin user with the following command:
+
+```
+     > db.createUser({ user:'admin', pwd:'mongo12345', roles:[ { role:'userAdminAnyDatabase', db: 'admin'}]})
+```
+
+You should see the following output:
+
+```
+Successfully added user: {
+        "user" : "admin",
+        "roles" : [
+                {
+                        "role" : "userAdminAnyDatabase",
+                        "db" : "admin"
+                }
+        ]
+}
+```
+
+It means admin account has been created successfully.
+Quit the replica set member with the following command:
+
+```
+     > exit
+```
+
+#### 5. Testing MongoDB cluster replication
+
+At this point, your MongoDB cluster is ready for work. Test it as follows:
 
 Connect to the first (primary) replica set member shell with the following command:
 
@@ -1502,7 +1605,7 @@ You should see the following output:
       mongodb-ingress         nginx   mongodb.internal         192.168.49.2   80      40h
 ```
 
-Copy the ip address (192.168.49.2) to the clipboard, you will need it in the next step.
+Note the ip address (192.168.49.2) displayed in the output, as you will need this in the next step.
 
 #### 2. Adding custom entry to the etc/host file for the Mongo Express application
 
@@ -1562,7 +1665,7 @@ distributed caching due to its scalability, performance, and flexibility.
 
 #### 1. Creating namespace for Redis database
 
-To create a kube-cache namespace on the k8s cluster, run:
+To create a _kube-cache_ namespace on the k8s cluster, run:
 
 ```
      > kubectl apply -f ./k8s/dev/namespaces/kube-cache-ns.yml
@@ -1670,6 +1773,8 @@ You should see the following output:
 ```
 
 #### 3. Testing Redis cluster replication
+
+At this point, your Redis cluster is ready for work. Test it as follows:
 
 Connect to the first (master) replica set member shell with the following command:
 
@@ -1783,7 +1888,9 @@ Repeat the same steps for the third (slave) replica set member by changing the n
 
 ### Prometheus, Alertmanager and Grafana (Monitoring Stack) on K8S cluster
 
-_Monitoring Stack_ is an open-source [Prometheus](https://prometheus.io), [Alertmanager](https://prometheus.io/docs/alerting/latest/alertmanager) and Grafana monitoring infrastructure in Kubernetes.
+_Monitoring Stack_ is an open-source [Prometheus](https://prometheus.io)
+, [Alertmanager](https://prometheus.io/docs/alerting/latest/alertmanager) and Grafana monitoring infrastructure in
+Kubernetes.
 
 There are three necessary services in _Monitoring Stack_ setup:
 
@@ -1791,11 +1898,14 @@ There are three necessary services in _Monitoring Stack_ setup:
 
 [Prometheus](https://prometheus.io) is a monitoring system and time-series database.
 
-[Grafana](https://grafana.com) is a visualization tool that can use [Prometheus](https://prometheus.io) to create dashboards and graphs.
+[Alertmanager](https://prometheus.io/docs/alerting/latest/alertmanager) handles alerts sent by Prometheus server.
+
+[Grafana](https://grafana.com) is a visualization tool that can use [Prometheus](https://prometheus.io) to create
+dashboards and graphs.
 
 #### 1. Creating namespace for Monitoring Stack
 
-To create a kube-cache namespace on the k8s cluster, run:
+To create a _kube-monitoring_ namespace on the k8s cluster, run:
 
 ```
      > kubectl apply -f ./k8s/dev/namespaces/kube-monitoring-ns.yml
@@ -1844,7 +1954,7 @@ To deploy _Monitoring Stack_ to Kubernetes cluster with [helm charts](https://he
      > helm install prometheus prometheus-community/kube-prometheus-stack -n kube-monitoring
 ```
 
-You should see the following output:
+Wait for some time until the chart is deployed. You should see the following output:
 
 ```
       NAME: prometheus
@@ -1867,7 +1977,8 @@ That's it! To check the pod status, run:
 
 You should see all installed _Monitoring Stack__ components.
 
-To access the [Prometheus](https://prometheus.io) locally, we have to forward a local port 9090 to the Kubernetes node running [Prometheus](https://prometheus.io)
+To access the [Prometheus](https://prometheus.io) locally, we have to forward a local port 9090 to the Kubernetes node
+running [Prometheus](https://prometheus.io)
 with the following command:
 
 ```
@@ -1935,7 +2046,7 @@ You should see the following output:
       grafana-ingress         nginx   grafana.internal         192.168.49.2   80      25s
 ```
 
-Copy the ip address (192.168.49.2) to the clipboard, you will need it in the next step.
+Note the ip address (192.168.49.2) displayed in the output, as you will need this in the next step.
 
 #### 2. Adding custom entry to the etc/host file for the Grafana application
 
@@ -1970,6 +2081,265 @@ Access the Grafana application from any browser by typing:
 ```
       > grafana.internal
 ```
+
+### Apache Kafka on K8S cluster
+
+[Apache Kafka](https://kafka.apache.org) is an open-source, event streaming platform that is distributed, scalable, high-throughput, low-latency, and has a very large ecosystem.
+
+#### 1. Creating namespace for Kafka
+
+To create a _kube-kafka_ namespace on the k8s cluster, run:
+
+```
+     > kubectl apply -f ./k8s/dev/namespaces/kube-kafka-ns.yml
+```
+
+To check the status, run:
+
+```
+     > kubectl get namespaces --show-labels
+```
+
+You should see the following output:
+
+```
+      NAME                   STATUS   AGE     LABELS
+      default                Active   10d     kubernetes.io/metadata.name=default
+      ingress-nginx          Active   10d     app.kubernetes.io/instance=ingress-nginx,app.kubernetes.io/name=ingress-nginx,kubernetes.io/metadata.name=ingress-nginx
+      kube-cache             Active   3d16h   kubernetes.io/metadata.name=kube-cache,name=kube-cache
+      kube-db                Active   6d19h   kubernetes.io/metadata.name=kube-db,name=kube-db
+      kube-elk               Active   18h     kubernetes.io/metadata.name=kube-elk,name=kube-elk
+      kube-kafka             Active   23s     kubernetes.io/metadata.name=kube-kafka,name=kube-kafka
+      kube-monitoring        Active   29m     kubernetes.io/metadata.name=kube-monitoring,name=kube-monitoring
+      kube-node-lease        Active   10d     kubernetes.io/metadata.name=kube-node-lease
+      kube-nosql-db          Active   26h     kubernetes.io/metadata.name=kube-nosql-db,name=kube-nosql-db
+      kube-public            Active   10d     kubernetes.io/metadata.name=kube-public
+      kube-system            Active   10d     kubernetes.io/metadata.name=kube-system
+      kubernetes-dashboard   Active   10d     addonmanager.kubernetes.io/mode=Reconcile,kubernetes.io/metadata.name=kubernetes-dashboard,kubernetes.io/minikube-addons=dashboard
+```
+
+#### 2. Deploying Apache Zookeeper cluster
+
+The first step is to deploy [Apache Zookeeper](https://zookeeper.apache.org) on your K8S cluster
+using [Zookeeper Bitnami's Helm chart](https://github.com/bitnami/charts/tree/main/bitnami/zookeeper).
+
+The [Apache Zookeeper](https://zookeeper.apache.org) deployment will use this [Apache Zookeeper](https://zookeeper.apache.org) deployment for coordination and management.
+
+First, add the [Bitnami charts repository](https://github.com/bitnami/charts/tree/main/bitnami/zookeeper) to Helm:
+
+```
+     > helm repo add bitnami https://charts.bitnami.com/bitnami
+```
+
+You should see the following output:
+
+```
+      "bitnami" has been added to your repositories
+```
+
+Then execute the following command to deploy an [Apache Zookeeper](https://zookeeper.apache.org) cluster with 3 nodes:
+
+```
+     > helm install zookeeper bitnami/zookeeper --set image.tag=3.8.0-debian-10-r78 --set replicaCount=3 --set auth.enabled=false --set allowAnonymousLogin=true -n kube-kafka
+```
+
+Wait for some time until the chart is deployed. You should see the following output:
+
+```
+      NAME: zookeeper
+      LAST DEPLOYED: Wed May 31 19:50:42 2023
+      NAMESPACE: kube-kafka
+      STATUS: deployed
+      REVISION: 1
+      TEST SUITE: None
+      NOTES:
+      CHART NAME: zookeeper
+      CHART VERSION: 11.4.2
+      APP VERSION: 3.8.1
+      
+      ** Please be patient while the chart is being deployed **
+      
+      ZooKeeper can be accessed via port 2181 on the following DNS name from within your cluster:
+      
+          zookeeper.kube-kafka.svc.cluster.local
+      
+      To connect to your ZooKeeper server run the following commands:
+      
+          export POD_NAME=$(kubectl get pods --namespace kube-kafka -l "app.kubernetes.io/name=zookeeper,app.kubernetes.io/instance=zookeeper,app.kubernetes.io/component=zookeeper" -o jsonpath="{.items[0].metadata.name}")
+          kubectl exec -it $POD_NAME -- zkCli.sh
+      
+      To connect to your ZooKeeper server from outside the cluster execute the following commands:
+      
+          kubectl port-forward --namespace kube-kafka svc/zookeeper 2181:2181 &
+          zkCli.sh 127.0.0.1:2181
+```
+
+Note the service name displayed in the output, as you will need this in subsequent steps.
+
+```
+      zookeeper.kube-kafka.svc.cluster.local
+```
+
+Make sure that the Zookeeper cluster is up and running with the following command:
+
+```
+     > kubectl get pods -n kube-kafka -o wide
+```
+
+You should see the following output:
+
+```
+      NAME              READY   STATUS    RESTARTS   AGE   IP            NODE       NOMINATED NODE   READINESS GATES
+      zookeeper-0       1/1     Running   0          81s   10.244.0.22   minikube   <none>           <none>
+      zookeeper-1       1/1     Running   0          81s   10.244.0.24   minikube   <none>           <none>
+      zookeeper-2       1/1     Running   0          81s   10.244.0.23   minikube   <none>           <none>
+```
+
+#### 3. Deploying Apache Kafka cluster
+
+The next step is to deploy [Apache Zookeeper](https://zookeeper.apache.org), again
+with [Kafka Bitnami's Helm chart](https://github.com/bitnami/charts/tree/main/bitnami/kafka). In this case, we will
+provide the name of the [Apache Zookeeper](https://zookeeper.apache.org) service as a parameter to the Helm chart.
+
+```
+     > helm install kafka bitnami/kafka --set image.tag=2.7.0-debian-10-r100 --set zookeeper.enabled=false --set kraft.enabled=false --set replicaCount=3 --set externalZookeeper.servers=zookeeper.kube-kafka -n kube-kafka
+```
+
+This command will deploy a three-node [Apache Zookeeper](https://zookeeper.apache.org) cluster and configure the nodes to connect to the [Apache Zookeeper](https://zookeeper.apache.org)
+service. Wait for some time until the chart is deployed. You should see the following output:
+
+```
+      NAME: kafka
+      LAST DEPLOYED: Wed May 31 19:53:02 2023
+      NAMESPACE: kube-kafka
+      STATUS: deployed
+      REVISION: 1
+      TEST SUITE: None
+      NOTES:
+      CHART NAME: kafka
+      CHART VERSION: 22.1.3
+      APP VERSION: 3.4.0
+      
+      ** Please be patient while the chart is being deployed **
+      
+      Kafka can be accessed by consumers via port 9092 on the following DNS name from within your cluster:
+      
+          kafka.kube-kafka.svc.cluster.local
+      
+      Each Kafka broker can be accessed by producers via port 9092 on the following DNS name(s) from within your cluster:
+      
+          kafka-0.kafka-headless.kube-kafka.svc.cluster.local:9092
+          kafka-1.kafka-headless.kube-kafka.svc.cluster.local:9092
+          kafka-2.kafka-headless.kube-kafka.svc.cluster.local:9092
+      
+      To create a pod that you can use as a Kafka client run the following commands:
+      
+          kubectl run kafka-client --restart='Never' --image docker.io/bitnami/kafka:2.7.0-debian-10-r100 --namespace kube-kafka --command -- sleep infinity
+          kubectl exec --tty -i kafka-client --namespace kube-kafka -- bash
+      
+          PRODUCER:
+              kafka-console-producer.sh \
+                  --broker-list kafka-0.kafka-headless.kube-kafka.svc.cluster.local:9092,kafka-1.kafka-headless.kube-kafka.svc.cluster.local:9092,kafka-2.kafka-headless.kube-kafka.svc.cluster.local:9092 \
+                  --topic test
+      
+          CONSUMER:
+              kafka-console-consumer.sh \
+                  --bootstrap-server kafka.kube-kafka.svc.cluster.local:9092 \
+                  --topic test \
+                  --from-beginning
+```
+
+Note the service name displayed in the output, as you will need this in the next step:
+
+```
+      kafka.kube-kafka.svc.cluster.local
+```
+
+Also note the Kafka broker access details, as you will need this for microservice Kafka configurations (ConfigMap of
+each microservice):
+
+```
+      kafka-0.kafka-sts-headless.kube-kafka.svc.cluster.local:9092
+      kafka-1.kafka-sts-headless.kube-kafka.svc.cluster.local:9092
+      kafka-2.kafka-sts-headless.kube-kafka.svc.cluster.local:9092
+```
+
+Make sure that the Kafka cluster is up and running with the following command:
+
+```
+     > kubectl get pods -n kube-kafka -o wide
+```
+
+You should see the following output:
+
+```
+      NAME          READY   STATUS    RESTARTS   AGE     IP            NODE       NOMINATED NODE   READINESS GATES
+      kafka-0       1/1     Running   0          70s     10.244.0.36   minikube   <none>           <none>
+      kafka-1       1/1     Running   0          70s     10.244.0.35   minikube   <none>           <none>
+      kafka-2       1/1     Running   0          70s     10.244.0.34   minikube   <none>           <none>
+      zookeeper-0   1/1     Running   0          3m31s   10.244.0.32   minikube   <none>           <none>
+      zookeeper-1   1/1     Running   0          3m31s   10.244.0.31   minikube   <none>           <none>
+      zookeeper-2   1/1     Running   0          3m31s   10.244.0.33   minikube   <none>           <none>
+```
+
+Check the kafka logs with the following command:
+
+```
+      > kubectl logs kafka-0 -n kube-kafka -f
+```
+
+To confirm that the [Apache Zookeeper](https://zookeeper.apache.org) and [Apache Zookeeper](https://zookeeper.apache.org) deployments are connected, check the logs for any of the Apache
+Kafka pods and ensure that you see lines similar to the ones shown below, which confirm the connection:
+
+```
+      [2023-05-31 19:53:10,838] INFO Socket connection established, initiating session, client: /10.244.0.36:47092, server: zookeeper.kube-kafka/10.110.153.100:2181 (org.apache.zookeeper.ClientCnxn)
+      [2023-05-31 19:53:10,849] INFO Session establishment complete on server zookeeper.kube-kafka/10.110.153.100:2181, sessionid = 0x30000c058cd0001, negotiated timeout = 18000 (org.apache.zookeeper.ClientCnxn)
+      [2023-05-31 19:53:10,854] INFO [ZooKeeperClient Kafka server] Connected. (kafka.zookeeper.ZooKeeperClient)
+      [2023-05-31 19:53:10,978] INFO [feature-zk-node-event-process-thread]: Starting (kafka.server.FinalizedFeatureChangeListener$ChangeNotificationProcessorThread)
+      [2023-05-31 19:53:11,014] INFO Feature ZK node at path: /feature does not exist (kafka.server.FinalizedFeatureChangeListener)
+      [2023-05-31 19:53:11,020] INFO Cleared cache (kafka.server.FinalizedFeatureCache)
+      [2023-05-31 19:53:11,246] INFO Cluster ID = mq2vGCG7RSOJX0vsqWFS9A (kafka.server.KafkaServer)
+      [2023-05-31 19:53:11,265] WARN No meta.properties file under dir /bitnami/kafka/data/meta.properties (kafka.server.BrokerMetadataCheckpoint)
+```
+
+#### 4. Testing Apache Kafka cluster
+
+At this point, your [Apache Zookeeper](https://zookeeper.apache.org) cluster is ready for work. Test it as follows:
+
+Create a topic named __mytopic__ using the commands below. Replace the _ZOOKEEPER-SERVICE-NAME_ placeholder with the
+[Apache Zookeeper](https://zookeeper.apache.org) service name obtained earlier:
+
+```
+      > kubectl --namespace kube-kafka exec -it <name of kafka pod> -- kafka-topics.sh --create --zookeeper ZOOKEEPER-SERVICE-NAME:2181 --replication-factor 1 --partitions 1 --topic mytopic
+      for example:
+      > kubectl --namespace kube-kafka exec -it kafka-0 -- kafka-topics.sh --create --zookeeper zookeeper.kube-kafka.svc.cluster.local:2181 --replication-factor 1 --partitions 1 --topic mytopic
+```
+
+Start a Kafka message consumer. This consumer will connect to the cluster and retrieve and display messages as they are
+published to the __mytopic__ topic. Replace the _KAFKA-SERVICE-NAME_ placeholder with the [Apache Zookeeper](https://zookeeper.apache.org) service name
+obtained earlier:
+
+```
+      > kubectl --namespace kube-kafka exec -it <name of kafka pod> -- kafka-console-consumer.sh --bootstrap-server KAFKA-SERVICE-NAME:9092 --topic mytopic --consumer.config /opt/bitnami/kafka/config/consumer.properties
+      for example:
+      > kubectl --namespace kube-kafka exec -it kafka-0 -- kafka-console-consumer.sh --bootstrap-server kafka.kube-kafka.svc.cluster.local:9092 --topic mytopic --consumer.config /opt/bitnami/kafka/config/consumer.properties
+```
+
+Using a different console, start a Kafka message producer and produce some messages by running the command below and
+then entering some messages, each on a separate line. Replace the KAFKA-SERVICE-NAME placeholder with the [Apache Zookeeper](https://zookeeper.apache.org)
+service name obtained earlier:
+
+```
+      > kubectl --namespace kube-kafka exec -it <name of kafka pod> -- kafka-console-producer.sh --broker-list KAFKA-SERVICE-NAME:9092 --topic mytopic --producer.config /opt/bitnami/kafka/config/producer.properties
+      for example:
+      > kubectl --namespace kube-kafka exec -it <name of kafka pod> -- kafka-console-producer.sh --broker-list kafka.kube-kafka.svc.cluster.local:9092 --topic mytopic --producer.config /opt/bitnami/kafka/config/producer.properties
+```
+
+The messages should appear in the Kafka message consumer.
+
+[Deploy a Scalable Apache Kafka/Zookeeper Cluster on Kubernetes with Bitnami and Helm](https://docs.bitnami.com/tutorials/deploy-scalable-kafka-zookeeper-cluster-kubernetes)
+
+That's it! Microservices infrastructure is up and running. We can start deploying microservices.
 
 ### Useful links
 

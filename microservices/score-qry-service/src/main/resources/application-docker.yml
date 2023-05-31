@@ -48,8 +48,8 @@ spring:
   # Redis configuration
   redis:
     host: ${REDIS_HOSTNAME}
-    password: ${REDIS_PASSWORD}
     port: ${REDIS_PORT}
+    password: ${REDIS_PASSWORD}
 
 # Actuator configuration
 management:

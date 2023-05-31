@@ -55,6 +55,7 @@ public class ScoreControllerV1 {
      * Returns all scores.
      *
      * @return collection of scores
+     * @version 1
      */
     @Operation(operationId = "all-json",
             summary = "Returns all scores",
@@ -96,6 +97,7 @@ public class ScoreControllerV1 {
      *
      * @param id score id, must not be null or empty
      * @return found score
+     * @version 1
      */
     @Operation(operationId = "find-by-id-json",
             summary = "Finds scores by id",
@@ -149,6 +151,7 @@ public class ScoreControllerV1 {
      *
      * @param winner scores winner, must not be null
      * @return found collection of scores
+     * @version 1
      */
     @Operation(operationId = "find-by-winner-json",
             summary = "Finds scores by winner",

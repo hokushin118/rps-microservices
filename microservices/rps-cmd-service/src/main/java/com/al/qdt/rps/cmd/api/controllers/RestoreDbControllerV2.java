@@ -42,6 +42,7 @@ public class RestoreDbControllerV2 {
      * Restoring database.
      *
      * @return operation result
+     * @version 2
      */
     @Operation(operationId = "restore-db-proto",
             summary = "Restores database",
@@ -86,6 +87,7 @@ public class RestoreDbControllerV2 {
      * Restoring database asynchronously.
      *
      * @return operation result
+     * @version 2.1
      */
     @Operation(operationId = "restore-db-async-proto",
             summary = "Restores database asynchronously",

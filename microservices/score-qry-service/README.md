@@ -161,7 +161,7 @@ You should see the following output:
       rps-ingress             nginx   rps.internal             192.168.49.2   80      40h
 ```
 
-Copy the ip address (192.168.49.2) to the clipboard, you will need it in the next step.
+Note the ip address (192.168.49.2) displayed in the output, as you will need this in the next step.
 
 #### 3. Adding custom entry to the etc/host file for the RPS game microservices (if not exists)
 
@@ -228,13 +228,26 @@ And then deploy the Score query microservice with the following command:
 To check the pod status, run:
 
 ```
-     > kubectl get pods -n rps-app-dev
+     > kubectl get pods -n rps-app-dev -o wide
 ```
 
-You may also check the log of the Score query microservice with this command:
+You should see the following output:
 
 ```
-     > kubectl logs <pod name> -n rps-app-dev
+      NAME                                            READY   STATUS    RESTARTS   AGE    IP            NODE       NOMINATED NODE   READINESS GATES
+      score-qry-service-deployment-7b4fbc8f6-mhb5f    1/1     Running   0          17m    10.244.3.32   minikube   <none>           <none>
+```
+
+You may also check the logs for any of the Score query microservice pods with this command:
+
+```
+     > kubectl logs <pod name> -c score-qry-service -n rps-app-dev
+```
+
+and ensure that you see lines similar to the ones shown below, which confirm the microservice is up and running:
+
+```
+      {"@timestamp":"2023-05-30T20:09:28.868Z","@version":"1","level":"INFO","message":"score-qry-service has successfully been started...","logger_name":"com.al.qdt.score.qry.ScoreQryServiceApp","thread_name":"main"}
 ```
 
 Open any browser and navigate to the microservice Open API 3.0 definition (REST API).
