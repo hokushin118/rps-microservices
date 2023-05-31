@@ -56,6 +56,7 @@ public class ScoreControllerV2 {
      * Returns all scores.
      *
      * @return paged list of scores
+     * @version 2
      */
     @Operation(operationId = "all-proto",
             summary = "Returns all scores",
@@ -97,6 +98,7 @@ public class ScoreControllerV2 {
      *
      * @param id score id, must not be null or empty
      * @return found score
+     * @version 2
      */
     @Operation(operationId = "find-by-id-proto",
             summary = "Finds scores by id",
@@ -151,6 +153,7 @@ public class ScoreControllerV2 {
      *
      * @param winner scores winner, must not be null
      * @return found collection of scores
+     * @version 2
      */
     @Operation(operationId = "find-by-winner-proto",
             summary = "Finds scores by winner",

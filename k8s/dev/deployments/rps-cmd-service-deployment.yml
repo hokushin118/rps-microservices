@@ -36,7 +36,7 @@ spec:
       containers:
         - name: rps-cmd-service
           image: hokushin/rps-cmd-service:latest
-          imagePullPolicy: IfNotPresent
+          imagePullPolicy: Always
           ports:
             - name: http-8080
               protocol: TCP
@@ -48,17 +48,35 @@ spec:
               cpu: 50m
           env: # Setting environmental variables
             - name: KAFKA_HOSTNAME_1
-              value: "kafka-1"
+              valueFrom:
+                configMapKeyRef: # Using ConfigMap
+                  name: rps-cmd-service-configmap
+                  key: kafka-broker-0-hostname
             - name: KAFKA_BROKER_PORT_1
-              value: "9093"
+              valueFrom:
+                configMapKeyRef: # Using ConfigMap
+                  name: rps-cmd-service-configmap
+                  key: kafka-broker-0-port
             - name: KAFKA_HOSTNAME_2
-              value: "kafka-2"
+              valueFrom:
+                configMapKeyRef: # Using ConfigMap
+                  name: rps-cmd-service-configmap
+                  key: kafka-broker-1-hostname
             - name: KAFKA_BROKER_PORT_2
-              value: "9094"
+              valueFrom:
+                configMapKeyRef: # Using ConfigMap
+                  name: rps-cmd-service-configmap
+                  key: kafka-broker-1-port
             - name: KAFKA_HOSTNAME_3
-              value: "kafka-3"
+              valueFrom:
+                configMapKeyRef: # Using ConfigMap
+                  name: rps-cmd-service-configmap
+                  key: kafka-broker-2-hostname
             - name: KAFKA_BROKER_PORT_3
-              value: "9095"
+              valueFrom:
+                configMapKeyRef: # Using ConfigMap
+                  name: rps-cmd-service-configmap
+                  key: kafka-broker-2-port
             - name: MONGO_HOSTNAME
               valueFrom:
                 configMapKeyRef: # Using ConfigMap
@@ -73,17 +91,22 @@ spec:
               valueFrom:
                 configMapKeyRef: # Using ConfigMap
                   name: rps-cmd-service-configmap
+                  key: mongodb-admin-database
+            - name: MONGO_ADMIN_USERNAME
+              valueFrom:
+                secretKeyRef: # Using Secrets
+                  name: rps-cmd-service-secret
+                  key: mongodb-admin-username
+            - name: MONGO_ADMIN_PASSWORD
+              valueFrom:
+                secretKeyRef: # Using Secrets
+                  name: rps-cmd-service-secret
+                  key: mongodb-admin-password
+            - name: RPS_DATABASE
+              valueFrom:
+                configMapKeyRef: # Using ConfigMap
+                  name: rps-cmd-service-configmap
                   key: mongodb-database
-            - name: MONGO_INITDB_ROOT_USERNAME
-              valueFrom:
-                secretKeyRef: # Using Secrets
-                  name: rps-cmd-service-secret
-                  key: mongodb-root-username
-            - name: MONGO_INITDB_ROOT_PASSWORD
-              valueFrom:
-                secretKeyRef: # Using Secrets
-                  name: rps-cmd-service-secret
-                  key: mongodb-root-password
             - name: OPEN_API_URL
               value: "rps-cmd-service"
             - name: RPS_CMD_SERVER_PORT

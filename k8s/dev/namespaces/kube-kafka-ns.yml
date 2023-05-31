@@ -1,0 +1,7 @@
+# Creating a namespace for Kafka (dev environment)
+apiVersion: v1 # K8S API version
+kind: Namespace
+metadata:
+  name: kube-kafka
+  labels:
+    name: kube-kafka

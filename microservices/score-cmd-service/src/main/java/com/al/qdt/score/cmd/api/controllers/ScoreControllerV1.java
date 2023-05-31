@@ -48,6 +48,7 @@ public class ScoreControllerV1 {
      * Deletes score by id.
      *
      * @param id score id, must not be null or empty
+     * @version 1
      */
     @Operation(operationId = "delete-by-id-json",
             summary = "Deletes score by id",

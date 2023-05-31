@@ -1,0 +1,15 @@
+# Get list of games v1
+
+GET http://{{host}}/rps-qry-api/v1/games HTTP/1.1
+Accept: application/json
+Content-Type: application/json
+
+###
+
+# Get list of games v2
+
+GET http://{{host}}/rps-qry-api/v2/games HTTP/1.1
+Accept: application/json
+Content-Type: application/json
+
+###

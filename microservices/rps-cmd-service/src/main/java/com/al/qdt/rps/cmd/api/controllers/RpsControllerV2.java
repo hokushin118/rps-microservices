@@ -58,6 +58,7 @@ public class RpsControllerV2 {
      *
      * @param gameDto game round user inputs, must not be null
      * @return game result
+     * @version 2
      */
     @Operation(operationId = "play-proto",
             summary = "Plays game",
@@ -117,6 +118,7 @@ public class RpsControllerV2 {
      *
      * @param gameDto game round user inputs, must not be null
      * @return game result
+     * @version 2.1
      */
     @Operation(operationId = "play-async-proto",
             summary = "Plays game asynchronously",
@@ -175,6 +177,7 @@ public class RpsControllerV2 {
      * Deletes game by id.
      *
      * @param id game id, must not be null
+     * @version 2
      */
     @Operation(operationId = "delete-by-id-proto",
             summary = "Deletes game by id",
@@ -229,6 +232,7 @@ public class RpsControllerV2 {
      * Deletes game by id asynchronously.
      *
      * @param id game id, must not be null
+     * @version 2.1
      */
     @Operation(operationId = "delete-by-id-async-proto",
             summary = "Deletes game by id asynchronously",
