@@ -1794,6 +1794,12 @@ You should see the following output:
       127.0.0.1:6379>
 ```
 
+Authenticate to Redis with following command:
+
+```
+      127.0.0.1:6379> auth 12345
+```
+
 Check the replica member replication information with the following command:
 
 ```
