@@ -28,4 +28,5 @@ data:
     logfile ""
 
   slave.conf: |
+    masterauth "12345"
     slaveof redis-sts-0.redis-svc 6379
