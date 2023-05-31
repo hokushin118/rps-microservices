@@ -56,6 +56,7 @@ public class RpsControllerV1 {
      * Returns all games.
      *
      * @return collection of games
+     * @version 1
      */
     @Operation(operationId = "all-json",
             summary = "Returns all games",
@@ -98,6 +99,7 @@ public class RpsControllerV1 {
      *
      * @param id game id, must not be null or empty
      * @return found game
+     * @version 1
      */
     @Operation(operationId = "find-by-id-json",
             summary = "Finds game by id",
@@ -152,6 +154,7 @@ public class RpsControllerV1 {
      *
      * @param username username, must not be null or empty
      * @return found collection of games
+     * @version 1
      */
     @Operation(operationId = "find-by-username-json",
             summary = "Finds games by username",

@@ -56,6 +56,7 @@ public class RpsControllerV1 {
      *
      * @param gameDto game round user inputs, must not be null
      * @return game result
+     * @version 1
      */
     @Operation(operationId = "play-json",
             summary = "Plays game",
@@ -119,6 +120,7 @@ public class RpsControllerV1 {
      *
      * @param gameDto game round user inputs, must not be null
      * @return game result
+     * @version 1.1
      */
     @Operation(operationId = "play-async-json",
             summary = "Plays game asynchronously",
@@ -181,6 +183,7 @@ public class RpsControllerV1 {
      * Deletes game by id.
      *
      * @param id game id, must not be null or empty
+     * @version 1
      */
     @Operation(operationId = "delete-by-id-json",
             summary = "Deletes game by id",
@@ -235,6 +238,7 @@ public class RpsControllerV1 {
      * Deletes game by id asynchronously.
      *
      * @param id game id, must not be null or empty
+     * @version 1.1
      */
     @Operation(operationId = "delete-by-id-async-json",
             summary = "Deletes game by id asynchronously",

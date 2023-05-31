@@ -14,4 +14,11 @@ data:
   grpc-server-port: "6565"
   mongodb-url: mongodb-sts-0.mongodb-svc.kube-nosql-db
   mongodb-port: "27017"
+  mongodb-admin-database: admin
   mongodb-database: rpsDB
+  kafka-broker-0-hostname: kafka-0.kafka-headless.kube-kafka.svc.cluster.local
+  kafka-broker-1-hostname: kafka-1.kafka-headless.kube-kafka.svc.cluster.local
+  kafka-broker-2-hostname: kafka-2.kafka-headless.kube-kafka.svc.cluster.local
+  kafka-broker-0-port: "9092"
+  kafka-broker-1-port: "9092"
+  kafka-broker-2-port: "9092"
