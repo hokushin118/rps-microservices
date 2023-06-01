@@ -366,6 +366,60 @@ You should see the following output:
       kubeconfig: Configured
 ```
 
+Verify that _metrics-server_ is installed by executing the following command:
+
+```
+      > minikube addons list | grep metrics-server
+```
+
+If not, you will see the following output:
+
+```
+      | metrics-server              | minikube | disabled     | Kubernetes   
+```
+To install _metrics-server_ on your K8S cluster, run:
+
+```
+      > minikube addons enable metrics-server
+```
+
+You should see the following output:
+
+```
+      You can view the list of minikube maintainers at: https://github.com/kubernetes/minikube/blob/master/OWNERS
+      - Using image registry.k8s.io/metrics-server/metrics-server:v0.6.3
+      * The 'metrics-server' addon is enabled
+```
+
+Verify that _metrics-server_ pod is up and running:
+
+```
+      > kubectl get pods -n kube-system | grep metrics-server
+```
+
+You should see the following output:
+
+```
+      metrics-server-6588d95b98-bdb6x    1/1     Running   0             2m35s
+```
+
+It means that _metrics-server_ is up and running.
+
+Now, if you run the following command: 
+
+```
+      > kubectl top pod -n rps-app-dev
+```
+
+you will see resources used in specified namespace:
+
+```
+      NAME                                           CPU(cores)   MEMORY(bytes)
+      rps-cmd-service-deployment-59bc84c8-bcx4b      1m           573Mi
+      rps-qry-service-deployment-9b4fbc8f6-vw58g     3m           590Mi
+      score-cmd-service-deployment-676c56db8-rpfbc   1m           389Mi
+```
+
 Now that you are certain everything is up and running deploy the Kubernetes Dashboard with the command:
 
 ```
