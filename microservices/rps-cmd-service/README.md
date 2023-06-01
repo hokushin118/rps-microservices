@@ -254,7 +254,51 @@ Open any browser and navigate to the microservice Open API 3.0 definition (REST 
      > http://rps.internal/rps-cmd-api/swagger-ui/index.html
 ```
 
-#### 5. Sending metrics from the RPS game command microservice to the Monitoring Stack
+Verify the REST API with the following command:
+
+```
+    > curl --location 'rps.internal/rps-cmd-api/v1/games' --header 'Accept: application/json' --header 'Content-Type: application/json' --data '{
+        "id": "748873ec-f887-4090-93ff-f8b8cbb34c7a",
+        "username": "User1",
+        "hand": "ROCK"
+      }'
+```
+
+#### 5. Deploying HPA for pods
+
+Now, let's deploy a HorizontalPodAutoscaler (HPA) for the RPS Game Command microservice.
+To deploy the HPA for the microservice, run the following command:
+
+```
+     > kubectl apply -f ./k8s/dev/hpas/rps-cmd-service-hpa.yml
+```
+
+__Note:__ HPA is a form of autoscaling that increases or decreases the number of pods in a replication controller, deployment, replica set, or stateful set based on cpu utilization, number of requests etc.
+
+Verify the HPA deployment with the following command:
+
+```
+     > kubectl get hpa -n rps-app-dev
+```
+
+You should see the following output:
+
+```
+      NAME                  REFERENCE                               TARGETS   MINPODS   MAXPODS   REPLICAS   AGE
+      rps-cmd-service-hpa   Deployment/rps-cmd-service-deployment   1%/50%    1         5         1          74s
+```
+
+The current HPA configuration would attempt to ensure that each pod was consuming roughly 50% of its requested CPU.
+
+[HorizontalPodAutoscaler Walkthrough](https://kubernetes.io/docs/tasks/run-application/horizontal-pod-autoscale-walkthrough)
+
+You can easily [scale up](https://kubernetes.io/docs/concepts/workloads/controllers/deployment/#scaling-a-deployment) the microservice deployment by executing the following command:
+
+```
+     > kubectl scale deployment/rps-cmd-service-deployment --replicas=3 -n rps-app-dev
+```
+
+#### 6. Sending metrics from the RPS game command microservice to the Monitoring Stack
 
 To send the RPS game command microservice metrics to the Monitoring Stack, first make sure that the Prometheus endpoint is configured in the application as below:
 
