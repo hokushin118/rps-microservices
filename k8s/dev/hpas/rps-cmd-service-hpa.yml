@@ -1,0 +1,41 @@
+# HPA takes place at the pod level and adjusts the number of replicas of the RPS Game Command microservice.
+# https://kubernetes.io/docs/tasks/run-application/horizontal-pod-autoscale/
+apiVersion: autoscaling/v2 # K8S API version
+kind: HorizontalPodAutoscaler
+metadata:
+  name: rps-cmd-service-hpa
+  namespace: rps-app-dev # The name of the namespace
+  labels:
+    app: rps-cmd-service
+    tier: backend
+    environment: development
+spec:
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: rps-cmd-service-deployment
+    labels:
+      app: rps-cmd-service
+      tier: backend
+      environment: development
+  minReplicas: 1
+  maxReplicas: 5
+  metrics: # The cpu utilization metrics
+    - type: Resource # HPA would attempt to ensure that each pod was consuming roughly 50% of its requested cpu
+      resource:
+        name: cpu
+        target:
+          type: Utilization
+          averageUtilization: 50
+  status:
+    observedGeneration: 1
+    lastScaleTime: <some-time>
+    currentReplicas: 1
+    desiredReplicas: 1
+    currentMetrics:
+      - type: Resource
+        resource:
+          name: cpu
+          current:
+            averageUtilization: 0
+            averageValue: 0

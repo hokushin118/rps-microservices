@@ -41,11 +41,14 @@ spec:
             - name: http-8080
               protocol: TCP
               containerPort: 8080 # The port that the container is running on in the cluster
+            - name: grpc-6565
+              protocol: TCP
+              containerPort: 6565 # The port that the container is running on in the cluster
           resources:
             limits:
-              cpu: 100m
+              cpu: 500m
             requests:
-              cpu: 50m
+              cpu: 200m
           env: # Setting environmental variables
             - name: KAFKA_HOSTNAME_1
               valueFrom:

@@ -257,7 +257,47 @@ Open any browser and navigate to the microservice Open API 3.0 definition (REST 
      > http://rps.internal/rps-qry-api/swagger-ui/index.html
 ```
 
-#### 5. Sending metrics from the RPS game query microservice to the Monitoring Stack
+Verify the REST API with the following command:
+
+```
+      > curl --location 'rps.internal/rps-qry-api/v1/games' --header 'Accept: application/json' --header 'Content-Type: application/json'
+```
+
+#### 5. Deploying HPA for pods
+
+Now, let's deploy a HorizontalPodAutoscaler (HPA) for the RPS Query Command microservice.
+To deploy the HPA for the microservice, run the following command:
+
+```
+     > kubectl apply -f ./k8s/dev/hpas/rps-qry-service-hpa.yml
+```
+
+__Note:__ HPA is a form of autoscaling that increases or decreases the number of pods in a replication controller, deployment, replica set, or stateful set based on cpu utilization, number of requests etc.
+
+Verify the HPA deployment with the following command:
+
+```
+     > kubectl get hpa -n rps-app-dev
+```
+
+You should see the following output:
+
+```
+      NAME                  REFERENCE                               TARGETS   MINPODS   MAXPODS   REPLICAS   AGE
+      rps-qry-service-hpa   Deployment/rps-qry-service-deployment   0%/50%    1         5         1          74s
+```
+
+The current HPA configuration would attempt to ensure that each pod was consuming roughly 50% of its requested CPU.
+
+[HorizontalPodAutoscaler Walkthrough](https://kubernetes.io/docs/tasks/run-application/horizontal-pod-autoscale-walkthrough)
+
+You can easily [scale up](https://kubernetes.io/docs/concepts/workloads/controllers/deployment/#scaling-a-deployment) the microservice deployment by executing the following command:
+
+```
+     > kubectl scale deployment/rps-qry-service-deployment --replicas=3 -n rps-app-dev
+```
+
+#### 6. Sending metrics from the RPS game query microservice to the Monitoring Stack
 
 To send the RPS game query microservice metrics to the Monitoring Stack, first make sure that the Prometheus endpoint is configured in the application as below:
 
