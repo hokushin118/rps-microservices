@@ -15,7 +15,7 @@
         </encoder>
     </appender>
 
-    <springProfile name="docker">
+    <springProfile name="docker | prod">
 
         <!-- Appender to log to console in a JSON format -->
         <appender name="jsonConsole" class="ch.qos.logback.core.ConsoleAppender">
@@ -94,7 +94,7 @@
         </root>
     </springProfile>
 
-    <springProfile name="dev,prod">
+    <springProfile name="dev">
         <property name="OUTBOUND_LOG" value="${LOG_PATH:-.}/score-qry-service-outbound.log"/>
         <property name="FILE_LOG_PATTERN"
                   value="%d{dd-MM-yyyy HH:mm:ss.SSS} [%thread] %-5level [%X{X-Request-ID}] %logger{36}.%M - %msg%n"/>

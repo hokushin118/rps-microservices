@@ -143,8 +143,8 @@
             <properties>
                 <spring.profiles.active>prod</spring.profiles.active>
                 <junit-tests.skip>false</junit-tests.skip>
-                <integration-tests.skip>true</integration-tests.skip>
-                <jib.skip>true</jib.skip>
+                <integration-tests.skip>false</integration-tests.skip>
+                <jib.skip>false</jib.skip>
                 <site-maven-plugin.skip>false</site-maven-plugin.skip>
                 <springdoc-openapi-maven-plugin.skip>true</springdoc-openapi-maven-plugin.skip>
                 <api-doc-url>score-qry-service</api-doc-url>
