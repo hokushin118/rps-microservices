@@ -1,3 +1,4 @@
+# Profile for integration tests
 server:
   port: 8080
 

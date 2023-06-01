@@ -1,3 +1,4 @@
+# Profile for deployment on docker-compose
 server:
   port: ${SCORE_QRY_SERVER_PORT}
 
@@ -15,10 +16,18 @@ spring:
     location: classpath:/docker/banner.txt
 
   jpa:
+    # show log for each sql query
+    show-sql: true
+    # schema will be automatically created afresh for every start of the application
     hibernate:
       ddl-auto: update
     # allows Hibernate to generate SQL optimized for a particular DBMS
     database-platform: org.hibernate.dialect.MariaDB103Dialect
+    defer-datasource-initialization: false
+    properties:
+      hibernate:
+        # format sql query
+        format_sql: true
 
   # MariaDB database connection configuration
   datasource:

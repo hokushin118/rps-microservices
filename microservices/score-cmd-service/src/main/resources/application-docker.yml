@@ -1,3 +1,4 @@
+# Profile for deployment on docker-compose
 server:
   port: ${SCORE_CMD_SERVER_PORT}
 
