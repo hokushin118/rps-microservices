@@ -1,10 +1,11 @@
+# Profile for deployment on K8S cluster
 server:
-  port: 8083
+  port: ${SCORE_CMD_SERVER_PORT}
 
 # gRPC server configuration
 grpc:
   server:
-    port: 6568
+    port: ${SCORE_CMD_GRPC_SERVER_PORT}
     # Turn off the service listing (for both actuator and grpc)
     reflection-service-enabled: off
 
@@ -17,12 +18,17 @@ spring:
   # Mongo properties
   data:
     mongodb:
-      host: mongodb
+      host: ${MONGO_HOSTNAME}
+      port: ${ME_CONFIG_MONGODB_PORT}
+      database: ${MONGO_INITDB_DATABASE}
+      username: ${MONGO_ADMIN_USERNAME}
+      password: ${MONGO_ADMIN_PASSWORD}
+      authentication-database: ${MONGO_INITDB_DATABASE}
 
   # Kafka properties
   kafka:
     producer:
-      bootstrap-servers: kafka-1:9093,kafka-2:9094,kafka-3:9095
+      bootstrap-servers: ${KAFKA_HOSTNAME_1}:${KAFKA_BROKER_PORT_1},${KAFKA_HOSTNAME_2}:${KAFKA_BROKER_PORT_2},${KAFKA_HOSTNAME_3}:${KAFKA_BROKER_PORT_3}
 
 # Actuator configuration
 management:
@@ -37,7 +43,7 @@ management:
 api:
   dev:
     server:
-      base-url: http://localhost${server.servlet.context-path}
+      base-url: http://${OPEN_API_URL}${server.servlet.context-path}
   prod:
     server:
-      base-url: http://localhost${server.servlet.context-path}
+      base-url: http://${OPEN_API_URL}${server.servlet.context-path}

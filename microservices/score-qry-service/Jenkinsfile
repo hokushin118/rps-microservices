@@ -1,0 +1,59 @@
+pipeline {
+	agent {
+		label "default"
+	}
+	stages {
+		stage('Checkout Source') {
+			steps {
+				script {
+					git url: 'https://github.com/hokushin118/rps-microservices.git', credentialsId: 'github_credentials'
+					sh 'ls -la'
+				}
+			}
+		}
+		stage('Build') {
+			agent {
+				label "maven"
+			}
+			steps {
+				sh 'ls -la'
+				sh 'mvn -version'
+				sh 'mvn clean compile -Pprod'
+			}
+		}
+		stage('Unit Tests') {
+			agent {
+				label "maven"
+			}
+			steps {
+				sh 'mvn test -Pprod'
+			}
+		}
+        stage('Integration Tests') {
+			agent {
+				label "maven"
+			}
+			steps {
+				sh 'mvn verify -DskipTests -Djib.skip=true -Pprod'
+			}
+		}
+		stage('Build & Push image') {
+			agent {
+				label "maven"
+			}
+			steps {
+				sh 'mvn -Pprod -Djib.to.auth.username=<login> -Djib.to.auth.password=<pwd> jib:build'
+			}
+		}
+		stage('Deploy to K8S cluster') {
+			steps {
+				script {
+				    kubernetesDeploy(configs: 'k8s/dev/configmaps/score-qry-service-configmap.yml',
+				                               'k8s/dev/secrets/score-qry-service-secret.yml',
+				                               'k8s/dev/deployments/score-qry-service-deployment.yml',
+				                               'k8s/dev/services/score-qry-service-svc.yml')
+				}
+			}
+		}
+	}
+}

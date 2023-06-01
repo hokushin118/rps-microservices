@@ -1,10 +1,11 @@
+# Profile for deployment on K8S cluster
 server:
-  port: 8082
+  port: ${RPS_QRY_SERVER_PORT}
 
 # gRPC server configuration
 grpc:
   server:
-    port: 6567
+    port: ${RPS_QRY_GRPC_SERVER_PORT}
     # Turn off the service listing (for both actuator and grpc)
     reflection-service-enabled: off
 
@@ -15,29 +16,37 @@ spring:
     location: classpath:/prod/banner.txt
 
   jpa:
+    # show log for each sql query
+    show-sql: true
+    # schema will be automatically created afresh for every start of the application
     hibernate:
-      ddl-auto: validate
+      ddl-auto: update
     # allows Hibernate to generate SQL optimized for a particular DBMS
     database-platform: org.hibernate.dialect.MariaDB103Dialect
+    defer-datasource-initialization: false
+    properties:
+      hibernate:
+        # format sql query
+        format_sql: true
 
   # MariaDB database connection configuration
   datasource:
-    url: jdbc:mariadb://mariadb:3306/rpsDB?useUnicode=true&characterEncoding=UTF-8&serverTimezone=UTC
-    username: root
-    password: 12345
+    url: jdbc:mariadb://${MARIADB_URL}/${RPS_DATABASE}?useUnicode=true&characterEncoding=UTF-8&serverTimezone=UTC
+    username: ${MARIADB_ROOT_USER}
+    password: ${MARIADB_ROOT_PASSWORD}
     driver-class-name: org.mariadb.jdbc.Driver
 
   # Flyway configuration
   flyway:
-    url: jdbc:mariadb://mariadb:3306
-    user: root
-    password: 12345
-    schemas: rpsDB
+    url: jdbc:mariadb://${MARIADB_HOSTNAME}:${MARIADB_PORT}
+    user: ${MARIADB_ROOT_USER}
+    password: ${MARIADB_ROOT_PASSWORD}
+    schemas: ${RPS_DATABASE}
 
   # Kafka properties
   kafka:
     consumer:
-      bootstrap-servers: kafka-1:9093,kafka-2:9094,kafka-3:9095
+      bootstrap-servers: ${KAFKA_HOSTNAME_1}:${KAFKA_BROKER_PORT_1},${KAFKA_HOSTNAME_2}:${KAFKA_BROKER_PORT_2},${KAFKA_HOSTNAME_3}:${KAFKA_BROKER_PORT_3}
 
   # Cache configuration
   cache:
@@ -47,9 +56,9 @@ spring:
 
   # Redis configuration
   redis:
-    host: redis
-    port: 6379
-    password: 12345
+    host: ${REDIS_HOSTNAME}
+    port: ${REDIS_PORT}
+    password: ${REDIS_PASSWORD}
 
 # Actuator configuration
 management:
@@ -64,7 +73,7 @@ management:
 api:
   dev:
     server:
-      base-url: http://localhost${server.servlet.context-path}
+      base-url: http://${OPEN_API_URL}${server.servlet.context-path}
   prod:
     server:
-      base-url: http://localhost${server.servlet.context-path}
+      base-url: http://${OPEN_API_URL}${server.servlet.context-path}

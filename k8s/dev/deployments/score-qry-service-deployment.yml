@@ -1,5 +1,5 @@
 # Score Query microservice deployment configuration
-apiVersion: v1 # K8S API version
+apiVersion: apps/v1 # K8S API version
 kind: Deployment
 metadata: # Describes information about the app
   name: score-qry-service-deployment
@@ -36,7 +36,7 @@ spec:
       containers:
         - name: score-qry-service
           image: hokushin/score-qry-service:latest
-          imagePullPolicy: IfNotPresent
+          imagePullPolicy: Always
           ports:
             - name: http-8080
               protocol: TCP
@@ -66,7 +66,7 @@ spec:
               valueFrom:
                 configMapKeyRef: # Using ConfigMap
                   name: score-qry-service-configmap
-                  key: kafka-broker-1-hostname
+                  key: kafka-broker-1-port
             - name: KAFKA_HOSTNAME_3
               valueFrom:
                 configMapKeyRef: # Using ConfigMap
@@ -76,7 +76,7 @@ spec:
               valueFrom:
                 configMapKeyRef: # Using ConfigMap
                   name: score-qry-service-configmap
-                  key: kafka-broker-2-hostname
+                  key: kafka-broker-2-port
             - name: MARIADB_URL
               valueFrom:
                 configMapKeyRef: # Using ConfigMap
