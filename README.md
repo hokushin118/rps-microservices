@@ -2,6 +2,11 @@
 
 The Rock Paper Scissors game project provides infrastructure, REST and gRPC APIs for the Rock Paper Scissors game.
 
+The Rock Paper Scissors game project uses [CQRS](https://learn.microsoft.com/en-us/azure/architecture/patterns/cqrs) pattern. CQRS is an architectural pattern that can help maximize performance, scalability, and security. The
+pattern separates operations that read data from those operations that write data.
+
+Source: [Architecting Cloud Native .NET Applications for Azure](https://learn.microsoft.com/en-us/dotnet/architecture/cloud-native)
+
 * [Rock Paper Scissors game command microservice](https://github.com/hokushin118/rps-microservices/tree/master/microservices/rps-cmd-service)
 * [Rock Paper Scissors game query microservice](https://github.com/hokushin118/rps-microservices/tree/master/microservices/rps-qry-service)
 * [Score command microservice](https://github.com/hokushin118/rps-microservices/tree/master/microservices/score-cmd-service)
