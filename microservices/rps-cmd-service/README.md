@@ -264,6 +264,64 @@ Verify the REST API with the following command:
       }'
 ```
 
+You should see the following output:
+
+```
+      {"result":"DRAW","user_choice":"PAPER","machine_choice":"PAPER"}
+```
+
+Connect to the first (primary) replica set member shell with the following command:
+
+```
+     > kubectl -n kube-nosql-db exec -it mongodb-sts-0 -- mongo
+```
+
+And execute the following commands:
+
+```
+      rs0:PRIMARY> use rpsDB
+      switched to db rpsDB
+      rs0:PRIMARY> db.events.find().pretty()
+```
+
+You should see the following output:
+
+```
+      {
+              "_id" : ObjectId("647a2e58deda4f5536e24338"),
+              "aggregate_id" : UUID("17f8ef5a-bf3b-4b7b-9c51-a6019434e0bc"),
+              "aggregate_type" : "com.al.qdt.rps.cmd.domain.aggregates.RpsAggregate",
+              "event_type" : "com.al.qdt.common.events.rps.GamePlayedEvent",
+              "event_data" : {
+                      "_id" : UUID("17f8ef5a-bf3b-4b7b-9c51-a6019434e0bc"),
+                      "username" : "User1",
+                      "hand" : "PAPER",
+                      "_class" : "com.al.qdt.common.events.rps.GamePlayedEvent"
+              },
+              "played" : ISODate("2023-06-02T18:00:56.874Z"),
+              "version" : 0,
+              "created" : ISODate("2023-06-02T18:00:56.874Z"),
+              "_class" : "event"
+      }
+      {
+              "_id" : ObjectId("647a2e58deda4f5536e24339"),
+              "aggregate_id" : UUID("17f8ef5a-bf3b-4b7b-9c51-a6019434e0bc"),
+              "aggregate_type" : "com.al.qdt.rps.cmd.domain.aggregates.RpsAggregate",
+              "event_type" : "com.al.qdt.common.events.score.ScoresAddedEvent",
+              "event_data" : {
+                      "_id" : UUID("17f8ef5a-bf3b-4b7b-9c51-a6019434e0bc"),
+                      "winner" : "DRAW",
+                      "_class" : "com.al.qdt.common.events.score.ScoresAddedEvent"
+              },
+              "played" : ISODate("2023-06-02T18:00:56.915Z"),
+              "version" : 0,
+              "created" : ISODate("2023-06-02T18:00:56.915Z"),
+              "_class" : "event"
+      }
+```
+
+Two events has successfully been created.
+
 #### 5. Deploying HPA for pods
 
 Now, let's deploy a HorizontalPodAutoscaler (HPA) for the RPS Game Command microservice.
