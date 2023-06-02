@@ -1276,7 +1276,30 @@ You should see the following output:
       ---
 ```
 
-You now have a REPL environment connected to the MongoDB database. Initiate the replication.
+You now have a REPL environment connected to the MongoDB database. Initiate the replication by executing the following command:
+
+```
+     > rs.initiate()
+```
+
+If you get the following output:
+
+```
+      {
+              "operationTime" : Timestamp(1685727395, 1),
+              "ok" : 0,
+              "errmsg" : "already initialized",
+              "code" : 23,
+              "codeName" : "AlreadyInitialized",
+              "$clusterTime" : {
+                      "clusterTime" : Timestamp(1685727395, 1),
+                      "signature" : {
+                              "hash" : BinData(0,"AAAAAAAAAAAAAAAAAAAAAAAAAAA="),
+                              "keyId" : NumberLong(0)
+                      }
+              }
+      }
+```
 
 Define the variable called __cfg__. The variable executes rs.conf() command:
 
@@ -1284,22 +1307,37 @@ Define the variable called __cfg__. The variable executes rs.conf() command:
      > var cfg = rs.conf()
 ```
 
-Use the __cfg__ variable to add the primary server to the configuration:
+Use the __cfg__ variable to add the replica set members to the configuration:
 
 ```
-     > cfg.members[0].host="mongodb-sts-0.mongodb-svc.kube-nosql-db"
+      > cfg.members = [{_id: 0, host: "mongodb-sts-0.mongodb-svc.kube-nosql-db"},
+                       {_id: 1, host: "mongodb-sts-1.mongodb-svc.kube-nosql-db"},
+                       {_id: 2, host: "mongodb-sts-2.mongodb-svc.kube-nosql-db"}]
 ```
 
-The output shows the name of the primary server:
+You should see the following output:
 
 ```
-     > mongodb-sts-0.mongodb-svc.kube-nosql-db
+[
+        {
+                "_id" : 0,
+                "host" : "mongodb-sts-0.mongodb-svc.kube-nosql-db"
+        },
+        {
+                "_id" : 1,
+                "host" : "mongodb-sts-1.mongodb-svc.kube-nosql-db"
+        },
+        {
+                "_id" : 2,
+                "host" : "mongodb-sts-2.mongodb-svc.kube-nosql-db"
+        }
+]
 ```
 
 Confirm the configuration by executing the following command:
 
 ```
-     > rs.reconfig(cfg)
+     > rs.reconfig(cfg, {force: true})
 ```
 
 You should see the following output:
@@ -1316,13 +1354,6 @@ You should see the following output:
         },
         operationTime: Timestamp({ t: 1684949311, i: 1 })
       }
-```
-
-Add the second _mongodb-sts-1_, and the third _mongodb-sts-2_ pods to the replication configuration:
-
-```
-     > rs.add("mongodb-sts-1.mongodb-svc.kube-nosql-db")
-     > rs.add("mongodb-sts-2.mongodb-svc.kube-nosql-db")
 ```
 
 Verify MongoDB replication status with this command:
