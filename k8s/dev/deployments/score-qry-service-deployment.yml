@@ -41,6 +41,9 @@ spec:
             - name: http-8080
               protocol: TCP
               containerPort: 8080 # The port that the container is running on in the cluster
+            - name: grpc-50051
+              protocol: TCP
+              containerPort: 50051 # The port that the container is running on in the cluster
           resources:
             limits:
               cpu: 500m
@@ -134,6 +137,11 @@ spec:
                 configMapKeyRef: # Using ConfigMap
                   name: score-qry-service-configmap
                   key: grpc-server-port
+            - name: GRPC_SERVER_SECURITY_ENABLED
+              valueFrom:
+                configMapKeyRef: # Using ConfigMap
+                  name: score-qry-service-configmap
+                  key: grpc-server-security-enabled
           # Mount volume from persistent volume claim
           volumeMounts:
             - name: config-volume # a mount for config

@@ -155,9 +155,12 @@ Make sure the RPS application ingress has been created:
 You should see the following output:
 
 ```
-      NAME                    CLASS   HOSTS                    ADDRESS        PORTS   AGE
-      rps-ingress             nginx   rps.internal             192.168.49.2   80      40h
+      NAME               CLASS   HOSTS                                                                             ADDRESS        PORTS   AGE
+      rps-grpc-ingress   nginx   grpc.rps.cmd.internal,grpc.rps.qry.internal,grpc.score.cmd.internal + 1 more...   192.168.49.2   80      12m
+      rps-ingress        nginx   rps.internal                                                                      192.168.49.2   80      12m
 ```
+
+The first [Ingress](https://kubernetes.github.io/ingress-nginx/examples/grpc) routes the gRPC API traffic. The second one routes the REST API traffic.
 
 Note the ip address (192.168.49.2) displayed in the output, as you will need this in the next step.
 
@@ -172,7 +175,7 @@ Add a custom entry to the etc/hosts file using the nano text editor:
 You should add the following ip address (copied in the previous step) and custom domain to the hosts file:
 
 ```
-      192.168.49.2 rps.internal
+      192.168.49.2 rps.internal grpc.rps.cmd.internal grpc.rps.qry.internal grpc.score.cmd.internal grpc.score.qry.internal
 ```
 
 You may check the custom domain name with ping command:
@@ -188,6 +191,8 @@ You should see the following output:
       64 bytes from rps.internal (192.168.49.2): icmp_seq=2 ttl=64 time=0.094 ms
       64 bytes from rps.internal (192.168.49.2): icmp_seq=3 ttl=64 time=0.042 ms
 ```
+
+Repeat the same step for the second custom domain name of grpc.rps.internal.
 
 #### 4. Deploying the RPS game command microservice
 
@@ -207,6 +212,14 @@ To check the service deployment status, run:
 
 ```
      > kubectl get services -n rps-app-dev
+```
+
+You should see the following output:
+
+```
+      NAME                       TYPE        CLUSTER-IP      EXTERNAL-IP   PORT(S)     AGE
+      rps-cmd-service-grpc-svc   ClusterIP   10.96.10.78     <none>        50051/TCP   38s
+      rps-cmd-service-svc        ClusterIP   10.106.216.81   <none>        8080/TCP    38s
 ```
 
 Then deploy the microservice K8S secret with the following command:
@@ -245,7 +258,9 @@ You may also check the logs for any of the RPS game command microservice pods wi
 and ensure that you see lines similar to the ones shown below, which confirm the microservice is up and running:
 
 ```
-      {"@timestamp":"2023-05-30T20:09:28.868Z","@version":"1","level":"INFO","message":"rps-cmd-service has successfully been started...","logger_name":"com.al.qdt.rps.cmd.RpsCmdServiceApp","thread_name":"main"}
+      {"@timestamp":"2023-06-03T12:54:22.523Z","@version":"1","level":"INFO","message":"gRPC Server started, listening on address: *, port: 50051","logger_name":"net.devh.boot.grpc.server.serverfactory.GrpcServerLifecycle","thread_name":"main"}
+      ...
+      {"@timestamp":"2023-06-03T12:54:23.534Z","@version":"1","level":"INFO","message":"rps-cmd-service has successfully been started...","logger_name":"com.al.qdt.rps.cmd.RpsCmdServiceApp","thread_name":"main"}
 ```
 
 Open any browser and navigate to the microservice Open API 3.0 definition (REST API).
@@ -253,6 +268,8 @@ Open any browser and navigate to the microservice Open API 3.0 definition (REST 
 ```
      > http://rps.internal/rps-cmd-api/swagger-ui/index.html
 ```
+
+#### 5. Verifying REST API
 
 Verify the REST API with the following command:
 
@@ -322,7 +339,111 @@ You should see the following output:
 
 Two events has successfully been created.
 
-#### 5. Deploying HPA for pods
+#### 6. Verifying gRPC API
+
+Make sure that [gRPC reflection](https://github.com/grpc/grpc/blob/master/doc/server-reflection.md) is enabled in the application-prod.yml (application properties for prod profile) file of the microservice:
+
+```
+      # gRPC server configuration
+      grpc:
+        server:
+          port: ${RPS_CMD_GRPC_SERVER_PORT}
+          # Turn off the service listing (for both actuator and grpc) on production
+          reflection-service-enabled: on
+```
+
+To list all available grpc services exposed by the gRPC server of the RPS Game Command microservice, execute the following command:
+
+```
+      > grpcurl -insecure grpc.rps.cmd.internal:443 list
+```
+
+You should see the following output:
+
+```
+      grpc.health.v1.Health
+      grpc.reflection.v1alpha.ServerReflection
+      v1.services.AdminCmdService
+      v1.services.RpsCmdService
+```
+
+To conduct a gRPC server health check, execute the following command:
+
+```
+      > grpcurl -insecure grpc.rps.cmd.internal:443 grpc.health.v1.Health/Check
+```
+
+You should see the following output:
+
+```
+      {
+        "status": "SERVING"
+      }
+```
+
+It means that gRPC server of the RPS Game Command microservice is up and running. 
+
+To get all methods of the specified service, execute the following command:
+
+```
+      > grpcurl -insecure grpc.rps.cmd.internal:443 list v1.services.RpsCmdService
+```
+
+You should see the following output:
+
+```
+      v1.services.RpsCmdService.deleteById
+      v1.services.RpsCmdService.deleteByIdBidirectionalStreaming
+      v1.services.RpsCmdService.deleteByIdClientStreaming
+      v1.services.RpsCmdService.deleteByIdServerStreaming
+      v1.services.RpsCmdService.play
+      v1.services.RpsCmdService.playBidirectionalStreaming
+      v1.services.RpsCmdService.playClientStreaming
+      v1.services.RpsCmdService.playServerStreaming
+```
+
+To get more details about a grpc service execute the following command:
+
+```
+      > grpcurl -insecure grpc.rps.cmd.internal:443 describe v1.services.RpsCmdService
+```
+
+You should see the following output:
+
+```
+      service RpsCmdService {
+        rpc deleteById ( .v1.services.DeleteGameByIdRequest ) returns ( .v1.services.DeleteGameByIdResponse );
+        rpc deleteByIdBidirectionalStreaming ( stream .v1.services.DeleteGameByIdRequest ) returns ( stream .v1.services.DeleteGameByIdResponse );
+        rpc deleteByIdClientStreaming ( stream .v1.services.DeleteGameByIdRequest ) returns ( .v1.services.DeleteGameByIdResponse );
+        rpc deleteByIdServerStreaming ( .v1.services.DeleteGameByIdRequest ) returns ( stream .v1.services.DeleteGameByIdResponse );
+        rpc play ( .v1.services.GameRequest ) returns ( .v1.services.GameResponse );
+        rpc playBidirectionalStreaming ( stream .v1.services.GameRequest ) returns ( stream .v1.services.GameResponse );
+        rpc playClientStreaming ( stream .v1.services.GameRequest ) returns ( .v1.services.GameResponse );
+        rpc playServerStreaming ( .v1.services.GameRequest ) returns ( stream .v1.services.GameResponse );
+      }
+```
+
+Verify the gRPC API play method with the following command:
+
+```
+      >  grpcurl -d '{"game": {"id": "748873ec-f887-4090-93ff-f8b8cbb34c7a", "username": "User1", "hand": "ROCK"}}' -insecure grpc.rps.cmd.internal:443 v1.services.RpsCmdService/play
+```
+
+You should see the following output:
+
+```
+      {
+        "result": {
+          "user_choice": "ROCK",
+          "machine_choice": "ROCK",
+          "result": "DRAW"
+        }
+      }
+```
+
+It means that gRPC API is up and running.
+
+#### 7. Deploying HPA for pods
 
 Now, let's deploy a HorizontalPodAutoscaler (HPA) for the RPS Game Command microservice.
 To deploy the HPA for the microservice, run the following command:
