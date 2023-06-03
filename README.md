@@ -1304,15 +1304,15 @@ If you get the following output:
 Define the variable called __cfg__. The variable executes rs.conf() command:
 
 ```
-     > var cfg = rs.conf()
+     > cfg = rs.conf()
 ```
 
 Use the __cfg__ variable to add the replica set members to the configuration:
 
 ```
       > cfg.members = [{_id: 0, host: "mongodb-sts-0.mongodb-svc.kube-nosql-db"},
-                       {_id: 1, host: "mongodb-sts-1.mongodb-svc.kube-nosql-db"},
-                       {_id: 2, host: "mongodb-sts-2.mongodb-svc.kube-nosql-db"}]
+                       {_id: 1, host: "mongodb-sts-1.mongodb-svc.kube-nosql-db", priority: 0},
+                       {_id: 2, host: "mongodb-sts-2.mongodb-svc.kube-nosql-db", priority: 0}]
 ```
 
 You should see the following output:
@@ -1325,11 +1325,13 @@ You should see the following output:
         },
         {
                 "_id" : 1,
-                "host" : "mongodb-sts-1.mongodb-svc.kube-nosql-db"
+                "host" : "mongodb-sts-1.mongodb-svc.kube-nosql-db",
+                "priority": 0
         },
         {
                 "_id" : 2,
-                "host" : "mongodb-sts-2.mongodb-svc.kube-nosql-db"
+                "host" : "mongodb-sts-2.mongodb-svc.kube-nosql-db",
+                "priority": 0
         }
 ]
 ```
@@ -2445,6 +2447,7 @@ options:
 * [BloomRPC GUI client for gRPC](https://github.com/bloomrpc/bloomrpc)
 * [gRPCurl command-line tool](https://github.com/fullstorydev/grpcurl)
 * [gRPC UI command-line tool](https://github.com/fullstorydev/grpcui)
+* [Test gRPC services with Postman or gRPCurl in ASP.NET Core](https://learn.microsoft.com/en-us/aspnet/core/grpc/test-tools?view=aspnetcore-3.1)
 
 For testing REST API, you can also consider the following options:
 

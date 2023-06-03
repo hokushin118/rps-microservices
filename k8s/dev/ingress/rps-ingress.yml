@@ -1,5 +1,6 @@
 # Simple Fanout Ingress for RPS microservices
 # DNS > LB > Ingress > Service > Pods > Container
+# Ingress configuration for REST API
 apiVersion: networking.k8s.io/v1 # K8S API version
 kind: Ingress
 metadata:
@@ -39,3 +40,63 @@ spec:
                 name: score-qry-service-svc
                 port:
                   number: 8080
+
+---
+# Ingress configuration for gRPC API
+# https://kubernetes.github.io/ingress-nginx/examples/grpc
+apiVersion: networking.k8s.io/v1 # K8S API version
+kind: Ingress
+metadata:
+  name: rps-grpc-ingress
+  namespace: rps-app-dev # The name of the namespace
+  annotations:
+    nginx.ingress.kubernetes.io/ssl-redirect: "true"
+    nginx.ingress.kubernetes.io/grpc-backend: "true"
+    nginx.ingress.kubernetes.io/backend-protocol: "GRPC"
+spec:
+  ingressClassName: nginx # Ingress Controller
+  rules:
+    - host: grpc.rps.cmd.internal
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: rps-cmd-service-grpc-svc
+                port:
+                  number: 50051
+    - host: grpc.rps.qry.internal
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: rps-qry-service-grpc-svc
+                port:
+                  number: 50051
+    - host: grpc.score.cmd.internal
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: score-cmd-service-grpc-svc
+                port:
+                  number: 50051
+    - host: grpc.score.qry.internal
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: score-qry-service-grpc-svc
+                port:
+                  number: 50051
+#  tls:
+#    - secretName: rps-secret
+#      hosts:
+#        - grpc.rps.internal

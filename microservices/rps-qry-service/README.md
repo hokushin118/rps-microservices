@@ -152,15 +152,18 @@ __Note:__ A RPS application [Simple Fanout Ingress](https://kubernetes.io/docs/c
 Make sure the RPS application ingress has been created:
 
 ```
-     > kubectl get ingress -n rps-app-dev
+     > kubectl get ingress -n rps-app-dev 
 ```
 
 You should see the following output:
 
 ```
-      NAME                    CLASS   HOSTS                    ADDRESS        PORTS   AGE
-      rps-ingress             nginx   rps.internal             192.168.49.2   80      40h
+      NAME               CLASS   HOSTS                                                                             ADDRESS        PORTS   AGE
+      rps-grpc-ingress   nginx   grpc.rps.cmd.internal,grpc.rps.qry.internal,grpc.score.cmd.internal + 1 more...   192.168.49.2   80      12m
+      rps-ingress        nginx   rps.internal                                                                      192.168.49.2   80      12m
 ```
+
+The first [Ingress](https://kubernetes.github.io/ingress-nginx/examples/grpc) routes the gRPC API traffic. The second one routes the REST API traffic.
 
 Note the ip address (192.168.49.2) displayed in the output, as you will need this in the next step.
 
@@ -175,7 +178,7 @@ Add a custom entry to the etc/hosts file using the nano text editor:
 You should add the following ip address (copied in the previous step) and custom domain to the hosts file:
 
 ```
-      192.168.49.2 rps.internal
+      192.168.49.2 rps.internal grpc.rps.cmd.internal grpc.rps.qry.internal grpc.score.cmd.internal grpc.score.qry.internal
 ```
 
 You may check the custom domain name with ping command:
@@ -191,6 +194,8 @@ You should see the following output:
       64 bytes from rps.internal (192.168.49.2): icmp_seq=2 ttl=64 time=0.094 ms
       64 bytes from rps.internal (192.168.49.2): icmp_seq=3 ttl=64 time=0.042 ms
 ```
+
+Repeat the same step for the second custom domain name of grpc.rps.internal.
 
 #### 4. Deploying the RPS game query microservice
 
@@ -210,6 +215,14 @@ To check the service deployment status, run:
 
 ```
      > kubectl get services -n rps-app-dev
+```
+
+You should see the following output:
+
+```
+      NAME                       TYPE        CLUSTER-IP      EXTERNAL-IP   PORT(S)     AGE
+      rps-qry-service-grpc-svc   ClusterIP   10.104.88.235   <none>        50051/TCP   8s
+      rps-qry-service-svc        ClusterIP   10.108.91.180   <none>        8080/TCP    8s
 ```
 
 Then deploy the microservice K8S secret with the following command:
@@ -248,7 +261,9 @@ You may also check the logs for any of the RPS game query microservice pods with
 and ensure that you see lines similar to the ones shown below, which confirm the microservice is up and running:
 
 ```
-      {"@timestamp":"2023-05-30T20:09:28.868Z","@version":"1","level":"INFO","message":"rps-qry-service has successfully been started...","logger_name":"com.al.qdt.rps.qry.RpsQryServiceApp","thread_name":"main"}
+      {"@timestamp":"2023-06-03T14:44:10.135Z","@version":"1","level":"INFO","message":"gRPC Server started, listening on address: *, port: 50051","logger_name":"net.devh.boot.grpc.server.serverfactory.GrpcServerLifecycle","thread_name":"main"}
+      ...
+      {"@timestamp":"2023-06-03T14:44:10.423Z","@version":"1","level":"INFO","message":"rps-qry-service has successfully been started...","logger_name":"com.al.qdt.rps.qry.RpsQryServiceApp","thread_name":"main"}
 ```
 
 Open any browser and navigate to the microservice Open API 3.0 definition (REST API).
@@ -257,13 +272,128 @@ Open any browser and navigate to the microservice Open API 3.0 definition (REST 
      > http://rps.internal/rps-qry-api/swagger-ui/index.html
 ```
 
+#### 5. Verifying REST API
+
 Verify the REST API with the following command:
 
 ```
       > curl --location 'rps.internal/rps-qry-api/v1/games' --header 'Accept: application/json' --header 'Content-Type: application/json'
 ```
 
-#### 5. Deploying HPA for pods
+You should see the following output:
+
+```
+      [ {
+        "id" : "17f8ef5a-bf3b-4b7b-9c51-a6019434e0bc",
+        "username" : "User1",
+        "hand" : "PAPER"
+      }, {
+        "id" : "598587f5-c2f4-4520-b669-2e0e0d9d9e25",
+        "username" : "User1",
+        "hand" : "ROCK"
+      },
+      ...
+      ]
+```
+
+#### 6. Verifying gRPC API
+
+Make sure that [gRPC reflection](https://github.com/grpc/grpc/blob/master/doc/server-reflection.md) is enabled in the application-prod.yml (application properties for prod profile) file of the microservice:
+
+```
+      # gRPC server configuration
+      grpc:
+        server:
+          port: ${RPS_QRY_GRPC_SERVER_PORT}
+          # Turn off the service listing (for both actuator and grpc) on production
+          reflection-service-enabled: on
+```
+
+To list all available grpc services exposed by the gRPC server of the RPS Game Command microservice, execute the following command:
+
+```
+      > grpcurl -insecure grpc.rps.qry.internal:443 list
+```
+
+You should see the following output:
+
+```
+      grpc.health.v1.Health
+      grpc.reflection.v1alpha.ServerReflection
+      v1.services.RpsQryService
+```
+
+To conduct a gRPC server health check, execute the following command:
+
+```
+      > grpcurl -insecure grpc.rps.qry.internal:443 grpc.health.v1.Health/Check
+```
+
+You should see the following output:
+
+```
+      {
+        "status": "SERVING"
+      }
+```
+
+It means that gRPC server of the RPS Game Command microservice is up and running.
+
+To get all methods of the specified service, execute the following command:
+
+```
+      > grpcurl -insecure grpc.rps.qry.internal:443 list v1.services.RpsQryService
+```
+
+You should see the following output:
+
+```
+      v1.services.RpsQryService.listOfGames
+```
+
+To get more details about a grpc service execute the following command:
+
+```
+      > grpcurl -insecure grpc.rps.qry.internal:443 describe v1.services.RpsQryService
+```
+
+You should see the following output:
+
+```
+      service RpsQryService {
+        rpc listOfGames ( .v1.services.ListOfGamesRequest ) returns ( .v1.services.ListOfGamesResponse );
+      }
+```
+
+Verify the gRPC API play method with the following command:
+
+```
+      >  grpcurl -d '{}' -insecure grpc.rps.qry.internal:443 v1.services.RpsQryService/listOfGames
+```
+
+You should see the following output:
+
+```
+{
+  "games": [
+    {
+      "id": "17f8ef5a-bf3b-4b7b-9c51-a6019434e0bc",
+      "username": "User1",
+      "hand": "PAPER"
+    },
+    {
+      "id": "598587f5-c2f4-4520-b669-2e0e0d9d9e25",
+      "username": "User1",
+      "hand": "ROCK"
+    },
+    ...
+  ]
+}
+```
+
+It means that gRPC API is up and running.
+
+#### 7. Deploying HPA for pods
 
 Now, let's deploy a HorizontalPodAutoscaler (HPA) for the RPS Query Command microservice.
 To deploy the HPA for the microservice, run the following command:

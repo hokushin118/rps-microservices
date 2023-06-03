@@ -1,11 +1,6 @@
 package com.al.qdt.score.qry.domain.services.grpc;
 
-import com.al.qdt.rps.grpc.v1.services.FindScoreByIdRequest;
-import com.al.qdt.rps.grpc.v1.services.FindScoreByWinnerRequest;
-import com.al.qdt.rps.grpc.v1.services.ListOfScoresRequest;
-import com.al.qdt.rps.grpc.v1.services.ListOfScoresResponse;
-import com.al.qdt.rps.grpc.v1.services.ScoreQryServiceGrpc;
-import com.al.qdt.rps.grpc.v1.services.ScoreResponse;
+import com.al.qdt.rps.grpc.v1.services.*;
 import com.al.qdt.score.qry.domain.services.ScoreServiceV2;
 import io.grpc.stub.StreamObserver;
 import lombok.RequiredArgsConstructor;
@@ -23,8 +18,7 @@ public class ScoreGrpcServiceV1 extends ScoreQryServiceGrpc.ScoreQryServiceImplB
     @Override
     public void listOfScores(ListOfScoresRequest request, StreamObserver<ListOfScoresResponse> responseObserver) {
         log.info("UNARY GRPC SERVICE: Getting all scores.");
-        this.scoreService.all();
-        responseObserver.onNext(ListOfScoresResponse.newBuilder().build());
+        responseObserver.onNext(this.scoreService.all());
         responseObserver.onCompleted();
     }
 

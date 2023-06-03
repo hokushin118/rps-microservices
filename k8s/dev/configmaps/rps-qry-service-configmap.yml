@@ -11,7 +11,8 @@ metadata:
 data:
 
   server-port: "8080"
-  grpc-server-port: "6565"
+  grpc-server-port: "50051"
+  grpc-server-security-enabled: "false"
   mariadb-url: mariadb-sts-0.mariadb-svc.kube-db
   mariadb-port: "3306"
   mariadb-database: rpsDB
