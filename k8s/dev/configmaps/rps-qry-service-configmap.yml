@@ -13,6 +13,12 @@ data:
   server-port: "8080"
   grpc-server-port: "50051"
   grpc-server-security-enabled: "false"
+  grpc-reflection-service-enabled: "on" # Turn off the grpc service listing (for both actuator and grpc) on production
+  grpc-security-enabled: "false" # Turn on the grpc service transport security on production
+  grpc-server-security-certificate-chain: "file:/etc/ssl/certs/grpc.rps.qry.internal.crt"
+  grpc-server-security-private-key: "file:/etc/ssl/certs/grpc.rps.qry.internal.key"
+  grpc-server-security-trust-cert-collection: "file:/etc/ssl/certs/rps.clients.crt.collection" # mTLS - trusted clients cert collection, cat client*.crt > trusted-clients.crt.collection
+  grpc-server-security-client-auth: "REQUIRE" # mTLS - makes client certificate authentication mandatory
   mariadb-url: mariadb-sts-0.mariadb-svc.kube-db
   mariadb-port: "3306"
   mariadb-database: rpsDB

@@ -6,8 +6,12 @@ server:
 grpc:
   server:
     port: ${RPS_CMD_GRPC_SERVER_PORT}
-    # Turn off the service listing (for both actuator and grpc) on production
-    reflection-service-enabled: on
+    # Turn on/off the service listing (for both actuator and grpc) on production
+    reflection-service-enabled: ${RPS_CMD_GRPC_REFLECTION_SERVICE_ENABLED}
+    # Turn on/off grpc transport security
+    security:
+      enabled: ${RPS_CMD_GRPC_SERVER_SECURITY_ENABLED}
+      client-auth:
 
 spring:
   config:
