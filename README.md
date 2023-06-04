@@ -2,8 +2,9 @@
 
 The Rock Paper Scissors game project provides infrastructure, REST and gRPC APIs for the Rock Paper Scissors game.
 
-The Rock Paper Scissors game project uses [CQRS](https://learn.microsoft.com/en-us/azure/architecture/patterns/cqrs) pattern. CQRS is an architectural pattern that can help maximize performance, scalability, and security. The
-pattern separates operations that read data from those operations that write data.
+The Rock Paper Scissors game project uses [CQRS](https://learn.microsoft.com/en-us/azure/architecture/patterns/cqrs)
+pattern. CQRS is an architectural pattern that can help maximize performance, scalability, and security. The pattern
+separates operations that read data from those operations that write data.
 
 Source: [Architecting Cloud Native .NET Applications for Azure](https://learn.microsoft.com/en-us/dotnet/architecture/cloud-native)
 
@@ -306,6 +307,7 @@ applications. Kubernetes is a more complex but more powerful deployment techniqu
 Docker Compose vs K8S, pros and cons:
 
 [Docker Swarm vs Kubernetes: how to choose a container orchestration tool](https://circleci.com/blog/docker-swarm-vs-kubernetes)
+[Kubernetes vs Docker: A comprehensive comparison](https://www.civo.com/blog/kubernetes-vs-docker-a-comprehensive-comparison)
 
 ***
 
@@ -382,6 +384,7 @@ If not, you will see the following output:
 ```
       | metrics-server              | minikube | disabled     | Kubernetes   
 ```
+
 To install _metrics-server_ on your K8S cluster, run:
 
 ```
@@ -410,7 +413,7 @@ You should see the following output:
 
 It means that _metrics-server_ is up and running.
 
-Now, if you run the following command: 
+Now, if you run the following command:
 
 ```
       > kubectl top pod -n rps-app-dev
@@ -473,7 +476,7 @@ The output will list all of a cluster’s nodes and the version of Kubernetes ea
 
 You should see a single node in the output called _minikube_. That’s a full K8S cluster, with a single node.
 
-First, we have to set up our infrastucture. 
+First, we have to set up our infrastucture.
 
 ### Elasticsearch, Logstash and Kibana (ELK Stack) on K8S cluster
 
@@ -1276,7 +1279,8 @@ You should see the following output:
       ---
 ```
 
-You now have a REPL environment connected to the MongoDB database. Initiate the replication by executing the following command:
+You now have a REPL environment connected to the MongoDB database. Initiate the replication by executing the following
+command:
 
 ```
      > rs.initiate()
@@ -1564,8 +1568,7 @@ Successfully added user: {
 }
 ```
 
-It means admin account has been created successfully.
-Quit the replica set member with the following command:
+It means admin account has been created successfully. Quit the replica set member with the following command:
 
 ```
      > exit
@@ -2182,7 +2185,8 @@ Access the Grafana application from any browser by typing:
 
 ### Apache Kafka on K8S cluster
 
-[Apache Kafka](https://kafka.apache.org) is an open-source, event streaming platform that is distributed, scalable, high-throughput, low-latency, and has a very large ecosystem.
+[Apache Kafka](https://kafka.apache.org) is an open-source, event streaming platform that is distributed, scalable,
+high-throughput, low-latency, and has a very large ecosystem.
 
 #### 1. Creating namespace for Kafka
 
@@ -2221,7 +2225,8 @@ You should see the following output:
 The first step is to deploy [Apache Zookeeper](https://zookeeper.apache.org) on your K8S cluster
 using [Zookeeper Bitnami's Helm chart](https://github.com/bitnami/charts/tree/main/bitnami/zookeeper).
 
-The [Apache Zookeeper](https://zookeeper.apache.org) deployment will use this [Apache Zookeeper](https://zookeeper.apache.org) deployment for coordination and management.
+The [Apache Zookeeper](https://zookeeper.apache.org) deployment will use
+this [Apache Zookeeper](https://zookeeper.apache.org) deployment for coordination and management.
 
 First, add the [Bitnami charts repository](https://github.com/bitnami/charts/tree/main/bitnami/zookeeper) to Helm:
 
@@ -2303,7 +2308,8 @@ provide the name of the [Apache Zookeeper](https://zookeeper.apache.org) service
      > helm install kafka bitnami/kafka --set image.tag=2.7.0-debian-10-r100 --set zookeeper.enabled=false --set kraft.enabled=false --set replicaCount=3 --set externalZookeeper.servers=zookeeper.kube-kafka -n kube-kafka
 ```
 
-This command will deploy a three-node [Apache Zookeeper](https://zookeeper.apache.org) cluster and configure the nodes to connect to the [Apache Zookeeper](https://zookeeper.apache.org)
+This command will deploy a three-node [Apache Zookeeper](https://zookeeper.apache.org) cluster and configure the nodes
+to connect to the [Apache Zookeeper](https://zookeeper.apache.org)
 service. Wait for some time until the chart is deployed. You should see the following output:
 
 ```
@@ -2386,7 +2392,8 @@ Check the kafka logs with the following command:
       > kubectl logs kafka-0 -n kube-kafka -f
 ```
 
-To confirm that the [Apache Zookeeper](https://zookeeper.apache.org) and [Apache Zookeeper](https://zookeeper.apache.org) deployments are connected, check the logs for any of the Apache
+To confirm that the [Apache Zookeeper](https://zookeeper.apache.org)
+and [Apache Zookeeper](https://zookeeper.apache.org) deployments are connected, check the logs for any of the Apache
 Kafka pods and ensure that you see lines similar to the ones shown below, which confirm the connection:
 
 ```
@@ -2414,8 +2421,8 @@ Create a topic named __mytopic__ using the commands below. Replace the _ZOOKEEPE
 ```
 
 Start a Kafka message consumer. This consumer will connect to the cluster and retrieve and display messages as they are
-published to the __mytopic__ topic. Replace the _KAFKA-SERVICE-NAME_ placeholder with the [Apache Zookeeper](https://zookeeper.apache.org) service name
-obtained earlier:
+published to the __mytopic__ topic. Replace the _KAFKA-SERVICE-NAME_ placeholder with
+the [Apache Zookeeper](https://zookeeper.apache.org) service name obtained earlier:
 
 ```
       > kubectl --namespace kube-kafka exec -it <name of kafka pod> -- kafka-console-consumer.sh --bootstrap-server KAFKA-SERVICE-NAME:9092 --topic mytopic --consumer.config /opt/bitnami/kafka/config/consumer.properties
@@ -2424,7 +2431,8 @@ obtained earlier:
 ```
 
 Using a different console, start a Kafka message producer and produce some messages by running the command below and
-then entering some messages, each on a separate line. Replace the KAFKA-SERVICE-NAME placeholder with the [Apache Zookeeper](https://zookeeper.apache.org)
+then entering some messages, each on a separate line. Replace the KAFKA-SERVICE-NAME placeholder with
+the [Apache Zookeeper](https://zookeeper.apache.org)
 service name obtained earlier:
 
 ```
