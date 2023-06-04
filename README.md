@@ -493,7 +493,7 @@ Kafka acts as a data buffer and helps prevent data loss or interruption while st
 To create a _kube-elk_ namespace on the K8S cluster, run:
 
 ```
-     > kubectl apply -f ./k8s/dev/namespaces/kube-elk-ns.yml
+     > kubectl apply -f ./k8s/namespaces/kube-elk-ns.yml
 ```
 
 __Note:__ In Kubernetes, [namespaces](https://kubernetes.io/docs/concepts/overview/working-with-objects/namespaces)
@@ -526,13 +526,13 @@ _Elasticsearch is the core component of ELK. It works as a searchable database f
 To deploy elasticsearch cluster to Kubernetes, first run:
 
 ```
-     > kubectl apply -f ./k8s/dev/rbacs/elasticsearch-rbac.yml
+     > kubectl apply -f ./k8s/rbacs/elasticsearch-rbac.yml
 ```
 
 Then deploy a headless service for _Elasticsearch_ pods using the following command:
 
 ```
-     > kubectl apply -f ./k8s/dev/services/elasticsearch-svc.yml
+     > kubectl apply -f ./k8s/services/elasticsearch-svc.yml
 ```
 
 __Note:__ You cannot directly access the application running in the pod. If you want to access the application, you need
@@ -545,7 +545,7 @@ communicate with specific (not randomly selected) pod (stateful application scen
 And then run:
 
 ```
-     > kubectl apply -f ./k8s/dev/sets/elasticsearch-statefulset.yml
+     > kubectl apply -f ./k8s/sets/elasticsearch-statefulset.yml
 ```
 
 To monitor the deployment status, run:
@@ -655,13 +655,13 @@ _Filebeat is used to farm all the logs from all our nodes and pushing them to El
 To deploy Filebeat to Kubernetes, first run:
 
 ```
-     > kubectl apply -f ./k8s/dev/rbacs/filebeat-rbac.yml
+     > kubectl apply -f ./k8s/rbacs/filebeat-rbac.yml
 ```
 
 Then run:
 
 ```
-     > kubectl apply -f ./k8s/dev/configmaps/filebeat-configmap.yml
+     > kubectl apply -f ./k8s/configmaps/filebeat-configmap.yml
 ```
 
 __Note:__ If you are running the __Beats__ —> __Elasticsearch__ —> __Kibana__ scenario, go to the filebeat-configmap.yml
@@ -682,7 +682,7 @@ file and make the changes below before deploying:
 And then run:
 
 ```
-     > kubectl apply -f ./k8s/dev/sets/filebeat-daemonset.yml
+     > kubectl apply -f ./k8s/sets/filebeat-daemonset.yml
 ```
 
 Verify that the Filebeat DaemonSet rolled out successfully using kubectl:
@@ -720,19 +720,19 @@ __Note:__ Skip this step if you are running the __Beats__ —> __Elasticsearch__
 To deploy Logstash to Kubernetes, first run:
 
 ```
-     > kubectl apply -f ./k8s/dev/services/logstash-svc.yml
+     > kubectl apply -f ./k8s/services/logstash-svc.yml
 ```
 
 Then run:
 
 ```
-     > kubectl apply -f ./k8s/dev/configmaps/logstash-configmap.yml
+     > kubectl apply -f ./k8s/configmaps/logstash-configmap.yml
 ```
 
 And then run:
 
 ```
-     > kubectl apply -f ./k8s/dev/deployments/logstash-deployment.yml
+     > kubectl apply -f ./k8s/deployments/logstash-deployment.yml
 ```
 
 To check the status, run:
@@ -799,19 +799,19 @@ _Kibana is a visualization tool. It uses a web browser interface to organize and
 To deploy Kibana to Kubernetes, first run:
 
 ```
-     > kubectl apply -f ./k8s/dev/configmaps/kibana-configmap.yml
+     > kubectl apply -f ./k8s/configmaps/kibana-configmap.yml
 ```
 
 Then run:
 
 ```
-     > kubectl apply -f ./k8s/dev/services/kibana-svc.yml
+     > kubectl apply -f ./k8s/services/kibana-svc.yml
 ```
 
 And then run:
 
 ```
-     > kubectl apply -f ./k8s/dev/deployments/kibana-deployment.yml
+     > kubectl apply -f ./k8s/deployments/kibana-deployment.yml
 ```
 
 To access the Kibana interface, we have to forward a local port _5601_ to the Kubernetes node running Kibana with the
@@ -893,13 +893,13 @@ _Elasticsearch cron job is used for clearing Elasticsearch indices._
 To deploy Elasticsearch cron job to Kubernetes, first run:
 
 ```
-     > kubectl apply -f ./k8s/dev/configmaps/curator-configmap.yml
+     > kubectl apply -f ./k8s/configmaps/curator-configmap.yml
 ```
 
 And then run:
 
 ```
-     > kubectl apply -f ./k8s/dev/cronjobs/curator-cronjob.yml
+     > kubectl apply -f ./k8s/cronjobs/curator-cronjob.yml
 ```
 
 Verify that the Elasticsearch cron job rolled out successfully using kubectl:
@@ -925,7 +925,7 @@ MariaDB Server is one of the most popular open source relational databases.
 To create a _kube-db_ namespace on the k8s cluster, run:
 
 ```
-     > kubectl apply -f ./k8s/dev/namespaces/kube-db-ns.yml
+     > kubectl apply -f ./k8s/namespaces/kube-db-ns.yml
 ```
 
 To check the status, run:
@@ -953,19 +953,19 @@ You should see the following output:
 To deploy MariaDB cluster to Kubernetes, first run:
 
 ```
-     > kubectl apply -f ./k8s/dev/rbacs/mariadb-rbac.yml
+     > kubectl apply -f ./k8s/rbacs/mariadb-rbac.yml
 ```
 
 Then run:
 
 ```
-     > kubectl apply -f ./k8s/dev/configmaps/mariadb-configmap.yml
+     > kubectl apply -f ./k8s/configmaps/mariadb-configmap.yml
 ```
 
 Then deploy a headless service for _MariaDB_ pods using the following command:
 
 ```
-     > kubectl apply -f ./k8s/dev/services/mariadb-svc.yml
+     > kubectl apply -f ./k8s/services/mariadb-svc.yml
 ```
 
 __Note:__ You cannot directly access the application running in the pod. If you want to access the application, you need
@@ -992,13 +992,13 @@ You should see the following output:
 Then run:
 
 ```
-     > kubectl apply -f ./k8s/dev/secrets/mariadb-secret.yml
+     > kubectl apply -f ./k8s/secrets/mariadb-secret.yml
 ```
 
 Now the secrets can be referenced in our statefulset. And then run:
 
 ```
-     > kubectl apply -f ./k8s/dev/sets/mariadb-statefulset.yml
+     > kubectl apply -f ./k8s/sets/mariadb-statefulset.yml
 ```
 
 To monitor the deployment status, run:
@@ -1134,7 +1134,7 @@ MongoDB is a source-available cross-platform document-oriented database program.
 To create a _kube-nosql-db_ namespace on the k8s cluster, run:
 
 ```
-     > kubectl apply -f ./k8s/dev/namespaces/kube-nosql-db-ns.yml
+     > kubectl apply -f ./k8s/namespaces/kube-nosql-db-ns.yml
 ```
 
 To check the status, run:
@@ -1163,19 +1163,19 @@ You should see the following output:
 To deploy MongoDB cluster to Kubernetes, first run:
 
 ```
-     > kubectl apply -f ./k8s/dev/rbacs/mongodb-rbac.yml
+     > kubectl apply -f ./k8s/rbacs/mongodb-rbac.yml
 ```
 
 Then run:
 
 ```
-     > kubectl apply -f ./k8s/dev/configmaps/mongodb-configmap.yml
+     > kubectl apply -f ./k8s/configmaps/mongodb-configmap.yml
 ```
 
 Then deploy a headless service for _MongoDB_ pods using the following command:
 
 ```
-     > kubectl apply -f ./k8s/dev/services/mongodb-svc.yml
+     > kubectl apply -f ./k8s/services/mongodb-svc.yml
 ```
 
 __Note:__ You cannot directly access the application running in the pod. If you want to access the application, you need
@@ -1202,13 +1202,13 @@ You should see the following output:
 Then run:
 
 ```
-     > kubectl apply -f ./k8s/dev/secrets/mongodb-secret.yml
+     > kubectl apply -f ./k8s/secrets/mongodb-secret.yml
 ```
 
 Now the secrets can be referenced in our statefulset. And then run:
 
 ```
-     > kubectl apply -f ./k8s/dev/sets/mongodb-statefulset.yml
+     > kubectl apply -f ./k8s/sets/mongodb-statefulset.yml
 ```
 
 To monitor the deployment status, run:
@@ -1675,7 +1675,7 @@ To create a [Simple Single Service Ingress](https://kubernetes.io/docs/concepts/
 Mongo Express application, run:
 
 ```
-     > kubectl apply -f ./k8s/dev/ingress/mongodb-ingress.yml
+     > kubectl apply -f ./k8s/ingress/mongodb-ingress.yml
 ```
 
 __Note:__ A Mongo Express
@@ -1738,7 +1738,7 @@ Access the Mongo Express application from any browser by typing:
 To deploy Mongo Express to Kubernetes, first run:
 
 ```
-     > kubectl apply -f ./k8s/dev/services/mongodb-express-svc.yml
+     > kubectl apply -f ./k8s/services/mongodb-express-svc.yml
 ```
 
 It deploys a ClusterIP service for _Mongo Express_ pods.
@@ -1746,7 +1746,7 @@ It deploys a ClusterIP service for _Mongo Express_ pods.
 Then run:
 
 ```
-     > kubectl apply -f ./k8s/dev/deployment/mongodb-express-deployment.yml
+     > kubectl apply -f ./k8s/deployment/mongodb-express-deployment.yml
 ```
 
 ### Redis database on K8S cluster
@@ -1760,7 +1760,7 @@ distributed caching due to its scalability, performance, and flexibility.
 To create a _kube-cache_ namespace on the k8s cluster, run:
 
 ```
-     > kubectl apply -f ./k8s/dev/namespaces/kube-cache-ns.yml
+     > kubectl apply -f ./k8s/namespaces/kube-cache-ns.yml
 ```
 
 To check the status, run:
@@ -1789,19 +1789,19 @@ You should see the following output:
 To deploy _Redis_ cluster to Kubernetes, first run:
 
 ```
-     > kubectl apply -f ./k8s/dev/rbacs/redis-rbac.yml
+     > kubectl apply -f ./k8s/rbacs/redis-rbac.yml
 ```
 
 Then run:
 
 ```
-     > kubectl apply -f ./k8s/dev/configmaps/redis-configmap.yml
+     > kubectl apply -f ./k8s/configmaps/redis-configmap.yml
 ```
 
 Then deploy a headless service for _Redis_ pods using the following command:
 
 ```
-     > kubectl apply -f ./k8s/dev/services/redis-svc.yml
+     > kubectl apply -f ./k8s/services/redis-svc.yml
 ```
 
 __Note:__ You cannot directly access the application running in the pod. If you want to access the application, you need
@@ -1828,13 +1828,13 @@ You should see the following output:
 Then run:
 
 ```
-     > kubectl apply -f ./k8s/dev/secrets/redis-secret.yml
+     > kubectl apply -f ./k8s/secrets/redis-secret.yml
 ```
 
 Now the secrets can be referenced in our statefulset. And then run:
 
 ```
-     > kubectl apply -f ./k8s/dev/sets/redis-statefulset.yml
+     > kubectl apply -f ./k8s/sets/redis-statefulset.yml
 ```
 
 To monitor the deployment status, run:
@@ -2006,7 +2006,7 @@ dashboards and graphs.
 To create a _kube-monitoring_ namespace on the k8s cluster, run:
 
 ```
-     > kubectl apply -f ./k8s/dev/namespaces/kube-monitoring-ns.yml
+     > kubectl apply -f ./k8s/namespaces/kube-monitoring-ns.yml
 ```
 
 To check the status, run:
@@ -2122,7 +2122,7 @@ To create a [Simple Single Service Ingress](https://kubernetes.io/docs/concepts/
 Grafana application, run:
 
 ```
-     > kubectl apply -f ./k8s/dev/ingress/grafana-ingress.yml
+     > kubectl apply -f ./k8s/ingress/grafana-ingress.yml
 ```
 
 __Note:__ A Grafana
@@ -2189,7 +2189,7 @@ Access the Grafana application from any browser by typing:
 To create a _kube-kafka_ namespace on the k8s cluster, run:
 
 ```
-     > kubectl apply -f ./k8s/dev/namespaces/kube-kafka-ns.yml
+     > kubectl apply -f ./k8s/namespaces/kube-kafka-ns.yml
 ```
 
 To check the status, run:
