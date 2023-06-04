@@ -1,13 +1,13 @@
 # Simple Fanout Ingress for RPS microservices
 # DNS > LB > Ingress > Service > Pods > Container
-# Ingress configuration for REST API
+# Ingress TLS configuration for REST API
 apiVersion: networking.k8s.io/v1 # K8S API version
 kind: Ingress
 metadata:
-  name: rps-ingress
+  name: rps-tls-ingress
   namespace: rps-app-dev # The name of the namespace
   annotation:
-    nginx.ingress.kubernetes.io/backend-protocol: "HTTP" # Sets up the appropriate nginx configuration to route http/2 traffic to a service
+    nginx.ingress.kubernetes.io/backend-protocol: "HTTP"
     # Enable if you prefer to forward encrypted traffic to pods and don't want to terminate tls at Ingress level
     # nginx.ingress.kubernetes.io/backend-protocol: "HTTPS"
     nginx.ingress.kubernetes.io/enable-access-log: "true" # Enable/disable nginx access log
@@ -19,10 +19,14 @@ metadata:
     # WWW Redirects
     nginx.ingress.kubernetes.io/from-to-www-redirect: "true" # Redirects from www.domain.com to domain.com or vice versa
     # SSL Redirects
-    # nginx.ingress.kubernetes.io/force-ssl-redirect: "true" # forces every incoming HTTP request to HTTPS
-    # nginx.ingress.kubernetes.io/ssl-passthrough: "true"
+    nginx.ingress.kubernetes.io/force-ssl-redirect: "true" # forces every incoming HTTP request to HTTPS
+    nginx.ingress.kubernetes.io/ssl-passthrough: "true"
 spec:
   ingressClassName: nginx # Ingress Controller
+  tls:
+    - hosts:
+        - rps.internal
+      secretName: rps-tls-secret
   rules:
     - host: rps.internal
       http:
@@ -57,15 +61,16 @@ spec:
                   number: 8080
 
 ---
-# Ingress configuration for gRPC API
+# Ingress TLS configuration for gRPC API
 # https://kubernetes.github.io/ingress-nginx/examples/grpc
 apiVersion: networking.k8s.io/v1 # K8S API version
 kind: Ingress
 metadata:
-  name: rps-grpc-ingress
+  name: rps-grpc-tls-ingress
   namespace: rps-app-dev # The name of the namespace
   annotations:
     nginx.ingress.kubernetes.io/backend-protocol: "GRPC" # Sets up the appropriate nginx configuration to route http/2 traffic to a service
+    # nginx.ingress.kubernetes.io/backend-protocol: "GRPCS" # Enable if you prefer to forward encrypted traffic to pods and don't want to terminate tls at Ingress level
     nginx.ingress.kubernetes.io/enable-access-log: "true" # Enable/disable nginx access log
     nginx.ingress.kubernetes.io/proxy-body-size: 8m # Sets the maximum size of the body in a request, if the body exceeds the maximum size set, nginx will return a 413 error to the client
     # Rate-limiting annotations are useful for defining limits on connections and transmission rates and they can be very helpful for mitigating DDoS attacks
@@ -79,6 +84,19 @@ metadata:
     nginx.ingress.kubernetes.io/grpc-backend: "true"
 spec:
   ingressClassName: nginx # Ingress Controller
+  tls:
+    - hosts:
+        - grpc.rps.cmd.internal
+      secretName: rps-cmd-service-grpc-tls-secret
+    - hosts:
+        - grpc.rps.qry.internal
+      secretName: rps-qry-service-grpc-tls-secret
+    - hosts:
+        - grpc.score.cmd.internal
+      secretName: score-cmd-service-grpc-tls-secret
+    - hosts:
+        - grpc.score.qry.internal
+      secretName: score-qry-service-grpc-tls-secret
   rules:
     - host: grpc.rps.cmd.internal
       http:

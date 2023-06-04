@@ -117,32 +117,32 @@ spec:
                 configMapKeyRef: # Using ConfigMap
                   name: score-cmd-service-configmap
                   key: grpc-server-port
-            - name: SCORE_CMD_GRPC_SERVER_SECURITY_ENABLED
-              valueFrom:
-                configMapKeyRef: # Using ConfigMap
-                  name: score-cmd-service-configmap
-                  key: grpc-server-security-enabled
             - name: SCORE_CMD_GRPC_REFLECTION_SERVICE_ENABLED
               valueFrom:
                 configMapKeyRef: # Using ConfigMap
                   name: score-cmd-service-configmap
                   key: grpc-reflection-service-enabled
-            - name: GRPC_SERVER_SECURITY_CERTIFICATE_CHAIN
+            - name: SCORE_CMD_GRPC_SERVER_SECURITY_ENABLED # true for TLS and mTLS
+              valueFrom:
+                configMapKeyRef: # Using ConfigMap
+                  name: score-cmd-service-configmap
+                  key: grpc-server-security-enabled
+            - name: GRPC_SERVER_SECURITY_CERTIFICATE_CHAIN # TLS and mTLS only, Ingress forwards encrypted traffic to pods
               valueFrom:
                 configMapKeyRef: # Using ConfigMap
                   name: score-cmd-service-configmap
                   key: grpc-server-security-certificate-chain
-            - name: GRPC_SERVER_SECURITY_PRIVATE_KEY
+            - name: GRPC_SERVER_SECURITY_PRIVATE_KEY # TLS and mTLS only, Ingress forwards encrypted traffic to pods
               valueFrom:
                 configMapKeyRef: # Using ConfigMap
                   name: score-cmd-service-configmap
                   key: grpc-server-security-private-key
-            - name: GRPC_SERVER_SECURITY_TRUST_CERT_COLLECTION # mTLS only
+            - name: GRPC_SERVER_SECURITY_TRUST_CERT_COLLECTION # mTLS only, Ingress forwards encrypted traffic to pods
               valueFrom:
                 configMapKeyRef: # Using ConfigMap
                   name: score-cmd-service-configmap
                   key: grpc-server-security-trust-cert-collection
-            - name: GRPC_SERVER_SECURITY_CLIENT_AUTH # mTLS only
+            - name: GRPC_SERVER_SECURITY_CLIENT_AUTH # mTLS only, Ingress forwards encrypted traffic to pods
               valueFrom:
                 configMapKeyRef: # Using ConfigMap
                   name: score-cmd-service-configmap

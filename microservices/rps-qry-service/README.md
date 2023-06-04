@@ -167,6 +167,38 @@ The first [Ingress](https://kubernetes.github.io/ingress-nginx/examples/grpc) ro
 
 Note the ip address (192.168.49.2) displayed in the output, as you will need this in the next step.
 
+Confirm that the ingress works with the following command:
+
+```
+      > kubectl describe ing rps-ingress -n rps-app-dev
+```
+
+You should see the following output:
+
+```
+    Name:             rps-ingress
+    Labels:           <none>
+    Namespace:        rps-app-dev
+    Address:          192.168.49.2
+    Ingress Class:    nginx
+    Default backend:  <default>
+    Rules:
+      Host          Path  Backends
+      ----          ----  --------
+      rps.internal
+                    /rps-cmd-api     rps-cmd-service-svc:8080 (10.244.0.76:8080)
+                    /rps-qry-api     rps-qry-service-svc:8080 (10.244.0.54:8080)
+                    /score-cmd-api   score-cmd-service-svc:8080 (10.244.0.62:8080)
+                    /score-qry-api   score-qry-service-svc:8080 (10.244.0.72:8080)
+    Annotations:    <none>
+    Events:
+      Type    Reason  Age                    From                      Message
+      ----    ------  ----                   ----                      -------
+      Normal  Sync    2m19s (x2 over 2m40s)  nginx-ingress-controller  Scheduled for sync
+```
+
+Repeat the same step for another ingress of _rps-grpc-ingress_.
+
 #### 3. Adding custom entry to the etc/host file for the RPS game microservices (if not exists)
 
 Add a custom entry to the etc/hosts file using the nano text editor:
@@ -195,7 +227,22 @@ You should see the following output:
       64 bytes from rps.internal (192.168.49.2): icmp_seq=3 ttl=64 time=0.042 ms
 ```
 
-Repeat the same step for the second custom domain name of grpc.rps.internal.
+Repeat the same step for the second custom domain name of _grpc.rps.qry.internal_.
+
+__Note:__ All tls ingresses terminate tls at Ingress level. You should see the following lines in the above log:
+
+```
+      TLS:
+        rps-tls-secret terminates rps.internal
+      and
+      TLS:
+        rps-cmd-service-grpc-tls-secret terminates grpc.rps.cmd.internal
+        rps-qry-service-grpc-tls-secret terminates grpc.rps.qry.internal
+        score-cmd-service-grpc-tls-secret terminates grpc.score.cmd.internal
+        score-qry-service-grpc-tls-secret terminates grpc.score.qry.internal
+```
+
+[TLS Termination](https://kubernetes.github.io/ingress-nginx/examples/tls-termination)
 
 #### 4. Deploying the RPS game query microservice
 
