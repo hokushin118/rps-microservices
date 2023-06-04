@@ -8,7 +8,7 @@ server:
 grpc:
   server:
     port: 6793
-    # Turn on the service listing (for both actuator and grpc)
+    # Turn on/off the service listing (for both actuator and grpc)
     reflection-service-enabled: true
 
 spring:

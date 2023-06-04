@@ -122,11 +122,36 @@ spec:
                 configMapKeyRef: # Using ConfigMap
                   name: rps-cmd-service-configmap
                   key: grpc-server-port
-            - name: GRPC_SERVER_SECURITY_ENABLED
+            - name: RPS_CMD_GRPC_SERVER_SECURITY_ENABLED
               valueFrom:
                 configMapKeyRef: # Using ConfigMap
                   name: rps-cmd-service-configmap
                   key: grpc-server-security-enabled
+            - name: RPS_CMD_GRPC_REFLECTION_SERVICE_ENABLED
+              valueFrom:
+                configMapKeyRef: # Using ConfigMap
+                  name: rps-cmd-service-configmap
+                  key: grpc-reflection-service-enabled
+            - name: GRPC_SERVER_SECURITY_CERTIFICATE_CHAIN
+              valueFrom:
+                configMapKeyRef: # Using ConfigMap
+                  name: rps-cmd-service-configmap
+                  key: grpc-server-security-certificate-chain
+            - name: GRPC_SERVER_SECURITY_PRIVATE_KEY
+              valueFrom:
+                configMapKeyRef: # Using ConfigMap
+                  name: rps-cmd-service-configmap
+                  key: grpc-server-security-private-key
+            - name: GRPC_SERVER_SECURITY_TRUST_CERT_COLLECTION # mTLS only
+              valueFrom:
+                configMapKeyRef: # Using ConfigMap
+                  name: rps-cmd-service-configmap
+                  key: grpc-server-security-trust-cert-collection
+            - name: GRPC_SERVER_SECURITY_CLIENT_AUTH # mTLS only
+              valueFrom:
+                configMapKeyRef: # Using ConfigMap
+                  name: rps-cmd-service-configmap
+                  key: grpc-server-security-client-auth
           # Mount volume from persistent volume claim
           volumeMounts:
             - name: config-volume # a mount for config
@@ -134,6 +159,9 @@ spec:
               readOnly: true
             - name: secrets-volume # a mount for secrets
               mountPath: /etc/rps-cmd-service/secrets
+              readOnly: true
+            - name: certs-volume
+              mountPath: /etc/ssl/certs
               readOnly: true
       volumes:
         - name: config-volume
@@ -143,6 +171,10 @@ spec:
         - name: secrets-volume
           secret:
             secretName: rps-cmd-service-secret
+            optional: true
+        - name: certs-volume
+          secret:
+            secretName: grpc-cert-secret
             optional: true
 #          readinessProbe:
 #            httpGet:

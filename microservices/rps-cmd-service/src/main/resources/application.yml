@@ -139,3 +139,6 @@ app:
 logging:
   file:
     path: ./var/log
+  level:
+    # Autoconfigure logging custom converters
+    org.springframework.data.convert.CustomConversions: debug

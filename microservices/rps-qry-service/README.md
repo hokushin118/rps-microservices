@@ -298,16 +298,13 @@ You should see the following output:
 
 #### 6. Verifying gRPC API
 
-Make sure that [gRPC reflection](https://github.com/grpc/grpc/blob/master/doc/server-reflection.md) is enabled in the application-prod.yml (application properties for prod profile) file of the microservice:
+Make sure that [gRPC reflection](https://github.com/grpc/grpc/blob/master/doc/server-reflection.md) is enabled in the _rps-qry-service-configmap.yml_ configuration file of the microservice:
 
 ```
-      # gRPC server configuration
-      grpc:
-        server:
-          port: ${RPS_QRY_GRPC_SERVER_PORT}
-          # Turn off the service listing (for both actuator and grpc) on production
-          reflection-service-enabled: on
+      grpc-reflection-service-enabled: on
 ```
+
+__Note:__  Turn off the grpc service listing on production environment.
 
 To list all available grpc services exposed by the gRPC server of the RPS Game Command microservice, execute the following command:
 
