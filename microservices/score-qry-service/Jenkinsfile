@@ -48,10 +48,10 @@ pipeline {
 		stage('Deploy to K8S cluster') {
 			steps {
 				script {
-				    kubernetesDeploy(configs: 'k8s/dev/configmaps/score-qry-service-configmap.yml',
-				                               'k8s/dev/secrets/score-qry-service-secret.yml',
-				                               'k8s/dev/deployments/score-qry-service-deployment.yml',
-				                               'k8s/dev/services/score-qry-service-svc.yml')
+				    kubernetesDeploy(configs: 'k8s/configmaps/score-qry-service-configmap.yml',
+				                               'k8s/secrets/score-qry-service-secret.yml',
+				                               'k8s/deployments/score-qry-service-deployment.yml',
+				                               'k8s/services/score-qry-service-svc.yml')
 				}
 			}
 		}
