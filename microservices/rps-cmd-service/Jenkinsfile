@@ -48,10 +48,10 @@ pipeline {
 		stage('Deploy to K8S cluster') {
 			steps {
 				script {
-				    kubernetesDeploy(configs: 'k8s/dev/configmaps/rps-cmd-service-configmap.yml',
-				                               'k8s/dev/secrets/rps-cmd-service-secret.yml',
-				                               'k8s/dev/deployments/rps-cmd-service-deployment.yml',
-				                               'k8s/dev/services/rps-cmd-service-svc.yml')
+				    kubernetesDeploy(configs: 'k8s/configmaps/rps-cmd-service-configmap.yml',
+				                               'k8s/secrets/rps-cmd-service-secret.yml',
+				                               'k8s/deployments/rps-cmd-service-deployment.yml',
+				                               'k8s/services/rps-cmd-service-svc.yml')
 				}
 			}
 		}

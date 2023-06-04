@@ -128,7 +128,7 @@ Note: NGINX is used as API gateway so if you deploy the microservices on docker 
 To create a _rps-app-dev_ namespace on the k8s cluster, run:
 
 ```
-     > kubectl apply -f ./k8s/dev/namespaces/rps-app-ns.yml
+     > kubectl apply -f ./k8s/namespaces/rps-app-ns.yml
 ```
 
 To check the status, run:
@@ -142,7 +142,7 @@ To check the status, run:
 To create a [Simple Fanout Ingress](https://kubernetes.io/docs/concepts/services-networking/ingress) for the RPS microservices, run:
 
 ```
-     > kubectl apply -f ./k8s/dev/ingress/rps-ingress.yml
+     > kubectl apply -f ./k8s/ingress/rps-ingress.yml
 ```
 
 __Note:__ A RPS application [Simple Fanout Ingress](https://kubernetes.io/docs/concepts/services-networking/ingress) configuration routes traffic from a single IP address to more than one.
@@ -202,13 +202,13 @@ Repeat the same step for the second custom domain name of grpc.rps.internal.
 To deploy the RPS game query microservice to Kubernetes, first deploy the microservice K8S config map with the following command:
 
 ```
-     > kubectl apply -f ./k8s/dev/configmaps/rps-qry-service-configmap.yml
+     > kubectl apply -f ./k8s/configmaps/rps-qry-service-configmap.yml
 ```
 
 Then deploy the microservice K8S service with the following command:
 
 ```
-     > kubectl apply -f ./k8s/dev/services/rps-qry-service-svc.yml
+     > kubectl apply -f ./k8s/services/rps-qry-service-svc.yml
 ```
 
 To check the service deployment status, run:
@@ -228,7 +228,7 @@ You should see the following output:
 Then deploy the microservice K8S secret with the following command:
 
 ```
-     > kubectl apply -f ./k8s/dev/secrets/rps-qry-service-secret.yml
+     > kubectl apply -f ./k8s/secrets/rps-qry-service-secret.yml
 ```
 
 Now the secrets can be referenced in our deployment.
@@ -236,7 +236,7 @@ Now the secrets can be referenced in our deployment.
 And then deploy the RPS game query microservice with the following command:
 
 ```
-     > kubectl apply -f ./k8s/dev/deployments/rps-qry-service-deployment.yml
+     > kubectl apply -f ./k8s/deployments/rps-qry-service-deployment.yml
 ```
 
 To check the pod status, run:
@@ -396,7 +396,7 @@ Now, let's deploy a HorizontalPodAutoscaler (HPA) for the RPS Query Command micr
 To deploy the HPA for the microservice, run the following command:
 
 ```
-     > kubectl apply -f ./k8s/dev/hpas/rps-qry-service-hpa.yml
+     > kubectl apply -f ./k8s/hpas/rps-qry-service-hpa.yml
 ```
 
 __Note:__ HPA is a form of autoscaling that increases or decreases the number of pods in a replication controller, deployment, replica set, or stateful set based on cpu utilization, number of requests etc.
@@ -433,7 +433,7 @@ To send the RPS game query microservice metrics to the Monitoring Stack, first m
 Then deploy the microservice Prometheus service monitor with the following command:
 
 ```
-     > kubectl apply -f ./k8s/dev/sms/rps-qry-service-sm.yml
+     > kubectl apply -f ./k8s/sms/rps-qry-service-sm.yml
 ```
 
 ### Useful links

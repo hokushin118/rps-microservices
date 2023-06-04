@@ -40,6 +40,11 @@ spec:
                 name: score-qry-service-svc
                 port:
                   number: 8080
+#  tls:
+#    - secretName: rps-secret
+#      hosts:
+#        - grpc.rps.internal
+
 
 ---
 # Ingress configuration for gRPC API
@@ -97,6 +102,15 @@ spec:
                 port:
                   number: 50051
 #  tls:
-#    - secretName: rps-secret
+#    - secretName: rps-cmd-service-grpc-secret
 #      hosts:
-#        - grpc.rps.internal
+#        - grpc.rps.cmd.internal
+#    - secretName: rps-qry-service-grpc-secret
+#      hosts:
+#        - grpc.rps.qry.internal
+#    - secretName: score-cmd-service-grpc-secret
+#      hosts:
+#        - grpc.score.cmd.internal
+#    - secretName: score-qry-service-grpc-secret
+#      hosts:
+#        - grpc.score.qry.internal
