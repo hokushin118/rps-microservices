@@ -117,130 +117,9 @@ http://localhost:8083/score-cmd-api/actuator
 
 Note: NGINX is used as API gateway so if you deploy the microservices on docker containers you should remove port number from the url.
 
-### Installing the Score command microservice on K8S cluster
+### Deploying the Score command microservice on K8S cluster
 
-#### 1. Creating namespace for RPS game microservices (if not exists)
-
-To create a _rps-app-dev_ namespace on the k8s cluster, run:
-
-```
-     > kubectl apply -f ./k8s/namespaces/rps-app-ns.yml
-```
-
-To check the status, run:
-
-```
-     > kubectl get namespaces --show-labels
-```
-
-#### 2. Deploying Simple Fanout Ingress for RPS microservices (if not exists)
-
-To create a [Simple Fanout Ingress](https://kubernetes.io/docs/concepts/services-networking/ingress) for the RPS microservices, run:
-
-```
-     > kubectl apply -f ./k8s/ingress/rps-ingress.yml
-```
-
-__Note:__ A RPS application [Simple Fanout Ingress](https://kubernetes.io/docs/concepts/services-networking/ingress) configuration routes traffic from a single IP address to more than one.
-
-![Simple Fanout Ingress](https://d33wubrfki0l68.cloudfront.net/36c8934ba20b97859854610063337d2072ea291a/28e8b/docs/images/ingressfanout.svg)
-
-Make sure the RPS application ingress has been created:
-
-```
-     > kubectl get ingress -n rps-app-dev 
-```
-
-You should see the following output:
-
-```
-      NAME               CLASS   HOSTS                                                                             ADDRESS        PORTS   AGE
-      rps-grpc-ingress   nginx   grpc.rps.cmd.internal,grpc.rps.qry.internal,grpc.score.cmd.internal + 1 more...   192.168.49.2   80      12m
-      rps-ingress        nginx   rps.internal                                                                      192.168.49.2   80      12m
-```
-
-The first [Ingress](https://kubernetes.github.io/ingress-nginx/examples/grpc) routes the gRPC API traffic. The second one routes the REST API traffic.
-
-Note the ip address (192.168.49.2) displayed in the output, as you will need this in the next step.
-
-Confirm that the ingress works with the following command:
-
-```
-      > kubectl describe ing rps-ingress -n rps-app-dev
-```
-
-You should see the following output:
-
-```
-    Name:             rps-ingress
-    Labels:           <none>
-    Namespace:        rps-app-dev
-    Address:          192.168.49.2
-    Ingress Class:    nginx
-    Default backend:  <default>
-    Rules:
-      Host          Path  Backends
-      ----          ----  --------
-      rps.internal
-                    /rps-cmd-api     rps-cmd-service-svc:8080 (10.244.0.76:8080)
-                    /rps-qry-api     rps-qry-service-svc:8080 (10.244.0.54:8080)
-                    /score-cmd-api   score-cmd-service-svc:8080 (10.244.0.62:8080)
-                    /score-qry-api   score-qry-service-svc:8080 (10.244.0.72:8080)
-    Annotations:    <none>
-    Events:
-      Type    Reason  Age                    From                      Message
-      ----    ------  ----                   ----                      -------
-      Normal  Sync    2m19s (x2 over 2m40s)  nginx-ingress-controller  Scheduled for sync
-```
-
-Repeat the same step for another ingress of _rps-grpc-ingress_.
-
-__Note:__ All tls ingresses terminate tls at Ingress level. You should see the following lines in the above log:
-
-```
-      TLS:
-        rps-tls-secret terminates rps.internal
-      and
-      TLS:
-        rps-cmd-service-grpc-tls-secret terminates grpc.rps.cmd.internal
-        rps-qry-service-grpc-tls-secret terminates grpc.rps.qry.internal
-        score-cmd-service-grpc-tls-secret terminates grpc.score.cmd.internal
-        score-qry-service-grpc-tls-secret terminates grpc.score.qry.internal
-```
-
-[TLS Termination](https://kubernetes.github.io/ingress-nginx/examples/tls-termination)
-
-#### 3. Adding custom entry to the etc/host file for the RPS game microservices (if not exists)
-
-Add a custom entry to the etc/hosts file using the nano text editor:
-
-```
-     > sudo nano /etc/hosts
-```
-
-You should add the following ip address (copied in the previous step) and custom domain to the hosts file:
-
-```
-      192.168.49.2 rps.internal grpc.rps.cmd.internal grpc.rps.qry.internal grpc.score.cmd.internal grpc.score.qry.internal
-```
-
-You may check the custom domain name with ping command:
-
-```
-     > ping rps.internal
-```
-
-You should see the following output:
-
-```
-      64 bytes from rps.internal (192.168.49.2): icmp_seq=1 ttl=64 time=0.072 ms
-      64 bytes from rps.internal (192.168.49.2): icmp_seq=2 ttl=64 time=0.094 ms
-      64 bytes from rps.internal (192.168.49.2): icmp_seq=3 ttl=64 time=0.042 ms
-```
-
-Repeat the same step for the second custom domain name of _grpc.score.cmd.internal_.
-
-#### 4. Deploying the Score command microservice
+#### 1. Deploying the Score command microservice
 
 To deploy the Score command microservice to Kubernetes, first deploy the microservice K8S config map with the following command:
 
@@ -315,7 +194,7 @@ Open any browser and navigate to the microservice Open API 3.0 definition (REST 
      > http://rps.internal/score-cmd-api/swagger-ui/index.html
 ```
 
-#### 5. Verifying REST API
+#### 2. Verifying REST API
 
 Verify the REST API with the following command:
 
@@ -323,7 +202,7 @@ Verify the REST API with the following command:
     > curl --location --request DELETE 'rps.internal/score-cmd-api/v1/games/748873ec-f887-4090-93ff-f8b8cbb34c7a' --header 'Accept: application/json' --header 'Content-Type: application/json'
 ```
 
-#### 6. Verifying gRPC API
+#### 3. Verifying gRPC API
 
 Make sure that [gRPC reflection](https://github.com/grpc/grpc/blob/master/doc/server-reflection.md) is enabled in the _score-cmd-service-configmap.yml_ configuration file of the microservice:
 
@@ -405,7 +284,7 @@ You should see the following output:
 
 It means that gRPC API is up and running.
 
-#### 7. Deploying HPA for pods
+#### 4. Deploying HPA for pods
 
 Now, let's deploy a HorizontalPodAutoscaler (HPA) for the Score Command microservice.
 To deploy the HPA for the microservice, run the following command:
@@ -439,7 +318,7 @@ You can easily [scale up](https://kubernetes.io/docs/concepts/workloads/controll
      > kubectl scale deployment/score-cmd-service-deployment --replicas=3 -n rps-app-dev
 ```
 
-#### 6. Sending metrics from the Score command microservice to the Monitoring Stack
+#### 5. Sending metrics from the Score command microservice to the Monitoring Stack
 
 To send the Score command microservice metrics to the Monitoring Stack, first make sure that the Prometheus endpoint is configured in the application as below:
 

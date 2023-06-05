@@ -1,0 +1,150 @@
+# Simple Fanout Ingress for RPS microservices
+# DNS > LB > Ingress > Service > Pods > Container
+# Ingress TLS configuration for REST API
+apiVersion: networking.k8s.io/v1 # K8S API version
+kind: Ingress
+metadata:
+  name: rps-mtls-ingress
+  namespace: rps-app-dev # The name of the namespace
+  annotation:
+    nginx.ingress.kubernetes.io/backend-protocol: "HTTP"
+    # Enable if you prefer to forward encrypted traffic to pods and don't want to terminate tls at Ingress level
+    # nginx.ingress.kubernetes.io/backend-protocol: "HTTPS"
+    nginx.ingress.kubernetes.io/enable-access-log: "true" # Enable/disable nginx access log
+    nginx.ingress.kubernetes.io/proxy-body-size: 8m # Sets the maximum size of the body in a request, if the body exceeds the maximum size set, nginx will return a 413 error to the client
+    # Rate-limiting annotations are useful for defining limits on connections and transmission rates and they can be very helpful for mitigating DDoS attacks
+    nginx.ingress.kubernetes.io/limit-rps: "5" # Defines the number of requests that may be accepted from a given IP address each second
+    nginx.ingress.kubernetes.io/limit-rpm: "300" # Defines the number of requests that may be accepted from a given IP address each minute
+    nginx.ingress.kubernetes.io/limit-connections: "10" # Defines the number of concurrent connections allowed from a given IP address
+    # WWW Redirects
+    nginx.ingress.kubernetes.io/from-to-www-redirect: "true" # Redirects from www.domain.com to domain.com or vice versa
+    # SSL Redirects
+    nginx.ingress.kubernetes.io/force-ssl-redirect: "true" # forces every incoming HTTP request to HTTPS
+    nginx.ingress.kubernetes.io/ssl-passthrough: "true"
+    # mTLS
+    nginx.ingress.kubernetes.io/auth-tls-pass-certificate-to-upstream: "true"
+    nginx.ingress.kubernetes.io/auth-tls-secret: rps-app-dev/rps-ca-secret
+    nginx.ingress.kubernetes.io/auth-tls-verify-client: "on"
+    nginx.ingress.kubernetes.io/auth-tls-verify-depth: "2"
+spec:
+  ingressClassName: nginx # Ingress Controller
+  tls:
+    - hosts:
+        - rps.internal
+      secretName: rps-ca-secret
+  rules:
+    - host: rps.internal
+      http:
+        paths:
+          - path: /rps-cmd-api
+            pathType: Prefix
+            backend:
+              service:
+                name: rps-cmd-service-svc
+                port:
+                  number: 8080
+          - path: /rps-qry-api
+            pathType: Prefix
+            backend:
+              service:
+                name: rps-qry-service-svc
+                port:
+                  number: 8080
+          - path: /score-cmd-api
+            pathType: Prefix
+            backend:
+              service:
+                name: score-cmd-service-svc
+                port:
+                  number: 8080
+          - path: /score-qry-api
+            pathType: Prefix
+            backend:
+              service:
+                name: score-qry-service-svc
+                port:
+                  number: 8080
+
+---
+# Ingress TLS configuration for gRPC API
+# https://kubernetes.github.io/ingress-nginx/examples/grpc
+apiVersion: networking.k8s.io/v1 # K8S API version
+kind: Ingress
+metadata:
+  name: rps-grpc-mtls-ingress
+  namespace: rps-app-dev # The name of the namespace
+  annotations:
+    nginx.ingress.kubernetes.io/backend-protocol: "GRPC" # Sets up the appropriate nginx configuration to route http/2 traffic to a service
+    # nginx.ingress.kubernetes.io/backend-protocol: "GRPCS" # Enable if you prefer to forward encrypted traffic to pods and don't want to terminate tls at Ingress level
+    nginx.ingress.kubernetes.io/enable-access-log: "true" # Enable/disable nginx access log
+    nginx.ingress.kubernetes.io/proxy-body-size: 8m # Sets the maximum size of the body in a request, if the body exceeds the maximum size set, nginx will return a 413 error to the client
+    # Rate-limiting annotations are useful for defining limits on connections and transmission rates and they can be very helpful for mitigating DDoS attacks
+    nginx.ingress.kubernetes.io/limit-rps: "5" # Defines the number of requests that may be accepted from a given IP address each second
+    nginx.ingress.kubernetes.io/limit-rpm: "300" # Defines the number of requests that may be accepted from a given IP address each minute
+    nginx.ingress.kubernetes.io/limit-connections: "10" # Defines the number of concurrent connections allowed from a given IP address
+    # WWW Redirects
+    nginx.ingress.kubernetes.io/from-to-www-redirect: "true" # Redirects from www.domain.com to domain.com or vice versa
+    # SSL Redirects
+    nginx.ingress.kubernetes.io/ssl-redirect: "true"
+    nginx.ingress.kubernetes.io/grpc-backend: "true"
+    # mTLS
+    nginx.ingress.kubernetes.io/auth-tls-pass-certificate-to-upstream: "true"
+    nginx.ingress.kubernetes.io/auth-tls-secret: rps-app-dev/rps-ca-secret
+    nginx.ingress.kubernetes.io/auth-tls-verify-client: "on"
+    nginx.ingress.kubernetes.io/auth-tls-verify-depth: "1"
+spec:
+  ingressClassName: nginx # Ingress Controller
+  tls:
+    - hosts:
+        - grpc.rps.cmd.internal
+      secretName: rps-cmd-service-grpc-tls-secret
+    - hosts:
+        - grpc.rps.qry.internal
+      secretName: rps-qry-service-grpc-tls-secret
+    - hosts:
+        - grpc.score.cmd.internal
+      secretName: score-cmd-service-grpc-tls-secret
+    - hosts:
+        - grpc.score.qry.internal
+      secretName: score-qry-service-grpc-tls-secret
+  rules:
+    - host: grpc.rps.cmd.internal
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: rps-cmd-service-grpc-svc
+                port:
+                  number: 50051
+    - host: grpc.rps.qry.internal
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: rps-qry-service-grpc-svc
+                port:
+                  number: 50051
+    - host: grpc.score.cmd.internal
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: score-cmd-service-grpc-svc
+                port:
+                  number: 50051
+    - host: grpc.score.qry.internal
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: score-qry-service-grpc-svc
+                port:
+                  number: 50051

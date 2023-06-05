@@ -80,7 +80,7 @@ Source: [Architecting Cloud Native .NET Applications for Azure](https://learn.mi
 
 to activate it.
 
-### 2. Deployment of the infrastructure
+### 2. Deployment of the infrastructure ([backing services](https://12factor.net/backing-services))
 
 * Navigate to the root directory of the RPS Game project on your computer and run the docker compose command below to
   deploy necessary infrastructure on docker containers in the background.
@@ -2445,7 +2445,214 @@ The messages should appear in the Kafka message consumer.
 
 [Deploy a Scalable Apache Kafka/Zookeeper Cluster on Kubernetes with Bitnami and Helm](https://docs.bitnami.com/tutorials/deploy-scalable-kafka-zookeeper-cluster-kubernetes)
 
-That's it! Microservices infrastructure is up and running. We can start deploying microservices.
+That's it! Microservices infrastructure [backing services](https://12factor.net/backing-services) is up and running. We can start deploying microservices.
+
+### Installing and configuring Ingress on K8S cluster
+
+#### 1. Creating namespace for RPS game microservices (if not exists)
+
+First, we need to create a namespace for RPS game microservices and Ingress.
+To create a _rps-app-dev_ namespace on the K8S cluster, run:
+
+```
+     > kubectl apply -f ./k8s/namespaces/rps-app-ns.yml
+```
+
+To check the status, run:
+
+```
+     > kubectl get namespaces --show-labels
+```
+
+#### 2. Deploying Simple Fanout Ingress for RPS microservices (if not exists)
+
+To create a [Simple Fanout Ingress](https://kubernetes.io/docs/concepts/services-networking/ingress) for the RPS microservices, run:
+
+```
+     > kubectl apply -f ./k8s/ingress/rps-ingress.yml
+```
+
+__Note:__ A RPS application [Simple Fanout Ingress](https://kubernetes.io/docs/concepts/services-networking/ingress) configuration routes traffic from a single IP address to more than one.
+
+![Simple Fanout Ingress](https://d33wubrfki0l68.cloudfront.net/36c8934ba20b97859854610063337d2072ea291a/28e8b/docs/images/ingressfanout.svg)
+
+Make sure the RPS application ingress has been created:
+
+```
+     > kubectl get ingress -n rps-app-dev
+```
+
+You should see the following output:
+
+```
+      NAME               CLASS   HOSTS                                                                             ADDRESS        PORTS   AGE
+      rps-grpc-ingress   nginx   grpc.rps.cmd.internal,grpc.rps.qry.internal,grpc.score.cmd.internal + 1 more...   192.168.49.2   80      12m
+      rps-ingress        nginx   rps.internal                                                                      192.168.49.2   80      12m
+```
+
+The first [Ingress](https://kubernetes.github.io/ingress-nginx/examples/grpc) routes the gRPC API traffic. The second one routes the REST API traffic.
+
+Note the ip address (192.168.49.2) displayed in the output, as you will need this in the next step.
+
+Confirm that the ingress works with the following command:
+
+```
+      > kubectl describe ing rps-ingress -n rps-app-dev
+```
+
+You should see the following output:
+
+```
+    Name:             rps-ingress
+    Labels:           <none>
+    Namespace:        rps-app-dev
+    Address:          192.168.49.2
+    Ingress Class:    nginx
+    Default backend:  <default>
+    Rules:
+      Host          Path  Backends
+      ----          ----  --------
+      rps.internal
+                    /rps-cmd-api     rps-cmd-service-svc:8080 (10.244.0.76:8080)
+                    /rps-qry-api     rps-qry-service-svc:8080 (10.244.0.54:8080)
+                    /score-cmd-api   score-cmd-service-svc:8080 (10.244.0.62:8080)
+                    /score-qry-api   score-qry-service-svc:8080 (10.244.0.72:8080)
+    Annotations:    <none>
+    Events:
+      Type    Reason  Age                    From                      Message
+      ----    ------  ----                   ----                      -------
+      Normal  Sync    2m19s (x2 over 2m40s)  nginx-ingress-controller  Scheduled for sync
+```
+
+Repeat the same step for another ingress of _rps-grpc-ingress_.
+
+__Note:__ All tls ingresses terminate tls at Ingress level. You should see the following lines in the above log:
+
+```
+      TLS:
+        rps-tls-secret terminates rps.internal
+      and
+      TLS:
+        rps-cmd-service-grpc-tls-secret terminates grpc.rps.cmd.internal
+        rps-qry-service-grpc-tls-secret terminates grpc.rps.qry.internal
+        score-cmd-service-grpc-tls-secret terminates grpc.score.cmd.internal
+        score-qry-service-grpc-tls-secret terminates grpc.score.qry.internal
+```
+
+[TLS Termination](https://kubernetes.github.io/ingress-nginx/examples/tls-termination)
+
+#### 3. Adding custom entry to the etc/host file for the RPS game microservices (if not exists)
+
+Add a custom entry to the etc/hosts file using the nano text editor:
+
+```
+     > sudo nano /etc/hosts
+```
+
+You should add the following ip address (copied in the previous step) and custom domains to the hosts file:
+
+```
+      192.168.49.2 rps.internal grpc.rps.cmd.internal grpc.rps.qry.internal grpc.score.cmd.internal grpc.score.qry.internal
+```
+
+You may check the custom domain name with ping command:
+
+```
+     > ping rps.internal
+```
+
+You should see the following output:
+
+```
+      64 bytes from rps.internal (192.168.49.2): icmp_seq=1 ttl=64 time=0.072 ms
+      64 bytes from rps.internal (192.168.49.2): icmp_seq=2 ttl=64 time=0.094 ms
+      64 bytes from rps.internal (192.168.49.2): icmp_seq=3 ttl=64 time=0.042 ms
+```
+
+Repeat the same step for other custom domain names of _grpc.rps.cmd.internal_, _grpc.rps.qry.internal_, _grpc.score.cmd.internal_, _grpc.score.qry.internal_.
+
+### Creating self-signed server certificate (TLS connection)
+
+Create an SSL certificate for _rps.internal_ host with the following command:
+
+```
+     > openssl req -x509 -nodes -days 3650 -newkey rsa:4096 -sha256 -keyout rps.internal.key -out rps.internal.crt -subj "/CN=rps.internal" -addext "subjectAltName = DNS:rps.internal"
+```
+
+At this point, we have a server certificate _rps.internal.crt_ which needs to be defined to the Kubernetes cluster through a Kubernetes secret resource.
+The following command will create a secret named _rps-tls-secret_ that holds the server certificate and the private key:
+
+```
+     > kubectl create secret tls rps-tls-secret --key rps.internal.key --cert rps.internal.crt -n rps-app-dev
+```
+
+You will see the following output:
+
+```
+      secret/rps-secret created
+```
+
+To view secrets execute the following command:
+
+```
+      > kubectl get secrets -n rps-app-dev
+```
+
+You should see the following output:
+
+```
+      NAME                       TYPE                DATA   AGE
+      rps-tls-secret             kubernetes.io/tls   2      19s
+```
+
+__Note:__ The _rps-tls-secret_ secret is of type kubernetes.io/tls.
+
+If you deploy _rps-ingress-tls_ Ingress instead of the _rps-ingress_ one and execute the following command:
+
+```
+      > curl -k -v https://rps.internal
+```
+
+__Note:__ -k is used to skip self-signed certificate verification
+
+You should see the following output:
+
+```
+      *   Trying 192.168.49.2:443...
+      * Connected to rps.internal (192.168.49.2) port 443 (#0)
+      * ALPN, offering h2
+      * ALPN, offering http/1.1
+      * TLSv1.0 (OUT), TLS header, Certificate Status (22):
+      * TLSv1.3 (OUT), TLS handshake, Client hello (1):
+      * TLSv1.2 (IN), TLS header, Certificate Status (22):
+      * TLSv1.3 (IN), TLS handshake, Server hello (2):
+      * TLSv1.2 (IN), TLS header, Finished (20):
+      * TLSv1.2 (IN), TLS header, Supplemental data (23):
+      * TLSv1.3 (IN), TLS handshake, Encrypted Extensions (8):
+      * TLSv1.2 (IN), TLS header, Supplemental data (23):
+      * TLSv1.3 (IN), TLS handshake, Certificate (11):
+      * TLSv1.2 (IN), TLS header, Supplemental data (23):
+      * TLSv1.3 (IN), TLS handshake, CERT verify (15):
+      * TLSv1.2 (IN), TLS header, Supplemental data (23):
+      * TLSv1.3 (IN), TLS handshake, Finished (20):
+      * TLSv1.2 (OUT), TLS header, Finished (20):
+      * TLSv1.3 (OUT), TLS change cipher, Change cipher spec (1):
+      * TLSv1.2 (OUT), TLS header, Supplemental data (23):
+      * TLSv1.3 (OUT), TLS handshake, Finished (20):
+      * SSL connection using TLSv1.3 / TLS_AES_256_GCM_SHA384
+      * ALPN, server accepted to use h2
+      * Server certificate:
+      *  subject: CN=rps.internal
+      *  start date: Jun  4 20:13:01 2023 GMT
+      *  expire date: Jun  1 20:13:01 2033 GMT
+      *  issuer: CN=rps.internal
+      *  SSL certificate verify result: self-signed certificate (18), continuing anyway.
+```
+
+You can see that self-signed server certificate has successfully been verified.
+
+[TLS](https://kubernetes.github.io/ingress-nginx/user-guide/tls)
+[Using multiple SSL certificates in HTTPS load balancing with Ingress](https://cloud.google.com/kubernetes-engine/docs/how-to/ingress-multi-ssl)
 
 ### Useful links
 
@@ -2540,7 +2747,7 @@ ELK
   endpoint/ to benchmark microservice.
 
 ```
-> ab -n 1000 -c 10  http://127.0.0.1:8083/score-qry-api/v1/scores
+      > ab -n 1000 -c 10  http://127.0.0.1:8083/score-qry-api/v1/scores
 ```
 
 -n 1000 is the number of requests to perform for the benchmarking session. The default is to just perform a single
