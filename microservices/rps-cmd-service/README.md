@@ -200,12 +200,14 @@ Open any browser and navigate to the microservice Open API 3.0 definition (REST 
 Verify the REST API with the following command:
 
 ```
-    > curl -v --location 'rps.internal/rps-cmd-api/v1/games' --header 'Accept: application/json' --header 'Content-Type: application/json' --data '{
+    > curl -k -v --location 'http://rps.internal/rps-cmd-api/v1/games' --header 'Accept: application/json' --header 'Content-Type: application/json' --data '{
         "id": "748873ec-f887-4090-93ff-f8b8cbb34c7a",
         "username": "User1",
         "hand": "ROCK"
       }'
 ```
+
+__Note:__ -k flag is used to skip self-signed certificate verification, -v flag is used to get verbose fetching.
 
 You should see the following output:
 
