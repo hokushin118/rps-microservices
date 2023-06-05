@@ -6,7 +6,7 @@ kind: Ingress
 metadata:
   name: rps-mtls-ingress
   namespace: rps-app-dev # The name of the namespace
-  annotation:
+  annotations:
     nginx.ingress.kubernetes.io/backend-protocol: "HTTP"
     # Enable if you prefer to forward encrypted traffic to pods and don't want to terminate tls at Ingress level
     # nginx.ingress.kubernetes.io/backend-protocol: "HTTPS"
@@ -23,7 +23,7 @@ metadata:
     nginx.ingress.kubernetes.io/ssl-passthrough: "true"
     # mTLS
     nginx.ingress.kubernetes.io/auth-tls-pass-certificate-to-upstream: "true"
-    nginx.ingress.kubernetes.io/auth-tls-secret: rps-app-dev/rps-ca-secret
+    nginx.ingress.kubernetes.io/auth-tls-secret: rps-app-dev/ca-secret # Secret containing the Internal CA certificate is used for the client certificate validation
     nginx.ingress.kubernetes.io/auth-tls-verify-client: "on"
     nginx.ingress.kubernetes.io/auth-tls-verify-depth: "2"
 spec:
@@ -31,7 +31,7 @@ spec:
   tls:
     - hosts:
         - rps.internal
-      secretName: rps-ca-secret
+      secretName: rps-tls-secret
   rules:
     - host: rps.internal
       http:
@@ -89,9 +89,9 @@ metadata:
     nginx.ingress.kubernetes.io/grpc-backend: "true"
     # mTLS
     nginx.ingress.kubernetes.io/auth-tls-pass-certificate-to-upstream: "true"
-    nginx.ingress.kubernetes.io/auth-tls-secret: rps-app-dev/rps-ca-secret
+    nginx.ingress.kubernetes.io/auth-tls-secret: rps-app-dev/ca-secret # Secret containing the Internal CA certificate is used for the client certificate validation
     nginx.ingress.kubernetes.io/auth-tls-verify-client: "on"
-    nginx.ingress.kubernetes.io/auth-tls-verify-depth: "1"
+    nginx.ingress.kubernetes.io/auth-tls-verify-depth: "2"
 spec:
   ingressClassName: nginx # Ingress Controller
   tls:
