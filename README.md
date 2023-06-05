@@ -2468,8 +2468,24 @@ To check the status, run:
 
 To create a [Simple Fanout Ingress](https://kubernetes.io/docs/concepts/services-networking/ingress) for the RPS microservices, run:
 
+You can select one of the following pre-configured Ingress resources:
+
+a) Without TLS:
+
 ```
      > kubectl apply -f ./k8s/ingress/rps-ingress.yml
+```
+
+b) With TLS (server certificate is required, see below):
+
+```
+     > kubectl apply -f ./k8s/ingress/rps-tls-ingress.yml
+```
+
+c) With mTLS (server and client certificates are required, see below):
+
+```
+     > kubectl apply -f ./k8s/ingress/rps-mtls-ingress.yml
 ```
 
 __Note:__ A RPS application [Simple Fanout Ingress](https://kubernetes.io/docs/concepts/services-networking/ingress) configuration routes traffic from a single IP address to more than one.
@@ -2481,6 +2497,8 @@ Make sure the RPS application ingress has been created:
 ```
      > kubectl get ingress -n rps-app-dev
 ```
+
+__Note:__ Note for the ingress rule to take effect it needs to be created in the same namespace as the service.
 
 You should see the following output:
 
@@ -2571,15 +2589,39 @@ You should see the following output:
 
 Repeat the same step for other custom domain names of _grpc.rps.cmd.internal_, _grpc.rps.qry.internal_, _grpc.score.cmd.internal_, _grpc.score.qry.internal_.
 
-### Creating self-signed server certificate (TLS connection)
+### Generating self-signed server certificate (TLS connection)
 
-Create an SSL certificate for _rps.internal_ host with the following command:
+#### 1. Generation Public self-signed certificate
+
+Generate a public CA key and certificate with the following command:
 
 ```
-     > openssl req -x509 -nodes -days 3650 -newkey rsa:4096 -sha256 -keyout rps.internal.key -out rps.internal.crt -subj "/CN=rps.internal" -addext "subjectAltName = DNS:rps.internal"
+      > openssl req -x509 -sha256 -newkey rsa:4096 -days 3560 -nodes -keyout rps-public-ca.key -out rps-public-ca.crt -subj '/CN=RPS Public Cert Authority/O=RPS Public CA'
+```
+__Note:__ Skip the next steps if you are not going to use TLS connection for dev environment.
+
+#### 2. Generation self-signed server certificate
+
+Generate a self-signed server certificate for the _rps.internal_ host with the following command:
+
+```
+     > openssl req -new -nodes -newkey rsa:4096 -out rps.internal.csr -keyout rps.internal.key -subj '/CN=rps.internal/O=rps.internal'
 ```
 
-At this point, we have a server certificate _rps.internal.crt_ which needs to be defined to the Kubernetes cluster through a Kubernetes secret resource.
+Sign in the generated SSL server certificate with public CA certificate by executing the following command:
+
+```
+     > openssl x509 -req -sha256 -days 365 -in rps.internal.csr -CA rps-public-ca.crt -CAkey rps-public-ca.key -set_serial 01 -out rps.internal.crt
+```
+
+You should see the following output:
+
+```
+    Certificate request self-signature ok
+    subject=CN = rps.internal, O = rps.internal
+```
+
+At this point, we have a signed server certificate _rps.internal.crt_ and key _rps.internal.key_ which needs to be defined to the Kubernetes cluster through a Kubernetes secret resource.
 The following command will create a secret named _rps-tls-secret_ that holds the server certificate and the private key:
 
 ```
@@ -2589,9 +2631,10 @@ The following command will create a secret named _rps-tls-secret_ that holds the
 You will see the following output:
 
 ```
-      secret/rps-secret created
+      secret/rps-tls-secret created
 ```
 
+It means that the secret has successfully been created. This secret is used to validate the server's identity.
 To view secrets execute the following command:
 
 ```
@@ -2607,13 +2650,13 @@ You should see the following output:
 
 __Note:__ The _rps-tls-secret_ secret is of type kubernetes.io/tls.
 
-If you deploy _rps-ingress-tls_ Ingress instead of the _rps-ingress_ one and execute the following command:
+If you deploy _rps-tls-ingress_ Ingress instead of the _rps-ingress_ one and execute the following command:
 
 ```
       > curl -k -v https://rps.internal
 ```
 
-__Note:__ -k is used to skip self-signed certificate verification
+__Note:__ -k flag is used to skip self-signed certificate verification, -v flag is used to get verbose fetching.
 
 You should see the following output:
 
@@ -2650,6 +2693,89 @@ You should see the following output:
 ```
 
 You can see that self-signed server certificate has successfully been verified.
+
+__Note:__ Skip the next steps if you are not going to use mTLS connection for dev environment.
+
+#### 3. Generating client certificate (mTLS connection)
+
+Generate CA "Certificate Authority" certificate and key with the following command:
+
+```
+      > openssl req -x509 -sha256 -newkey rsa:4096 -keyout ca.key -out ca.crt -days 356 -nodes -subj '/CN=RPS Cert Authority'
+```
+
+Then apply the CA as secret to kubernetes cluster with the following command:
+
+```
+      > kubectl create secret generic ca-secret --from-file=ca.crt=ca.crt -n rps-app-dev
+```
+
+You should see the following output:
+
+```
+      secret/ca-secret created
+```
+
+It means that the secret has successfully been created. This secret is used to validate client certificates.
+Validating the Mutual TLS (mTLS) connection.
+
+Next we generate a client Cert Signing Request (CSR) and client key with the following command:
+
+```
+      > openssl req -new -newkey rsa:4096 -keyout rps.client.key -out rps.client.csr -nodes -subj '/CN=RPS Client'
+```
+
+Then we sign in the Certificate Signing Request (CSR) with the CA certificate by executing the following command:
+
+```
+      > openssl x509 -req -sha256 -days 365 -in rps.client.csr -CA ca.crt -CAkey ca.key -set_serial 02 -out rps.client.crt
+```
+
+You should see the following output:
+
+```
+      Certificate request self-signature ok
+      subject=CN = RPS Client
+```
+
+It means that the client certificate and key have successfully been generated.
+
+Verifying mTLS connection: 
+
+First, try to curl without client certificate:
+
+```
+      > curl -vk https://rps.internal
+```
+
+You should see the following output:
+
+```
+      <html>
+      <head><title>400 No required SSL certificate was sent</title></head>
+      <body>
+      <center><h1>400 Bad Request</h1></center>
+      <center>No required SSL certificate was sent</center>
+      <hr><center>nginx</center>
+      </body>
+      </html>
+```
+
+Then try the same call with client key and cert:
+
+```
+      > curl -vk https://rps.internal --key rps.client.key --cert rps.client.crt
+```
+
+It should do the trick this time. Make sure you can see the following lines in the log:
+
+```
+      * TLSv1.3 (IN), TLS handshake, CERT verify (15):
+      ...
+      * TLSv1.3 (OUT), TLS handshake, CERT verify (15):
+```
+
+As you can see the certificate verification has been made twice, one for server certificate and another one for the client certificate.
 
 [TLS](https://kubernetes.github.io/ingress-nginx/user-guide/tls)
 [Using multiple SSL certificates in HTTPS load balancing with Ingress](https://cloud.google.com/kubernetes-engine/docs/how-to/ingress-multi-ssl)
