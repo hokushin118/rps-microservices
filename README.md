@@ -2470,19 +2470,19 @@ To create a [Simple Fanout Ingress](https://kubernetes.io/docs/concepts/services
 
 You can select one of the following pre-configured Ingress resources:
 
-a) Without TLS:
+a) Without [TLS](https://en.wikipedia.org/wiki/Transport_Layer_Security):
 
 ```
      > kubectl apply -f ./k8s/ingress/rps-ingress.yml
 ```
 
-b) With TLS (server certificate is required, see below):
+b) With [TLS](https://en.wikipedia.org/wiki/Transport_Layer_Security) (server certificate is required, see below):
 
 ```
      > kubectl apply -f ./k8s/ingress/rps-tls-ingress.yml
 ```
 
-c) With mTLS (server and client certificates are required, see below):
+c) With [mTLS](https://en.wikipedia.org/wiki/Mutual_authentication) (server and client certificates are required, see below):
 
 ```
      > kubectl apply -f ./k8s/ingress/rps-mtls-ingress.yml
@@ -2589,7 +2589,7 @@ You should see the following output:
 
 Repeat the same step for other custom domain names of _grpc.rps.cmd.internal_, _grpc.rps.qry.internal_, _grpc.score.cmd.internal_, _grpc.score.qry.internal_.
 
-### Generating self-signed server certificate (TLS connection)
+### Generating self-signed server certificate (TLS connection) with [OpenSSL](https://www.openssl.org)
 
 #### 1. Generation Public self-signed certificate
 
@@ -2598,7 +2598,7 @@ Generate a public CA key and certificate with the following command:
 ```
       > openssl req -x509 -sha256 -newkey rsa:4096 -days 3560 -nodes -keyout rps-public-ca.key -out rps-public-ca.crt -subj '/CN=RPS Public Cert Authority/O=RPS Public CA'
 ```
-__Note:__ Skip the next steps if you are not going to use TLS connection for dev environment.
+__Note:__ Skip the next steps if you are not going to use [TLS](https://en.wikipedia.org/wiki/Transport_Layer_Security) connection for dev environment.
 
 #### 2. Generation self-signed server certificate
 
@@ -2694,7 +2694,18 @@ You should see the following output:
 
 You can see that self-signed server certificate has successfully been verified.
 
-__Note:__ Skip the next steps if you are not going to use mTLS connection for dev environment.
+Repeat the same steps for 4 grpc server certificates. Make sure to change custom domain to a corresponding gprc one:
+
+```
+      -subj '/CN=rps.internal/O=rps.internal'
+      to
+      -subj '/CN=grpc.rps.cmd.internal/O=grpc.rps.cmd.internal'
+      -subj '/CN=grpc.rps.qry.internal/O=grpc.rps.qry.internal'
+      -subj '/CN=grpc.score.cmd.internal/O=grpc.score.cmd.internal'
+      -subj '/CN=grpc.score.qry.internal/O=grpc.score.qry.internal'
+```
+
+__Note:__ Skip the next steps if you are not going to use [mTLS](https://en.wikipedia.org/wiki/Mutual_authentication) connection for dev environment.
 
 #### 3. Generating client certificate (mTLS connection)
 
@@ -2717,15 +2728,15 @@ You should see the following output:
 ```
 
 It means that the secret has successfully been created. This secret is used to validate client certificates.
-Validating the Mutual TLS (mTLS) connection.
+Validating the ([mTLS](https://en.wikipedia.org/wiki/Mutual_authentication)) connection.
 
-Next we generate a client Cert Signing Request (CSR) and client key with the following command:
+Next we generate a client [Certificate Signing Request (CSR)](https://en.wikipedia.org/wiki/Certificate_signing_request) and client key with the following command:
 
 ```
       > openssl req -new -newkey rsa:4096 -keyout rps.client.key -out rps.client.csr -nodes -subj '/CN=RPS Client'
 ```
 
-Then we sign in the Certificate Signing Request (CSR) with the CA certificate by executing the following command:
+Then we sign in the [Certificate Signing Request (CSR)](https://en.wikipedia.org/wiki/Certificate_signing_request) with the CA certificate by executing the following command:
 
 ```
       > openssl x509 -req -sha256 -days 365 -in rps.client.csr -CA ca.crt -CAkey ca.key -set_serial 02 -out rps.client.crt
@@ -2740,7 +2751,7 @@ You should see the following output:
 
 It means that the client certificate and key have successfully been generated.
 
-Verifying mTLS connection: 
+Verifying [mTLS](https://en.wikipedia.org/wiki/Mutual_authentication) connection: 
 
 First, try to curl without client certificate:
 
