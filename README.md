@@ -491,6 +491,11 @@ There are several ways we can implement the __ELK Stack__ architecture pattern:
 Here we implement the first and second approaches. The last one is the better option for production environment cause
 Kafka acts as a data buffer and helps prevent data loss or interruption while streaming files quickly.
 
+_ELK Stack_ is used to implement the following patterns:
+
+* [Log aggregation](https://microservices.io/patterns/observability/application-logging.html)
+* [Sharding](https://learn.microsoft.com/en-us/azure/architecture/patterns/sharding)
+
 #### 1. Creating namespace for ELK services
 
 To create a _kube-elk_ namespace on the K8S cluster, run:
@@ -921,7 +926,13 @@ You should see the following status output:
 
 ### MariaDB database on K8S cluster
 
-MariaDB Server is one of the most popular open source relational databases.
+_MariaDB_ Server is one of the most popular open source relational databases.
+
+_MongoDB_ is used to implement the following patterns:
+
+* [CQRS](https://learn.microsoft.com/en-us/azure/architecture/patterns/cqrs)
+* [Database per service](https://microservices.io/patterns/data/database-per-service.html)
+* [Index Table](https://learn.microsoft.com/en-us/azure/architecture/patterns/index-table)
 
 #### 1. Creating namespace for MariaDB database
 
@@ -1130,8 +1141,13 @@ Repeat the same steps for the third (secondary) replica set member by changing t
 
 ### MongoDB database on K8S cluster
 
-MongoDB is a source-available cross-platform document-oriented database program.
+_MongoDB_ is a source-available cross-platform document-oriented database program.
 
+_MongoDB_ is used to implement the following patterns:
+
+* [CQRS](https://learn.microsoft.com/en-us/azure/architecture/patterns/cqrs)
+* [Event Sourcing](https://learn.microsoft.com/en-us/azure/architecture/patterns/event-sourcing)
+  
 #### 1. Creating namespace for MongoDB database
 
 To create a _kube-nosql-db_ namespace on the k8s cluster, run:
@@ -1758,6 +1774,10 @@ _Redis_ is an open source, in-memory data structure store used as a distributed 
 to store data in a key-value format, allowing for fast access and retrieval of data. Redis is a popular choice for
 distributed caching due to its scalability, performance, and flexibility.
 
+_Redis_ is used to implement the following patterns:
+
+* [Cache-Aside](https://learn.microsoft.com/en-us/azure/architecture/patterns/cache-aside) pattern.
+
 #### 1. Creating namespace for Redis database
 
 To create a _kube-cache_ namespace on the k8s cluster, run:
@@ -2004,6 +2024,10 @@ There are three necessary services in _Monitoring Stack_ setup:
 [Grafana](https://grafana.com) is a visualization tool that can use [Prometheus](https://prometheus.io) to create
 dashboards and graphs.
 
+_Monitoring Stack_ is used to implement the following patterns:
+
+* [Application metrics](https://microservices.io/patterns/observability/application-metrics.html)
+
 #### 1. Creating namespace for Monitoring Stack
 
 To create a _kube-monitoring_ namespace on the k8s cluster, run:
@@ -2188,6 +2212,14 @@ Access the Grafana application from any browser by typing:
 [Apache Kafka](https://kafka.apache.org) is an open-source, event streaming platform that is distributed, scalable,
 high-throughput, low-latency, and has a very large ecosystem.
 
+[Apache Kafka](https://kafka.apache.org) is used to implement the following patterns:
+
+* [Publisher-Subscriber](https://learn.microsoft.com/en-us/azure/architecture/patterns/publisher-subscriber) 
+* [Competing Consumers](https://learn.microsoft.com/en-us/azure/architecture/patterns/competing-consumers) 
+* [CQRS](https://learn.microsoft.com/en-us/azure/architecture/patterns/cqrs)
+* [Event Sourcing](https://learn.microsoft.com/en-us/azure/architecture/patterns/event-sourcing)
+* [Idempotent consumer](https://microservices.io/patterns/communication-style/idempotent-consumer.html)
+
 #### 1. Creating namespace for Kafka
 
 To create a _kube-kafka_ namespace on the k8s cluster, run:
@@ -2227,6 +2259,10 @@ using [Zookeeper Bitnami's Helm chart](https://github.com/bitnami/charts/tree/ma
 
 The [Apache Zookeeper](https://zookeeper.apache.org) deployment will use
 this [Apache Zookeeper](https://zookeeper.apache.org) deployment for coordination and management.
+
+[Apache Zookeeper](https://zookeeper.apache.org) is used to implement the following patterns:
+
+* [Leader Election](https://learn.microsoft.com/en-us/azure/architecture/patterns/leader-election)
 
 First, add the [Bitnami charts repository](https://github.com/bitnami/charts/tree/main/bitnami/zookeeper) to Helm:
 
@@ -2445,14 +2481,186 @@ The messages should appear in the Kafka message consumer.
 
 [Deploy a Scalable Apache Kafka/Zookeeper Cluster on Kubernetes with Bitnami and Helm](https://docs.bitnami.com/tutorials/deploy-scalable-kafka-zookeeper-cluster-kubernetes)
 
-That's it! Microservices infrastructure [backing services](https://12factor.net/backing-services) is up and running. We can start deploying microservices.
+### Keycloak on K8S cluster
 
-### Installing and configuring Ingress on K8S cluster
+[Keycloak](https://www.keycloak.org) is an open source software product to allow [single sign-on](https://en.wikipedia.org/wiki/Single_sign-on) with identity and access management aimed at modern applications and services.
 
-#### 1. Creating namespace for RPS game microservices (if not exists)
+[Keycloak](https://www.keycloak.org) is used to implement the following patterns:
 
-First, we need to create a namespace for RPS game microservices and Ingress.
-To create a _rps-app-dev_ namespace on the K8S cluster, run:
+* [Federated Identity](https://learn.microsoft.com/en-us/azure/architecture/patterns/federated-identity)
+* [Sidecar](https://learn.microsoft.com/en-us/azure/architecture/patterns/sidecar)
+
+#### 1. Creating namespace for Keycloak
+
+To create a _kube-auth_ namespace on the k8s cluster, run:
+
+```
+     > kubectl apply -f ./k8s/namespaces/kube-auth-ns.yml
+```
+
+To check the status, run:
+
+```
+     > kubectl get namespaces --show-labels
+```
+
+You should see the following output:
+
+```
+      NAME                   STATUS   AGE     LABELS
+      default                Active   10d     kubernetes.io/metadata.name=default
+      ingress-nginx          Active   10d     app.kubernetes.io/instance=ingress-nginx,app.kubernetes.io/name=ingress-nginx,kubernetes.io/metadata.name=ingress-nginx
+      kube-auth              Active   2d10h   kubernetes.io/metadata.name=kube-auth,name=kube-auth
+      kube-cache             Active   3d16h   kubernetes.io/metadata.name=kube-cache,name=kube-cache
+      kube-db                Active   6d19h   kubernetes.io/metadata.name=kube-db,name=kube-db
+      kube-elk               Active   18h     kubernetes.io/metadata.name=kube-elk,name=kube-elk
+      kube-kafka             Active   23s     kubernetes.io/metadata.name=kube-kafka,name=kube-kafka
+      kube-monitoring        Active   29m     kubernetes.io/metadata.name=kube-monitoring,name=kube-monitoring
+      kube-node-lease        Active   10d     kubernetes.io/metadata.name=kube-node-lease
+      kube-nosql-db          Active   26h     kubernetes.io/metadata.name=kube-nosql-db,name=kube-nosql-db
+      kube-public            Active   10d     kubernetes.io/metadata.name=kube-public
+      kube-system            Active   10d     kubernetes.io/metadata.name=kube-system
+      kubernetes-dashboard   Active   10d     addonmanager.kubernetes.io/mode=Reconcile,kubernetes.io/metadata.name=kubernetes-dashboard,kubernetes.io/minikube-addons=dashboard
+```
+
+#### 2. Adding custom entry to the etc/host file for Keycloak
+
+Add a custom entry to the etc/hosts file using the nano text editor:
+
+```
+     > sudo nano /etc/hosts
+```
+
+You should add the following ip address (copied in the previous step) and custom domain to the hosts file:
+
+```
+      192.168.49.2 kc.internal
+```
+
+You may check the custom domain name with ping command:
+
+```
+     > ping kc.internal
+```
+
+You should see the following output:
+
+```
+      PING kc.internal (192.168.49.2) 56(84) bytes of data.
+      64 bytes from kc.internal (192.168.49.2): icmp_seq=1 ttl=64 time=0.064 ms
+      64 bytes from kc.internal (192.168.49.2): icmp_seq=2 ttl=64 time=0.048 ms
+      64 bytes from kc.internal (192.168.49.2): icmp_seq=3 ttl=64 time=0.056 ms
+```
+
+#### 3. Deploying Simple Fanout Ingress for Keycloak
+
+To create a [Simple Fanout Ingress](https://kubernetes.io/docs/concepts/services-networking/ingress) for the RPS
+microservices, run:
+
+```
+     > kubectl apply -f ./k8s/ingress/kc-ingress.yml
+```
+
+Make sure the Keycloak ingress has been created:
+
+```
+     > kubectl get ingress -n kube-auth
+```
+
+__Note:__ Note for the ingress rule to take effect it needs to be created in the same namespace as the service.
+
+You should see the following output:
+
+```
+      NAME               CLASS   HOSTS                                                                             ADDRESS        PORTS   AGE
+      kc-ingress         nginx   kc.internal                                                                      192.168.49.2   80      12m
+```
+
+#### 4. Deploying Keycloak
+
+To deploy Keycloak on K8S cluster execute the following command:
+
+```
+     > helm install keycloak --set auth.adminUser=admin --set auth.adminPassword=admin --set replicaCount=3 oci://registry-1.docker.io/bitnamicharts/keycloak -n kube-auth
+```
+
+Wait for some time until the chart is deployed. You should see the following output:
+
+```
+      Pulled: registry-1.docker.io/bitnamicharts/keycloak:15.1.3
+      Digest: sha256:0ab81efa3f53a1535b2d8948a365d15518f3c42d094e86e84437b6d54b199796
+      NAME: keycloak
+      LAST DEPLOYED: Sat Jun 10 09:30:39 2023
+      NAMESPACE: kube-auth
+      STATUS: deployed
+      REVISION: 1
+      TEST SUITE: None
+      NOTES:
+      CHART NAME: keycloak
+      CHART VERSION: 15.1.3
+      APP VERSION: 21.1.1
+      
+      ** Please be patient while the chart is being deployed **
+      
+      Keycloak can be accessed through the following DNS name from within your cluster:
+      
+          keycloak.kube-auth.svc.cluster.local (port 80)
+      
+      To access Keycloak from outside the cluster execute the following commands:
+      
+      1. Get the Keycloak URL by running these commands:
+      
+          export HTTP_SERVICE_PORT=$(kubectl get --namespace kube-auth -o jsonpath="{.spec.ports[?(@.name=='http')].port}" services keycloak)
+          kubectl port-forward --namespace kube-auth svc/keycloak ${HTTP_SERVICE_PORT}:${HTTP_SERVICE_PORT} &
+      
+          echo "http://127.0.0.1:${HTTP_SERVICE_PORT}/"
+      
+      2. Access Keycloak using the obtained URL.
+      3. Access the Administration Console using the following credentials:
+      
+        echo Username: admin
+        echo Password: $(kubectl get secret --namespace kube-auth keycloak -o jsonpath="{.data.admin-password}" | base64 -d)
+```
+
+Note the service name displayed in the output, as you will need this in subsequent steps.
+
+```
+      keycloak.kube-auth.svc.cluster.local (port 80)
+```
+
+Make sure that the Keycloak cluster is up and running with the following command:
+
+```
+     > kubectl get pods -n kube-auth -o wide
+```
+
+You should see the following output:
+
+```
+      NAME                    READY   STATUS    RESTARTS   AGE     IP            NODE       NOMINATED NODE   READINESS GATES
+      keycloak-0              1/1     Running   0          6m51s   10.244.0.14   minikube   <none>           <none>
+      keycloak-1              1/1     Running   0          6m51s   10.244.0.14   minikube   <none>           <none>
+      keycloak-2              1/1     Running   0          6m51s   10.244.0.14   minikube   <none>           <none>
+      keycloak-postgresql-0   1/1     Running   0          6m50s   10.244.0.15   minikube   <none>           <none>
+```
+
+TODO: Keycloak configuration...
+
+That's it! Microservices infrastructure [backing services](https://12factor.net/backing-services) is up and running. We
+can start deploying microservices.
+
+### Installing and configuring Ingress for RPS game microservices on K8S cluster
+
+_Ingress_ is used to implement the following patterns:
+
+* [Gateway Aggregation](https://learn.microsoft.com/en-us/azure/architecture/patterns/gateway-aggregation)
+* [Gateway Offloading](https://learn.microsoft.com/en-us/azure/architecture/patterns/gateway-offloading)
+* [Gateway Routing](https://learn.microsoft.com/en-us/azure/architecture/patterns/gateway-routing)
+
+#### 1. Creating namespace for RPS game microservices
+
+First, we need to create a namespace for RPS game microservices and Ingress. To create a _rps-app-dev_ namespace on the
+K8S cluster, run:
 
 ```
      > kubectl apply -f ./k8s/namespaces/rps-app-ns.yml
@@ -2466,7 +2674,8 @@ To check the status, run:
 
 #### 2. Deploying Simple Fanout Ingress for RPS microservices (if not exists)
 
-To create a [Simple Fanout Ingress](https://kubernetes.io/docs/concepts/services-networking/ingress) for the RPS microservices, run:
+To create a [Simple Fanout Ingress](https://kubernetes.io/docs/concepts/services-networking/ingress) for the RPS
+microservices, run:
 
 You can select one of the following pre-configured Ingress resources:
 
@@ -2482,13 +2691,15 @@ b) With [TLS](https://en.wikipedia.org/wiki/Transport_Layer_Security) (server ce
      > kubectl apply -f ./k8s/ingress/rps-tls-ingress.yml
 ```
 
-c) With [mTLS](https://en.wikipedia.org/wiki/Mutual_authentication) (server and client certificates are required, see below):
+c) With [mTLS](https://en.wikipedia.org/wiki/Mutual_authentication) (server and client certificates are required, see
+below):
 
 ```
      > kubectl apply -f ./k8s/ingress/rps-mtls-ingress.yml
 ```
 
-__Note:__ A RPS application [Simple Fanout Ingress](https://kubernetes.io/docs/concepts/services-networking/ingress) configuration routes traffic from a single IP address to more than one.
+__Note:__ A RPS application [Simple Fanout Ingress](https://kubernetes.io/docs/concepts/services-networking/ingress)
+configuration routes traffic from a single IP address to more than one.
 
 ![Simple Fanout Ingress](https://d33wubrfki0l68.cloudfront.net/36c8934ba20b97859854610063337d2072ea291a/28e8b/docs/images/ingressfanout.svg)
 
@@ -2508,7 +2719,8 @@ You should see the following output:
       rps-ingress        nginx   rps.internal                                                                      192.168.49.2   80      12m
 ```
 
-The first [Ingress](https://kubernetes.github.io/ingress-nginx/examples/grpc) routes the gRPC API traffic. The second one routes the REST API traffic.
+The first [Ingress](https://kubernetes.github.io/ingress-nginx/examples/grpc) routes the gRPC API traffic. The second
+one routes the REST API traffic.
 
 Note the ip address (192.168.49.2) displayed in the output, as you will need this in the next step.
 
@@ -2587,7 +2799,8 @@ You should see the following output:
       64 bytes from rps.internal (192.168.49.2): icmp_seq=3 ttl=64 time=0.042 ms
 ```
 
-Repeat the same step for other custom domain names of _grpc.rps.cmd.internal_, _grpc.rps.qry.internal_, _grpc.score.cmd.internal_, _grpc.score.qry.internal_.
+Repeat the same step for other custom domain names of _grpc.rps.cmd.internal_, _grpc.rps.qry.internal_, _
+grpc.score.cmd.internal_, _grpc.score.qry.internal_.
 
 ### Generating self-signed server certificate (TLS connection) with [OpenSSL](https://www.openssl.org)
 
@@ -2598,7 +2811,9 @@ Generate a public CA key and certificate with the following command:
 ```
       > openssl req -x509 -sha256 -newkey rsa:4096 -days 3560 -nodes -keyout rps-public-ca.key -out rps-public-ca.crt -subj '/CN=RPS Public Cert Authority/O=RPS Public CA'
 ```
-__Note:__ Skip the next steps if you are not going to use [TLS](https://en.wikipedia.org/wiki/Transport_Layer_Security) connection for dev environment.
+
+__Note:__ Skip the next steps if you are not going to use [TLS](https://en.wikipedia.org/wiki/Transport_Layer_Security)
+connection for dev environment.
 
 #### 2. Generation self-signed server certificate
 
@@ -2621,8 +2836,9 @@ You should see the following output:
     subject=CN = rps.internal, O = rps.internal
 ```
 
-At this point, we have a signed server certificate _rps.internal.crt_ and key _rps.internal.key_ which needs to be defined to the Kubernetes cluster through a Kubernetes secret resource.
-The following command will create a secret named _rps-tls-secret_ that holds the server certificate and the private key:
+At this point, we have a signed server certificate _rps.internal.crt_ and key _rps.internal.key_ which needs to be
+defined to the Kubernetes cluster through a Kubernetes secret resource. The following command will create a secret
+named _rps-tls-secret_ that holds the server certificate and the private key:
 
 ```
      > kubectl create secret tls rps-tls-secret --key rps.internal.key --cert rps.internal.crt -n rps-app-dev
@@ -2634,8 +2850,8 @@ You will see the following output:
       secret/rps-tls-secret created
 ```
 
-It means that the secret has successfully been created. This secret is used to validate the server's identity.
-To view secrets execute the following command:
+It means that the secret has successfully been created. This secret is used to validate the server's identity. To view
+secrets execute the following command:
 
 ```
       > kubectl get secrets -n rps-app-dev
@@ -2705,7 +2921,8 @@ Repeat the same steps for 4 grpc server certificates. Make sure to change custom
       -subj '/CN=grpc.score.qry.internal/O=grpc.score.qry.internal'
 ```
 
-__Note:__ Skip the next steps if you are not going to use [mTLS](https://en.wikipedia.org/wiki/Mutual_authentication) connection for dev environment.
+__Note:__ Skip the next steps if you are not going to use [mTLS](https://en.wikipedia.org/wiki/Mutual_authentication)
+connection for dev environment.
 
 #### 3. Generating client certificate (mTLS connection)
 
@@ -2727,16 +2944,18 @@ You should see the following output:
       secret/ca-secret created
 ```
 
-It means that the secret has successfully been created. This secret is used to validate client certificates.
-Validating the ([mTLS](https://en.wikipedia.org/wiki/Mutual_authentication)) connection.
+It means that the secret has successfully been created. This secret is used to validate client certificates. Validating
+the ([mTLS](https://en.wikipedia.org/wiki/Mutual_authentication)) connection.
 
-Next we generate a client [Certificate Signing Request (CSR)](https://en.wikipedia.org/wiki/Certificate_signing_request) and client key with the following command:
+Next we generate a client [Certificate Signing Request (CSR)](https://en.wikipedia.org/wiki/Certificate_signing_request)
+and client key with the following command:
 
 ```
       > openssl req -new -newkey rsa:4096 -keyout rps.client.key -out rps.client.csr -nodes -subj '/CN=RPS Client'
 ```
 
-Then we sign in the [Certificate Signing Request (CSR)](https://en.wikipedia.org/wiki/Certificate_signing_request) with the CA certificate by executing the following command:
+Then we sign in the [Certificate Signing Request (CSR)](https://en.wikipedia.org/wiki/Certificate_signing_request) with
+the CA certificate by executing the following command:
 
 ```
       > openssl x509 -req -sha256 -days 365 -in rps.client.csr -CA ca.crt -CAkey ca.key -set_serial 02 -out rps.client.crt
@@ -2751,7 +2970,7 @@ You should see the following output:
 
 It means that the client certificate and key have successfully been generated.
 
-Verifying [mTLS](https://en.wikipedia.org/wiki/Mutual_authentication) connection: 
+Verifying [mTLS](https://en.wikipedia.org/wiki/Mutual_authentication) connection:
 
 First, try to curl without client certificate:
 
@@ -2786,7 +3005,8 @@ It should do the trick this time. Make sure you can see the following lines in t
       * TLSv1.3 (OUT), TLS handshake, CERT verify (15):
 ```
 
-As you can see the certificate verification has been made twice, one for server certificate and another one for the client certificate.
+As you can see the certificate verification has been made twice, one for server certificate and another one for the
+client certificate.
 
 [TLS](https://kubernetes.github.io/ingress-nginx/user-guide/tls)
 [Using multiple SSL certificates in HTTPS load balancing with Ingress](https://cloud.google.com/kubernetes-engine/docs/how-to/ingress-multi-ssl)
@@ -2829,15 +3049,25 @@ ELK
 * [The Beats Family](https://www.elastic.co/beats)
 * [Online Grok Pattern Generator / Debugger Tool](https://www.javainuse.com/grok)
 
+Keycloak
+
+* [Configuring Keycloak](https://www.keycloak.org/guides#server)
+* [Authorizing multi-language microservices with oauth2-proxy](https://developers.redhat.com/articles/2021/05/20/authorizing-multi-language-microservices-oauth2-proxy)
+
 ### Microservice patterns used
 
 * [Domain Driven Design (DDD)](https://en.wikipedia.org/wiki/Domain-driven_design)
 * [Command Query Responsibility Segregation (CQRS)](https://microservices.io/patterns/data/cqrs.html)
+* [CQRS](https://learn.microsoft.com/en-us/azure/architecture/patterns/cqrs)
 * [Event sourcing (ES)](https://microservices.io/patterns/data/event-sourcing.html)
+* [Event Sourcing](https://learn.microsoft.com/en-us/azure/architecture/patterns/event-sourcing)
 * [API Gateway](https://microservices.io/patterns/apigateway.html)
 * [Gateway routing](https://docs.microsoft.com/en-us/azure/architecture/patterns/gateway-routing)
 * [Gateway offloading](https://docs.microsoft.com/en-us/azure/architecture/patterns/gateway-offloading)
+* [Gateway Aggregation](https://learn.microsoft.com/en-us/azure/architecture/patterns/gateway-aggregation)
 * [Database per service](https://microservices.io/patterns/data/database-per-service.html)
+* [Index Table](https://learn.microsoft.com/en-us/azure/architecture/patterns/index-table)
+* [Sharding](https://learn.microsoft.com/en-us/azure/architecture/patterns/sharding)
 * [Polyglot persistence](https://martinfowler.com/bliki/PolyglotPersistence.html)
 * [Bounded context](https://martinfowler.com/bliki/BoundedContext.html)
 * [Domain event](https://microservices.io/patterns/data/domain-event.html)
@@ -2848,6 +3078,15 @@ ELK
 * [Idempotent consumer](https://microservices.io/patterns/communication-style/idempotent-consumer.html)
 * [Server side discovery](https://microservices.io/patterns/server-side-discovery.html)
 * [Log aggregation](https://microservices.io/patterns/observability/application-logging.html)
+* [Publisher-Subscriber](https://learn.microsoft.com/en-us/azure/architecture/patterns/publisher-subscriber)
+* [Sidecar](https://learn.microsoft.com/en-us/azure/architecture/patterns/sidecar)
+* [External Configuration Store](https://learn.microsoft.com/en-us/azure/architecture/patterns/external-configuration-store)
+* [Federated Identity](https://learn.microsoft.com/en-us/azure/architecture/patterns/federated-identity)
+* [Cache-Aside](https://learn.microsoft.com/en-us/azure/architecture/patterns/cache-aside)
+* [Bulkhead](https://learn.microsoft.com/en-us/azure/architecture/patterns/bulkhead)
+* [Asynchronous Request-Reply](https://learn.microsoft.com/en-us/azure/architecture/patterns/async-request-reply)
+* [Competing Consumers](https://learn.microsoft.com/en-us/azure/architecture/patterns/competing-consumers)
+* [Leader Election](https://learn.microsoft.com/en-us/azure/architecture/patterns/leader-election)
 
 ### Useful Docker commands
 

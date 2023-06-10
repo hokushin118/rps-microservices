@@ -168,6 +168,9 @@ spec:
           configMap:
             name: rps-cmd-service-configmap
             #defaultMode: 0544
+#        - name: oauth-config-volume
+#          configMap:
+#            name: oauth-configmap
         - name: secrets-volume
           secret:
             secretName: rps-cmd-service-secret
