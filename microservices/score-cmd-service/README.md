@@ -191,7 +191,7 @@ and ensure that you see lines similar to the ones shown below, which confirm the
 Open any browser and navigate to the microservice Open API 3.0 definition (REST API).
 
 ```
-     > http://rps.internal/score-cmd-api/swagger-ui/index.html
+     > http://rps.internal/score-cmd-api
 ```
 
 #### 2. Verifying REST API
