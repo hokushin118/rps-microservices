@@ -2492,9 +2492,11 @@ applications and services.
 * [Federated Identity](https://learn.microsoft.com/en-us/azure/architecture/patterns/federated-identity)
 * [Sidecar](https://learn.microsoft.com/en-us/azure/architecture/patterns/sidecar)
 
-Architecture Diagram
+__Architecture Diagram__
 
-![add new path](img/cross-dc-architecture.png)
+![Keycloak deployment architecture diagram](img/cross-dc-architecture.png)
+
+Source: [Server Installation and Configuration Guide](https://www.keycloak.org/docs/19.0.0/server_installation)
 
 In our setup, we use [PostgreSQL](https://www.postgresql.org) as a database for Keycloak to persist data such as users,
 clients and realms, but you can choose any other database from the list below. 
@@ -2507,8 +2509,6 @@ data stores that you can configure to suit use cases such as:
 - Boosting application performance with high-speed local caches.
 - Optimizing databases by decreasing the volume of write operations.
 - Providing resiliency and durability for consistent data across clusters.
-
-Source: [Server Installation and Configuration Guide](https://www.keycloak.org/docs/19.0.0/server_installation)
 
 #### 1. Creating namespace for Keycloak
 
