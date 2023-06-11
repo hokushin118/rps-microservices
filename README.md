@@ -1147,7 +1147,7 @@ _MongoDB_ is used to implement the following patterns:
 
 * [CQRS](https://learn.microsoft.com/en-us/azure/architecture/patterns/cqrs)
 * [Event Sourcing](https://learn.microsoft.com/en-us/azure/architecture/patterns/event-sourcing)
-  
+
 #### 1. Creating namespace for MongoDB database
 
 To create a _kube-nosql-db_ namespace on the k8s cluster, run:
@@ -2214,8 +2214,8 @@ high-throughput, low-latency, and has a very large ecosystem.
 
 [Apache Kafka](https://kafka.apache.org) is used to implement the following patterns:
 
-* [Publisher-Subscriber](https://learn.microsoft.com/en-us/azure/architecture/patterns/publisher-subscriber) 
-* [Competing Consumers](https://learn.microsoft.com/en-us/azure/architecture/patterns/competing-consumers) 
+* [Publisher-Subscriber](https://learn.microsoft.com/en-us/azure/architecture/patterns/publisher-subscriber)
+* [Competing Consumers](https://learn.microsoft.com/en-us/azure/architecture/patterns/competing-consumers)
 * [CQRS](https://learn.microsoft.com/en-us/azure/architecture/patterns/cqrs)
 * [Event Sourcing](https://learn.microsoft.com/en-us/azure/architecture/patterns/event-sourcing)
 * [Idempotent consumer](https://microservices.io/patterns/communication-style/idempotent-consumer.html)
@@ -2483,12 +2483,32 @@ The messages should appear in the Kafka message consumer.
 
 ### Keycloak on K8S cluster
 
-[Keycloak](https://www.keycloak.org) is an open source software product to allow [single sign-on](https://en.wikipedia.org/wiki/Single_sign-on) with identity and access management aimed at modern applications and services.
+[Keycloak](https://www.keycloak.org) is an open source software product to
+allow [single sign-on](https://en.wikipedia.org/wiki/Single_sign-on) with identity and access management aimed at modern
+applications and services.
 
 [Keycloak](https://www.keycloak.org) is used to implement the following patterns:
 
 * [Federated Identity](https://learn.microsoft.com/en-us/azure/architecture/patterns/federated-identity)
 * [Sidecar](https://learn.microsoft.com/en-us/azure/architecture/patterns/sidecar)
+
+Architecture Diagram
+
+![add new path](img/cross-dc-architecture.png)
+
+In our setup, we use [PostgreSQL](https://www.postgresql.org) as a database for Keycloak to persist data such as users,
+clients and realms, but you can choose any other database from the list below. 
+
+[List of supported databases](https://www.keycloak.org/server/db)
+
+[Infinispan](https://infinispan.org/docs/stable/titles/configuring/configuring.html) caches provide flexible, in-memory
+data stores that you can configure to suit use cases such as:
+
+- Boosting application performance with high-speed local caches.
+- Optimizing databases by decreasing the volume of write operations.
+- Providing resiliency and durability for consistent data across clusters.
+
+Source: [Server Installation and Configuration Guide](https://www.keycloak.org/docs/19.0.0/server_installation)
 
 #### 1. Creating namespace for Keycloak
 
@@ -2578,11 +2598,17 @@ You should see the following output:
 
 #### 4. Deploying Keycloak
 
-To deploy Keycloak on K8S cluster execute the following command:
+To deploy Keycloak on K8S cluster with [PostgreSQL](https://www.postgresql.org) database execute the following command:
 
 ```
-     > helm install keycloak --set auth.adminUser=admin --set auth.adminPassword=admin --set replicaCount=3 oci://registry-1.docker.io/bitnamicharts/keycloak -n kube-auth
+     > helm install keycloak \
+            --set auth.adminUser=admin \
+            --set auth.adminPassword=admin \
+            --set replicaCount=3 \
+            oci://registry-1.docker.io/bitnamicharts/keycloak -n kube-auth
 ```
+
+[Keycloak helm chart parameters](https://github.com/bitnami/charts/tree/main/bitnami/keycloak/#installing-the-chart)
 
 Wait for some time until the chart is deployed. You should see the following output:
 
@@ -2631,8 +2657,10 @@ Note the service name displayed in the output, as you will need this in subseque
 Make sure that the Keycloak cluster is up and running with the following command:
 
 ```
-     > kubectl get pods -n kube-auth -o wide
+     > kubectl get pods -n kube-auth -o wide -w
 ```
+
+It will take some time. You can use _-w_ (_--watch_) flag to start watching updates to deployment.
 
 You should see the following output:
 
