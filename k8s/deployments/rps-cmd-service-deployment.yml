@@ -164,25 +164,19 @@ spec:
               mountPath: /etc/ssl/certs
               readOnly: true
         # Sidecar container
-      #        - name: oauth2
-      #          image: quay.io/oauth2-proxy/oauth2-proxy:latest
-      #          ports:
-      #            - name: oauth2
-      #              protocol: TCP
-      #              containerPort: 4180 # The port that the container is running on in the cluster
-      #          args:
-      #            - --config=/etc/oauth2-proxy.cfg
-      #          volumeMounts:
-      #            - name: oauth-config-volume
-      #              mountPath: /etc/oauth2-proxy.cfg
-      #              subPath: oauth2-proxy.cfg
+#        - name: oauth2
+#          image: quay.io/oauth2-proxy/oauth2-proxy:v7.3.0
+#          ports:
+#            - name: oauth2
+#              protocol: TCP
+#              containerPort: 4180 # The port that the container is running on in the cluster
+#          args:
+#            - --config=/etc/oauth2-proxy.cfg
+#          volumeMounts:
+#            - name: oauth-config-volume
+#              mountPath: /etc/oauth2-proxy.cfg
+#              subPath: oauth2-proxy.cfg
       volumes:
-        - name: gatekeeper-config
-          configMap:
-            name: rps-cmd-service-gatekeeper-configmap
-        - name: gatekeeper-files
-          configMap:
-            name: rps-cmd-service-gatekeeper-files
         - name: config-volume
           configMap:
             name: rps-cmd-service-configmap
