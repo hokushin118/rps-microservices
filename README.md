@@ -44,6 +44,7 @@ Source: [Architecting Cloud Native .NET Applications for Azure](https://learn.mi
 * [Grafana](https://grafana.com) - metrics visualization
 * [ELK Stack](https://www.elastic.co) - log aggregation and monitoring in a centralized way
 * [Redis](https://redis.io) - cache management
+* [Keycloak 18.0.0](https://www.keycloak.org) - identity and access management management
 
 ** H2 in-memory database engine is used for dev and it profiles only
 
@@ -2602,6 +2603,7 @@ To deploy Keycloak on K8S cluster with [PostgreSQL](https://www.postgresql.org) 
 
 ```
      > helm install keycloak \
+            --set image.tag=18.0.0-debian-11-r7 \
             --set auth.adminUser=admin \
             --set auth.adminPassword=admin \
             --set replicaCount=3 \
@@ -2672,7 +2674,140 @@ You should see the following output:
       keycloak-postgresql-0   1/1     Running   0          6m50s   10.244.0.15   minikube   <none>           <none>
 ```
 
-TODO: Keycloak configuration...
+#### 5. Setting up Keycloak
+
+To access the Keycloak Administration Console, open the following URL in the browser: [http://kc.internal/admin](http://kc.internal/admin)
+
+##### Create realm
+
+a) Click the word __master__ in the top-left corner, then click __Create Realm__.
+
+b) Enter __rps-dev__ in the __Realm__ name field then click the __Create__ button.
+
+[Create realm](https://www.keycloak.org/getting-started/getting-started-docker)
+
+##### Configure an [Open ID Connect (OIDC)](https://wjw465150.gitbooks.io/keycloak-documentation/content/server_admin/topics/sso-protocols/oidc.html) Client
+
+[Open ID Connect (OIDC)](https://wjw465150.gitbooks.io/keycloak-documentation/content/server_admin/topics/sso-protocols/oidc.html) is a modern SSO (Single Sign-On) protocol built on top of the [OAuth 2.0 Authorization Framework](https://datatracker.ietf.org/doc/html/rfc6749).
+[Open ID Connect (OIDC)](https://wjw465150.gitbooks.io/keycloak-documentation/content/server_admin/topics/sso-protocols/oidc.html) makes use of [JWT (JSON Web Token)](https://jwt.io) in the form of __identity__ (contains information about the logged user such as the username and the email) and __access__ (contains access data such as the roles) tokens.
+
+With the new realm created, let's create a client that is an application or group of applications that will authenticate in this Realm.
+
+a) Click __Clients__ menu item in the Sidebar and then click the __Create__ button.
+
+b) Enter the __Client ID__. The __Client ID__ is a string used to identify our client. We will use __oauth2-proxy__.
+
+c) Select the Client Protocol __openid-connect__ from the drop-down menu and click the __Save__ button.
+
+d) From the __Access Type__ drop-down menu, select __confidential__ option. This is the access type for server-side applications.
+
+![kc clients](img/kc-clients-1.png)
+
+e) In the __Valid Redirect URIs__ box, you can add multiple URLs that are valid to be redirected after the authentication. If this _oauth2-proxy_ client will be used for multiple applications on your cluster, you can add a wildcard like [https://your-domain.com/*](https://your-domain.com/*). In my configuration, I've added [http://rps.internal/*](http://rps.internal/*) and [https://rps.internal/*](https://rps.internal/*).
+
+f) Confirm that the __Standard Flow Enabled__ and __Direct Access Grants Enabled__ toggle buttons are enabled. The __Standard Flow Enabled__ property is used to activate the [Authorization Code Flow](https://www.keycloak.org/docs/latest/server_admin/index.html?ref=thomasvitale.com#authorization-code-flow).
+
+g) Turn on the [__Service Accounts Enabled__](https://wjw465150.gitbooks.io/keycloak-documentation/content/server_admin/topics/clients/oidc/service-accounts.html) toggle button.
+
+h) Click the __Save__ button to persist changes.
+
+![kc clients](img/kc-clients-2.png)
+
+The webpage will automatically be refreshed, and you will see a new tab called __Credentials__. Click on the __Credentials__ tab and copy the value of the __Secret__ textbox as you will need this in the next steps.
+
+```
+      H0fnsBnCc7Ts22rxhvLcy66s1yvzSRgG
+```
+
+![kc clients_credentials](img/kc-clients-credentials.png)
+
+That's it. We have created a client that we can use to authenticate the users visiting our application.
+
+Now when you have the client secret value for OAuth2 Client __oauth2-proxy__, you can request an access token using the __client-credentials__ grant type, execute the following command:
+
+```
+      > curl --location --request POST "http://kc.internal/realms/rps-dev/protocol/openid-connect/token" \
+             --header "Content-Type: application/x-www-form-urlencoded" \ 
+             --data-urlencode "grant_type=client_credentials" \
+             --data-urlencode "client_id=oauth2-proxy" \
+             --data-urlencode "client_secret=H0fnsBnCc7Ts22rxhvLcy66s1yvzSRgG" 
+```
+
+You will get an access token that you can use with [Keycloak REST API](https://www.keycloak.org/docs-api/18.0/rest-api):
+
+```
+      {
+        "access_token":"eyJhbGciOiJSUz...",
+        "expires_in":300,
+        "refresh_expires_in":0,
+        "token_type":"Bearer",
+        "not-before-policy":0,
+        "scope":"profile email"
+      }
+```
+
+[Keycloak Server OIDC URI Endpoints](https://wjw465150.gitbooks.io/keycloak-documentation/content/server_admin/topics/sso-protocols/oidc.html#_client_credentials_grant)
+
+For example, you can get the user info executing the following command:
+
+```
+      > curl --location --request GET "http://kc.internal/realms/rps-dev/protocol/openid-connect/userinfo" \
+             --header "Content-Type: application/x-www-form-urlencoded" \
+             --header "Authorization: Bearer <access token obtained in the previous step>" \
+             --data-urlencode "grant_type=client_credentials" \
+             --data-urlencode "client_id=oauth2-proxy" \
+             --data-urlencode "client_secret=H0fnsBnCc7Ts22rxhvLcy66s1yvzSRgG"
+```
+
+##### Configure the mappers
+
+a) Select the __Mappers__ tab on the __Create Protocol Mapper__ page, add a new mapper and enter all the groups using the following settings:
+
+b) Enter the __Name__. We will use __groups__.
+
+c) From the __Mapper Type__ drop-down menu, select __Group Membership__ option. 
+
+d) Enter the __Token Claim Name__. We will use __groups__.
+
+e) Turn off the __Full group path__ toggle button.
+
+f) Click the __Save__ button to persist changes.
+
+![kc mappers](img/kc-clients-mappers.png)
+
+##### Configure the user groups
+
+In [Keycloak](https://www.keycloak.org), [Groups](https://wjw465150.gitbooks.io/keycloak-documentation/content/server_admin/topics/groups.html) are just a collection of users that you can apply roles and attributes to in one place.
+
+Now select the __Groups__ from the left navigation bar and add three groups:
+
+* _admins_
+  
+* _moderators_
+  
+* _users_
+
+![kc groups](img/kc-groups.png)
+
+##### Create a user
+
+a) Click __Users__ menu item in the Sidebar and then click the __Add user__ button.
+
+b) Enter an email address and a password for the new user, and add the user to the _user_ and _admin_ groups. 
+
+c) Turn on the __Email Verified__ toggle button.
+
+![kc add user](img/kc-add-user.png)
+
+d) Set password for the new user.
+
+![kc set password](img/kc-set-password.png)
+
+##### Configure Oauth2-Proxy
+
+[Keycloak OIDC Auth Provider](https://oauth2-proxy.github.io/oauth2-proxy/docs/configuration/oauth_provider/#keycloak-oidc-auth-provider)
+
+TODO: oauth2-proxy sidecar configuration
 
 That's it! Microservices infrastructure [backing services](https://12factor.net/backing-services) is up and running. We
 can start deploying microservices.
