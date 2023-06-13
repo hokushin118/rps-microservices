@@ -2761,6 +2761,8 @@ For example, you can get the user info executing the following command:
 
 ##### Configure the mappers
 
+__Groups mapper__
+
 a) Select the __Mappers__ tab on the __Create Protocol Mapper__ page, add a new mapper and enter all the groups using the following settings:
 
 b) Enter the __Name__. We will use __groups__.
@@ -2773,7 +2775,21 @@ e) Turn off the __Full group path__ toggle button.
 
 f) Click the __Save__ button to persist changes.
 
-![kc mappers](img/kc-clients-mappers.png)
+![kc mapper groups](img/kc-mapper-groups.png)
+
+__Audience mapper__
+
+a) Select the __Mappers__ tab on the __Create Protocol Mapper__ page, add a new mapper and enter all the groups using the following settings:
+
+b) Enter the __Name__. We will use __audience__.
+
+c) From the __Mapper Type__ drop-down menu, select __Audience__ option.
+
+d) From the __Included Client Audience__ drop-down menu, select __oauth2-proxy__ option.
+
+e) Click the __Save__ button to persist changes.
+
+![kc mapper audience](img/kc-mapper-audience.png)
 
 ##### Configure the user groups
 
