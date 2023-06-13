@@ -2485,7 +2485,7 @@ The messages should appear in the Kafka message consumer.
 ### Keycloak on K8S cluster
 
 [Keycloak](https://www.keycloak.org) is an open source software product to
-allow [single sign-on](https://en.wikipedia.org/wiki/Single_sign-on) with identity and access management aimed at modern
+allow [SSO (Single Sign-On)](https://en.wikipedia.org/wiki/Single_sign-on) with identity and access management aimed at modern
 applications and services.
 
 [Keycloak](https://www.keycloak.org) is used to implement the following patterns:
@@ -2499,7 +2499,7 @@ __Architecture Diagram__
 
 Source: [Server Installation and Configuration Guide](https://www.keycloak.org/docs/19.0.0/server_installation)
 
-In our setup, we use [PostgreSQL](https://www.postgresql.org) as a database for Keycloak to persist data such as users,
+In our setup, we use [PostgreSQL](https://www.postgresql.org) as a database for [Keycloak](https://www.keycloak.org) to persist data such as users,
 clients and realms, but you can choose any other database from the list below. 
 
 [List of supported databases](https://www.keycloak.org/server/db)
@@ -2513,7 +2513,7 @@ data stores that you can configure to suit use cases such as:
 
 #### 1. Creating namespace for Keycloak
 
-To create a _kube-auth_ namespace on the k8s cluster, run:
+To create a _kube-auth_ namespace on the K8S cluster, run:
 
 ```
      > kubectl apply -f ./k8s/namespaces/kube-auth-ns.yml
@@ -2599,7 +2599,7 @@ You should see the following output:
 
 #### 4. Deploying Keycloak
 
-To deploy Keycloak on K8S cluster with [PostgreSQL](https://www.postgresql.org) database execute the following command:
+To deploy [Keycloak](https://www.keycloak.org) on K8S cluster with [PostgreSQL](https://www.postgresql.org) database execute the following command:
 
 ```
      > helm install keycloak \
@@ -2656,7 +2656,7 @@ Note the service name displayed in the output, as you will need this in subseque
       keycloak.kube-auth.svc.cluster.local (port 80)
 ```
 
-Make sure that the Keycloak cluster is up and running with the following command:
+Make sure that the [Keycloak](https://www.keycloak.org) cluster is up and running with the following command:
 
 ```
      > kubectl get pods -n kube-auth -o wide -w
@@ -2676,7 +2676,7 @@ You should see the following output:
 
 #### 5. Setting up Keycloak
 
-To access the Keycloak Administration Console, open the following URL in the browser: [http://kc.internal/admin](http://kc.internal/admin)
+To access the [Keycloak](https://www.keycloak.org) Administration Console, open the following URL in the browser: [http://kc.internal/admin](http://kc.internal/admin)
 
 ##### Create realm
 
@@ -2688,7 +2688,7 @@ b) Enter __rps-dev__ in the __Realm__ name field then click the __Create__ butto
 
 ##### Configure an [Open ID Connect (OIDC)](https://wjw465150.gitbooks.io/keycloak-documentation/content/server_admin/topics/sso-protocols/oidc.html) Client
 
-[Open ID Connect (OIDC)](https://wjw465150.gitbooks.io/keycloak-documentation/content/server_admin/topics/sso-protocols/oidc.html) is a modern SSO (Single Sign-On) protocol built on top of the [OAuth 2.0 Authorization Framework](https://datatracker.ietf.org/doc/html/rfc6749).
+[Open ID Connect (OIDC)](https://wjw465150.gitbooks.io/keycloak-documentation/content/server_admin/topics/sso-protocols/oidc.html) is a modern [SSO (Single Sign-On)](https://en.wikipedia.org/wiki/Single_sign-on) protocol built on top of the [OAuth 2.0 Authorization Framework](https://datatracker.ietf.org/doc/html/rfc6749).
 [Open ID Connect (OIDC)](https://wjw465150.gitbooks.io/keycloak-documentation/content/server_admin/topics/sso-protocols/oidc.html) makes use of [JWT (JSON Web Token)](https://jwt.io) in the form of __identity__ (contains information about the logged user such as the username and the email) and __access__ (contains access data such as the roles) tokens.
 
 With the new realm created, let's create a client that is an application or group of applications that will authenticate in this Realm.
