@@ -35,7 +35,7 @@ data:
 apiVersion: v1 # K8S API version
 kind: ConfigMap
 metadata:
-  name: oauth-configmap
+  name: rps-cmd-service-oauth-configmap
   namespace: rps-app-dev # The name of the namespace
   labels:
     app: rps-cmd-service
@@ -44,8 +44,6 @@ metadata:
 data:
   oauth2-proxy.cfg: |+
     http_address="0.0.0.0:4180"
-    appsUrl="rps.internal"
-    contextPath="/rps-cmd-api"
     cookie_secret="OQINaROshtE9TcZkNAm-5Zs2Pv3xaWytBmc5W7sPX7w="
     cookie_secure="false"
     email_domains='*'
@@ -60,8 +58,8 @@ data:
     # the http url(s) of the upstream endpoint. If multiple, routing is based on path
     upstreams="http://127.0.0.1:8080/"
 
-    cookie_domains=[".${appsUrl}"] # Required so cookie can be read on all subdomains.
-    whitelist_domains=[".${appsUrl}"] # Required to allow redirection back to original requested target.
+    cookie_domains=[".rps.internal"] # Required so cookie can be read on all subdomains.
+    whitelist_domains=[".rps.internal"] # Required to allow redirection back to original requested target.
 
     # keycloak provider
     provider="keycloak-oidc"
@@ -72,4 +70,4 @@ data:
 
     oidc_issuer_url="https://kc.internal/realms/rps-dev"
 
-    redirect_url="https://${appsUrl}/${contextPath}/oauth2/callback"
+    redirect_url="https://rps.internal/rps-cmd-api/oauth2/callback"
