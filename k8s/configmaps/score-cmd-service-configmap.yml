@@ -29,3 +29,45 @@ data:
   kafka-broker-0-port: "9092"
   kafka-broker-1-port: "9092"
   kafka-broker-2-port: "9092"
+
+---
+# ConfigMap holds information about Score Command microservice oauth2-proxy container configuration files
+apiVersion: v1 # K8S API version
+kind: ConfigMap
+metadata:
+  name: score-cmd-service-oauth-configmap
+  namespace: rps-app-dev # The name of the namespace
+  labels:
+    app: score-cmd-service
+    tier: backend
+    environment: development
+data:
+  oauth2-proxy.cfg: |+
+    http_address="0.0.0.0:4180"
+    cookie_secret="OQINaROshtE9TcZkNAm-5Zs2Pv3xaWytBmc5W7sPX7w="
+    cookie_secure="false"
+    email_domains='*'
+
+    pass_authorization_header="true"
+    pass_access_token="true"
+
+    set_authorization_header=true
+    ssl_insecure_skip_verify=true
+    ssl_upstream_insecure_skip_verify=true
+
+    # the http url(s) of the upstream endpoint. If multiple, routing is based on path
+    upstreams="http://127.0.0.1:8080/"
+
+    cookie_domains=[".rps.internal"] # Required so cookie can be read on all subdomains.
+    whitelist_domains=[".rps.internal"] # Required to allow redirection back to original requested target.
+
+    # keycloak provider
+    provider="keycloak-oidc"
+    provider_display_name="Keycloak"
+
+    client_secret="H0fnsBnCc7Ts22rxhvLcy66s1yvzSRgG"
+    client_id="oauth2-proxy"
+
+    oidc_issuer_url="https://kc.internal/realms/rps-dev"
+
+    redirect_url="https://rps.internal/score-cmd-api/oauth2/callback"
