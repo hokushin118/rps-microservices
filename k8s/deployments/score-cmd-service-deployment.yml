@@ -158,11 +158,27 @@ spec:
             - name: certs-volume
               mountPath: /etc/ssl/certs
               readOnly: true
+        # Sidecar container
+        - name: oauth2
+          image: quay.io/oauth2-proxy/oauth2-proxy:v7.3.0
+          ports:
+            - name: oauth2
+              protocol: TCP
+              containerPort: 4180 # The port that the container is running on in the cluster
+          args:
+            - --config=/etc/oauth2-proxy.cfg
+          volumeMounts:
+            - name: oauth-config-volume
+              mountPath: /etc/oauth2-proxy.cfg
+              subPath: oauth2-proxy.cfg
       volumes:
         - name: config-volume
           configMap:
             name: score-cmd-service-configmap
             #defaultMode: 0544
+        - name: oauth-config-volume
+          configMap:
+            name: score-cmd-service-oauth-configmap
         - name: secrets-volume
           secret:
             secretName: score-cmd-service-secret

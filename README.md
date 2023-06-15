@@ -2606,6 +2606,8 @@ To deploy [Keycloak](https://www.keycloak.org) on K8S cluster with [PostgreSQL](
             --set image.tag=18.0.0-debian-11-r7 \
             --set auth.adminUser=admin \
             --set auth.adminPassword=admin \
+            --set auth.managementPassword=admin \
+            --set postgresql.postgresqlPassword=admin \
             --set replicaCount=3 \
             oci://registry-1.docker.io/bitnamicharts/keycloak -n kube-auth
 ```
@@ -2618,7 +2620,7 @@ Wait for some time until the chart is deployed. You should see the following out
       Pulled: registry-1.docker.io/bitnamicharts/keycloak:15.1.3
       Digest: sha256:0ab81efa3f53a1535b2d8948a365d15518f3c42d094e86e84437b6d54b199796
       NAME: keycloak
-      LAST DEPLOYED: Sat Jun 10 09:30:39 2023
+      LAST DEPLOYED: Thu Jun 15 19:59:32 2023
       NAMESPACE: kube-auth
       STATUS: deployed
       REVISION: 1
@@ -2646,7 +2648,7 @@ Wait for some time until the chart is deployed. You should see the following out
       2. Access Keycloak using the obtained URL.
       3. Access the Administration Console using the following credentials:
       
-        echo Username: admin
+        echo Username: user
         echo Password: $(kubectl get secret --namespace kube-auth keycloak -o jsonpath="{.data.admin-password}" | base64 -d)
 ```
 
@@ -2674,15 +2676,26 @@ You should see the following output:
       keycloak-postgresql-0   1/1     Running   0          6m50s   10.244.0.15   minikube   <none>           <none>
 ```
 
+__Note:__ To access the Keycloak server locally, we have to forward a local port 80 to the Kubernetes node running Keycloak
+with the following command:
+
+```
+     > kubectl port-forward --address 0.0.0.0 service/keycloak 8080:80 -n kube-auth
+```
+
 #### 5. Setting up Keycloak
 
 To access the [Keycloak](https://www.keycloak.org) Administration Console, open the following URL in the browser: [http://kc.internal/admin](http://kc.internal/admin)
 
 ##### Create realm
 
-a) Click the word __master__ in the top-left corner, then click __Create Realm__.
+a) Click the word __Master__ in the top-left corner, then click __Add realm__.
 
-b) Enter __rps-dev__ in the __Realm__ name field then click the __Create__ button.
+![kc new realm](img/kc-realm.png)
+
+b) Enter __rps-dev__ in the __Add realm__ __Name__ field then click the __Create__ button.
+
+![kc add realm](img/kc-add-realm.png)
 
 [Create realm](https://www.keycloak.org/getting-started/getting-started-docker)
 
