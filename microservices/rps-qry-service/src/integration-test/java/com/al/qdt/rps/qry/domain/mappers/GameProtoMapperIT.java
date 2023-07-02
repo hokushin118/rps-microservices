@@ -11,10 +11,10 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.NullSource;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import static com.al.qdt.common.enums.Hand.ROCK;
-import static com.al.qdt.common.helpers.Constants.TEST_ID;
-import static com.al.qdt.common.helpers.Constants.TEST_UUID;
-import static com.al.qdt.common.helpers.Constants.USERNAME_ONE;
+import static com.al.qdt.common.domain.enums.Hand.ROCK;
+import static com.al.qdt.common.infrastructure.helpers.Constants.TEST_ID;
+import static com.al.qdt.common.infrastructure.helpers.Constants.TEST_UUID;
+import static com.al.qdt.common.infrastructure.helpers.Constants.USER_ONE_ID;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -35,26 +35,48 @@ class GameProtoMapperIT extends AbstractIntegrationTests implements EntityTests 
     }
 
     @Test
-    @DisplayName("Testing of the toDto() method")
-    void toDtoTest() {
-        final var game = createGame(TEST_UUID, USERNAME_ONE, ROCK);
-        final var gameDto = this.gameProtoMapper.toDto(game);
+    @DisplayName("Testing of the toGameDto() method")
+    void toGameDtoTest() {
+        final var game = createGame(TEST_UUID, USER_ONE_ID, ROCK);
+        final var gameDto = this.gameProtoMapper.toGameDto(game);
 
         assertNotNull(gameDto);
         assertEquals(TEST_ID, gameDto.getId());
         assertEquals(game.getId().toString(), gameDto.getId());
-        assertEquals(USERNAME_ONE, gameDto.getUsername());
-        assertEquals(game.getUsername(), gameDto.getUsername());
         assertEquals(ROCK.name(), gameDto.getHand().name());
         assertEquals(game.getHand().name(), gameDto.getHand().name());
     }
 
     @ParameterizedTest
     @NullSource
-    @DisplayName("Testing of the toDto() method with null parameter")
-    void toDtoWithNullTest(Game game) {
-        final var gameDto = assertDoesNotThrow(() -> this.gameProtoMapper.toDto(game));
+    @DisplayName("Testing of the toGameDto() method with null parameter")
+    void toGameDtoWithNullTest(Game game) {
+        final var gameDto = assertDoesNotThrow(() -> this.gameProtoMapper.toGameDto(game));
 
         assertNull(gameDto);
+    }
+
+    @Test
+    @DisplayName("Testing of the toGameAdminDto() method")
+    void toGameAdminDtoTest() {
+        final var game = createGame(TEST_UUID, USER_ONE_ID, ROCK);
+        final var gameAdminDto = this.gameProtoMapper.toGameAdminDto(game);
+
+        assertNotNull(gameAdminDto);
+        assertEquals(TEST_ID, gameAdminDto.getId());
+        assertEquals(game.getId().toString(), gameAdminDto.getId());
+        assertEquals(USER_ONE_ID.toString(), gameAdminDto.getUserId());
+        assertEquals(game.getUserId().toString(), gameAdminDto.getUserId());
+        assertEquals(ROCK.name(), gameAdminDto.getHand().name());
+        assertEquals(game.getHand().name(), gameAdminDto.getHand().name());
+    }
+
+    @ParameterizedTest
+    @NullSource
+    @DisplayName("Testing of the toGameAdminDto() method with null parameter")
+    void toGameAdminDtoWithNullTest(Game game) {
+        final var gameAdminDto = assertDoesNotThrow(() -> this.gameProtoMapper.toGameAdminDto(game));
+
+        assertNull(gameAdminDto);
     }
 }

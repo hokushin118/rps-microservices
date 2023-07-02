@@ -1,6 +1,6 @@
 package com.al.qdt.score.qry.domain.repositories;
 
-import com.al.qdt.common.enums.Player;
+import com.al.qdt.common.domain.enums.Player;
 import com.al.qdt.score.qry.domain.entities.Score;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
@@ -11,7 +11,11 @@ import java.util.List;
 import java.util.UUID;
 
 public interface ScoreRepository extends JpaRepository<Score, UUID> {
+    List<Score> findByUserId(UUID userId);
+
     List<Score> findByWinner(Player winner);
+
+    List<Score> findByUserIdAndWinner(UUID userId, Player winner);
 
     @Modifying(clearAutomatically = true, flushAutomatically = true)
     @Query(value = "DELETE FROM score s WHERE s.id = :id",

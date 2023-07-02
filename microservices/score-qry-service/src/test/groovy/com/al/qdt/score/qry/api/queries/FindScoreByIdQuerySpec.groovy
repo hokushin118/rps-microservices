@@ -7,7 +7,7 @@ import spock.lang.Unroll
 
 import javax.validation.ConstraintViolation
 
-import static com.al.qdt.common.helpers.Constants.TEST_UUID
+import static com.al.qdt.common.infrastructure.helpers.Constants.TEST_UUID
 import static com.al.qdt.score.qry.api.queries.FindScoreByIdQuery.ID_MUST_NOT_BE_NULL
 
 @Title("Testing FindScoreByIdQuery class")

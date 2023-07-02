@@ -1,13 +1,12 @@
 package com.al.qdt.common.performance;
 
+import com.al.qdt.common.api.dto.GameDto;
 import com.al.qdt.common.domain.base.DtoTests;
 import com.al.qdt.common.domain.base.ProtoTests;
-import com.al.qdt.common.api.dto.GameDto;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.google.protobuf.InvalidProtocolBufferException;
 import com.google.protobuf.Message;
 import com.google.protobuf.Parser;
-import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -29,7 +28,7 @@ class SerDePerformanceTest implements DtoTests, ProtoTests {
 
     @BeforeEach
     void setUp() {
-        this.expectedGameJsonDto = createGameJsonDto();
+        this.expectedGameJsonDto = createGameDto();
         this.expectedGameProtoDto = createGameProtoDto();
     }
 
@@ -39,10 +38,9 @@ class SerDePerformanceTest implements DtoTests, ProtoTests {
         this.expectedGameProtoDto = null;
     }
 
-    @SneakyThrows(JsonProcessingException.class)
     @Test
     @DisplayName("Testing GameDto serialization length")
-    void serializationLengthTest() {
+    void serializationLengthTest() throws JsonProcessingException {
         final var jsonBytes = objectMapper.writeValueAsBytes(this.expectedGameJsonDto);
         final var jsonObjectLength = jsonBytes.length;
         log.info("GameDTO JSON: length : {} bytes", jsonObjectLength);
@@ -96,10 +94,9 @@ class SerDePerformanceTest implements DtoTests, ProtoTests {
      *
      * @param obj   object
      * @param clazz class type
-     * @param <T> object type
+     * @param <T>   object type
      */
-    @SneakyThrows({JsonProcessingException.class, IOException.class})
-    private static <T extends Serializable> void performObjectSerDe(T obj, Class<T> clazz) {
+    private static <T extends Serializable> void performObjectSerDe(T obj, Class<T> clazz) throws IOException {
         // serialize object
         final var bytes = objectMapper.writeValueAsBytes(obj);
         // deserialize object
@@ -113,8 +110,7 @@ class SerDePerformanceTest implements DtoTests, ProtoTests {
      * @param parser  proto3 message parser
      * @param <T>     proto 3 message type
      */
-    @SneakyThrows(InvalidProtocolBufferException.class)
-    private static <T extends Message> void performMessageSerDe(T message, Parser<T> parser) {
+    private static <T extends Message> void performMessageSerDe(T message, Parser<T> parser) throws InvalidProtocolBufferException {
         // serialize proto 3 message
         final var bytes = message.toByteArray();
         // deserialize proto 3 message

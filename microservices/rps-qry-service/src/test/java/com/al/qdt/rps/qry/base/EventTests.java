@@ -1,10 +1,10 @@
 package com.al.qdt.rps.qry.base;
 
-import com.al.qdt.common.events.rps.GamePlayedEvent;
+import com.al.qdt.common.infrastructure.events.rps.GamePlayedEvent;
 
-import static com.al.qdt.common.enums.Hand.ROCK;
-import static com.al.qdt.common.helpers.Constants.TEST_UUID;
-import static com.al.qdt.common.helpers.Constants.USERNAME_ONE;
+import static com.al.qdt.common.domain.enums.Hand.ROCK;
+import static com.al.qdt.common.infrastructure.helpers.Constants.TEST_UUID;
+import static com.al.qdt.common.infrastructure.helpers.Constants.USER_ONE_ID;
 
 public interface EventTests {
 
@@ -15,7 +15,7 @@ public interface EventTests {
      */
     default GamePlayedEvent createGamePlayedEvent() {
         final var gamePlayedEvent = GamePlayedEvent.builder()
-                .username(USERNAME_ONE)
+                .userId(USER_ONE_ID)
                 .hand(ROCK)
                 .build();
         gamePlayedEvent.setId(TEST_UUID);

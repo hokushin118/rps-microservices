@@ -1,12 +1,11 @@
-
 package com.al.qdt.common.services.v1;
 
 import com.al.qdt.rps.grpc.v1.services.FindScoreByIdRequest;
 import com.al.qdt.rps.grpc.v1.services.FindScoreByWinnerRequest;
+import com.al.qdt.rps.grpc.v1.services.ListOfScoresAdminResponse;
 import com.al.qdt.rps.grpc.v1.services.ListOfScoresRequest;
-import com.al.qdt.rps.grpc.v1.services.ListOfScoresResponse;
+import com.al.qdt.rps.grpc.v1.services.ScoreAdminResponse;
 import com.al.qdt.rps.grpc.v1.services.ScoreQryServiceGrpc;
-import com.al.qdt.rps.grpc.v1.services.ScoreResponse;
 import io.grpc.MethodDescriptor;
 import io.grpc.stub.annotations.RpcMethod;
 import org.junit.jupiter.api.DisplayName;
@@ -49,7 +48,7 @@ class ScoreQryServiceTest {
     @Test
     @DisplayName("Testing of the ScoreQryService listOfScores() methods")
     void scoreQryServiceListOfScoresMethodDescriptors() {
-        MethodDescriptor<ListOfScoresRequest, ListOfScoresResponse> genericTypeShouldMatchWhenAssigned;
+        MethodDescriptor<ListOfScoresRequest, ListOfScoresAdminResponse> genericTypeShouldMatchWhenAssigned;
 
         genericTypeShouldMatchWhenAssigned = ScoreQryServiceGrpc.getListOfScoresMethod();
         assertEquals(UNARY, genericTypeShouldMatchWhenAssigned.getType());
@@ -58,7 +57,7 @@ class ScoreQryServiceTest {
     @Test
     @DisplayName("Testing of the ScoreQryService findById() methods")
     void scoreQryServiceFindByIdMethodDescriptors() {
-        MethodDescriptor<FindScoreByIdRequest, ScoreResponse> genericTypeShouldMatchWhenAssigned;
+        MethodDescriptor<FindScoreByIdRequest, ScoreAdminResponse> genericTypeShouldMatchWhenAssigned;
 
         genericTypeShouldMatchWhenAssigned = ScoreQryServiceGrpc.getFindByIdMethod();
         assertEquals(UNARY, genericTypeShouldMatchWhenAssigned.getType());
@@ -67,7 +66,7 @@ class ScoreQryServiceTest {
     @Test
     @DisplayName("Testing of the ScoreQryService findByWinner() methods")
     void scoreQryServiceFindByWinnerMethodDescriptors() {
-        MethodDescriptor<FindScoreByWinnerRequest, ListOfScoresResponse> genericTypeShouldMatchWhenAssigned;
+        MethodDescriptor<FindScoreByWinnerRequest, ListOfScoresAdminResponse> genericTypeShouldMatchWhenAssigned;
 
         genericTypeShouldMatchWhenAssigned = ScoreQryServiceGrpc.getFindByWinnerMethod();
         assertEquals(UNARY, genericTypeShouldMatchWhenAssigned.getType());
@@ -141,7 +140,7 @@ class ScoreQryServiceTest {
                 });
 
                 assertAll(GET_ALL_SCORES_METHODS_GROUP_NAME,
-                        () -> verifyGetListOfScoresRpcMethodAnnotation(
+                        () -> verifyGetListOfScoresAdminRpcMethodAnnotation(
                                 ScoreQryServiceGrpc.getListOfScoresMethod(), methodToAnnotation.get("getListOfScoresMethod"))
                 );
 
@@ -164,7 +163,7 @@ class ScoreQryServiceTest {
             return SourceVersion.latest();
         }
 
-        private void verifyGetListOfScoresRpcMethodAnnotation(MethodDescriptor<ListOfScoresRequest, ListOfScoresResponse> descriptor, RpcMethod annotation) {
+        private void verifyGetListOfScoresAdminRpcMethodAnnotation(MethodDescriptor<ListOfScoresRequest, ListOfScoresAdminResponse> descriptor, RpcMethod annotation) {
             assertEquals(descriptor.getFullMethodName(), annotation.fullMethodName());
             assertEquals(descriptor.getType(), annotation.methodType());
 
@@ -176,13 +175,13 @@ class ScoreQryServiceTest {
             }
 
             try {
-                assertEquals(ListOfScoresResponse.class, annotation.responseType());
+                assertEquals(ListOfScoresAdminResponse.class, annotation.responseType());
             } catch (MirroredTypeException e) {
-                assertEquals(ListOfScoresResponse.class.getCanonicalName(), String.valueOf(e.getTypeMirror()));
+                assertEquals(ListOfScoresAdminResponse.class.getCanonicalName(), String.valueOf(e.getTypeMirror()));
             }
         }
 
-        private void verifyFindByIdRpcMethodAnnotation(MethodDescriptor<FindScoreByIdRequest, ScoreResponse> descriptor, RpcMethod annotation) {
+        private void verifyFindByIdRpcMethodAnnotation(MethodDescriptor<FindScoreByIdRequest, ScoreAdminResponse> descriptor, RpcMethod annotation) {
             assertEquals(descriptor.getFullMethodName(), annotation.fullMethodName());
             assertEquals(descriptor.getType(), annotation.methodType());
 
@@ -194,13 +193,13 @@ class ScoreQryServiceTest {
             }
 
             try {
-                assertEquals(ScoreResponse.class, annotation.responseType());
+                assertEquals(ScoreAdminResponse.class, annotation.responseType());
             } catch (MirroredTypeException e) {
-                assertEquals(ScoreResponse.class.getCanonicalName(), String.valueOf(e.getTypeMirror()));
+                assertEquals(ScoreAdminResponse.class.getCanonicalName(), String.valueOf(e.getTypeMirror()));
             }
         }
 
-        private void verifyFindByWinnerRpcMethodAnnotation(MethodDescriptor<FindScoreByWinnerRequest, ListOfScoresResponse> descriptor, RpcMethod annotation) {
+        private void verifyFindByWinnerRpcMethodAnnotation(MethodDescriptor<FindScoreByWinnerRequest, ListOfScoresAdminResponse> descriptor, RpcMethod annotation) {
             assertEquals(descriptor.getFullMethodName(), annotation.fullMethodName());
             assertEquals(descriptor.getType(), annotation.methodType());
 
@@ -212,9 +211,9 @@ class ScoreQryServiceTest {
             }
 
             try {
-                assertEquals(ListOfScoresResponse.class, annotation.responseType());
+                assertEquals(ListOfScoresAdminResponse.class, annotation.responseType());
             } catch (MirroredTypeException e) {
-                assertEquals(ListOfScoresResponse.class.getCanonicalName(), String.valueOf(e.getTypeMirror()));
+                assertEquals(ListOfScoresAdminResponse.class.getCanonicalName(), String.valueOf(e.getTypeMirror()));
             }
         }
     }

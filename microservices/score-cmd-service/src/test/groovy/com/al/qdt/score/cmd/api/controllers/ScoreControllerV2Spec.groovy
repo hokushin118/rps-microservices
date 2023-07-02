@@ -2,6 +2,7 @@ package com.al.qdt.score.cmd.api.controllers
 
 import com.al.qdt.common.api.advices.GlobalRestExceptionHandler
 import com.al.qdt.score.cmd.domain.services.ScoreServiceV2
+import com.al.qdt.score.cmd.domain.services.security.AuthenticationService
 import com.google.protobuf.util.JsonFormat
 import org.springframework.http.converter.protobuf.ProtobufJsonFormatHttpMessageConverter
 import org.springframework.test.web.servlet.MockMvc
@@ -11,7 +12,7 @@ import spock.lang.Specification
 import spock.lang.Subject
 import spock.lang.Title
 
-import static com.al.qdt.common.helpers.Constants.TEST_UUID
+import static com.al.qdt.common.infrastructure.helpers.Constants.TEST_UUID
 import static java.nio.charset.StandardCharsets.UTF_8
 import static org.springframework.http.MediaType.APPLICATION_JSON
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete
@@ -25,7 +26,11 @@ class ScoreControllerV2Spec extends Specification {
     ProtobufJsonFormatHttpMessageConverter protobufJsonFormatHttpMessageConverter
 
     @Subject
-    def scoreService = Mock(ScoreServiceV2)
+    def scoreService = Mock ScoreServiceV2
+
+    @Subject
+    def authenticationService = Mock AuthenticationService
+
     MockMvc mockMvc
 
     // Run before the first feature method
@@ -40,9 +45,10 @@ class ScoreControllerV2Spec extends Specification {
     // Run before every feature method
     def setup() {
         mockMvc = MockMvcBuilders
-                .standaloneSetup(new ScoreControllerV2(scoreService))
+                .standaloneSetup(new ScoreControllerV2(scoreService, authenticationService))
                 .addPlaceholderValue("api.version-two", "/v2")
                 .addPlaceholderValue("api.endpoint-scores", "scores")
+                .addPlaceholderValue("api.endpoint-admin", "admin")
                 .setMessageConverters(protobufJsonFormatHttpMessageConverter)
                 .setControllerAdvice(new GlobalRestExceptionHandler())
                 .build()
@@ -52,7 +58,7 @@ class ScoreControllerV2Spec extends Specification {
 
     def 'Testing of the deleteById() method'() {
         when: 'Calling the api'
-        def result = mockMvc.perform(delete("/v2/scores/{id}", TEST_UUID)
+        def result = mockMvc.perform(delete("/v2/admin/scores/{id}", TEST_UUID)
                 .contentType(APPLICATION_JSON)
                 .accept(APPLICATION_JSON)
                 .characterEncoding(UTF_8))

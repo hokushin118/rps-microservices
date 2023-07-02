@@ -1,17 +1,17 @@
 package com.al.qdt.rps.cmd.domain.services;
 
-import com.al.qdt.common.enums.Hand;
-import com.al.qdt.common.enums.Player;
+import com.al.qdt.common.domain.enums.Hand;
+import com.al.qdt.common.domain.enums.Player;
 import com.al.qdt.rps.cmd.api.exceptions.InvalidUserInputException;
 import com.al.qdt.rps.cmd.domain.services.engine.MarkovChain;
 import org.springframework.stereotype.Service;
 
 import java.util.concurrent.ThreadLocalRandom;
 
-import static com.al.qdt.common.enums.Hand.EMPTY;
-import static com.al.qdt.common.enums.Player.DRAW;
-import static com.al.qdt.common.enums.Player.MACHINE;
-import static com.al.qdt.common.enums.Player.USER;
+import static com.al.qdt.common.domain.enums.Hand.EMPTY;
+import static com.al.qdt.common.domain.enums.Player.DRAW;
+import static com.al.qdt.common.domain.enums.Player.MACHINE;
+import static com.al.qdt.common.domain.enums.Player.USER;
 
 /**
  * This class implements Rock Paper Scissor game functionality.

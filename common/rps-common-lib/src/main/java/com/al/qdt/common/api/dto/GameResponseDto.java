@@ -1,6 +1,6 @@
 package com.al.qdt.common.api.dto;
 
-import com.al.qdt.common.enums.Player;
+import com.al.qdt.common.domain.enums.Player;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;

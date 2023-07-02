@@ -7,10 +7,12 @@ import org.junit.jupiter.params.provider.ArgumentsProvider;
 
 import java.util.stream.Stream;
 
-import static com.al.qdt.common.helpers.Constants.BASE_RESPONSE_EXPECTED_JSON;
-import static com.al.qdt.common.helpers.Constants.GAME_EXPECTED_JSON;
-import static com.al.qdt.common.helpers.Constants.GAME_RESPONSE_EXPECTED_JSON;
-import static com.al.qdt.common.helpers.Constants.SCORE_EXPECTED_JSON;
+import static com.al.qdt.common.infrastructure.helpers.Constants.BASE_RESPONSE_EXPECTED_JSON;
+import static com.al.qdt.common.infrastructure.helpers.Constants.GAME_ADMIN_EXPECTED_JSON;
+import static com.al.qdt.common.infrastructure.helpers.Constants.GAME_EXPECTED_JSON;
+import static com.al.qdt.common.infrastructure.helpers.Constants.GAME_RESPONSE_EXPECTED_JSON;
+import static com.al.qdt.common.infrastructure.helpers.Constants.SCORE_ADMIN_EXPECTED_JSON;
+import static com.al.qdt.common.infrastructure.helpers.Constants.SCORE_EXPECTED_JSON;
 
 /**
  * Custom arguments provider class to proto arguments.
@@ -23,6 +25,8 @@ public class ProtoArgsProvider implements ArgumentsProvider, ProtoTests {
                 Arguments.of(BASE_RESPONSE_EXPECTED_JSON, createBaseResponseProtoDto()),
                 Arguments.of(GAME_RESPONSE_EXPECTED_JSON, createGameResultProtoDto()),
                 Arguments.of(GAME_EXPECTED_JSON, createGameProtoDto()),
+                Arguments.of(GAME_ADMIN_EXPECTED_JSON, createGameAdminProtoDto()),
+                Arguments.of(SCORE_ADMIN_EXPECTED_JSON, createScoreAdminProtoDto()),
                 Arguments.of(SCORE_EXPECTED_JSON, createScoreProtoDto()));
     }
 }

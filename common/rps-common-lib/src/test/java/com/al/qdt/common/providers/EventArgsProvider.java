@@ -1,17 +1,17 @@
 package com.al.qdt.common.providers;
 
 import com.al.qdt.common.domain.base.EventTests;
-import com.al.qdt.common.events.rps.GameDeletedEvent;
-import com.al.qdt.common.events.rps.GamePlayedEvent;
-import com.al.qdt.common.events.score.ScoresAddedEvent;
-import com.al.qdt.common.events.score.ScoresDeletedEvent;
+import com.al.qdt.common.infrastructure.events.rps.GameDeletedEvent;
+import com.al.qdt.common.infrastructure.events.rps.GamePlayedEvent;
+import com.al.qdt.common.infrastructure.events.score.ScoresAddedEvent;
+import com.al.qdt.common.infrastructure.events.score.ScoresDeletedEvent;
 import org.junit.jupiter.api.extension.ExtensionContext;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.ArgumentsProvider;
 
 import java.util.stream.Stream;
 
-import static com.al.qdt.common.helpers.Constants.TEST_KEY;
+import static com.al.qdt.common.infrastructure.helpers.Constants.TEST_KEY;
 
 /**
  * Custom arguments provider class to create events test arguments.

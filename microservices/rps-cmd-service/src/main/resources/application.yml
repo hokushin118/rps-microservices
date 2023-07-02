@@ -13,6 +13,8 @@ server:
     # Includes error attribute to message response
     include-message: always
     include-binding-errors: always
+  # Use the underlying container's native support for forwarded headers
+  forward-headers-strategy: native
 
 spring:
   profiles:
@@ -48,11 +50,6 @@ spring:
   # Mongo properties
   data:
     mongodb:
-      port: 27017
-      database: rpsDB
-      username: root
-      password: mongo12345
-      authentication-database: admin # name of the authentication database
       auto-index-creation: true # enable auto index creation
 
   # Jackson properties
@@ -70,6 +67,35 @@ spring:
       value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
       retries: 3
       acks: all
+
+  # Spring security configuration
+  security:
+    oauth2:
+      # https://docs.spring.io/spring-security/reference/servlet/oauth2/client/index.html
+      client:
+        # Client registration configuration
+        registration:
+          # https://docs.spring.io/spring-security/reference/servlet/oauth2/client/core.html
+          keycloak: # Instance name of the ClientRegistration object
+            provider: keycloak
+            client-id: ${keycloak.client-id}
+            client-secret: ${keycloak.secret}
+            authorization-grant-type: client_credentials
+            # https://auth0.com/docs/get-started/apis/scopes/openid-connect-scopes
+            scope:
+              - openid # Returns the sub claim, which uniquely identifies the user. In an ID Token, iss, aud, exp, iat, and at_hash claims will also be present
+              - profile # Returns claims that represent basic profile information, including name, family_name, given_name, middle_name, nickname, picture, and updated_at
+            redirect-uri: http://${api.hostname}:${server.port}${server.servlet.context-path}/login/oauth2/code/${spring.application.name}
+        # OIDC provider configuration
+        provider:
+          keycloak:
+            issuer-uri: http://${keycloak.hostname}:${keycloak.port}/realms/${keycloak.realm}
+      # Resource service configuration
+      resourceserver:
+        jwt:
+          issuer-uri: http://${keycloak.hostname}:${keycloak.port}/realms/${keycloak.realm}
+          # Used to verify JWT signature
+          jwk-set-uri: http://${keycloak.hostname}:${keycloak.port}/realms/${keycloak.realm}/protocol/openid-connect/certs
 
 # Actuator configuration
 management:
@@ -93,27 +119,39 @@ management:
       mode: full
 
 # Open Api 3.0 configuration
+# https://springdoc.org
 springdoc:
+  api-docs:
+    path: /v3/api-docs
   swagger-ui:
     display-request-duration: true
     groups-order: DESC
     operationsSorter: method
     use-root-path: true
+    oauth2-redirect-url: /swagger-ui/oauth2-redirect.html
+    oauth:
+      app-name: swagger-ui
+      client-id: ${keycloak.client-id}
+      realm: ${keycloak.realm}
+      client-secret: ${keycloak.secret}
   # packages to include
   packages-to-scan: com.al.qdt.rps.cmd.api
   # enables pretty-printed output of the OpenApi specification
   writer-with-default-pretty-printer: true
 
-
 # OpenApi configuration
 api:
   dev:
     server:
+      base-url: http://${api.hostname}:${server.port}${server.servlet.context-path}
       description: Dev server
   prod:
     server:
+      base-url: http://${api.hostname}:8080${server.servlet.context-path}
       description: Prod server
   endpoint-games: games
+  endpoint-db: databases
+  endpoint-db-restore: restore
   endpoint-admin: admin
   version-one: /v1
   version-one-async: /v1.1

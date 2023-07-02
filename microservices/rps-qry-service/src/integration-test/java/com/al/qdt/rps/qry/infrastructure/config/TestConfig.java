@@ -3,10 +3,12 @@ package com.al.qdt.rps.qry.infrastructure.config;
 import com.al.qdt.common.infrastructure.queries.QueryDispatcherImpl;
 import com.al.qdt.cqrs.infrastructure.QueryDispatcher;
 import com.al.qdt.rps.qry.domain.repositories.GameRepository;
+import com.al.qdt.rps.qry.domain.services.security.AuthenticationService;
 import com.al.qdt.rps.qry.infrastructure.handlers.QueryHandler;
 import com.al.qdt.rps.qry.infrastructure.handlers.RpsQueryHandler;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.TestConfiguration;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Bean;
 
 /**
@@ -15,6 +17,9 @@ import org.springframework.context.annotation.Bean;
  */
 @TestConfiguration
 public class TestConfig {
+
+    @MockBean
+    AuthenticationService authenticationService;
 
     @Autowired
     GameRepository gameRepository;

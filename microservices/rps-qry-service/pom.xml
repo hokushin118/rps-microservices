@@ -293,6 +293,30 @@
             <artifactId>spring-boot-starter-data-redis</artifactId>
         </dependency>
 
+        <!-- Spring Security -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-security</artifactId>
+        </dependency>
+
+        <!-- OAuth2 Security Client -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-oauth2-client</artifactId>
+        </dependency>
+
+        <!-- OAuth2 Security Resource Server, used for integration tests -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-oauth2-resource-server</artifactId>
+        </dependency>
+
+        <!-- OAuth2 Jose -->
+        <dependency>
+            <groupId>org.springframework.security</groupId>
+            <artifactId>spring-security-oauth2-jose</artifactId>
+        </dependency>
+
         <!-- Database Migration -->
         <dependency>
             <groupId>org.flywaydb</groupId>
@@ -411,6 +435,14 @@
             <artifactId>mapstruct-processor</artifactId>
             <version>${mapstruct.version}</version>
             <scope>provided</scope>
+        </dependency>
+
+        <!-- Spring Security Testing -->
+        <!-- https://docs.spring.io/spring-security/reference/servlet/test/index.html -->
+        <dependency>
+            <groupId>org.springframework.security</groupId>
+            <artifactId>spring-security-test</artifactId>
+            <scope>test</scope>
         </dependency>
 
         <!-- Testing with Kafka -->

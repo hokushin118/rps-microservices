@@ -6,9 +6,9 @@ import org.junit.jupiter.api.Test;
 
 import java.time.OffsetDateTime;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @DisplayName("Testing OffsetDateTimeReadConverter class")
 class OffsetDateTimeReadConverterTest extends DateTimeConverterBaseTest {
@@ -20,7 +20,7 @@ class OffsetDateTimeReadConverterTest extends DateTimeConverterBaseTest {
         final var actualOffsetDateTime = this.offsetDateTimeReadConverter.convert(expectedDate);
 
         assertNotNull(actualOffsetDateTime);
-        assertTrue(actualOffsetDateTime instanceof OffsetDateTime);
+        assertThat(actualOffsetDateTime).isInstanceOf(OffsetDateTime.class);
         assertEquals(YEAR, actualOffsetDateTime.getYear());
         assertEquals(MONTH, actualOffsetDateTime.getMonth().getValue());
         assertEquals(DAY, actualOffsetDateTime.getDayOfMonth());

@@ -147,6 +147,36 @@ spec:
                 configMapKeyRef: # Using ConfigMap
                   name: score-cmd-service-configmap
                   key: grpc-server-security-client-auth
+            - name: KEYCLOAK_SCHEMA # Keycloak schema
+              valueFrom:
+                configMapKeyRef: # Using ConfigMap
+                  name: score-cmd-service-configmap
+                  key: keycloak-schema
+            - name: KEYCLOAK_HOSTNAME # Keycloak hostname
+              valueFrom:
+                configMapKeyRef: # Using ConfigMap
+                  name: score-cmd-service-configmap
+                  key: keycloak-hostname
+            - name: KEYCLOAK_PORT # Keycloak port
+              valueFrom:
+                configMapKeyRef: # Using ConfigMap
+                  name: score-cmd-service-configmap
+                  key: keycloak-port
+            - name: KEYCLOAK_REALM # Keycloak realm
+              valueFrom:
+                configMapKeyRef: # Using ConfigMap
+                  name: score-cmd-service-configmap
+                  key: keycloak-realm
+            - name: KEYCLOAK_CLIENT_ID # Keycloak client id
+              valueFrom:
+                configMapKeyRef: # Using ConfigMap
+                  name: score-cmd-service-configmap
+                  key: keycloak-client-id
+            - name: KEYCLOAK_SECRET # Keycloak secret
+              valueFrom:
+                secretKeyRef: # Using Secrets
+                  name: score-cmd-service-secret
+                  key: keycloak-secret
           # Mount volume from persistent volume claim
           volumeMounts:
             - name: config-volume # a mount for config

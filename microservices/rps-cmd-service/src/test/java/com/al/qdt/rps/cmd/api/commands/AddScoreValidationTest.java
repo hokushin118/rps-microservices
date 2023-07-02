@@ -1,6 +1,6 @@
 package com.al.qdt.rps.cmd.api.commands;
 
-import com.al.qdt.common.enums.Player;
+import com.al.qdt.common.domain.enums.Player;
 import com.al.qdt.rps.cmd.base.CommandTests;
 import com.al.qdt.rps.cmd.base.ValidationBaseTest;
 import org.junit.jupiter.api.AfterEach;
@@ -13,8 +13,9 @@ import org.junit.jupiter.params.provider.NullSource;
 
 import java.util.UUID;
 
-import static com.al.qdt.common.enums.Player.USER;
-import static com.al.qdt.common.helpers.Constants.TEST_UUID;
+import static com.al.qdt.common.domain.enums.Player.USER;
+import static com.al.qdt.common.infrastructure.helpers.Constants.TEST_UUID;
+import static com.al.qdt.common.infrastructure.helpers.Constants.USER_ONE_ID;
 import static com.al.qdt.cqrs.messages.Message.ID_MUST_NOT_BE_NULL;
 import static com.al.qdt.rps.cmd.api.commands.AddScoreCommand.WINNER_MUST_NOT_BE_NULL;
 import static org.junit.jupiter.api.Assertions.assertAll;
@@ -27,7 +28,7 @@ class AddScoreValidationTest extends ValidationBaseTest implements CommandTests 
 
     @BeforeEach
     void setUp() {
-        this.expectedAddScoreCommand = createAddScoreCommand(TEST_UUID, USER);
+        this.expectedAddScoreCommand = createAddScoreCommand(TEST_UUID, USER_ONE_ID, USER);
     }
 
     @AfterEach
@@ -51,7 +52,7 @@ class AddScoreValidationTest extends ValidationBaseTest implements CommandTests 
     @Test
     @DisplayName("Testing AddScoreCommand equals() and hashCode() methods")
     void equalsAndHashCodeTest() {
-        final var actualAddScoreCommand = createAddScoreCommand(TEST_UUID, USER);
+        final var actualAddScoreCommand = createAddScoreCommand(TEST_UUID, USER_ONE_ID, USER);
 
         assertTrue(this.expectedAddScoreCommand.equals(actualAddScoreCommand) &&
                 actualAddScoreCommand.equals(this.expectedAddScoreCommand));
@@ -70,7 +71,7 @@ class AddScoreValidationTest extends ValidationBaseTest implements CommandTests 
     @NullSource
     @DisplayName("Testing identification validating constrains with wrong parameters")
     void identificationIsNull(UUID id) {
-        final var addScoreCommand = createAddScoreCommand(id, USER);
+        final var addScoreCommand = createAddScoreCommand(id, USER_ONE_ID, USER);
         final var constraintViolations = validator.validate(addScoreCommand);
 
         assertEquals(SINGLE_VIOLATION, constraintViolations.size());
@@ -81,7 +82,7 @@ class AddScoreValidationTest extends ValidationBaseTest implements CommandTests 
     @EnumSource(Player.class)
     @DisplayName("Testing winner validating constrains with right parameters")
     void winnerIsValid(Player winner) {
-        final var addScoreCommand = createAddScoreCommand(TEST_UUID, winner);
+        final var addScoreCommand = createAddScoreCommand(TEST_UUID, USER_ONE_ID, winner);
         final var constraintViolations = validator.validate(addScoreCommand);
 
         assertEquals(ZERO_VIOLATIONS, constraintViolations.size());
@@ -91,7 +92,7 @@ class AddScoreValidationTest extends ValidationBaseTest implements CommandTests 
     @NullSource
     @DisplayName("Testing winner validating constrains with wrong parameters")
     void winnerIsNull(Player winner) {
-        final var addScoreCommand = createAddScoreCommand(TEST_UUID, winner);
+        final var addScoreCommand = createAddScoreCommand(TEST_UUID, USER_ONE_ID, winner);
         final var constraintViolations = validator.validate(addScoreCommand);
 
         assertEquals(SINGLE_VIOLATION, constraintViolations.size());

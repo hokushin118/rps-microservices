@@ -1,10 +1,12 @@
 package com.al.qdt.rps.qry.api.controllers;
 
 import com.al.qdt.common.api.errors.ApiError;
+import com.al.qdt.rps.grpc.v1.dto.GameAdminDto;
 import com.al.qdt.rps.grpc.v1.dto.GameDto;
+import com.al.qdt.rps.grpc.v1.services.ListOfGamesAdminResponse;
 import com.al.qdt.rps.grpc.v1.services.ListOfGamesResponse;
 import com.al.qdt.rps.qry.domain.services.RpsServiceV2;
-import com.google.protobuf.StringValue;
+import com.al.qdt.rps.qry.domain.services.security.AuthenticationService;
 import io.micrometer.core.annotation.Timed;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -19,25 +21,13 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseStatus;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
-
 import java.util.UUID;
 
-import static com.al.qdt.common.helpers.Constants.GAMES_BY_USER_NOT_FOUND_JSON;
-import static com.al.qdt.common.helpers.Constants.GAMES_EXPECTED_JSON;
-import static com.al.qdt.common.helpers.Constants.GAMES_NOT_FOUND_JSON;
-import static com.al.qdt.common.helpers.Constants.GAME_BY_ID_NOT_FOUND_JSON;
-import static com.al.qdt.common.helpers.Constants.GAME_EXPECTED_JSON;
-import static com.al.qdt.common.helpers.Constants.MALFORMED_JSON;
-import static com.al.qdt.common.helpers.Constants.TEST_ID;
-import static com.al.qdt.common.helpers.Constants.USERNAME_ONE;
+import static com.al.qdt.common.infrastructure.helpers.Constants.*;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
 /**
@@ -45,13 +35,14 @@ import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
  */
 @Slf4j(topic = "outbound-logs")
 @RestController
-@RequestMapping(path = "${api.version-two}/${api.endpoint-games}", produces = APPLICATION_JSON_VALUE)
+@RequestMapping(path = "${api.version-two}", produces = APPLICATION_JSON_VALUE)
 @RequiredArgsConstructor
 @Validated
 @Timed("game")
 @Tag(name = "Game", description = "the rock paper scissors game query REST API endpoints")
 public class RpsControllerV2 {
     private final RpsServiceV2 rpsService;
+    private final AuthenticationService authenticationService;
 
     /**
      * Returns all games.
@@ -68,10 +59,10 @@ public class RpsControllerV2 {
                     description = "Successful operation",
                     content = @Content(
                             mediaType = APPLICATION_JSON_VALUE,
-                            array = @ArraySchema(schema = @Schema(implementation = GameDto.class)),
+                            array = @ArraySchema(schema = @Schema(implementation = GameAdminDto.class)),
                             examples = {
                                     @ExampleObject(
-                                            value = GAMES_EXPECTED_JSON
+                                            value = GAMES_ADMIN_EXPECTED_JSON
                                     )
                             })),
             @ApiResponse(responseCode = "404",
@@ -87,33 +78,34 @@ public class RpsControllerV2 {
                     ))
     })
     @ResponseStatus(HttpStatus.OK)
-    @GetMapping
+    @GetMapping(path = "/${api.endpoint-admin}/${api.endpoint-games}")
     @Timed(value = "game.all", description = "Time taken to return all games", longTask = true)
-    public ListOfGamesResponse all() {
+    public ListOfGamesAdminResponse all(@Parameter(description = "User id of games that need to be fetched", example = USER_ONE_ID_EXAMPLE)
+                                   @Valid @RequestParam(value = "userId", required = false) UUID userId) {
         log.info("REST CONTROLLER: Getting all games...");
-        return this.rpsService.all();
+        return userId == null ? this.rpsService.all() : this.rpsService.findByUserId(userId);
     }
 
     /**
-     * Finds game by id.
+     * Find game by id.
      *
      * @param id game id, must not be null or empty
      * @return found game
      * @version 2
      */
     @Operation(operationId = "find-by-id-proto",
-            summary = "Finds game by id",
-            description = "Finds a game in the database by its id. For valid response try String ids.",
+            summary = "Find game by id",
+            description = "Find a game in the database by its id. For valid response try String ids.",
             tags = {"game"})
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200",
                     description = "Successful operation",
                     content = @Content(
                             mediaType = APPLICATION_JSON_VALUE,
-                            schema = @Schema(implementation = GameDto.class),
+                            schema = @Schema(implementation = GameAdminDto.class),
                             examples = {
                                     @ExampleObject(
-                                            value = GAME_EXPECTED_JSON
+                                            value = GAME_ADMIN_EXPECTED_JSON
                                     )
                             })),
             @ApiResponse(responseCode = "400",
@@ -140,9 +132,9 @@ public class RpsControllerV2 {
                     ))
     })
     @ResponseStatus(HttpStatus.OK)
-    @GetMapping(path = "/{id}")
+    @GetMapping(path = "/${api.endpoint-admin}/${api.endpoint-games}/{id}")
     @Timed(value = "game.findById", description = "Time taken to find game by id", longTask = true)
-    public GameDto findById(@Parameter(description = "Id of game that needs to be fetched",
+    public GameAdminDto findById(@Parameter(description = "Id of game that needs to be fetched",
             schema = @Schema(type = "string"), example = TEST_ID, required = true)
                             @Valid @NotNull @PathVariable(value = "id") UUID id) {
         log.info("REST CONTROLLER: Finding game by id: {}.", id.toString());
@@ -150,15 +142,14 @@ public class RpsControllerV2 {
     }
 
     /**
-     * Finds games by username.
+     * Find all my games.
      *
-     * @param username username, must not be null or empty
      * @return found collection of games
      * @version 2
      */
-    @Operation(operationId = "find-by-username-proto",
-            summary = "Finds games by username",
-            description = "Finds games in the database by username.",
+    @Operation(operationId = "find-my-games-proto",
+            summary = "Find my games",
+            description = "Find my games in the database.",
             tags = {"game"})
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200",
@@ -172,7 +163,7 @@ public class RpsControllerV2 {
                                     )
                             })),
             @ApiResponse(responseCode = "400",
-                    description = "Invalid username supplied",
+                    description = "Invalid userId supplied",
                     content = @Content(
                             mediaType = APPLICATION_JSON_VALUE,
                             schema = @Schema(implementation = ApiError.class),
@@ -195,12 +186,20 @@ public class RpsControllerV2 {
                     ))
     })
     @ResponseStatus(HttpStatus.OK)
-    @GetMapping(path = "/users/{username}")
-    @Timed(value = "game.findByUsername", description = "Time taken to find games by winner", longTask = true)
-    public ListOfGamesResponse findByUsername(@Parameter(description = "Username of games that need to be fetched",
-            schema = @Schema(type = "string"), example = USERNAME_ONE, required = true)
-                                              @Valid @NotNull @PathVariable(value = "username") StringValue username) {
-        log.info("REST CONTROLLER: Finding game by username: {}.", username.getValue());
-        return this.rpsService.findByUsername(username);
+    @GetMapping(path = "/${api.endpoint-games}")
+    @Timed(value = "game.findMyGames", description = "Time taken to find my games", longTask = true)
+    public ListOfGamesResponse findMyGames() {
+        final var userId = this.getUserId();
+        log.info("REST CONTROLLER: Finding game by my user id: {}.", userId);
+        return this.rpsService.findMyGames(userId);
+    }
+
+    /**
+     * Returns currently logged in user id.
+     *
+     * @return user id
+     */
+    private UUID getUserId() {
+        return this.authenticationService.getUserId();
     }
 }

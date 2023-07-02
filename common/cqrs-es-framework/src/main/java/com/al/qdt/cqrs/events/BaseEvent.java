@@ -7,7 +7,7 @@ import java.util.UUID;
 
 @NoArgsConstructor
 public abstract class BaseEvent extends Message {
-    protected BaseEvent(UUID id) {
-        super(id);
+    protected BaseEvent(UUID id, UUID userId) {
+        super(id, userId);
     }
 }

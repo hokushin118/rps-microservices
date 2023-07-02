@@ -2,7 +2,6 @@ package com.al.qdt.common.api.dto;
 
 import com.al.qdt.common.domain.base.DtoTests;
 import com.fasterxml.jackson.core.JsonProcessingException;
-import lombok.SneakyThrows;
 import org.json.JSONException;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -10,9 +9,9 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.skyscreamer.jsonassert.JSONAssert;
 
-import static com.al.qdt.common.enums.Player.USER;
-import static com.al.qdt.common.helpers.Constants.SCORE_EXPECTED_JSON;
-import static com.al.qdt.common.helpers.Constants.TEST_ID;
+import static com.al.qdt.common.domain.enums.Player.USER;
+import static com.al.qdt.common.infrastructure.helpers.Constants.SCORE_EXPECTED_JSON;
+import static com.al.qdt.common.infrastructure.helpers.Constants.TEST_ID;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.not;
@@ -27,7 +26,7 @@ class ScoreDtoTest implements DtoTests {
 
     @BeforeEach
     void setUp() {
-        this.expectedScoreDto = createScoreJsonDto();
+        this.expectedScoreDto = createScoreDto();
     }
 
     @AfterEach
@@ -44,10 +43,9 @@ class ScoreDtoTest implements DtoTests {
         );
     }
 
-    @SneakyThrows({JsonProcessingException.class, JSONException.class})
     @Test
     @DisplayName("Testing ScoreDto serialization")
-    void scoreDtoSerializationTest() {
+    void scoreDtoSerializationTest() throws JsonProcessingException, JSONException {
         final var actualJson = objectMapper.writeValueAsString(this.expectedScoreDto);
 
         assertNotNull(actualJson);
@@ -58,10 +56,9 @@ class ScoreDtoTest implements DtoTests {
         JSONAssert.assertEquals(SCORE_EXPECTED_JSON, actualJson, true);
     }
 
-    @SneakyThrows(JsonProcessingException.class)
     @Test
     @DisplayName("Testing ScoreDto deserialization")
-    void scoreDtoDeserializationTest() {
+    void scoreDtoDeserializationTest() throws JsonProcessingException {
         final var actualScoreDto = objectMapper.readValue(SCORE_EXPECTED_JSON, ScoreDto.class);
 
         assertNotNull(actualScoreDto);
@@ -74,7 +71,7 @@ class ScoreDtoTest implements DtoTests {
     @Test
     @DisplayName("Testing ScoreDto equals() and hashCode() methods")
     void equalsAndHashCodeTest() {
-        final var actualScoreDto = createScoreJsonDto();
+        final var actualScoreDto = createScoreDto();
 
         assertTrue(this.expectedScoreDto.equals(actualScoreDto) &&
                 actualScoreDto.equals(this.expectedScoreDto));

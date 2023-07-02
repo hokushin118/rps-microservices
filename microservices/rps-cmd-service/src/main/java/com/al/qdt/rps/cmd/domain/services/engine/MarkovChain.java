@@ -1,13 +1,13 @@
 package com.al.qdt.rps.cmd.domain.services.engine;
 
-import com.al.qdt.common.enums.Hand;
+import com.al.qdt.common.domain.enums.Hand;
 import lombok.Getter;
 
 import java.util.stream.IntStream;
 
-import static com.al.qdt.common.enums.Hand.PAPER;
-import static com.al.qdt.common.enums.Hand.ROCK;
-import static com.al.qdt.common.enums.Hand.SCISSORS;
+import static com.al.qdt.common.domain.enums.Hand.PAPER;
+import static com.al.qdt.common.domain.enums.Hand.ROCK;
+import static com.al.qdt.common.domain.enums.Hand.SCISSORS;
 
 /**
  * This class contains Markov Chain Algorithm functionality.

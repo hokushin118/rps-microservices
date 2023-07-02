@@ -1,0 +1,17 @@
+# Get list of my games v1
+
+GET http://{{host}}:{{score_qry_port}}/score-qry-api/v1/games HTTP/1.1
+Accept: application/json
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+###
+
+# Get list of my games v2
+
+GET http://{{host}}:{{score_qry_port}}/score_qry_api/v2/games HTTP/1.1
+Accept: application/json
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+###

@@ -9,7 +9,7 @@ public class GameNotFoundException extends RuntimeException {
     // exception message
     public static final String GAME_BY_ID_NOT_FOUND_EXCEPTION_MESSAGE = "Game with id %s has not been found!";
     // exception message
-    public static final String GAME_BY_USERNAME_NOT_FOUND_EXCEPTION_MESSAGE = "Games with username %s have not been found!";
+    public static final String GAME_BY_USER_ID_NOT_FOUND_EXCEPTION_MESSAGE = "Games with user id %s have not been found!";
     // exception message
     public static final String GAMES_NOT_FOUND_EXCEPTION_MESSAGE = "Games have not been found!";
 

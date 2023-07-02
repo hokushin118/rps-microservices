@@ -1,6 +1,6 @@
 # Profile for integration tests
 server:
-  port: 8080
+  port: 8084
 
 # gRPC server configuration
 grpc:
@@ -57,17 +57,21 @@ spring:
   # Kafka properties
   kafka:
     consumer:
-      bootstrap-servers: localhost:9093,localhost:9094,localhost:9095
+      bootstrap-servers: kafka.internal:9092
 
   # Cache configuration
   cache:
     type: simple
 
+# Keycloak configuration
+keycloak:
+  schema: http # schema
+  hostname: localhost # hostname
+  port: 8180 # port number
+  realm: rps-dev # realm name
+  client-id: oauth2-proxy # client id
+  secret: HVxWhjNes0vU3FyxETpmBcYXyV0WVAgw # secret
+
 # OpenApi configuration
 api:
-  dev:
-    server:
-      base-url: http://localhost:8084${server.servlet.context-path}
-  prod:
-    server:
-      base-url: http://localhost:8080${server.servlet.context-path}
+  hostname: localhost

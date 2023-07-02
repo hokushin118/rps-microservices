@@ -1,7 +1,8 @@
 package com.al.qdt.rps.qry.infrastructure.config;
 
 import com.al.qdt.common.infrastructure.properties.RpsCacheProperties;
-import com.al.qdt.rps.grpc.v1.dto.GameDto;
+import com.al.qdt.rps.grpc.v1.dto.GameAdminDto;
+import com.al.qdt.rps.grpc.v1.services.ListOfGamesAdminResponse;
 import com.al.qdt.rps.grpc.v1.services.ListOfGamesResponse;
 import org.springframework.boot.autoconfigure.cache.RedisCacheManagerBuilderCustomizer;
 import org.springframework.cache.CacheManager;
@@ -26,12 +27,14 @@ import static com.al.qdt.common.infrastructure.redis.RedisUtils.redisProtoCacheC
 @EnableCaching
 public class CacheConfig {
     public static final String GAME_CACHE_NAMES = "gamesCache";
-    public static final String GAME_CACHE_NAME = "game";
-    public static final String GAMES_CACHE_NAME = "games";
-    public static final String GAME_PROTO_CACHE_NAME = "gameProto";
-    public static final String GAMES_PROTO_CACHE_NAME = "gamesProto";
-    public static final String USERNAME_CACHE_NAME = "username";
-    public static final String USERNAME_PROTO_CACHE_NAME = "usernameProto";
+    public static final String GAME_ADMIN_CACHE_NAME = "gameAdmin";
+    public static final String GAME_ADMIN_PROTO_CACHE_NAME = "gameAdminProto";
+    public static final String GAMES_ADMIN_CACHE_NAME = "gamesAdmin";
+    public static final String GAMES_ADMIN_PROTO_CACHE_NAME = "gamesAdminProto";
+    public static final String GAMES_ADMIN_USER_ID_CACHE_NAME = "gamesAdminUserId";
+    public static final String GAMES_ADMIN_USER_ID_PROTO_CACHE_NAME = "gamesAdminUserIdProto";
+    public static final String GAMES_MY_CACHE_NAME = "myGames";
+    public static final String GAMES_MY_PROTO_CACHE_NAME = "myGamesProto";
     private static final long CACHE_DURATION_MIN = 60L; // cache time to live (TTL)
 
     /**
@@ -53,12 +56,14 @@ public class CacheConfig {
     @Profile("it")
     public CacheManager cacheManager() {
         final var cacheManager = new SimpleCacheManager();
-        cacheManager.setCaches(List.of(new ConcurrentMapCache(GAME_CACHE_NAME),
-                new ConcurrentMapCache(GAMES_CACHE_NAME),
-                new ConcurrentMapCache(GAME_PROTO_CACHE_NAME),
-                new ConcurrentMapCache(GAMES_PROTO_CACHE_NAME),
-                new ConcurrentMapCache(USERNAME_CACHE_NAME),
-                new ConcurrentMapCache(USERNAME_PROTO_CACHE_NAME)));
+        cacheManager.setCaches(List.of(new ConcurrentMapCache(GAME_ADMIN_CACHE_NAME),
+                new ConcurrentMapCache(GAMES_ADMIN_CACHE_NAME),
+                new ConcurrentMapCache(GAME_ADMIN_PROTO_CACHE_NAME),
+                new ConcurrentMapCache(GAMES_ADMIN_PROTO_CACHE_NAME),
+                new ConcurrentMapCache(GAMES_MY_CACHE_NAME),
+                new ConcurrentMapCache(GAMES_MY_PROTO_CACHE_NAME),
+                new ConcurrentMapCache(GAMES_ADMIN_USER_ID_CACHE_NAME),
+                new ConcurrentMapCache(GAMES_ADMIN_USER_ID_PROTO_CACHE_NAME)));
 
         // manually call initialize the caches as our SimpleCacheManager is not declared as a bean
         cacheManager.initializeCaches();
@@ -75,11 +80,13 @@ public class CacheConfig {
     @Profile("!it")
     public RedisCacheManagerBuilderCustomizer redisCacheManagerBuilderCustomizer() {
         return builder -> builder
-                .withCacheConfiguration(GAME_CACHE_NAME, redisCacheConfiguration(CACHE_DURATION_MIN))
-                .withCacheConfiguration(GAMES_CACHE_NAME, redisCacheConfiguration(CACHE_DURATION_MIN))
-                .withCacheConfiguration(USERNAME_CACHE_NAME, redisCacheConfiguration(CACHE_DURATION_MIN))
-                .withCacheConfiguration(GAME_PROTO_CACHE_NAME, redisProtoCacheConfiguration(GameDto.class, CACHE_DURATION_MIN))
-                .withCacheConfiguration(GAMES_PROTO_CACHE_NAME, redisProtoCacheConfiguration(ListOfGamesResponse.class, CACHE_DURATION_MIN))
-                .withCacheConfiguration(USERNAME_PROTO_CACHE_NAME, redisProtoCacheConfiguration(ListOfGamesResponse.class, CACHE_DURATION_MIN));
+                .withCacheConfiguration(GAME_ADMIN_CACHE_NAME, redisCacheConfiguration(CACHE_DURATION_MIN))
+                .withCacheConfiguration(GAME_ADMIN_PROTO_CACHE_NAME, redisProtoCacheConfiguration(GameAdminDto.class, CACHE_DURATION_MIN))
+                .withCacheConfiguration(GAMES_ADMIN_CACHE_NAME, redisCacheConfiguration(CACHE_DURATION_MIN))
+                .withCacheConfiguration(GAMES_ADMIN_PROTO_CACHE_NAME, redisProtoCacheConfiguration(ListOfGamesAdminResponse.class, CACHE_DURATION_MIN))
+                .withCacheConfiguration(GAMES_MY_CACHE_NAME, redisCacheConfiguration(CACHE_DURATION_MIN))
+                .withCacheConfiguration(GAMES_MY_PROTO_CACHE_NAME, redisProtoCacheConfiguration(ListOfGamesResponse.class, CACHE_DURATION_MIN))
+                .withCacheConfiguration(GAMES_ADMIN_USER_ID_CACHE_NAME, redisCacheConfiguration(CACHE_DURATION_MIN))
+                .withCacheConfiguration(GAMES_ADMIN_USER_ID_PROTO_CACHE_NAME, redisProtoCacheConfiguration(ListOfGamesAdminResponse.class, CACHE_DURATION_MIN));
     }
 }

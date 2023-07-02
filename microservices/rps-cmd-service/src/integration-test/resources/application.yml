@@ -1,6 +1,7 @@
 server:
   servlet:
     context-path: /rps-cmd-api
+  port: 8081
 
 # gRPC client test configuration
 grpc:
@@ -35,6 +36,7 @@ spring:
       value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
 
 api:
+  hostname: localhost
   dev:
     server:
       description: Dev server

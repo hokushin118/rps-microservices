@@ -1,0 +1,46 @@
+#version: "3.8"
+#
+#services:
+#  postgres:
+#    image: postgres
+#    environment:
+#      POSTGRES_DB: ${KEYCLOAK_POSTGRES_DB_NAME}
+#      POSTGRES_USER: ${KEYCLOAK_POSTGRES_DB_USER}
+#      POSTGRES_PASSWORD: ${KEYCLOAK_POSTGRES_DB_PASSWORD}
+#    restart:
+#      always
+#
+#  # Keycloak IAS server.
+#  keycloak:
+#    container_name: keycloak
+#    image: jboss/keycloak:${KEYCLOAK_VERSION}
+#    command:
+#      - "-b 0.0.0.0 -Dkeycloak.profile.feature.upload_scripts=enabled -Dkeycloak.import=/opt/jboss/keycloak/imports/realm-export.json"
+#    environment:
+#      DB_VENDOR: POSTGRES
+#      DB_ADDR: postgres
+#      DB_SCHEMA: public
+#      DB_DATABASE: ${KEYCLOAK_POSTGRES_DB_NAME}
+#      DB_USER: ${KEYCLOAK_POSTGRES_DB_USER}
+#      DB_PASSWORD: ${KEYCLOAK_POSTGRES_DB_PASSWORD}
+#      KEYCLOAK_USER: ${KEYCLOAK_USER}
+#      KEYCLOAK_PASSWORD: ${KEYCLOAK_PASSWORD}
+#      PROXY_ADDRESS_FORWARDING: "true"
+#      KEYCLOAK_LOGLEVEL: ${KEYCLOAK_LOGLEVEL}
+#    restart: on-failure
+#    ports:
+#      - 8080:8180 # external port / container port
+#    volumes:
+#      - ./infrastructure/keycloak/rps-dev-realm.json:/opt/jboss/keycloak/imports/realm-export.json
+#    depends_on:
+#      - postgres
+#      - nginx
+#    networks:
+#      - ${BACKEND_NETWORK}
+#    deploy:
+#      replicas: 1
+#
+## networks
+#networks:
+#  rps_net:
+#    name: ${BACKEND_NETWORK}

@@ -16,14 +16,34 @@ message FindScoreByIdRequest {
   string id = 1 [json_name = "id"];  // id of the score to be found
 }
 
+/* The message definition of the find score by user id request data. */
+message FindScoreByUserIdRequest {
+  string user_id = 1 [json_name = "user_id"];  // user id of the score to be found
+}
+
+/* The message definition of the find my scores request data. */
+message FindMyScoresRequest {
+}
+
 /* The message definition of the find scores by winner request data. */
 message FindScoreByWinnerRequest {
   v1.common.Player winner = 1 [json_name = "winner"]; // game round winner
 }
 
+/* The message definition of the find scores by userId and winner request data. */
+message FindScoreByUserIdAndWinnerRequest {
+  string user_id = 1 [json_name = "user_id"];  // user id of the score to be found
+  v1.common.Player winner = 2 [json_name = "winner"]; // game round winner
+}
+
 /* The message definition of the found score. */
 message ScoreResponse {
   v1.dto.ScoreDto score = 1 [json_name = "score"]; // found score
+}
+
+/* The message definition of the found score for admin users. */
+message ScoreAdminResponse {
+  v1.dto.ScoreAdminDto score = 1 [json_name = "score"]; // found score
 }
 
 /* The message definition of the request for all scores. */
@@ -35,21 +55,41 @@ message ListOfScoresResponse {
   repeated v1.dto.ScoreDto scores = 1 [json_name = "scores"]; // list of scores
 }
 
+/* The message definition of the list of scores for admin users. */
+message ListOfScoresAdminResponse {
+  repeated v1.dto.ScoreAdminDto scores = 1 [json_name = "scores"]; // list of scores
+}
+
 /* The Score query service definition. */
 service ScoreQryService {
 
   /*
-  * Returns all scores unary rpc service.
+  * Returns all scores for admin users unary rpc service.
   */
-  rpc listOfScores(ListOfScoresRequest) returns (ListOfScoresResponse) {};
+  rpc listOfScores(ListOfScoresRequest) returns (ListOfScoresAdminResponse) {};
 
   /*
-  * Finds score by id unary rpc service.
+  * Find score for admin users by id unary rpc service.
   */
-  rpc findById(FindScoreByIdRequest) returns (ScoreResponse) {};
+  rpc findById(FindScoreByIdRequest) returns (ScoreAdminResponse) {};
 
   /*
-  * Finds scores by winner unary rpc service.
+  * Find scores for admin users by user id.
   */
-  rpc findByWinner(FindScoreByWinnerRequest) returns (ListOfScoresResponse) {};
+  rpc findByUserId(FindScoreByUserIdRequest) returns (ListOfScoresAdminResponse) {};
+
+  /*
+  * Find scores for admin users by winner unary rpc service.
+  */
+  rpc findByWinner(FindScoreByWinnerRequest) returns (ListOfScoresAdminResponse) {};
+
+  /*
+  * Find scores for admin users by userId and winner unary rpc service.
+  */
+  rpc findByUserIdAndWinner(FindScoreByUserIdAndWinnerRequest) returns (ListOfScoresAdminResponse) {};
+
+  /*
+  * Find my scores.
+  */
+  rpc findMyScores(FindMyScoresRequest) returns (ListOfScoresResponse) {};
 }

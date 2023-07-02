@@ -11,8 +11,8 @@ import java.time.ZoneOffset;
 
 public interface ConverterMapper {
 
-    default com.al.qdt.common.enums.Hand enumConverter(Hand hand) {
-        return com.al.qdt.common.enums.Hand.valueOf(hand.getValueDescriptor().getName());
+    default com.al.qdt.common.domain.enums.Hand enumConverter(Hand hand) {
+        return com.al.qdt.common.domain.enums.Hand.valueOf(hand.getValueDescriptor().getName());
     }
 
     /**

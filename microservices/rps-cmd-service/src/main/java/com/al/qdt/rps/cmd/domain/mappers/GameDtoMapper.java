@@ -1,8 +1,8 @@
 package com.al.qdt.rps.cmd.domain.mappers;
 
 import com.al.qdt.common.api.dto.GameDto;
-import com.al.qdt.common.enums.Hand;
 import com.al.qdt.common.domain.mappers.CommonConfig;
+import com.al.qdt.common.domain.enums.Hand;
 import com.al.qdt.rps.cmd.api.commands.PlayGameCommand;
 import com.al.qdt.rps.cmd.api.exceptions.InvalidUserInputException;
 import org.mapstruct.Mapper;
@@ -17,7 +17,15 @@ public interface GameDtoMapper {
     @Mapping(target = "hand", qualifiedByName = "handDtoToHandCommand")
     PlayGameCommand fromDto(GameDto gameDto);
 
-    UUID mapId(String value);
+    /**
+     * Converts from {@link String} to {@link UUID}.
+     *
+     * @param value input object
+     * @return converted object
+     */
+    default UUID map(String value) {
+        return UUID.fromString(value);
+    }
 
     @Named("handDtoToHandCommand")
     default Hand handDtoToHandCommand(String hand) {

@@ -236,12 +236,12 @@ You should see the following output:
               "_id" : ObjectId("647a2e58deda4f5536e24338"),
               "aggregate_id" : UUID("17f8ef5a-bf3b-4b7b-9c51-a6019434e0bc"),
               "aggregate_type" : "com.al.qdt.rps.cmd.domain.aggregates.RpsAggregate",
-              "event_type" : "com.al.qdt.common.events.rps.GamePlayedEvent",
+              "event_type" : "com.al.qdt.common.infrastructure.events.rps.GamePlayedEvent",
               "event_data" : {
                       "_id" : UUID("17f8ef5a-bf3b-4b7b-9c51-a6019434e0bc"),
                       "username" : "User1",
                       "hand" : "PAPER",
-                      "_class" : "com.al.qdt.common.events.rps.GamePlayedEvent"
+                      "_class" : "com.al.qdt.common.infrastructure.events.rps.GamePlayedEvent"
               },
               "played" : ISODate("2023-06-02T18:00:56.874Z"),
               "version" : 0,
@@ -252,11 +252,11 @@ You should see the following output:
               "_id" : ObjectId("647a2e58deda4f5536e24339"),
               "aggregate_id" : UUID("17f8ef5a-bf3b-4b7b-9c51-a6019434e0bc"),
               "aggregate_type" : "com.al.qdt.rps.cmd.domain.aggregates.RpsAggregate",
-              "event_type" : "com.al.qdt.common.events.score.ScoresAddedEvent",
+              "event_type" : "com.al.qdt.common.infrastructure.events.score.ScoresAddedEvent",
               "event_data" : {
                       "_id" : UUID("17f8ef5a-bf3b-4b7b-9c51-a6019434e0bc"),
                       "winner" : "DRAW",
-                      "_class" : "com.al.qdt.common.events.score.ScoresAddedEvent"
+                      "_class" : "com.al.qdt.common.infrastructure.events.score.ScoresAddedEvent"
               },
               "played" : ISODate("2023-06-02T18:00:56.915Z"),
               "version" : 0,
@@ -415,6 +415,11 @@ Then deploy the microservice Prometheus service monitor with the following comma
 ```
 
 ### Useful links
+
+Spring Security
+
+* [OAuth 2.0 Client](https://docs.spring.io/spring-security/reference/servlet/oauth2/client/index.html)
+* [Authorization](https://docs.spring.io/spring-security/reference/servlet/authorization/index.html)
 
 For testing gRPC API (make sure that you are using correct grpc port for a profile), please consider the following
 options:

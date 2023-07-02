@@ -1,6 +1,6 @@
 package com.al.qdt.rps.cmd.api.commands;
 
-import com.al.qdt.common.enums.Hand;
+import com.al.qdt.common.domain.enums.Hand;
 import com.al.qdt.rps.cmd.base.CommandTests;
 import com.al.qdt.rps.cmd.base.ValidationBaseTest;
 import org.junit.jupiter.api.AfterEach;
@@ -9,17 +9,16 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.EnumSource;
-import org.junit.jupiter.params.provider.NullAndEmptySource;
 import org.junit.jupiter.params.provider.NullSource;
 
 import java.util.UUID;
 
-import static com.al.qdt.common.enums.Hand.ROCK;
-import static com.al.qdt.common.helpers.Constants.TEST_UUID;
-import static com.al.qdt.common.helpers.Constants.USERNAME_ONE;
+import static com.al.qdt.common.domain.enums.Hand.ROCK;
+import static com.al.qdt.common.infrastructure.helpers.Constants.TEST_UUID;
+import static com.al.qdt.common.infrastructure.helpers.Constants.USER_ONE_ID;
 import static com.al.qdt.cqrs.messages.Message.ID_MUST_NOT_BE_NULL;
+import static com.al.qdt.cqrs.messages.Message.USER_ID_MUST_NOT_BE_NULL;
 import static com.al.qdt.rps.cmd.api.commands.PlayGameCommand.HAND_MUST_NOT_BE_NULL;
-import static com.al.qdt.rps.cmd.api.commands.PlayGameCommand.USERNAME_MUST_NOT_BE_BLANK;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -30,7 +29,7 @@ class PlayGameValidationTest extends ValidationBaseTest implements CommandTests 
 
     @BeforeEach
     void setUp() {
-        this.expectedPlayGameCommand = createPlayGameCommand(TEST_UUID, USERNAME_ONE, ROCK);
+        this.expectedPlayGameCommand = createPlayGameCommand(TEST_UUID, USER_ONE_ID, ROCK);
     }
 
     @AfterEach
@@ -46,7 +45,7 @@ class PlayGameValidationTest extends ValidationBaseTest implements CommandTests 
                         () -> assertEquals(TEST_UUID, this.expectedPlayGameCommand.getId(), "Id didn't match!")
                 ),
                 () -> assertAll("PlayGameCommand properties",
-                        () -> assertEquals(USERNAME_ONE, this.expectedPlayGameCommand.getUsername(), "Username didn't match!"),
+                        () -> assertEquals(USER_ONE_ID, this.expectedPlayGameCommand.getUserId(), "User id didn't match!"),
                         () -> assertEquals(ROCK, this.expectedPlayGameCommand.getHand(), "Hand didn't match!")
                 )
         );
@@ -55,7 +54,7 @@ class PlayGameValidationTest extends ValidationBaseTest implements CommandTests 
     @Test
     @DisplayName("Testing PlayGameCommand equals() and hashCode() methods")
     void equalsAndHashCodeTest() {
-        final var actualPlayGameCommand = createPlayGameCommand(TEST_UUID, USERNAME_ONE, ROCK);
+        final var actualPlayGameCommand = createPlayGameCommand(TEST_UUID, USER_ONE_ID, ROCK);
 
         assertTrue(this.expectedPlayGameCommand.equals(actualPlayGameCommand) &&
                 actualPlayGameCommand.equals(this.expectedPlayGameCommand));
@@ -74,7 +73,7 @@ class PlayGameValidationTest extends ValidationBaseTest implements CommandTests 
     @NullSource
     @DisplayName("Testing identification validating constrains with wrong parameters")
     void identificationIsNull(UUID id) {
-        final var playGameCommand = createPlayGameCommand(id, USERNAME_ONE, ROCK);
+        final var playGameCommand = createPlayGameCommand(id, USER_ONE_ID, ROCK);
         final var constraintViolations = validator.validate(playGameCommand);
 
         assertEquals(SINGLE_VIOLATION, constraintViolations.size());
@@ -82,30 +81,30 @@ class PlayGameValidationTest extends ValidationBaseTest implements CommandTests 
     }
 
     @Test
-    @DisplayName("Testing username validating constrains with right parameters")
-    void usernameIsValid() {
-        final var playGameCommand = createPlayGameCommand(TEST_UUID, USERNAME_ONE, ROCK);
+    @DisplayName("Testing userId validating constrains with right parameters")
+    void userIdIsValid() {
+        final var playGameCommand = createPlayGameCommand(TEST_UUID, USER_ONE_ID, ROCK);
         final var constraintViolations = validator.validate(playGameCommand);
 
         assertEquals(ZERO_VIOLATIONS, constraintViolations.size());
     }
 
     @ParameterizedTest
-    @NullAndEmptySource
-    @DisplayName("Testing username validating constrains with wrong parameters")
-    void usernameIsBlank(String username) {
-        final var playGameCommand = createPlayGameCommand(TEST_UUID, username, ROCK);
+    @NullSource
+    @DisplayName("Testing userId validating constrains with wrong parameters")
+    void userIdIsNull(UUID userId) {
+        final var playGameCommand = createPlayGameCommand(TEST_UUID, userId, ROCK);
         final var constraintViolations = validator.validate(playGameCommand);
 
         assertEquals(SINGLE_VIOLATION, constraintViolations.size());
-        assertEquals(USERNAME_MUST_NOT_BE_BLANK, constraintViolations.iterator().next().getMessage());
+        assertEquals(USER_ID_MUST_NOT_BE_NULL, constraintViolations.iterator().next().getMessage());
     }
 
     @ParameterizedTest
     @EnumSource(Hand.class)
     @DisplayName("Testing hand validating constrains with right parameters")
     void handIsValid(Hand hand) {
-        final var playGameCommand = createPlayGameCommand(TEST_UUID, USERNAME_ONE, hand);
+        final var playGameCommand = createPlayGameCommand(TEST_UUID, USER_ONE_ID, hand);
         final var constraintViolations = validator.validate(playGameCommand);
 
         assertEquals(ZERO_VIOLATIONS, constraintViolations.size());
@@ -115,7 +114,7 @@ class PlayGameValidationTest extends ValidationBaseTest implements CommandTests 
     @NullSource
     @DisplayName("Testing hand validating constrains with wrong parameters")
     void handIsNull(Hand hand) {
-        final var playGameCommand = createPlayGameCommand(TEST_UUID, USERNAME_ONE, hand);
+        final var playGameCommand = createPlayGameCommand(TEST_UUID, USER_ONE_ID, hand);
         final var constraintViolations = validator.validate(playGameCommand);
 
         assertEquals(SINGLE_VIOLATION, constraintViolations.size());

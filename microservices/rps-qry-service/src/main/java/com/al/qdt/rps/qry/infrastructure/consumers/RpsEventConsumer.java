@@ -1,7 +1,7 @@
 package com.al.qdt.rps.qry.infrastructure.consumers;
 
-import com.al.qdt.common.events.rps.GameDeletedEvent;
-import com.al.qdt.common.events.rps.GamePlayedEvent;
+import com.al.qdt.common.infrastructure.events.rps.GameDeletedEvent;
+import com.al.qdt.common.infrastructure.events.rps.GamePlayedEvent;
 import com.al.qdt.rps.qry.infrastructure.handlers.EventHandler;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

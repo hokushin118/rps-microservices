@@ -2,6 +2,8 @@ syntax = "proto3";
 
 package v1.services;
 
+
+import "google/protobuf/wrappers.proto";
 import "v1/dto/game.proto";
 
 option go_package = "/pb";
@@ -12,6 +14,7 @@ option java_multiple_files = true;
 
 /* The message definition of the request for all games. */
 message ListOfGamesRequest {
+  google.protobuf.StringValue user_id = 1 [json_name = "userId"]; // user id of the games to be found
 }
 
 /* The message definition of the list of games. */
@@ -19,11 +22,16 @@ message ListOfGamesResponse {
   repeated v1.dto.GameDto games = 1 [json_name = "games"]; // list of games
 }
 
+/* The message definition of the list of games for admin users. */
+message ListOfGamesAdminResponse {
+  repeated v1.dto.GameAdminDto games = 1 [json_name = "games"]; // list of games
+}
+
 /* The rps query service definition. */
 service RpsQryService {
 
   /*
-  * Returns all games unary rpc service.
+  * Returns all games for admin users unary rpc service.
   */
-  rpc listOfGames(ListOfGamesRequest) returns (ListOfGamesResponse) {};
+  rpc listOfGames(ListOfGamesRequest) returns (ListOfGamesAdminResponse) {};
 }

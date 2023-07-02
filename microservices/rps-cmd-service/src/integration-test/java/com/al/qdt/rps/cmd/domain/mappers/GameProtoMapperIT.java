@@ -11,7 +11,6 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.NullSource;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import static com.al.qdt.common.helpers.Constants.USERNAME_ONE;
 import static com.al.qdt.rps.grpc.v1.common.Hand.ROCK;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -39,8 +38,6 @@ class GameProtoMapperIT extends AbstractIntegrationTests implements ProtoTests {
         final var playGameCommand = this.gameProtoMapper.fromDto(gameDto);
 
         assertNotNull(playGameCommand);
-        assertEquals(USERNAME_ONE, playGameCommand.getUsername());
-        assertEquals(gameDto.getUsername(), playGameCommand.getUsername());
         assertEquals(ROCK.getValueDescriptor().getName(), playGameCommand.getHand().name());
         assertEquals(gameDto.getHand().getValueDescriptor().getName(), playGameCommand.getHand().name());
     }

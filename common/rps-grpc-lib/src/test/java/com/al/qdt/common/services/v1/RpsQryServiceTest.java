@@ -1,8 +1,7 @@
-
 package com.al.qdt.common.services.v1;
 
+import com.al.qdt.rps.grpc.v1.services.ListOfGamesAdminResponse;
 import com.al.qdt.rps.grpc.v1.services.ListOfGamesRequest;
-import com.al.qdt.rps.grpc.v1.services.ListOfGamesResponse;
 import com.al.qdt.rps.grpc.v1.services.RpsQryServiceGrpc;
 import io.grpc.MethodDescriptor;
 import io.grpc.stub.annotations.RpcMethod;
@@ -44,7 +43,7 @@ class RpsQryServiceTest {
     @Test
     @DisplayName("Testing of the RpsQryService listOfGames() methods")
     void rpsQryServiceListOfGamesMethodDescriptors() {
-        MethodDescriptor<ListOfGamesRequest, ListOfGamesResponse> genericTypeShouldMatchWhenAssigned;
+        MethodDescriptor<ListOfGamesRequest, ListOfGamesAdminResponse> genericTypeShouldMatchWhenAssigned;
 
         genericTypeShouldMatchWhenAssigned = RpsQryServiceGrpc.getListOfGamesMethod();
         assertEquals(UNARY, genericTypeShouldMatchWhenAssigned.getType());
@@ -123,7 +122,7 @@ class RpsQryServiceTest {
             return SourceVersion.latest();
         }
 
-        private void verifyListOfGamesRpcMethodAnnotation(MethodDescriptor<ListOfGamesRequest, ListOfGamesResponse> descriptor, RpcMethod annotation) {
+        private void verifyListOfGamesRpcMethodAnnotation(MethodDescriptor<ListOfGamesRequest, ListOfGamesAdminResponse> descriptor, RpcMethod annotation) {
             assertEquals(descriptor.getFullMethodName(), annotation.fullMethodName());
             assertEquals(descriptor.getType(), annotation.methodType());
 
@@ -135,9 +134,9 @@ class RpsQryServiceTest {
             }
 
             try {
-                assertEquals(ListOfGamesResponse.class, annotation.responseType());
+                assertEquals(ListOfGamesAdminResponse.class, annotation.responseType());
             } catch (MirroredTypeException e) {
-                assertEquals(ListOfGamesResponse.class.getCanonicalName(), String.valueOf(e.getTypeMirror()));
+                assertEquals(ListOfGamesAdminResponse.class.getCanonicalName(), String.valueOf(e.getTypeMirror()));
             }
         }
     }

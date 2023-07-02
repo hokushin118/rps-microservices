@@ -1,6 +1,6 @@
 package com.al.qdt.common.infrastructure.queries;
 
-import com.al.qdt.common.exceptions.DispatcherException;
+import com.al.qdt.common.api.exceptions.DispatcherException;
 import com.al.qdt.cqrs.domain.AbstractEntity;
 import com.al.qdt.cqrs.infrastructure.QueryDispatcher;
 import com.al.qdt.cqrs.queries.BaseQuery;
