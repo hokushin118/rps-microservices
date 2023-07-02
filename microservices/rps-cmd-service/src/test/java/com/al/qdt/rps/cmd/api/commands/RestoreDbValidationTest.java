@@ -1,7 +1,7 @@
 package com.al.qdt.rps.cmd.api.commands;
 
-import com.al.qdt.rps.cmd.base.ValidationBaseTest;
 import com.al.qdt.rps.cmd.base.CommandTests;
+import com.al.qdt.rps.cmd.base.ValidationBaseTest;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -11,7 +11,8 @@ import org.junit.jupiter.params.provider.NullSource;
 
 import java.util.UUID;
 
-import static com.al.qdt.common.helpers.Constants.TEST_UUID;
+import static com.al.qdt.common.infrastructure.helpers.Constants.TEST_UUID;
+import static com.al.qdt.common.infrastructure.helpers.Constants.USER_ONE_ID;
 import static com.al.qdt.cqrs.messages.Message.ID_MUST_NOT_BE_NULL;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -23,7 +24,7 @@ class RestoreDbValidationTest extends ValidationBaseTest implements CommandTests
 
     @BeforeEach
     void setUp() {
-        this.expectedRestoreDbCommand = createRestoreDbCommand(TEST_UUID);
+        this.expectedRestoreDbCommand = createRestoreDbCommand(TEST_UUID, USER_ONE_ID);
     }
 
     @AfterEach
@@ -44,7 +45,7 @@ class RestoreDbValidationTest extends ValidationBaseTest implements CommandTests
     @Test
     @DisplayName("Testing RestoreDbCommand equals() and hashCode() methods")
     void equalsAndHashCodeTest() {
-        final var actualRestoreDbCommand = createRestoreDbCommand(TEST_UUID);
+        final var actualRestoreDbCommand = createRestoreDbCommand(TEST_UUID, USER_ONE_ID);
 
         assertTrue(this.expectedRestoreDbCommand.equals(actualRestoreDbCommand) &&
                 actualRestoreDbCommand.equals(this.expectedRestoreDbCommand));
@@ -63,7 +64,7 @@ class RestoreDbValidationTest extends ValidationBaseTest implements CommandTests
     @NullSource
     @DisplayName("Testing identification validating constrains with wrong parameters")
     void identificationIsNull(UUID id) {
-        final var restoreDbCommand = createRestoreDbCommand(id);
+        final var restoreDbCommand = createRestoreDbCommand(id, USER_ONE_ID);
         final var constraintViolations = validator.validate(restoreDbCommand);
 
         assertEquals(SINGLE_VIOLATION, constraintViolations.size());

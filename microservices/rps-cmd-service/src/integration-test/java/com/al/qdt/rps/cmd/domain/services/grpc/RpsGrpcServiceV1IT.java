@@ -7,7 +7,6 @@ import com.al.qdt.rps.grpc.v1.common.Hand;
 import com.al.qdt.rps.grpc.v1.services.GameResponse;
 import com.al.qdt.rps.grpc.v1.services.RpsCmdServiceGrpc;
 import io.grpc.internal.testing.StreamRecorder;
-import lombok.SneakyThrows;
 import net.devh.boot.grpc.client.inject.GrpcClient;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
@@ -70,7 +69,7 @@ class RpsGrpcServiceV1IT extends AbstractIntegrationTests implements ProtoTests 
             final var gameResponse = rpsCmdServiceBlockingStub.play(gameRequest);
 
             assertNotNull(gameResponse);
-            assertEquals(gameRequest.getGame().getHand().name(), gameResponse.getResult().getUserChoice());
+            assertEquals(gameRequest.getHand().name(), gameResponse.getResult().getUserChoice());
         }
 
         @ParameterizedTest
@@ -91,18 +90,17 @@ class RpsGrpcServiceV1IT extends AbstractIntegrationTests implements ProtoTests 
 
             assertNotNull(gameResponseServerStreaming);
             gameResponseServerStreaming.forEachRemaining(item ->
-                    assertEquals(gameRequest.getGame().getHand().name(), item.getResult().getUserChoice())
+                    assertEquals(gameRequest.getHand().name(), item.getResult().getUserChoice())
             );
         }
 
-        @SneakyThrows({InterruptedException.class, ExecutionException.class})
         @ParameterizedTest
         @EnumSource(value = Hand.class,
                 names = {"UNRECOGNIZED", "EMPTY"},
                 mode = EnumSource.Mode.EXCLUDE
         )
         @DisplayName("Testing unary play() method with async stub")
-        void playWithAsyncStubTest(Hand hand) {
+        void playWithAsyncStubTest(Hand hand) throws ExecutionException, InterruptedException {
             final var gameRequest = createGameRequest(hand);
             setupEnvironment(gameRequest);
             final StreamRecorder<GameResponse> streamRecorder = StreamRecorder.create();
@@ -114,17 +112,16 @@ class RpsGrpcServiceV1IT extends AbstractIntegrationTests implements ProtoTests 
             final var gameResponse = streamRecorder.firstValue().get();
 
             assertNotNull(gameResponse);
-            assertEquals(gameRequest.getGame().getHand().name(), gameResponse.getResult().getUserChoice());
+            assertEquals(gameRequest.getHand().name(), gameResponse.getResult().getUserChoice());
         }
 
-        @SneakyThrows({InterruptedException.class, ExecutionException.class})
         @ParameterizedTest
         @EnumSource(value = Hand.class,
                 names = {"UNRECOGNIZED", "EMPTY"},
                 mode = EnumSource.Mode.EXCLUDE
         )
         @DisplayName("Testing server-stream playServerStreaming() method with async stub")
-        void playServerStreamingWithAsyncStubTest(Hand hand) {
+        void playServerStreamingWithAsyncStubTest(Hand hand) throws ExecutionException, InterruptedException {
             final var gameRequest = createGameRequest(hand);
             setupEnvironment(gameRequest);
             final StreamRecorder<GameResponse> streamRecorder = StreamRecorder.create();
@@ -136,17 +133,16 @@ class RpsGrpcServiceV1IT extends AbstractIntegrationTests implements ProtoTests 
             final var gameResponse = streamRecorder.firstValue().get();
 
             assertNotNull(gameResponse);
-            assertEquals(gameRequest.getGame().getHand().name(), gameResponse.getResult().getUserChoice());
+            assertEquals(gameRequest.getHand().name(), gameResponse.getResult().getUserChoice());
         }
 
-        @SneakyThrows({InterruptedException.class, ExecutionException.class})
         @ParameterizedTest
         @EnumSource(value = Hand.class,
                 names = {"UNRECOGNIZED", "EMPTY"},
                 mode = EnumSource.Mode.EXCLUDE
         )
         @DisplayName("Testing unary play() method with future stub")
-        void playWithFutureStubTest(Hand hand) {
+        void playWithFutureStubTest(Hand hand) throws ExecutionException, InterruptedException {
             final var gameRequest = createGameRequest(hand);
             final var gameResponseListenableFuture =
                     rpsCmdServiceFutureStub.play(gameRequest);
@@ -155,7 +151,7 @@ class RpsGrpcServiceV1IT extends AbstractIntegrationTests implements ProtoTests 
             final var gameResponse = gameResponseListenableFuture.get();
 
             assertNotNull(gameResponse);
-            assertEquals(gameRequest.getGame().getHand().name(), gameResponse.getResult().getUserChoice());
+            assertEquals(gameRequest.getHand().name(), gameResponse.getResult().getUserChoice());
         }
     }
 }

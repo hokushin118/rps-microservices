@@ -1,0 +1,62 @@
+{
+  "realm" : "rps-dev",
+  "users" : [ {
+    "id" : "4243d65c-4feb-47a5-8571-89e3f2615bdf",
+    "createdTimestamp" : 1687460622727,
+    "username" : "admin",
+    "enabled" : true,
+    "totp" : false,
+    "emailVerified" : true,
+    "firstName" : "Admin",
+    "lastName" : "User",
+    "email" : "admin@rps.internal",
+    "credentials" : [ {
+      "id" : "28e1d95c-b82e-4b59-95e4-d3c95db57a8f",
+      "type" : "password",
+      "createdDate" : 1687465284563,
+      "secretData" : "{\"value\":\"J+g17ftmFuAOb4ZSLgCbijVFDqNn7oabV/NxH6ATA6nHI5fFHbj1jZGGz+w4i2u5CXqfmlKqHphjid31cn8oAA==\",\"salt\":\"knPMPtErxW22IvOp+/dSwQ==\",\"additionalParameters\":{}}",
+      "credentialData" : "{\"hashIterations\":27500,\"algorithm\":\"pbkdf2-sha256\",\"additionalParameters\":{}}"
+    } ],
+    "disableableCredentialTypes" : [ ],
+    "requiredActions" : [ ],
+    "realmRoles" : [ "ROLE_ADMIN", "default-roles-rps-dev", "ROLE_USER" ],
+    "notBefore" : 0,
+    "groups" : [ ]
+  }, {
+    "id" : "9fe214ce-0e93-49e6-865c-1c40a77c7c6e",
+    "createdTimestamp" : 1687461760534,
+    "username" : "service-account-oauth2-proxy",
+    "enabled" : true,
+    "totp" : false,
+    "emailVerified" : false,
+    "serviceAccountClientId" : "oauth2-proxy",
+    "credentials" : [ ],
+    "disableableCredentialTypes" : [ ],
+    "requiredActions" : [ ],
+    "realmRoles" : [ "default-roles-rps-dev" ],
+    "notBefore" : 0,
+    "groups" : [ ]
+  }, {
+    "id" : "39dce470-5e57-4614-9739-6776cb8eaa81",
+    "createdTimestamp" : 1687460693460,
+    "username" : "test",
+    "enabled" : true,
+    "totp" : false,
+    "emailVerified" : true,
+    "firstName" : "Test",
+    "lastName" : "User",
+    "email" : "test@rps.internal",
+    "credentials" : [ {
+      "id" : "a23e145b-05a2-4a6b-959b-83c602fdf9b3",
+      "type" : "password",
+      "createdDate" : 1687460705399,
+      "secretData" : "{\"value\":\"4iqFt8azSo7B9w90gtYzse44Cv3VA6LLz4V6Ei8Yx6uG7RwUDqoal52qx5cGUPXSUCCBHQ6S8Y3EmvIMOsCSfw==\",\"salt\":\"yHJ6jR49/5xcpMb0OfxMsQ==\",\"additionalParameters\":{}}",
+      "credentialData" : "{\"hashIterations\":27500,\"algorithm\":\"pbkdf2-sha256\",\"additionalParameters\":{}}"
+    } ],
+    "disableableCredentialTypes" : [ ],
+    "requiredActions" : [ "UPDATE_PASSWORD" ],
+    "realmRoles" : [ "default-roles-rps-dev", "ROLE_USER" ],
+    "notBefore" : 0,
+    "groups" : [ ]
+  } ]
+}

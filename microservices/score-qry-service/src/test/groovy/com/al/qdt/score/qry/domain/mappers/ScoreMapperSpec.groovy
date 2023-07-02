@@ -6,8 +6,9 @@ import spock.lang.Specification
 import spock.lang.Subject
 import spock.lang.Title
 
-import static com.al.qdt.common.enums.Player.USER
-import static com.al.qdt.common.helpers.Constants.TEST_UUID
+import static com.al.qdt.common.domain.enums.Player.USER
+import static com.al.qdt.common.infrastructure.helpers.Constants.TEST_UUID
+import static com.al.qdt.common.infrastructure.helpers.Constants.USER_ONE_ID
 
 @Title("Testing of the ScoreMapper class")
 class ScoreMapperSpec extends Specification implements EventTests {
@@ -25,6 +26,7 @@ class ScoreMapperSpec extends Specification implements EventTests {
         then: 'Mapped successfully'
         assert score
         assert score.id == TEST_UUID && score.id == scoresAddedEvent.id
+        assert score.userId == USER_ONE_ID && score.userId == scoresAddedEvent.userId
         assert score.winner == USER && score.winner == scoresAddedEvent.winner
     }
 }

@@ -1,6 +1,6 @@
 package com.al.qdt.rps.cmd.api.commands;
 
-import com.al.qdt.common.enums.Player;
+import com.al.qdt.common.domain.enums.Player;
 import com.al.qdt.cqrs.commands.BaseCommand;
 import lombok.AllArgsConstructor;
 import lombok.Value;

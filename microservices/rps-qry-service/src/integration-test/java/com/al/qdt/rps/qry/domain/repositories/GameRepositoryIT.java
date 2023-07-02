@@ -17,12 +17,12 @@ import org.springframework.context.annotation.Import;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.test.context.ActiveProfiles;
 
-import static com.al.qdt.common.enums.Hand.ROCK;
-import static com.al.qdt.common.enums.Hand.SCISSORS;
-import static com.al.qdt.common.helpers.Constants.TEST_UUID;
-import static com.al.qdt.common.helpers.Constants.TEST_UUID_TWO;
-import static com.al.qdt.common.helpers.Constants.USERNAME_ONE;
-import static com.al.qdt.common.helpers.Constants.USERNAME_TWO;
+import static com.al.qdt.common.domain.enums.Hand.ROCK;
+import static com.al.qdt.common.domain.enums.Hand.SCISSORS;
+import static com.al.qdt.common.infrastructure.helpers.Constants.TEST_UUID;
+import static com.al.qdt.common.infrastructure.helpers.Constants.TEST_UUID_TWO;
+import static com.al.qdt.common.infrastructure.helpers.Constants.USER_ONE_ID;
+import static com.al.qdt.common.infrastructure.helpers.Constants.USER_TWO_ID;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.empty;
 import static org.hamcrest.Matchers.hasSize;
@@ -49,7 +49,7 @@ class GameRepositoryIT implements EntityTests {
 
     @BeforeEach
     void setUp() {
-        this.game = createGame(TEST_UUID, USERNAME_ONE, ROCK);
+        this.game = createGame(TEST_UUID, USER_ONE_ID, ROCK);
         this.expectedGame = this.gameRepository.save(this.game);
 
         assertNotNull(this.expectedGame);
@@ -91,13 +91,13 @@ class GameRepositoryIT implements EntityTests {
     @Test
     @DisplayName("Testing findGameByUsername() method")
     void findGameByUsernameTest() {
-        final var actualGames = this.gameRepository.findGameByUsername(USERNAME_ONE);
+        final var actualGames = this.gameRepository.findByUserId(USER_ONE_ID);
 
         assertNotNull(actualGames);
         assertThat(actualGames, not(empty()));
         assertThat(actualGames, hasSize(1));
-        assertEquals(USERNAME_ONE, actualGames.get(0).getUsername());
-        assertEquals(this.expectedGame.getUsername(), actualGames.get(0).getUsername());
+        assertEquals(USER_ONE_ID, actualGames.get(0).getUserId());
+        assertEquals(this.expectedGame.getUserId(), actualGames.get(0).getUserId());
     }
 
     @Test
@@ -121,7 +121,7 @@ class GameRepositoryIT implements EntityTests {
     @Test
     @DisplayName("Testing save() method")
     void saveTest() {
-        final var newGame = createGame(TEST_UUID_TWO, USERNAME_TWO, SCISSORS);
+        final var newGame = createGame(TEST_UUID_TWO, USER_TWO_ID, SCISSORS);
         assertDoesNotThrow(() -> this.gameRepository.save(newGame));
 
         final var count = this.gameRepository.count();
@@ -138,8 +138,8 @@ class GameRepositoryIT implements EntityTests {
         assertNotNull(savedGame);
         assertEquals(TEST_UUID_TWO, savedGame.getId());
         assertEquals(newGame.getId(), savedGame.getId());
-        assertEquals(USERNAME_TWO, savedGame.getUsername());
-        assertEquals(newGame.getUsername(), savedGame.getUsername());
+        assertEquals(USER_TWO_ID, savedGame.getUserId());
+        assertEquals(newGame.getUserId(), savedGame.getUserId());
         assertEquals(SCISSORS, savedGame.getHand());
         assertEquals(newGame.getHand(), savedGame.getHand());
     }
@@ -147,7 +147,7 @@ class GameRepositoryIT implements EntityTests {
     @Test
     @DisplayName("Testing uniqueIdentity")
     void uniqueIdentityTest() {
-        final var gameWithSameId = createGame(TEST_UUID, USERNAME_ONE, ROCK);
+        final var gameWithSameId = createGame(TEST_UUID, USER_ONE_ID, ROCK);
 
         assertThrows(DataIntegrityViolationException.class, () -> this.gameRepository.save(gameWithSameId));
     }

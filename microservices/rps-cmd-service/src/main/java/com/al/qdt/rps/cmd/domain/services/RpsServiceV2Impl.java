@@ -3,10 +3,11 @@ package com.al.qdt.rps.cmd.domain.services;
 import com.al.qdt.cqrs.infrastructure.CommandDispatcher;
 import com.al.qdt.rps.cmd.api.commands.AddScoreCommand;
 import com.al.qdt.rps.cmd.api.commands.DeleteGameCommand;
-import com.al.qdt.rps.cmd.domain.services.base.RpsBaseService;
+import com.al.qdt.rps.cmd.api.commands.PlayGameCommand;
 import com.al.qdt.rps.cmd.domain.mappers.GameProtoMapper;
-import com.al.qdt.rps.grpc.v1.dto.GameDto;
+import com.al.qdt.rps.cmd.domain.services.base.RpsBaseService;
 import com.al.qdt.rps.grpc.v1.dto.GameResultDto;
+import com.al.qdt.rps.grpc.v1.services.GameRequest;
 import io.micrometer.core.instrument.MeterRegistry;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.scheduling.annotation.Async;
@@ -30,54 +31,28 @@ public class RpsServiceV2Impl extends RpsBaseService implements RpsServiceV2 {
     }
 
     @Override
-    public GameResultDto play(GameDto gameDto) {
-        final var id = UUID.randomUUID();
-        log.info("SERVICE: Playing game with id: {}", id.toString());
-        final var command = this.gameProtoMapper.fromDto(gameDto);
-        command.setId(id);
-        final var roundResult = this.play(command.getHand());
-        this.commandDispatcher.send(command);
-        final var winner = roundResult.getWinner();
-        final var addScoreCommand = AddScoreCommand.builder()
-                .winner(winner)
-                .build();
-        addScoreCommand.setId(id);
-        this.commandDispatcher.send(addScoreCommand);
-        super.updatePlayedGameMetrics();
-        return GameResultDto.newBuilder()
-                .setUserChoice(gameDto.getHand().name())
-                .setMachineChoice(roundResult.getMachineChoice().name())
-                .setResult(winner.name())
-                .build();
+    public GameResultDto play(GameRequest gameRequest, UUID userId) {
+        log.info("SERVICE: Playing game synchronously...");
+        return this.playRound(gameRequest, userId);
     }
 
     @Override
     @Async(ASYNC_TASK_EXECUTOR)
-    public CompletableFuture<GameResultDto> playAsync(GameDto gameDto) {
+    public CompletableFuture<GameResultDto> playAsync(GameRequest gameRequest, UUID userId) {
         log.info("SERVICE: Playing game asynchronously...");
-        return CompletableFuture.supplyAsync(() -> play(gameDto))
-                .whenComplete((result, ex) -> {
-                    if (ex != null) {
-                        log.error("An error occurred: {}", ex.getMessage());
-                    } else {
-                        log.info("The game has been played successfully...");
-                    }
-                });
+        return CompletableFuture.completedFuture(this.playRound(gameRequest, userId));
     }
 
     @Override
-    public void deleteById(UUID id) {
+    public void deleteById(UUID id, UUID userId) {
         log.info("SERVICE: Deleting game by id: {}.", id.toString());
-        this.commandDispatcher.send(DeleteGameCommand.builder()
-                .id(id)
-                .build());
-        super.updateDeleteGameMetrics();
+        this.deleteGameById(id, userId);
     }
 
     @Override
-    public CompletableFuture<Void> deleteByIdAsync(UUID id) {
+    public CompletableFuture<Void> deleteByIdAsync(UUID id, UUID userId) {
         log.info("SERVICE: Deleting game by id asynchronously...");
-        return CompletableFuture.runAsync(() -> deleteById(id))
+        return CompletableFuture.runAsync(() -> this.deleteGameById(id, userId))
                 .whenComplete((result, ex) -> {
                     if (ex != null) {
                         log.error("An error occurred: {}", ex.getMessage());
@@ -85,5 +60,54 @@ public class RpsServiceV2Impl extends RpsBaseService implements RpsServiceV2 {
                         log.info("The game has been deleted successfully...");
                     }
                 });
+    }
+
+    /**
+     * Plays game round.
+     *
+     * @param gameRequest game round user inputs
+     * @param userId      user id
+     * @return game result
+     */
+    private GameResultDto playRound(GameRequest gameRequest, UUID userId) {
+        final var id = UUID.randomUUID();
+        log.info("SERVICE: Playing game with id: {}", id.toString());
+        final var hand = com.al.qdt.common.domain.enums.Hand.valueOf(gameRequest.getHand().name());
+        final var command = PlayGameCommand.builder()
+                .id(id)
+                .userId(userId)
+                .hand(hand)
+                .build();
+        final var roundResult = playRound(hand);
+        this.commandDispatcher.send(command);
+        final var winner = roundResult.getWinner();
+        final var addScoreCommand = AddScoreCommand.builder()
+                .id(id)
+                .userId(userId)
+                .winner(winner)
+                .build();
+        addScoreCommand.setId(id);
+        this.commandDispatcher.send(addScoreCommand);
+        super.updatePlayedGameMetrics();
+        return GameResultDto.newBuilder()
+                .setUserChoice(gameRequest.getHand().name())
+                .setMachineChoice(roundResult.getMachineChoice().name())
+                .setResult(winner.name())
+                .build();
+    }
+
+    /**
+     * Deletes game by id.
+     *
+     * @param id     game id
+     * @param userId user id
+     */
+    private void deleteGameById(UUID id, UUID userId) {
+        log.info("SERVICE: Deleting game by id: {}.", id.toString());
+        this.commandDispatcher.send(DeleteGameCommand.builder()
+                .id(id)
+                .userId(userId)
+                .build());
+        super.updateDeleteGameMetrics();
     }
 }

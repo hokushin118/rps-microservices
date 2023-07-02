@@ -8,9 +8,9 @@ import java.time.OffsetDateTime;
 import java.util.Date;
 
 import static java.time.ZoneOffset.UTC;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @DisplayName("Testing OffsetDateTimeWriteConverter class")
 class OffsetDateTimeWriteConverterTest extends DateTimeConverterBaseTest {
@@ -23,7 +23,7 @@ class OffsetDateTimeWriteConverterTest extends DateTimeConverterBaseTest {
         final var actualDate = this.offsetDateTimeWriteConverter.convert(actualOffsetDateTime);
 
         assertNotNull(actualDate);
-        assertTrue(actualDate instanceof Date);
+        assertThat(actualDate).isInstanceOf(Date.class);
         assertEquals(MILLISECONDS_SINCE_JAN_1970, actualDate.getTime());
     }
 }

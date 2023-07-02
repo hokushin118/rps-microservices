@@ -30,6 +30,11 @@ data:
   kafka-broker-0-port: "9092"
   kafka-broker-1-port: "9092"
   kafka-broker-2-port: "9092"
+  keycloak-schema: http
+  keycloak-hostname: kc.internal
+  keycloak-port: "8080"
+  keycloak-realm: rps-dev
+  keycloak-client-id: oauth2-proxy
 
 ---
 # ConfigMap holds information about RPS Game Query microservice oauth2-proxy container configuration files

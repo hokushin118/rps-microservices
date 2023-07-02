@@ -1,6 +1,6 @@
 package com.al.qdt.rps.qry.domain.entities;
 
-import com.al.qdt.common.enums.Hand;
+import com.al.qdt.common.domain.enums.Hand;
 import com.al.qdt.rps.qry.base.EntityTests;
 import com.al.qdt.rps.qry.base.ValidationBaseTest;
 import org.junit.jupiter.api.AfterEach;
@@ -10,17 +10,16 @@ import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.EnumSource;
-import org.junit.jupiter.params.provider.NullAndEmptySource;
 import org.junit.jupiter.params.provider.NullSource;
 
 import java.util.UUID;
 
-import static com.al.qdt.common.enums.Hand.ROCK;
-import static com.al.qdt.common.helpers.Constants.TEST_UUID;
-import static com.al.qdt.common.helpers.Constants.USERNAME_ONE;
+import static com.al.qdt.common.domain.enums.Hand.ROCK;
+import static com.al.qdt.common.infrastructure.helpers.Constants.TEST_UUID;
+import static com.al.qdt.common.infrastructure.helpers.Constants.USER_ONE_ID;
 import static com.al.qdt.cqrs.messages.Message.ID_MUST_NOT_BE_NULL;
 import static com.al.qdt.rps.qry.domain.entities.Game.HAND_MUST_NOT_BE_NULL;
-import static com.al.qdt.rps.qry.domain.entities.Game.USERNAME_MUST_NOT_BE_BLANK;
+import static com.al.qdt.rps.qry.domain.entities.Game.USER_ID_MUST_NOT_BE_NULL;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
@@ -32,7 +31,7 @@ class GameTest extends ValidationBaseTest implements EntityTests {
 
     @BeforeEach
     void setUp() {
-        this.expectedGame = createGame(TEST_UUID, USERNAME_ONE, ROCK);
+        this.expectedGame = createGame(TEST_UUID, USER_ONE_ID, ROCK);
     }
 
     @AfterEach
@@ -48,7 +47,7 @@ class GameTest extends ValidationBaseTest implements EntityTests {
                         () -> assertEquals(TEST_UUID, this.expectedGame.getId(), "Id didn't match!")
                 ),
                 () -> assertAll("Game properties",
-                        () -> assertEquals(USERNAME_ONE, this.expectedGame.getUsername(), "Username didn't match!"),
+                        () -> assertEquals(USER_ONE_ID, this.expectedGame.getUserId(), "User id didn't match!"),
                         () -> assertEquals(ROCK, this.expectedGame.getHand(), "Hand didn't match!")
                 )
         );
@@ -66,7 +65,7 @@ class GameTest extends ValidationBaseTest implements EntityTests {
     @Test
     @DisplayName("Testing equals() and hash() methods with identical UUIDs")
     void equalsIdenticalUUIDTest() {
-        final var actualGame = createGame(TEST_UUID, USERNAME_ONE, ROCK);
+        final var actualGame = createGame(TEST_UUID, USER_ONE_ID, ROCK);
 
         assertEquals(actualGame, this.expectedGame);
         assertEquals(this.expectedGame.hashCode(), actualGame.hashCode());
@@ -103,7 +102,7 @@ class GameTest extends ValidationBaseTest implements EntityTests {
     @NullSource
     @DisplayName("Testing identification validating constrains with wrong parameters")
     void identificationIsNull(UUID id) {
-        final var actualGame = createGame(id, USERNAME_ONE, ROCK);
+        final var actualGame = createGame(id, USER_ONE_ID, ROCK);
         final var constraintViolations = validator.validate(actualGame);
 
         assertEquals(SINGLE_VIOLATION, constraintViolations.size());
@@ -119,21 +118,21 @@ class GameTest extends ValidationBaseTest implements EntityTests {
     }
 
     @ParameterizedTest
-    @NullAndEmptySource
+    @NullSource
     @DisplayName("Testing username validating constrains with wrong parameters")
-    void usernameIsBlank(String username) {
-        final var actualGame = createGame(TEST_UUID, username, ROCK);
+    void usernameIsBlank(UUID userId) {
+        final var actualGame = createGame(TEST_UUID, userId, ROCK);
         final var constraintViolations = validator.validate(actualGame);
 
         assertEquals(SINGLE_VIOLATION, constraintViolations.size());
-        assertEquals(USERNAME_MUST_NOT_BE_BLANK, constraintViolations.iterator().next().getMessage());
+        assertEquals(USER_ID_MUST_NOT_BE_NULL, constraintViolations.iterator().next().getMessage());
     }
 
     @ParameterizedTest
     @EnumSource(Hand.class)
     @DisplayName("Testing hand validating constrains with right parameters")
     void handIsValid(Hand hand) {
-        final var actualGame = createGame(TEST_UUID, USERNAME_ONE, hand);
+        final var actualGame = createGame(TEST_UUID, USER_ONE_ID, hand);
         final var constraintViolations = validator.validate(actualGame);
 
         assertEquals(ZERO_VIOLATIONS, constraintViolations.size());
@@ -143,7 +142,7 @@ class GameTest extends ValidationBaseTest implements EntityTests {
     @NullSource
     @DisplayName("Testing hand validating constrains with wrong parameters")
     void handIsNull(Hand hand) {
-        final var actualGame = createGame(TEST_UUID, USERNAME_ONE, hand);
+        final var actualGame = createGame(TEST_UUID, USER_ONE_ID, hand);
         final var constraintViolations = validator.validate(actualGame);
 
         assertEquals(SINGLE_VIOLATION, constraintViolations.size());

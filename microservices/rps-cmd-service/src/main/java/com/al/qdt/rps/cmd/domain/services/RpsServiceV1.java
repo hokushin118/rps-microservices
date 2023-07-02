@@ -1,7 +1,7 @@
 package com.al.qdt.rps.cmd.domain.services;
 
-import com.al.qdt.common.api.dto.GameDto;
 import com.al.qdt.common.api.dto.GameResponseDto;
+import com.al.qdt.common.domain.enums.Hand;
 
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
@@ -14,30 +14,34 @@ public interface RpsServiceV1 {
     /**
      * Plays game.
      *
-     * @param gameDto game round user inputs
+     * @param hand   game round user inputs
+     * @param userId user id
      * @return game result
      */
-    GameResponseDto play(GameDto gameDto);
+    GameResponseDto play(Hand hand, UUID userId);
 
     /**
      * Plays game asynchronously.
      *
-     * @param gameDto game round user inputs
+     * @param hand   game round user inputs
+     * @param userId user id
      * @return game result
      */
-    CompletableFuture<GameResponseDto> playAsync(GameDto gameDto);
+    CompletableFuture<GameResponseDto> playAsync(Hand hand, UUID userId);
 
     /**
      * Deletes game by id.
      *
-     * @param id game id
+     * @param id     game id
+     * @param userId user id
      */
-    void deleteById(UUID id);
+    void deleteById(UUID id, UUID userId);
 
     /**
      * Deletes game by id asynchronously.
      *
-     * @param id game id
+     * @param id     game id
+     * @param userId user id
      */
-    CompletableFuture<Void> deleteByIdAsync(UUID id);
+    CompletableFuture<Void> deleteByIdAsync(UUID id, UUID userId);
 }

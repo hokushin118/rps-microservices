@@ -3,6 +3,7 @@ package com.al.qdt.score.qry.base
 import com.al.qdt.score.qry.ScoreQryServiceApp
 import com.al.qdt.score.qry.domain.entities.Score
 import com.al.qdt.score.qry.domain.repositories.ScoreRepository
+import com.al.qdt.score.qry.domain.services.security.AuthenticationService
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Qualifier
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc
@@ -18,8 +19,9 @@ import spock.lang.Stepwise
 
 import java.util.concurrent.ConcurrentHashMap
 
-import static com.al.qdt.common.enums.Player.USER
-import static com.al.qdt.common.helpers.Constants.TEST_UUID
+import static com.al.qdt.common.domain.enums.Player.USER
+import static com.al.qdt.common.infrastructure.helpers.Constants.TEST_UUID
+import static com.al.qdt.common.infrastructure.helpers.Constants.USER_ONE_ID
 import static java.util.Optional.ofNullable
 
 /**
@@ -50,12 +52,21 @@ class AbstractIntegrationTests extends Specification implements EntityTests {
     @Qualifier("transactionManager")
     PlatformTransactionManager transactionManager
 
+    @Autowired
+    AuthenticationService authenticationService
+
     Score expectedScore
 
     // Run before every feature method
     def setup() {
-        expectedScore = createScore TEST_UUID, USER
+        expectedScore = createScore TEST_UUID, USER_ONE_ID, USER
         scoreRepository.save expectedScore
+
+        when: 'Calling the auth service'
+        authenticationService.getUserId()
+
+        then: 'Return test user id'
+        USER_ONE_ID
     }
 
     // Run after every feature method

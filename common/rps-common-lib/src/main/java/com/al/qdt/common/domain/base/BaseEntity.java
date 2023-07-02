@@ -24,10 +24,10 @@ public abstract class BaseEntity extends AbstractEntity {
 
     @NotNull(message = ID_MUST_NOT_BE_NULL)
     @Id
-    @Column(name = "id", columnDefinition = "varbinary(16)", nullable = false, updatable = false)
+    @Column(name = "ID", columnDefinition = "VARBINARY(16)", nullable = false, updatable = false)
     protected UUID id;
 
     @Version
-    @Column(name = "version")
+    @Column(name = "VERSION")
     private Integer version;
 }

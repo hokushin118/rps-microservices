@@ -8,6 +8,7 @@ import com.al.qdt.cqrs.infrastructure.CommandDispatcher
 import com.al.qdt.cqrs.infrastructure.EventStore
 import com.al.qdt.cqrs.producers.EventProducer
 import com.al.qdt.score.cmd.domain.aggregates.ScoreAggregate
+import com.al.qdt.score.cmd.domain.services.security.AuthenticationService
 import com.al.qdt.score.cmd.infrastructure.handlers.CommandHandler
 import com.al.qdt.score.cmd.infrastructure.handlers.ScoreCommandHandler
 import org.springframework.boot.autoconfigure.mongo.MongoProperties
@@ -49,6 +50,9 @@ class TestConfig {
 
     @MockBean
     BuildProperties buildProperties;
+
+    @MockBean
+    AuthenticationService authenticationService;
 
     @Bean
     EventSourcingHandler<ScoreAggregate> eventSourcingHandler() {

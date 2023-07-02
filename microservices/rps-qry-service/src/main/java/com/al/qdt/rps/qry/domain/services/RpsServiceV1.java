@@ -1,5 +1,6 @@
 package com.al.qdt.rps.qry.domain.services;
 
+import com.al.qdt.common.api.dto.GameAdminDto;
 import com.al.qdt.common.api.dto.GameDto;
 
 import java.util.UUID;
@@ -7,25 +8,33 @@ import java.util.UUID;
 public interface RpsServiceV1 {
 
     /**
-     * Returns all games.
+     * Returns all games for admin users.
      *
      * @return collection of games
      */
-    Iterable<GameDto> all();
+    Iterable<GameAdminDto> all();
 
     /**
-     * Finds game by id.
+     * Find game by id for admin users.
      *
      * @param id game id
      * @return found game
      */
-    GameDto findById(UUID id);
+    GameAdminDto findById(UUID id);
 
     /**
-     * Finds games by username.
+     * Find games by user id for admin users.
      *
-     * @param username username
+     * @param userId user id
      * @return found games
      */
-    Iterable<GameDto> findByUsername(String username);
+    Iterable<GameAdminDto> findByUserId(UUID userId);
+
+    /**
+     * Find my games.
+     *
+     * @param userId user id
+     * @return found games
+     */
+    Iterable<GameDto> findMyGames(UUID userId);
 }

@@ -13,6 +13,8 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 @ToString
 @ConfigurationProperties(prefix = "api")
 public class RpsApiProperties {
+    private String hostname; // host name
+
     private String licenseName; // license name
 
     private String licenseUrl; // license url

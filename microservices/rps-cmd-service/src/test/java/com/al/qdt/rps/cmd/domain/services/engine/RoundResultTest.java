@@ -6,8 +6,8 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
-import static com.al.qdt.common.enums.Hand.ROCK;
-import static com.al.qdt.common.enums.Player.USER;
+import static com.al.qdt.common.domain.enums.Hand.ROCK;
+import static com.al.qdt.common.domain.enums.Player.USER;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;

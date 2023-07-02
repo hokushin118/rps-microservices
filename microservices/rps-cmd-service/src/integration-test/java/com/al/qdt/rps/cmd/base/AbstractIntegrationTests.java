@@ -1,15 +1,17 @@
 package com.al.qdt.rps.cmd.base;
 
-import com.al.qdt.common.events.rps.GamePlayedEvent;
+import com.al.qdt.common.infrastructure.events.rps.GamePlayedEvent;
 import com.al.qdt.cqrs.events.BaseEvent;
 import com.al.qdt.cqrs.infrastructure.EventStore;
 import com.al.qdt.rps.cmd.RpsCmdServiceApp;
 import com.al.qdt.rps.cmd.api.commands.PlayGameCommand;
+import com.al.qdt.rps.cmd.domain.services.security.AuthenticationService;
 import com.al.qdt.rps.cmd.infrastructure.config.GrpcInProcessConfig;
 import com.al.qdt.rps.cmd.infrastructure.config.TestConfig;
 import com.al.qdt.rps.grpc.v1.services.GameRequest;
 import io.grpc.Channel;
 import net.devh.boot.grpc.client.inject.GrpcClient;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.TestMethodOrder;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,7 +26,8 @@ import javax.annotation.PostConstruct;
 import java.util.List;
 import java.util.UUID;
 
-import static com.al.qdt.common.helpers.Constants.TEST_UUID;
+import static com.al.qdt.common.infrastructure.helpers.Constants.TEST_UUID;
+import static com.al.qdt.common.infrastructure.helpers.Constants.USER_ONE_ID;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
@@ -56,6 +59,9 @@ public abstract class AbstractIntegrationTests {
     @Autowired
     protected ApplicationContext applicationContext;
 
+    @Autowired
+    AuthenticationService authenticationService;
+
     // a gRPC channel that provides a connection to a gRPC server on a specified host and port
     @GrpcClient("${grpc.server.inProcessName}")
     protected Channel channel;
@@ -66,15 +72,20 @@ public abstract class AbstractIntegrationTests {
         assertNotNull(this.channel);
     }
 
+    @BeforeEach
+    void setUp() {
+        when(this.authenticationService.getUserId()).thenReturn(UUID.randomUUID());
+    }
+
     protected void setupEnvironment(GameRequest gameRequest) {
         final var playGameCommand = PlayGameCommand.builder()
                 .id(TEST_UUID)
-                .username(gameRequest.getGame().getUsername())
-                .hand(com.al.qdt.common.enums.Hand.valueOf(gameRequest.getGame().getHand().name()))
+                .userId(USER_ONE_ID)
+                .hand(com.al.qdt.common.domain.enums.Hand.valueOf(gameRequest.getHand().name()))
                 .build();
         final var gamePlayedEvent = GamePlayedEvent.builder()
                 .id(playGameCommand.getId())
-                .username(playGameCommand.getUsername())
+                .userId(playGameCommand.getUserId())
                 .hand(playGameCommand.getHand())
                 .build();
 

@@ -1,7 +1,7 @@
 package com.al.qdt.rps.cmd.domain.services;
 
-import com.al.qdt.common.enums.Hand;
-import com.al.qdt.common.enums.Player;
+import com.al.qdt.common.domain.enums.Hand;
+import com.al.qdt.common.domain.enums.Player;
 
 /**
  * This interface describes a Rock Paper Scissor game.

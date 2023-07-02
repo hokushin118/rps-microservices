@@ -1,7 +1,7 @@
 package com.al.qdt.rps.cmd.domain.services.base;
 
-import com.al.qdt.common.enums.Hand;
-import com.al.qdt.common.enums.Player;
+import com.al.qdt.common.domain.enums.Hand;
+import com.al.qdt.common.domain.enums.Player;
 import com.al.qdt.rps.cmd.domain.services.GameService;
 import com.al.qdt.rps.cmd.domain.services.engine.RoundResult;
 import io.micrometer.core.instrument.Counter;
@@ -11,8 +11,8 @@ import lombok.extern.slf4j.Slf4j;
 
 import javax.annotation.PostConstruct;
 
-import static com.al.qdt.common.enums.RpsMetrics.GAME_DELETED_COUNT_METRIC;
-import static com.al.qdt.common.enums.RpsMetrics.GAME_PLAYED_COUNT_METRIC;
+import static com.al.qdt.common.domain.enums.RpsMetrics.GAME_DELETED_COUNT_METRIC;
+import static com.al.qdt.common.domain.enums.RpsMetrics.GAME_PLAYED_COUNT_METRIC;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -29,7 +29,7 @@ public abstract class RpsBaseService {
         this.deletedGamesCounter = this.meterRegistry.counter(GAME_DELETED_COUNT_METRIC.name()); // initialize
     }
 
-    protected RoundResult play(Hand userChoice) {
+    protected RoundResult playRound(Hand userChoice) {
         this.gameService.pickUserChoice(userChoice);
         final var machineChoice = this.gameService.pickMachineChoice();
         final var winner = this.gameService.calculateResult();

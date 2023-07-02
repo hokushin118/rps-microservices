@@ -11,7 +11,7 @@ import org.junit.jupiter.params.provider.NullSource;
 
 import java.util.UUID;
 
-import static com.al.qdt.common.helpers.Constants.TEST_UUID;
+import static com.al.qdt.common.infrastructure.helpers.Constants.TEST_UUID;
 import static com.al.qdt.cqrs.messages.Message.ID_MUST_NOT_BE_NULL;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;

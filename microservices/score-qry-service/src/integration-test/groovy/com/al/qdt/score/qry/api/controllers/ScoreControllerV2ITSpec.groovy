@@ -3,13 +3,16 @@ package com.al.qdt.score.qry.api.controllers
 import com.al.qdt.score.qry.base.AbstractIntegrationTests
 import com.al.qdt.score.qry.base.EntityTests
 import com.al.qdt.score.qry.base.MvcHelper
+import org.springframework.security.oauth2.core.oidc.StandardClaimNames
 import spock.lang.Title
 
+import static com.al.qdt.common.infrastructure.helpers.Constants.TEST_USER
+import static com.al.qdt.common.infrastructure.helpers.Constants.TEST_UUID
 import static com.al.qdt.rps.grpc.v1.common.Player.USER
-import static com.al.qdt.common.helpers.Constants.TEST_UUID
 import static java.nio.charset.StandardCharsets.UTF_8
 import static org.springframework.http.MediaType.APPLICATION_JSON
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.jwt
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.header
@@ -20,7 +23,8 @@ class ScoreControllerV2ITSpec extends AbstractIntegrationTests implements Entity
 
     def 'Testing of the all() method'() {
         when: 'Calling the api'
-        def result = mockMvc.perform(get("/v2/scores")
+        def result = mockMvc.perform(get("/v2/admin/scores")
+                .with(jwt().jwt(jwt -> jwt.claim(StandardClaimNames.PREFERRED_USERNAME, TEST_USER)))
                 .contentType(APPLICATION_JSON)
                 .accept(APPLICATION_JSON_VALUE)
                 .characterEncoding(UTF_8))
@@ -36,13 +40,16 @@ class ScoreControllerV2ITSpec extends AbstractIntegrationTests implements Entity
         result?.andExpect jsonPath('$.scores').exists()
         result?.andExpect jsonPath('$.scores[0].id').exists()
         result?.andExpect jsonPath('$.scores[0].id').value(expectedScore.id.toString())
+        result?.andExpect jsonPath('$.scores[0].user_id').exists()
+        result?.andExpect jsonPath('$.scores[0].user_id').value(expectedScore.userId.toString())
         result?.andExpect jsonPath('$.scores[0].winner').exists()
         result?.andExpect jsonPath('$.scores[0].winner').value(expectedScore.winner.name())
     }
 
     def 'Testing of the findById() method'() {
         when: 'Calling the api'
-        def result = mockMvc.perform(get("/v2/scores/{id}", TEST_UUID)
+        def result = mockMvc.perform(get("/v2/admin/scores/{id}", TEST_UUID)
+                .with(jwt().jwt(jwt -> jwt.claim(StandardClaimNames.PREFERRED_USERNAME, TEST_USER)))
                 .contentType(APPLICATION_JSON)
                 .accept(APPLICATION_JSON_VALUE)
                 .characterEncoding(UTF_8))
@@ -57,13 +64,16 @@ class ScoreControllerV2ITSpec extends AbstractIntegrationTests implements Entity
         and: 'Response validation'
         result?.andExpect jsonPath('$.id').exists()
         result?.andExpect jsonPath('$.id').value(expectedScore.id.toString())
+        result?.andExpect jsonPath('$.user_id').exists()
+        result?.andExpect jsonPath('$.user_id').value(expectedScore.userId.toString())
         result?.andExpect jsonPath('$.winner').exists()
         result?.andExpect jsonPath('$.winner').value(expectedScore.winner.name())
     }
 
-    def 'Testing of the findByWinner() method'() {
+    def 'Testing of the findMyScores() method'() {
         when: 'Calling the api'
-        def result = mockMvc.perform(get("/v2/scores/users/{winner}", USER)
+        def result = mockMvc.perform(get("/v2/scores", USER)
+                .with(jwt().jwt(jwt -> jwt.claim(StandardClaimNames.PREFERRED_USERNAME, TEST_USER)))
                 .contentType(APPLICATION_JSON)
                 .accept(APPLICATION_JSON_VALUE)
                 .characterEncoding(UTF_8))

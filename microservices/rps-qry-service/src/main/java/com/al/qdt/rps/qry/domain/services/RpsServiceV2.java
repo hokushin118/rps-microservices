@@ -1,33 +1,42 @@
 package com.al.qdt.rps.qry.domain.services;
 
+import com.al.qdt.rps.grpc.v1.dto.GameAdminDto;
 import com.al.qdt.rps.grpc.v1.dto.GameDto;
+import com.al.qdt.rps.grpc.v1.services.ListOfGamesAdminResponse;
 import com.al.qdt.rps.grpc.v1.services.ListOfGamesResponse;
-import com.google.protobuf.StringValue;
 
 import java.util.UUID;
 
 public interface RpsServiceV2 {
 
     /**
-     * Returns all games.
+     * Returns all games for admin users.
      *
      * @return collection of games
      */
-    ListOfGamesResponse all();
+    ListOfGamesAdminResponse all();
 
     /**
-     * Finds game by id.
+     * Find game by id for admin users.
      *
      * @param id game id
      * @return found game
      */
-    GameDto findById(UUID id);
+    GameAdminDto findById(UUID id);
 
     /**
-     * Finds games by username.
+     * Find games by user id for admin users.
      *
-     * @param username username
+     * @param userId user id
      * @return found games
      */
-    ListOfGamesResponse findByUsername(StringValue username);
+    ListOfGamesAdminResponse findByUserId(UUID userId);
+
+    /**
+     * Find my games.
+     *
+     * @param userId user id
+     * @return found games
+     */
+    ListOfGamesResponse findMyGames(UUID userId);
 }

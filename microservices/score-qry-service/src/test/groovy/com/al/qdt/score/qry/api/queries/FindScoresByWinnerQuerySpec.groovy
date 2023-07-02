@@ -7,7 +7,7 @@ import spock.lang.Unroll
 
 import javax.validation.ConstraintViolation
 
-import static com.al.qdt.common.helpers.Constants.USERNAME_ONE
+import static com.al.qdt.common.infrastructure.helpers.Constants.TEST_WINNER
 import static com.al.qdt.score.qry.api.queries.FindScoresByWinnerQuery.WINNER_MUST_NOT_BE_BLANK
 
 @Title("Testing FindScoresByWinnerQuery class")
@@ -18,7 +18,7 @@ class FindScoresByWinnerQuerySpec extends ValidationBaseTest {
 
     // Run before every feature method
     def setup() {
-        expectedFindScoresByWinnerQuery = new FindScoresByWinnerQuery(USERNAME_ONE)
+        expectedFindScoresByWinnerQuery = new FindScoresByWinnerQuery(TEST_WINNER)
     }
 
     // Run after every feature method
@@ -28,12 +28,12 @@ class FindScoresByWinnerQuerySpec extends ValidationBaseTest {
 
     def 'Testing FindScoresByWinnerQuery properties'() {
         expect:
-        assert expectedFindScoresByWinnerQuery.winner == USERNAME_ONE: "Winner didn't match!"
+        assert expectedFindScoresByWinnerQuery.winner == TEST_WINNER: "Winner didn't match!"
     }
 
     def 'Testing FindScoresByWinnerQuery equals() and hashCode() methods'() {
         given: 'Setup test data'
-        def actualFindScoresByWinnerQuery = new FindScoresByWinnerQuery(USERNAME_ONE)
+        def actualFindScoresByWinnerQuery = new FindScoresByWinnerQuery(TEST_WINNER)
 
         expect:
         assert expectedFindScoresByWinnerQuery == actualFindScoresByWinnerQuery &&
@@ -44,7 +44,7 @@ class FindScoresByWinnerQuerySpec extends ValidationBaseTest {
     }
 
     @Unroll
-    def 'Testing username validating constrains with right parameters = #winner'(String winner) {
+    def 'Testing winner validating constrains with right parameters = #winner'(String winner) {
         given: 'Setup test data'
         def findScoresByWinnerQuery = new FindScoresByWinnerQuery(winner)
 
@@ -56,11 +56,11 @@ class FindScoresByWinnerQuerySpec extends ValidationBaseTest {
 
         where:
         winner       | _
-        USERNAME_ONE | _
+        TEST_WINNER  | _
     }
 
     @Unroll
-    def 'Testing username validating constrains with wrong parameter - #winner'(String winner) {
+    def 'Testing winner validating constrains with wrong parameter - #winner'(String winner) {
         given: 'Setup test data'
         def findScoresByWinnerQuery = new FindScoresByWinnerQuery(winner)
 

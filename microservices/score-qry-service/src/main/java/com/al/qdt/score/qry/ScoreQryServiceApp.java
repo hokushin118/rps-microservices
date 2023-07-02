@@ -1,9 +1,7 @@
 package com.al.qdt.score.qry;
 
 import com.al.qdt.cqrs.infrastructure.QueryDispatcher;
-import com.al.qdt.score.qry.api.queries.FindAllScoresQuery;
-import com.al.qdt.score.qry.api.queries.FindScoreByIdQuery;
-import com.al.qdt.score.qry.api.queries.FindScoresByWinnerQuery;
+import com.al.qdt.score.qry.api.queries.*;
 import com.al.qdt.score.qry.infrastructure.handlers.QueryHandler;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -34,7 +32,9 @@ public class ScoreQryServiceApp {
         // Queries. These queries return a result and do not change the state of the system, and they are free of side effects.
         this.queryDispatcher.registerHandler(FindAllScoresQuery.class, this.queryHandler::handle);
         this.queryDispatcher.registerHandler(FindScoreByIdQuery.class, this.queryHandler::handle);
+        this.queryDispatcher.registerHandler(FindScoresByUserIdQuery.class, this.queryHandler::handle);
         this.queryDispatcher.registerHandler(FindScoresByWinnerQuery.class, this.queryHandler::handle);
+        this.queryDispatcher.registerHandler(FindScoresByUserIdAndWinnerQuery.class, this.queryHandler::handle);
     }
 
     @EventListener(ApplicationReadyEvent.class)

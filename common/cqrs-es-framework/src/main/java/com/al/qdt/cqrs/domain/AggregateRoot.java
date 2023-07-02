@@ -18,6 +18,9 @@ public abstract class AggregateRoot {
     protected UUID id;
 
     @Getter
+    protected UUID userId;
+
+    @Getter
     private final List<BaseEvent> uncommittedChanges = new ArrayList<>();
 
     public void markChangesAsCommitted() {

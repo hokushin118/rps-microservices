@@ -1,2 +1,2 @@
-/* Create index on username column */
-CREATE INDEX IDX_USERNAME ON GAME(USERNAME);
+/* Create index on user_id column */
+CREATE INDEX IDX_USER_ID ON GAME(USER_ID);

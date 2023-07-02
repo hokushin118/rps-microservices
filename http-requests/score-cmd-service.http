@@ -1,0 +1,17 @@
+# Delete game by id v1
+
+DELETE http://{{host}}:{{score_cmd_port}}/rps-cmd-api/v2/admin/scores/{{score_id}} HTTP/1.1
+Accept: application/json
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+###
+
+# Delete game by id v1
+
+DELETE http://{{host}}:{{score_cmd_port}}/rps-cmd-api/v1/admin/scores/{{score_id}} HTTP/1.1
+Accept: application/json
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+###

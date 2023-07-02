@@ -4,7 +4,7 @@ import com.al.qdt.cqrs.domain.AbstractEntity;
 import com.al.qdt.rps.qry.api.exceptions.GameNotFoundException;
 import com.al.qdt.rps.qry.api.queries.FindAllGamesQuery;
 import com.al.qdt.rps.qry.api.queries.FindGameByIdQuery;
-import com.al.qdt.rps.qry.api.queries.FindGamesByUsernameQuery;
+import com.al.qdt.rps.qry.api.queries.FindGamesByUserIdQuery;
 import com.al.qdt.rps.qry.domain.repositories.GameRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -16,7 +16,7 @@ import java.util.List;
 
 import static com.al.qdt.rps.qry.api.exceptions.GameNotFoundException.GAMES_NOT_FOUND_EXCEPTION_MESSAGE;
 import static com.al.qdt.rps.qry.api.exceptions.GameNotFoundException.GAME_BY_ID_NOT_FOUND_EXCEPTION_MESSAGE;
-import static com.al.qdt.rps.qry.api.exceptions.GameNotFoundException.GAME_BY_USERNAME_NOT_FOUND_EXCEPTION_MESSAGE;
+import static com.al.qdt.rps.qry.api.exceptions.GameNotFoundException.GAME_BY_USER_ID_NOT_FOUND_EXCEPTION_MESSAGE;
 
 @Slf4j
 @Service
@@ -47,12 +47,12 @@ public class RpsQueryHandler implements QueryHandler {
     }
 
     @Override
-    public List<AbstractEntity> handle(FindGamesByUsernameQuery query) {
-        final var username = query.getUsername();
-        log.info("Handling find games by username query for username: {}.", username);
-        final var games = this.gameRepository.findGameByUsername(username);
+    public List<AbstractEntity> handle(FindGamesByUserIdQuery query) {
+        final var userId = query.getUserId();
+        log.info("Handling find games by userId query for userId: {}.", userId);
+        final var games = this.gameRepository.findByUserId(userId);
         if (games.isEmpty()) {
-            throw new GameNotFoundException(String.format(GAME_BY_USERNAME_NOT_FOUND_EXCEPTION_MESSAGE, username));
+            throw new GameNotFoundException(String.format(GAME_BY_USER_ID_NOT_FOUND_EXCEPTION_MESSAGE, userId));
         }
         return new ArrayList<>(games);
     }

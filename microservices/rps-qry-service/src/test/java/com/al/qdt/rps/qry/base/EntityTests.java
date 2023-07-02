@@ -1,28 +1,28 @@
 package com.al.qdt.rps.qry.base;
 
-import com.al.qdt.common.enums.Hand;
+import com.al.qdt.common.domain.enums.Hand;
 import com.al.qdt.rps.qry.domain.entities.Game;
 
 import java.util.UUID;
 
-import static com.al.qdt.common.enums.Hand.ROCK;
-import static com.al.qdt.common.helpers.Constants.TEST_UUID_TWO;
-import static com.al.qdt.common.helpers.Constants.USERNAME_ONE;
-import static com.al.qdt.common.helpers.Constants.USERNAME_TWO;
+import static com.al.qdt.common.domain.enums.Hand.ROCK;
+import static com.al.qdt.common.infrastructure.helpers.Constants.TEST_UUID_TWO;
+import static com.al.qdt.common.infrastructure.helpers.Constants.USER_ONE_ID;
+import static com.al.qdt.common.infrastructure.helpers.Constants.USER_TWO_ID;
 
 public interface EntityTests {
 
     /**
      * Creates test instance for game entity object.
      *
-     * @param id       game id
-     * @param username username
-     * @param hand     user choice
+     * @param id     game id
+     * @param userId user id
+     * @param hand   user choice
      * @return game entity object
      */
-    default Game createGame(UUID id, String username, Hand hand) {
+    default Game createGame(UUID id, UUID userId, Hand hand) {
         final var game = Game.builder()
-                .username(username)
+                .userId(userId)
                 .hand(hand)
                 .build();
         game.setId(id);
@@ -36,7 +36,7 @@ public interface EntityTests {
      */
     default Game createSecondGame() {
         final var game = Game.builder()
-                .username(USERNAME_TWO)
+                .userId(USER_TWO_ID)
                 .hand(ROCK)
                 .build();
         game.setId(TEST_UUID_TWO);
@@ -50,7 +50,7 @@ public interface EntityTests {
      */
     default Game createGameWithNulUUID() {
         return Game.builder()
-                .username(USERNAME_ONE)
+                .userId(USER_ONE_ID)
                 .hand(ROCK)
                 .build();
     }

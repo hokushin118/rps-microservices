@@ -1,20 +1,24 @@
 package com.al.qdt.common.domain.base;
 
-import com.al.qdt.common.events.rps.GameDeletedEvent;
-import com.al.qdt.common.events.rps.GamePlayedEvent;
-import com.al.qdt.common.events.score.ScoresAddedEvent;
-import com.al.qdt.common.events.score.ScoresDeletedEvent;
+import com.al.qdt.common.infrastructure.events.rps.GameDeletedEvent;
+import com.al.qdt.common.infrastructure.events.rps.GamePlayedEvent;
+import com.al.qdt.common.infrastructure.events.score.ScoresAddedEvent;
+import com.al.qdt.common.infrastructure.events.score.ScoresDeletedEvent;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.PropertyNamingStrategy;
+import com.fasterxml.jackson.module.paramnames.ParameterNamesModule;
 import org.junit.jupiter.api.Tag;
 
-import static com.al.qdt.common.enums.Hand.ROCK;
-import static com.al.qdt.common.enums.Player.USER;
-import static com.al.qdt.common.helpers.Constants.TEST_UUID;
-import static com.al.qdt.common.helpers.Constants.USERNAME_ONE;
+import static com.al.qdt.common.domain.enums.Hand.ROCK;
+import static com.al.qdt.common.domain.enums.Player.USER;
+import static com.al.qdt.common.infrastructure.helpers.Constants.TEST_UUID;
+import static com.al.qdt.common.infrastructure.helpers.Constants.USER_ONE_ID;
 
 @Tag(value = "event")
 public interface EventTests {
-    ObjectMapper objectMapper = new ObjectMapper();
+    ObjectMapper objectMapper = new ObjectMapper()
+            .registerModule(new ParameterNamesModule())
+            .setPropertyNamingStrategy(PropertyNamingStrategy.SNAKE_CASE);
 
     /**
      * Creates test instance for game played event.
@@ -24,7 +28,7 @@ public interface EventTests {
     default GamePlayedEvent createGamePlayedEvent() {
         return GamePlayedEvent.builder()
                 .id(TEST_UUID)
-                .username(USERNAME_ONE)
+                .userId(USER_ONE_ID)
                 .hand(ROCK)
                 .build();
     }
@@ -37,6 +41,7 @@ public interface EventTests {
     default GameDeletedEvent createGameDeletedEvent() {
         return GameDeletedEvent.builder()
                 .id(TEST_UUID)
+                .userId(USER_ONE_ID)
                 .build();
     }
 
@@ -48,6 +53,7 @@ public interface EventTests {
     default ScoresAddedEvent createScoresAddedEvent() {
         return ScoresAddedEvent.builder()
                 .id(TEST_UUID)
+                .userId(USER_ONE_ID)
                 .winner(USER)
                 .build();
     }
@@ -60,6 +66,7 @@ public interface EventTests {
     default ScoresDeletedEvent createScoresDeletedEvent() {
         return ScoresDeletedEvent.builder()
                 .id(TEST_UUID)
+                .userId(USER_ONE_ID)
                 .build();
     }
 }

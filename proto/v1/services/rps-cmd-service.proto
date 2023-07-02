@@ -3,6 +3,7 @@ syntax = "proto3";
 package v1.services;
 
 import "v1/dto/game.proto";
+import "v1/common/hand.proto";
 
 option go_package = "/pb";
 
@@ -12,7 +13,7 @@ option java_multiple_files = true;
 
 /* The message definition of the inputs for the game's round request. */
 message GameRequest {
-  v1.dto.GameDto game = 1 [json_name = "game"]; // game input parameters
+  v1.common.Hand hand = 1 [json_name = "hand"]; // game input parameters
 }
 
 /* The message definition of the result of the game's round. */

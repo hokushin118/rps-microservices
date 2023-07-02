@@ -365,6 +365,11 @@ Then deploy the microservice Prometheus service monitor with the following comma
 
 ### Useful links
 
+Spring Security
+
+* [OAuth 2.0 Client](https://docs.spring.io/spring-security/reference/servlet/oauth2/client/index.html)
+* [Authorization](https://docs.spring.io/spring-security/reference/servlet/authorization/index.html)
+
 For testing gRPC API (make sure that you are using correct grpc port for a profile), please consider the following
 options:
 

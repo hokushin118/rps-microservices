@@ -9,8 +9,8 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.NullSource;
 import org.mapstruct.factory.Mappers;
 
-import static com.al.qdt.common.enums.Hand.ROCK;
-import static com.al.qdt.common.helpers.Constants.USERNAME_ONE;
+import static com.al.qdt.common.domain.enums.Hand.ROCK;
+import static com.al.qdt.common.infrastructure.helpers.Constants.USER_ONE_ID;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -24,12 +24,10 @@ class GameDtoMapperTest implements DtoTests {
     @Test
     @DisplayName("Testing of the fromDto() method with valid parameters")
     void fromDtoTest() {
-        final var gameDto = createGameDto(USERNAME_ONE);
+        final var gameDto = createGameDto(USER_ONE_ID);
         final var playGameCommand = this.gameDtoMapper.fromDto(gameDto);
 
         assertNotNull(playGameCommand);
-        assertEquals(USERNAME_ONE, playGameCommand.getUsername());
-        assertEquals(gameDto.getUsername(), playGameCommand.getUsername());
         assertEquals(ROCK, playGameCommand.getHand());
         assertEquals(gameDto.getHand(), playGameCommand.getHand().name());
     }

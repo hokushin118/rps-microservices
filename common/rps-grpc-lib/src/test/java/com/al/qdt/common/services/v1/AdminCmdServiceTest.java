@@ -1,4 +1,3 @@
-
 package com.al.qdt.common.services.v1;
 
 import com.al.qdt.rps.grpc.v1.services.AdminCmdServiceGrpc;
