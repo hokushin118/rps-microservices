@@ -6,6 +6,9 @@ import spock.lang.Specification
 import spock.lang.Subject
 import spock.lang.Title
 
+import static com.al.qdt.common.infrastructure.helpers.Constants.TEST_UUID
+import static com.al.qdt.common.infrastructure.helpers.Constants.USER_ONE_ID
+
 @Title("Testing ScoreAggregate class")
 class ScoreAggregateSpec extends Specification implements CommandTests {
 
@@ -15,7 +18,7 @@ class ScoreAggregateSpec extends Specification implements CommandTests {
 
     // Run before every feature method
     void setup() {
-        deleteScoreCommand = createDeleteScoreCommand()
+        deleteScoreCommand = createDeleteScoreCommand TEST_UUID, USER_ONE_ID
         scoreAggregate = new ScoreAggregate(deleteScoreCommand)
     }
 
@@ -27,5 +30,8 @@ class ScoreAggregateSpec extends Specification implements CommandTests {
     def 'Testing apply method with DeleteScoreCommand class instance'() {
         expect:
         assert scoreAggregate.id == deleteScoreCommand.id
+
+        and:
+        assert scoreAggregate.userId == deleteScoreCommand.userId
     }
 }

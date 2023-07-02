@@ -13,3 +13,10 @@ message ScoreDto {
   string id = 1 [json_name = "id"]; // id of the round
   string winner = 2 [json_name = "winner"]; // winner of the round
 }
+
+/* The message definition of the game's round score for admin users. */
+message ScoreAdminDto {
+  string id = 1 [json_name = "id"]; // id of the round
+  string user_id = 2 [json_name = "user_id"]; // user id of the round player
+  string winner = 3 [json_name = "winner"]; // winner of the round
+}

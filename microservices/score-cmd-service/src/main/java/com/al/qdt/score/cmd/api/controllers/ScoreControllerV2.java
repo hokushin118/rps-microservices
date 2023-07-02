@@ -2,6 +2,7 @@ package com.al.qdt.score.cmd.api.controllers;
 
 import com.al.qdt.common.api.errors.ApiError;
 import com.al.qdt.score.cmd.domain.services.ScoreServiceV2;
+import com.al.qdt.score.cmd.domain.services.security.AuthenticationService;
 import io.micrometer.core.annotation.Timed;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -23,13 +24,12 @@ import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
-
 import java.util.UUID;
 
-import static com.al.qdt.common.helpers.Constants.HANDLER_ERROR_JSON;
-import static com.al.qdt.common.helpers.Constants.MALFORMED_JSON;
-import static com.al.qdt.common.helpers.Constants.MULTIPLE_HANDLERS_ERROR_JSON;
-import static com.al.qdt.common.helpers.Constants.TEST_ID;
+import static com.al.qdt.common.infrastructure.helpers.Constants.HANDLER_ERROR_JSON;
+import static com.al.qdt.common.infrastructure.helpers.Constants.MALFORMED_JSON;
+import static com.al.qdt.common.infrastructure.helpers.Constants.MULTIPLE_HANDLERS_ERROR_JSON;
+import static com.al.qdt.common.infrastructure.helpers.Constants.TEST_ID;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
 /**
@@ -37,13 +37,14 @@ import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
  */
 @Slf4j(topic = "outbound-logs")
 @RestController
-@RequestMapping(path = "${api.version-two}/${api.endpoint-scores}", produces = APPLICATION_JSON_VALUE)
+@RequestMapping(path = "${api.version-two}", produces = APPLICATION_JSON_VALUE)
 @RequiredArgsConstructor
 @Validated
 @Timed("score")
 @Tag(name = "Score", description = "the score command REST API endpoints")
 public class ScoreControllerV2 {
     private final ScoreServiceV2 scoreService;
+    private final AuthenticationService authenticationService;
 
     /**
      * Deletes scores by id.
@@ -80,12 +81,21 @@ public class ScoreControllerV2 {
                     ))
     })
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    @DeleteMapping(path = "/{id}")
+    @DeleteMapping(path = "/${api.endpoint-admin}/${api.endpoint-scores}/{id}")
     @Timed(value = "score.deleteById", description = "Time taken to delete score by id", longTask = true)
     public void deleteById(@Parameter(description = "Id of score that needs to be deleted",
             schema = @Schema(type = "string"), example = TEST_ID, required = true)
                            @Valid @NotNull @PathVariable(value = "id") UUID id) {
         log.info("REST CONTROLLER: Deleting scores by id: {}.", id.toString());
         this.scoreService.deleteById(id);
+    }
+
+    /**
+     * Returns currently logged in user id.
+     *
+     * @return user id
+     */
+    private UUID getUserId() {
+        return this.authenticationService.getUserId();
     }
 }

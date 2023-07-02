@@ -7,6 +7,7 @@ import javax.validation.Validation
 abstract class ValidationBaseTest extends Specification {
     static ZERO_VIOLATIONS = 0
     static SINGLE_VIOLATION = 1
+    static DOUBLE_VIOLATION = 2
     static validator
 
     // Run before the first feature method

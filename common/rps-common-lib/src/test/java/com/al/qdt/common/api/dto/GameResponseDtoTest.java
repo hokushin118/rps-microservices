@@ -2,7 +2,6 @@ package com.al.qdt.common.api.dto;
 
 import com.al.qdt.common.domain.base.DtoTests;
 import com.fasterxml.jackson.core.JsonProcessingException;
-import lombok.SneakyThrows;
 import org.json.JSONException;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -10,10 +9,10 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.skyscreamer.jsonassert.JSONAssert;
 
-import static com.al.qdt.common.enums.Hand.ROCK;
-import static com.al.qdt.common.enums.Hand.SCISSORS;
-import static com.al.qdt.common.enums.Player.USER;
-import static com.al.qdt.common.helpers.Constants.GAME_RESPONSE_EXPECTED_JSON;
+import static com.al.qdt.common.domain.enums.Hand.ROCK;
+import static com.al.qdt.common.domain.enums.Hand.SCISSORS;
+import static com.al.qdt.common.domain.enums.Player.USER;
+import static com.al.qdt.common.infrastructure.helpers.Constants.GAME_RESPONSE_EXPECTED_JSON;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.not;
@@ -28,7 +27,7 @@ class GameResponseDtoTest implements DtoTests {
 
     @BeforeEach
     void setUp() {
-        this.expectedGameResponseDto = createGameResponseJsonDto();
+        this.expectedGameResponseDto = createGameResponseDto();
     }
 
     @AfterEach
@@ -46,10 +45,9 @@ class GameResponseDtoTest implements DtoTests {
         );
     }
 
-    @SneakyThrows({JsonProcessingException.class, JSONException.class})
     @Test
     @DisplayName("Testing GameResponseDto serialization")
-    void gameResponseDtoSerializationTest() {
+    void gameResponseDtoSerializationTest() throws JsonProcessingException, JSONException {
         final var actualJson = objectMapper.writeValueAsString(this.expectedGameResponseDto);
 
         assertNotNull(actualJson);
@@ -61,10 +59,9 @@ class GameResponseDtoTest implements DtoTests {
         JSONAssert.assertEquals(GAME_RESPONSE_EXPECTED_JSON, actualJson, true);
     }
 
-    @SneakyThrows(JsonProcessingException.class)
     @Test
     @DisplayName("Testing GameResponseDto deserialization")
-    void gameResponseDtoDeserializationTest() {
+    void gameResponseDtoDeserializationTest() throws JsonProcessingException {
         final var actualGameResponseDto = objectMapper.readValue(GAME_RESPONSE_EXPECTED_JSON, GameResponseDto.class);
 
         assertNotNull(actualGameResponseDto);
@@ -79,7 +76,7 @@ class GameResponseDtoTest implements DtoTests {
     @Test
     @DisplayName("Testing GameResponseDto equals() and hashCode() methods")
     void equalsAndHashCodeTest() {
-        final var actualGameResponseDto = createGameResponseJsonDto();
+        final var actualGameResponseDto = createGameResponseDto();
 
         assertTrue(this.expectedGameResponseDto.equals(actualGameResponseDto) &&
                 actualGameResponseDto.equals(this.expectedGameResponseDto));

@@ -1,9 +1,9 @@
 package com.al.qdt.rps.cmd.domain.aggregates;
 
-import com.al.qdt.common.enums.Player;
-import com.al.qdt.common.events.rps.GameDeletedEvent;
-import com.al.qdt.common.events.rps.GamePlayedEvent;
-import com.al.qdt.common.events.score.ScoresAddedEvent;
+import com.al.qdt.common.domain.enums.Player;
+import com.al.qdt.common.infrastructure.events.rps.GameDeletedEvent;
+import com.al.qdt.common.infrastructure.events.rps.GamePlayedEvent;
+import com.al.qdt.common.infrastructure.events.score.ScoresAddedEvent;
 import com.al.qdt.cqrs.domain.AggregateRoot;
 import com.al.qdt.rps.cmd.api.commands.PlayGameCommand;
 import com.al.qdt.rps.cmd.api.exceptions.GameException;
@@ -21,13 +21,14 @@ public class RpsAggregate extends AggregateRoot {
     public RpsAggregate(PlayGameCommand command) {
         super.raiseEvent(GamePlayedEvent.builder()
                 .id(command.getId())
-                .username(command.getUsername())
+                .userId(command.getUserId())
                 .hand(command.getHand())
                 .build());
     }
 
     public void apply(GamePlayedEvent event) {
         this.id = event.getId();
+        this.userId = event.getUserId();
         this.isPlayed = true;
     }
 
@@ -40,21 +41,25 @@ public class RpsAggregate extends AggregateRoot {
         }
         raiseEvent(ScoresAddedEvent.builder()
                 .id(this.id)
+                .userId(this.userId)
                 .winner(winner)
                 .build());
     }
 
     public void apply(ScoresAddedEvent event) {
         this.id = event.getId();
+        this.userId = event.getUserId();
     }
 
     public void deleteGame() {
         raiseEvent(GameDeletedEvent.builder()
                 .id(this.id)
+                .userId(this.userId)
                 .build());
     }
 
     public void apply(GameDeletedEvent event) {
         this.id = event.getId();
+        this.userId = event.getUserId();
     }
 }

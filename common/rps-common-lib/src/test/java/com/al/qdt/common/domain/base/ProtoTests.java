@@ -1,14 +1,16 @@
 package com.al.qdt.common.domain.base;
 
 import com.al.qdt.rps.grpc.v1.common.BaseResponseDto;
+import com.al.qdt.rps.grpc.v1.dto.GameAdminDto;
 import com.al.qdt.rps.grpc.v1.dto.GameDto;
 import com.al.qdt.rps.grpc.v1.dto.GameResultDto;
+import com.al.qdt.rps.grpc.v1.dto.ScoreAdminDto;
 import com.al.qdt.rps.grpc.v1.dto.ScoreDto;
 import org.junit.jupiter.api.Tag;
 
-import static com.al.qdt.common.helpers.Constants.SUCCESS_MESSAGE;
-import static com.al.qdt.common.helpers.Constants.TEST_ID;
-import static com.al.qdt.common.helpers.Constants.USERNAME_ONE;
+import static com.al.qdt.common.infrastructure.helpers.Constants.SUCCESS_MESSAGE;
+import static com.al.qdt.common.infrastructure.helpers.Constants.TEST_ID;
+import static com.al.qdt.common.infrastructure.helpers.Constants.USER_ONE_ID;
 import static com.al.qdt.rps.grpc.v1.common.Hand.ROCK;
 import static com.al.qdt.rps.grpc.v1.common.Hand.SCISSORS;
 import static com.al.qdt.rps.grpc.v1.common.Player.USER;
@@ -48,7 +50,19 @@ public interface ProtoTests {
     default GameDto createGameProtoDto() {
         return GameDto.newBuilder()
                 .setId(TEST_ID)
-                .setUsername(USERNAME_ONE)
+                .setHand(ROCK)
+                .build();
+    }
+
+    /**
+     * Creates test proto3 message for a game admin.
+     *
+     * @return proto3 message
+     */
+    default GameAdminDto createGameAdminProtoDto() {
+        return GameAdminDto.newBuilder()
+                .setId(TEST_ID)
+                .setUserId(USER_ONE_ID.toString())
                 .setHand(ROCK)
                 .build();
     }
@@ -61,6 +75,19 @@ public interface ProtoTests {
     default ScoreDto createScoreProtoDto() {
         return ScoreDto.newBuilder()
                 .setId(TEST_ID)
+                .setWinner(USER.name())
+                .build();
+    }
+
+    /**
+     * Creates test proto3 message for a score admin.
+     *
+     * @return proto3 message
+     */
+    default ScoreAdminDto createScoreAdminProtoDto() {
+        return ScoreAdminDto.newBuilder()
+                .setId(TEST_ID)
+                .setUserId(USER_ONE_ID.toString())
                 .setWinner(USER.name())
                 .build();
     }

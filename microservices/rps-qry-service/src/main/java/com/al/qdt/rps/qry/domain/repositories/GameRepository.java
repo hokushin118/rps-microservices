@@ -10,7 +10,7 @@ import java.util.List;
 import java.util.UUID;
 
 public interface GameRepository extends JpaRepository<Game, UUID> {
-    List<Game> findGameByUsername(String username);
+    List<Game> findByUserId(UUID userId);
 
     @Modifying(clearAutomatically = true, flushAutomatically = true)
     @Query(value = "DELETE FROM game g WHERE g.id = :id",

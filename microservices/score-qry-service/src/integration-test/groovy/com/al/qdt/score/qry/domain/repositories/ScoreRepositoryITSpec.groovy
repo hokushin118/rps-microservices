@@ -14,8 +14,8 @@ import spock.lang.Stepwise
 import spock.lang.Subject
 import spock.lang.Title
 
-import static com.al.qdt.common.enums.Player.USER
-import static com.al.qdt.common.helpers.Constants.TEST_UUID
+import static com.al.qdt.common.domain.enums.Player.USER
+import static com.al.qdt.common.infrastructure.helpers.Constants.TEST_UUID
 
 @DataJpaTest
 @Import([TestConfig])

@@ -1,9 +1,10 @@
 package com.al.qdt.rps.cmd.api.controllers;
 
-import com.al.qdt.common.api.dto.GameDto;
 import com.al.qdt.common.api.dto.GameResponseDto;
 import com.al.qdt.common.api.errors.ApiError;
+import com.al.qdt.common.domain.enums.Hand;
 import com.al.qdt.rps.cmd.domain.services.RpsServiceV1;
+import com.al.qdt.rps.cmd.domain.services.security.AuthenticationService;
 import io.micrometer.core.annotation.Timed;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -30,12 +31,12 @@ import javax.validation.constraints.NotNull;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 
-import static com.al.qdt.common.helpers.Constants.GAME_EXPECTED_JSON;
-import static com.al.qdt.common.helpers.Constants.GAME_RESPONSE_EXPECTED_JSON;
-import static com.al.qdt.common.helpers.Constants.HANDLER_ERROR_JSON;
-import static com.al.qdt.common.helpers.Constants.MALFORMED_JSON;
-import static com.al.qdt.common.helpers.Constants.MULTIPLE_HANDLERS_ERROR_JSON;
-import static com.al.qdt.common.helpers.Constants.TEST_ID;
+import static com.al.qdt.common.infrastructure.helpers.Constants.GAME_RESPONSE_EXPECTED_JSON;
+import static com.al.qdt.common.infrastructure.helpers.Constants.HANDLER_ERROR_JSON;
+import static com.al.qdt.common.infrastructure.helpers.Constants.HAND_EXAMPLE;
+import static com.al.qdt.common.infrastructure.helpers.Constants.MALFORMED_JSON;
+import static com.al.qdt.common.infrastructure.helpers.Constants.MULTIPLE_HANDLERS_ERROR_JSON;
+import static com.al.qdt.common.infrastructure.helpers.Constants.TEST_ID;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
 /**
@@ -50,11 +51,12 @@ import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 @Tag(name = "Game", description = "the game command REST API endpoints")
 public class RpsControllerV1 {
     private final RpsServiceV1 rpsService;
+    private final AuthenticationService authenticationService;
 
     /**
      * Plays game.
      *
-     * @param gameDto game round user inputs, must not be null
+     * @param hand game round user inputs, must not be null
      * @return game result
      * @version 1
      */
@@ -104,21 +106,21 @@ public class RpsControllerV1 {
                                 @io.swagger.v3.oas.annotations.parameters.RequestBody(
                                         content = @Content(
                                                 mediaType = APPLICATION_JSON_VALUE,
-                                                schema = @Schema(implementation = GameDto.class),
+                                                schema = @Schema(implementation = Hand.class),
                                                 examples = {
                                                         @ExampleObject(
-                                                                value = GAME_EXPECTED_JSON
+                                                                value = HAND_EXAMPLE
                                                         )
                                                 }))
-                                @Valid @NotNull @RequestBody GameDto gameDto) {
+                                @Valid @NotNull @RequestBody Hand hand) {
         log.info("REST CONTROLLER: Playing game...");
-        return this.rpsService.play(gameDto);
+        return this.rpsService.play(hand, this.getUserId());
     }
 
     /**
      * Plays game asynchronously.
      *
-     * @param gameDto game round user inputs, must not be null
+     * @param hand game round user inputs, must not be null
      * @return game result
      * @version 1.1
      */
@@ -168,15 +170,15 @@ public class RpsControllerV1 {
                                                         @io.swagger.v3.oas.annotations.parameters.RequestBody(
                                                                 content = @Content(
                                                                         mediaType = APPLICATION_JSON_VALUE,
-                                                                        schema = @Schema(implementation = GameDto.class),
+                                                                        schema = @Schema(implementation = Hand.class),
                                                                         examples = {
                                                                                 @ExampleObject(
-                                                                                        value = GAME_EXPECTED_JSON
+                                                                                        value = HAND_EXAMPLE
                                                                                 )
                                                                         }))
-                                                        @Valid @NotNull @RequestBody GameDto gameDto) {
+                                                        @Valid @NotNull @RequestBody Hand hand) {
         log.info("REST CONTROLLER: Playing game asynchronously...");
-        return this.rpsService.playAsync(gameDto);
+        return this.rpsService.playAsync(hand, this.getUserId());
     }
 
     /**
@@ -226,12 +228,12 @@ public class RpsControllerV1 {
                     ))
     })
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    @DeleteMapping("${api.version-one}/${api.endpoint-games}/{id}")
+    @DeleteMapping("${api.version-one}/${api.endpoint-admin}/${api.endpoint-games}/{id}")
     @Timed(value = "game.deleteById", description = "Time taken to delete game by id", longTask = true)
     public void deleteById(@Parameter(description = "Id of game that needs to be deleted", example = TEST_ID, required = true)
                            @Valid @NotNull @PathVariable(value = "id") UUID id) {
         log.info("REST CONTROLLER: Deleting game by id: {}.", id.toString());
-        this.rpsService.deleteById(id);
+        this.rpsService.deleteById(id, this.getUserId());
     }
 
     /**
@@ -281,11 +283,20 @@ public class RpsControllerV1 {
                     ))
     })
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    @DeleteMapping("${api.version-one-async}/${api.endpoint-games}/{id}")
+    @DeleteMapping("${api.version-one-async}/${api.endpoint-admin}/${api.endpoint-games}/{id}")
     @Timed(value = "game.deleteById.async", description = "Time taken to delete game by id asynchronously", longTask = true)
     public void deleteByIdAsync(@Parameter(description = "Id of game that needs to be deleted", example = TEST_ID, required = true)
                                 @Valid @NotNull @PathVariable(value = "id") UUID id) {
         log.info("REST CONTROLLER: Deleting game by id: {} asynchronously.", id.toString());
-        this.rpsService.deleteByIdAsync(id);
+        this.rpsService.deleteByIdAsync(id, this.getUserId());
+    }
+
+    /**
+     * Returns currently logged in user id.
+     *
+     * @return user id
+     */
+    private UUID getUserId() {
+        return this.authenticationService.getUserId();
     }
 }

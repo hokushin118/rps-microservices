@@ -15,7 +15,6 @@ Source: [Architecting Cloud Native .NET Applications for Azure](https://learn.mi
 
 ### Prerequisites
 
-* Docker Desktop
 * Java 11 or higher
 
 ### Technology stack
@@ -25,10 +24,10 @@ Source: [Architecting Cloud Native .NET Applications for Azure](https://learn.mi
 * [Spring Boot 2.6.1](https://spring.io/projects/spring-boot)
 * [Lombok 1.18.20](https://projectlombok.org)
 * [MapStruct](https://mapstruct.org)
-* [Apache ZooKeeper 3.5.9](https://zookeeper.apache.org)
-* [Apache Kafka 2.8.1](https://spring.io/projects/spring-kafka)
-* [MongoDB NoSQL 3.0](https://docs.spring.io/spring-data/mongodb/docs/current/reference/html)
-* [MariaDB RDBMS 2.7.4](https://mariadb.org)
+* [Apache ZooKeeper 3.8.0](https://zookeeper.apache.org)
+* [Apache Kafka 2.7.0](https://spring.io/projects/spring-kafka)
+* [MongoDB NoSQL 4.4.22](https://docs.spring.io/spring-data/mongodb/docs/current/reference/html)
+* [MariaDB Community Server 10.6.14](https://mariadb.org)
 * [H2 Database Engine](https://www.h2database.com)
 * [OpenAPI 3.0](https://springdoc.org)
 * [gRPC framework 1.32.1](https://grpc.io/docs/languages/java/quickstart)
@@ -44,9 +43,366 @@ Source: [Architecting Cloud Native .NET Applications for Azure](https://learn.mi
 * [Grafana](https://grafana.com) - metrics visualization
 * [ELK Stack](https://www.elastic.co) - log aggregation and monitoring in a centralized way
 * [Redis](https://redis.io) - cache management
-* [Keycloak 18.0.0](https://www.keycloak.org) - identity and access management management
+* [Keycloak 18.0.0](https://www.keycloak.org) - identity and access management server
 
-** H2 in-memory database engine is used for dev and it profiles only
+** H2 in-memory database engine is used for __it__ profile only
+
+## Local Deployment - Deploying the application locally
+
+Microservices active profile is __dev__.
+
+### Prerequisites
+
+* [Keycloak 18.0.0](https://www.keycloak.org)  
+* [MongoDB Community Edition](https://www.mongodb.com/docs/manual/tutorial/install-mongodb-on-windows)  
+* [Mongo Shell](https://www.mongodb.com/docs/v4.4/mongo/#std-label-compare-mongosh-mongo)  
+* [Apache ZooKeeper 3.8.0](https://zookeeper.apache.org)  
+* [Apache Kafka 2.7.0](https://kafka.apache.org)  
+* [Redis](https://redis.io)  
+* [MariaDB Community Server 10.6.14](https://mariadb.org)  
+
+### 1. Installing Keycloak on local machine
+
+* Download and extract [keycloak-18.8.0.zip](https://github.com/keycloak/keycloak/releases/download/18.0.0/keycloak-18.0.0.zip) archive file from the [Keycloak](https://www.keycloak.org/archive/downloads-18.0.0.html) website.
+
+* Import the _rps-dev_ realm from the _/infrastructure/keycloak/rps-dev-realm.json_ file by executing the following command:.
+
+```
+   > bin\kc.bat import --dir <path to root directory>\rps-microservices\infrastructure\keycloak\ --override true
+```
+
+You should see the following line in the output:
+
+```
+      2023-07-02 16:08:13,347 INFO  [org.keycloak.exportimport.util.ImportUtils] (main) Realm 'rps-dev' imported
+```
+
+* To start the [Keycloak 18.0.0](https://www.keycloak.org), run the following command:
+
+```
+   > bin\kc.bat start-dev --http-port 8180
+```
+
+The [Keycloak 18.0.0](https://www.keycloak.org) will be started in dev mode on port number 8190.
+
+* Open [http://localhost:8180/](http://localhost:8180/) and create a super user by filling the form with your preferred username and password. 
+
+![keycloak welcome page](img/kc-welcome-page.png)
+  
+For example:
+
+| **user name**  | **password** |
+|----------------|--------------|
+|     admin      |     admin    |
+
+* Open [Keycloak admin panel](http://localhost:8180/admin), enter super user credentials and make sure that __rps-dev__ realm and test users has successfully been imported. 
+
+[Keycloak Getting Started](https://www.keycloak.org/getting-started/getting-started-zip)  
+[How to export and import Realms in Keycloak](https://www.mastertheboss.com/keycloak/how-to-export-and-import-realms-in-keycloak)
+
+### 2. Installing MongoDB on local machine
+
+* Download and install [MongoDB Community Edition](https://www.mongodb.com/docs/manual/tutorial/install-mongodb-on-windows) from official website.
+
+* Download and install [Mongo Shell](https://www.mongodb.com/docs/mongodb-shell/install) from official website.
+
+* Open the _command line tool_ and type the following command:
+
+```
+   > mongosh
+```
+
+You should see the following output:
+
+```
+      C:\Users\qdotn>mongosh
+      Current Mongosh Log ID: 649feb5649fae114f896e903
+      Connecting to:          mongodb://127.0.0.1:27017/?directConnection=true&serverSelectionTimeoutMS=2000&appName=mongosh+1.1.9
+      Using MongoDB:          4.4.22
+      Using Mongosh:          1.1.9
+      
+      For mongosh info see: https://docs.mongodb.com/mongodb-shell/
+      
+      
+      To help improve our products, anonymous usage data is collected and sent to MongoDB periodically (https://www.mongodb.com/legal/privacy-policy).
+      You can opt-out by running the disableTelemetry() command.
+      
+      ------
+      The server generated these startup warnings when booting:
+      2023-06-30T21:50:40.581+03:00: Access control is not enabled for the database. Read and write access to data and configuration is unrestricted
+      ------
+      
+      test>
+```
+
+It means that [Mongo Shell](https://www.mongodb.com/docs/v4.4/mongo/#std-label-compare-mongosh-mongo) has successfully been started:
+
+* Change database to _admin_ by executing the following command in [Mongo Shell](https://www.mongodb.com/docs/v4.4/mongo/#std-label-compare-mongosh-mongo):
+
+```
+   > use admin
+```
+
+You should see the following output:
+
+```
+      switched to db admin
+```
+
+To create a _root_ user with _root_ build-in role execute the following command in [Mongo Shell](https://www.mongodb.com/docs/v4.4/mongo/#std-label-compare-mongosh-mongo):
+
+```
+      > db.createUser(
+        {
+            user: "root",
+            pwd: "mongo12345",
+            roles: [ "root" ]
+        })
+```
+
+You should see the following output:
+
+```
+      { ok: 1 }
+```
+
+It means that user _root_ user with build-in [_root_](https://www.mongodb.com/docs/manual/reference/built-in-roles) role has successfully been created. 
+
+| **user name**  | **password** |  **role** |
+|----------------|--------------|-----------|
+|     root       |   mongo12345 |    root   |
+
+MongoDB [build-in roles](https://www.mongodb.com/docs/manual/reference/built-in-roles/)
+
+### 3. Adding custom entries to the etc/host file for the Apache Zookeeper and Kafka applications
+
+Open the _C:\windows\system32\drivers\etc\hosts_ file in any text editor and add the following entries and save the file:
+
+```
+     > 127.0.0.1 zk.internal kafka.internal
+```
+
+### 4. Deploying Apache Zookeeper on local machine
+
+* Download and extract [apache-zookeeper-3.8.0-bin.tar.gz](https://dlcdn.apache.org/zookeeper/zookeeper-3.8.0/apache-zookeeper-3.8.0-bin.tar.gz) archive file from the [Apache Zookeeper](https://www.apache.org/dyn/closer.lua/zookeeper/zookeeper-3.8.0/apache-zookeeper-3.8.0-bin.tar.gz) website.
+
+* Open the _conf_ folder and rename the _zoo_sample.cfg_ file to the _zoo.cfg_.
+
+* On Windows machine open the _conf_ folder and open the _zoo.cfg_ file. Change the path for _dataDir_ from:
+
+```
+      dataDir=/tmp/zookeeper 
+```
+
+to
+
+```
+      dataDir=D:/software/apache-zookeeper-3.8.0-bin/data/zookeeper
+```
+
+Then add the following lines to the _zoo.cfg_ file.
+
+```
+      initLimit=5
+      syncLimit=2
+      server.1=zk.internal:2888:3888
+```
+
+and save changes.
+
+* Open the _command line tool_ and execute the following command to start the [apache-zookeeper-3.8.0](https://zookeeper.apache.org) server:
+
+```
+   > bin\zkServer.cmd
+```
+
+Note the binding port displayed in the output, it should be _2181_ by default.
+
+```
+      2023-07-01 13:37:26,687 [myid:] - INFO  [main:o.a.z.s.NIOServerCnxnFactory@660] - binding to port 0.0.0.0/0.0.0.0:2181
+```
+
+[zkServer Command](https://zookeeper.apache.org/doc/r3.8.0/zookeeperTools.html#zkServer)  
+[Zookeeper Admin Guide](https://zookeeper.apache.org/doc/r3.8.0/zookeeperAdmin.html)
+
+### 5. Deploying Apache Kafka on local machine
+
+* Download and extract [kafka_2.13-2.7.0.tgz](https://archive.apache.org/dist/kafka/2.7.0/kafka_2.13-2.7.0.tgz) archive file from the [Apache Kafka](https://kafka.apache.org/downloads) website.
+
+* On Windows machine open the _config_ folder and open the _server.properties_ file. Change the path for _log.dirs_ and hostname for _zookeeper.connect_ from:
+
+```
+      log.dirs=/tmp/kafka-logs  
+      zookeeper.connect=localhost:2181
+```
+
+to
+
+```
+      log.dirs=D:/software/kafka_2.13-2.7.0/data/kafka-logs
+      zookeeper.connect=zk.internal:2181
+```
+
+and save changes.
+
+* Then open the _producer.properties_ file. Change the servers for _bootstrap.servers_ from:
+
+```
+      bootstrap.servers=localhost:9092
+```
+
+to
+
+```
+      bootstrap.servers=kafka.internal:9092
+```
+
+and save changes.
+
+* Then open the _consumer.properties_ file. Change the servers for _bootstrap.servers_ from:
+
+```
+      bootstrap.servers=localhost:9092
+```
+
+to
+
+```
+      bootstrap.servers=kafka.internal:9092
+```
+
+and save changes.
+
+* Open the _command line tool_ and execute the following command to start the [apache-kafka-2.7.0](https://kafka.apache.org) server:
+
+```
+   > bin\windows\kafka-server-start.bat config\server.properties
+```
+
+### 6. Deploying Redis on local machine
+
+* To install Redis on Windows, we'll first need to [enable WSL2 (Windows Subsystem for Linux)](https://learn.microsoft.com/en-us/windows/wsl/install).
+
+You can a list of available Linux distros by executing the following command in Windows PowerShell:
+
+```
+      > wsl --list --online
+```
+
+You'll see the following output:
+
+```
+      NAME                                   FRIENDLY NAME
+      Ubuntu                                 Ubuntu
+      Debian                                 Debian GNU/Linux
+      kali-linux                             Kali Linux Rolling
+      Ubuntu-18.04                           Ubuntu 18.04 LTS
+      Ubuntu-20.04                           Ubuntu 20.04 LTS
+      Ubuntu-22.04                           Ubuntu 22.04 LTS
+      OracleLinux_7_9                        Oracle Linux 7.9
+      OracleLinux_8_7                        Oracle Linux 8.7
+      OracleLinux_9_1                        Oracle Linux 9.1
+      openSUSE-Leap-15.5                     openSUSE Leap 15.5
+      SUSE-Linux-Enterprise-Server-15-SP4    SUSE Linux Enterprise Server 15 SP4
+      SUSE-Linux-Enterprise-Server-15-SP5    SUSE Linux Enterprise Server 15 SP5
+      openSUSE-Tumbleweed                    openSUSE Tumbleweed
+```
+
+Then you can install your favorite distro from the list by executing the following command:
+
+```
+      > wsl --install -d <DistroName>
+      for example
+      > wsl --install -d Ubuntu
+```
+
+And then you can install Redis on your Linux distro (I am using Ubuntu) by executing the following commands:
+
+```
+      > curl -fsSL https://packages.redis.io/gpg | sudo gpg --dearmor -o /usr/share/keyrings/redis-archive-keyring.gpg
+      > echo "deb [signed-by=/usr/share/keyrings/redis-archive-keyring.gpg] https://packages.redis.io/deb $(lsb_release -cs) main" | sudo tee /etc/apt/sources.list.d/redis.list
+      > sudo apt-get update
+      > sudo apt-get install redis
+      > sudo service redis-server start
+```
+
+__Note:__ By default, Redis is accessible only from localhost.
+
+### 7. Installing MariaDB on local machine
+
+* Download and install [MariaDB Community Server](https://mariadb.com/downloads) version 10.6.14-GA for MS Windows (64-bit) from official website.
+
+Enter _12345_ as root password.
+Enable the __Enable access from remote machines for 'root' user__ checkbox.
+
+| **user name**  | **password** | 
+|----------------|--------------|
+|     root       |   12345      | 
+
+![mariadb password](img/mariadb-password.png)
+
+Enable the __Install as service__ checkbox.
+
+![mariadb properties](img/mariadb-properties.png)
+
+[Installing MariaDB MSI Packages on Windows](https://mariadb.com/kb/en/installing-mariadb-msi-packages-on-windows)
+
+### 8. Running the RPS game query microservices on local machine
+
+* Run the microservices and open any browser and navigate to the microservices Open API 3.0 definition (REST API).
+
+```
+  http://localhost:8081/rps-cmd-api/swagger-ui/index.html 
+  http://localhost:8082/rps-qry-api/swagger-ui/index.html 
+  http://localhost:8083/score-cmd-api/swagger-ui/index.html 
+  http://localhost:8084/score-qry-api/swagger-ui/index.html 
+```
+
+* Click on the __Authorize__ button on the microservice Open API 3.0 definition page: 
+
+![authorize button](img/authorize-button.png)
+
+which opens a pop-up window below:
+
+![authorize pop-up](img/authorize-popup.png)
+
+* Click on the __Authorize__ button on the pop-up window, which redirects you to the Keycloak server login page:
+
+![keycloak auth page](img/kc-auth-page.png)
+
+* Enter credentials to get appropriate access to the REST API endpoints and click on the __Sign In__ button. You will be redirected back to the Open API 3.0 definition page. You should see the authentication success pop-up window.
+
+![authorize pop-up success](img/authorize-popup-success.png)
+
+* Click the __Close__ button to close the pop-up window.
+
+Available realm test users with corresponding roles:
+
+| **user name**  | **password** |              **roles**             |
+|----------------|--------------|------------------------------------|
+|     admin      |   admin      |    __ROLE_ADMIN__, __ROLE_USER__   |
+|     test       |   test       |    __ROLE_USER__                   |
+
+__Note:__ Don't confuse __admin__ super user with realm __admin__ test user. 
+
+Available test realm roles:
+
+|      **role**    |           **description**                                                                            |
+|------------------|------------------------------------------------------------------------------------------------------|
+|   __ROLE_ADMIN__ |  view all games, find any game by id, <br>delete any game by id, delete any score by id              | 
+|   __ROLE_USER__  |  play a game, view all games played by the user, <br>view all scores of the games played by the user |
+
+__Notes:__ [Spring security](https://spring.io/guides/topicals/spring-security-architecture) manages endpoint access control om microservice level.
+
+_SecurityConfig_ and _GrpcSecurityConfig_ configuration files configure microservice endpoints access control based on Keycloak realm users and roles.
+
+## Docker Compose - Deploying the application on Docker Compose
+
+Microservices active profile is __docker__. 
+
+### Prerequisites
+
+* [Docker Desktop](https://www.docker.com/products/docker-desktop)
 
 ### 1. Installation of Docker Desktop
 
@@ -163,7 +519,7 @@ and make sure that all the RPS game microservices are up and running.
      > mvn clean package -Pdev
 ```
 
-* Run microservice from the command line using spring boot maven plugin. Run "mvn spring-boot:run
+* Run microservice from the _command line_ using spring boot maven plugin. Run "mvn spring-boot:run
   -Dspring.profiles.active=<profile>" in the root directory of the microservice to launch the Rock Paper Scissors Game
   Command microservice app.
 
@@ -171,7 +527,7 @@ and make sure that all the RPS game microservices are up and running.
      > mvn spring-boot:run -Dspring.profiles.active=dev
 ```
 
-* Or run microservice from the command line. Run "java -jar target/rps-cmd-service.jar" in the root directory of the
+* Or run microservice from the _command line_. Run "java -jar target/rps-cmd-service.jar" in the root directory of the
   microservice to launch the Rock Paper Scissors Game Command microservice app.
 
 ```
@@ -203,7 +559,7 @@ from the url.
      > mvn clean package -Pdev
 ```
 
-* Run microservice from the command line using spring boot maven plugin. Run "mvn spring-boot:run
+* Run microservice from the _command line_ using spring boot maven plugin. Run "mvn spring-boot:run
   -Dspring.profiles.active=<profile>" in the root directory of the microservice to launch the Rock Paper Scissors Game
   Query microservice app.
 
@@ -211,7 +567,7 @@ from the url.
      > mvn spring-boot:run -Dspring.profiles.active=dev
 ```
 
-* Or run microservice from the command line. Run "java -jar target/rps-qry-service.jar" in the root directory of the
+* Or run microservice from the _command line_. Run "java -jar target/rps-qry-service.jar" in the root directory of the
   microservice to launch the Rock Paper Scissors Query microservice app.
 
 ```
@@ -239,7 +595,7 @@ from the url.
      > mvn clean package -Pdev
 ```
 
-* Run microservice from the command line using spring boot maven plugin. Run "mvn spring-boot:run
+* Run microservice from the _command line_ using spring boot maven plugin. Run "mvn spring-boot:run
   -Dspring.profiles.active=<profile>" in the root directory of the microservice to launch the Score Command microservice
   app.
 
@@ -247,7 +603,7 @@ from the url.
      > mvn spring-boot:run -Dspring.profiles.active=dev
 ```
 
-* Or run microservice from the command line. Run "java -jar target/score-cmd-service.jar" in the root directory of the
+* Or run microservice from the _command line_. Run "java -jar target/score-cmd-service.jar" in the root directory of the
   microservice to launch the Score Command microservice app.
 
 ```
@@ -275,7 +631,7 @@ from the url.
      > mvn clean package -Pdev
 ```
 
-* Run microservice from the command line using spring boot maven plugin. Run "mvn spring-boot:run
+* Run microservice from the _command line_ using spring boot maven plugin. Run "mvn spring-boot:run
   -Dspring.profiles.active=<profile>" in the root directory of the microservice to launch the Score Query microservice
   app.
 
@@ -283,7 +639,7 @@ from the url.
      > mvn spring-boot:run -Dspring.profiles.active=dev
 ```
 
-* Or run microservice from the command line. Run "java -jar target/score-qry-service.jar" in the root directory of the
+* Or run microservice from the _command line_. Run "java -jar target/score-qry-service.jar" in the root directory of the
   microservice to launch the Score Query microservice app.
 
 ```
@@ -312,9 +668,11 @@ Docker Compose vs K8S, pros and cons:
 
 ***
 
-### Kubernetes (K8S)
+## Kubernetes (K8S) - Deploying the application on Kubernetes
 
-#### Prerequisites
+Microservices active profile is __prod__.
+
+### Prerequisites
 
 Make sure that k8s is enabled in the Docker Desktop. If not, click on the __Settings__ icon, then on the __Kubernetes__
 tab and check the __Enable Kubernetes__ checkbox.
@@ -380,7 +738,7 @@ Verify that _metrics-server_ is installed by executing the following command:
       > minikube addons list | grep metrics-server
 ```
 
-If not, you will see the following output:
+If not, you should see the following output:
 
 ```
       | metrics-server              | minikube | disabled     | Kubernetes   
@@ -2484,9 +2842,20 @@ The messages should appear in the Kafka message consumer.
 
 ### Keycloak on K8S cluster
 
-[Keycloak](https://www.keycloak.org) is an open source software product to
+[Keycloak](https://www.keycloak.org) is an open source authentication server that implements OpenID Connect (OIDC) and OAuth 2.0 standards. It's used to
 allow [SSO (Single Sign-On)](https://en.wikipedia.org/wiki/Single_sign-on) with identity and access management aimed at modern
 applications and services.
+
+The [Keycloak](https://www.keycloak.org) exposes endpoints to support standard functionality, including:
+
+- Authorize (authenticate the end user)  
+- [JWT Token](https://en.wikipedia.org/wiki/JSON_Web_Token) (request a token programmatically)  
+- Discovery (metadata about the server)  
+- User Info (get user information with a valid access token)  
+- Device Authorization (used to start device flow authorization)  
+- Introspection (token validation)  
+- Revocation (token revocation)  
+- End Session (trigger single sign-out across all apps)
 
 [Keycloak](https://www.keycloak.org) is used to implement the following patterns:
 
@@ -2706,7 +3075,7 @@ b) Enter __rps-dev__ in the __Add realm__ __Name__ field then click the __Create
 
 With the new realm created, let's create a client that is an application or group of applications that will authenticate in this Realm.
 
-a) Click __Clients__ menu item in the Sidebar and then click the __Create__ button.
+a) Click __Clients__ menu item in the left navigation bar and then click the __Create__ button.
 
 b) Enter the __Client ID__. The __Client ID__ is a string used to identify our client. We will use __oauth2-proxy__.
 
@@ -2722,7 +3091,9 @@ f) Confirm that the __Standard Flow Enabled__ and __Direct Access Grants Enabled
 
 g) Turn on the [__Service Accounts Enabled__](https://wjw465150.gitbooks.io/keycloak-documentation/content/server_admin/topics/clients/oidc/service-accounts.html) toggle button.
 
-h) Click the __Save__ button to persist changes.
+h) Turn on the __Implicit Flow Enabled__ toggle button. It's required for [OpenAPI 3.0 OAuth 2.0 authentication](https://swagger.io/docs/specification/authentication/oauth2).
+
+i) Click the __Save__ button to persist changes.
 
 ![kc clients](img/kc-clients-2.png)
 
@@ -2772,6 +3143,8 @@ For example, you can get the user info executing the following command:
              --data-urlencode "client_secret=H0fnsBnCc7Ts22rxhvLcy66s1yvzSRgG"
 ```
 
+[Keycloak REST API v18.0](https://documenter.getpostman.com/view/7294517/SzmfZHnd)
+
 ##### Configure the mappers
 
 __Groups mapper__
@@ -2804,39 +3177,129 @@ e) Click the __Save__ button to persist changes.
 
 ![kc mapper audience](img/kc-mapper-audience.png)
 
-##### Configure the user groups
+##### Create User Roles
+
+1. Create an admin role
+
+a) Click the __Roles__ menu item in the left navigation bar and then click the __Add Role__ button.
+
+b) Enter __ROLE_ADMIN__ as Role Name and click the __Save__ button.
+
+![kc role](img/kc-add-role.png)
+
+2. Create a general user and moderator roles
+
+Repeat the same steps for the __ROLE_USER__ and __ROLE_MODERATOR__ roles.
+
+| **role name**  | **description** |
+|----------------|-----------------|
+| ROLE_ADMIN     | Admin user      |
+| ROLE_MODERATOR | Moderator user  |
+| ROLE_USER      | General user    |
+
+##### Configure the User Groups
 
 In [Keycloak](https://www.keycloak.org), [Groups](https://wjw465150.gitbooks.io/keycloak-documentation/content/server_admin/topics/groups.html) are just a collection of users that you can apply roles and attributes to in one place.
 
-Now select the __Groups__ from the left navigation bar and add three groups:
+1. Create an admin group
 
-* _admins_
-  
-* _moderators_
-  
-* _users_
+a) Click the __Groups__ menu item in the left navigation bar and then click the __New__ button:
+
+b) Enter __admins__ as Name and click the __Save__ button to persist changes.
 
 ![kc groups](img/kc-groups.png)
 
-##### Create a user
+b) Assign appropriate roles to the created group.
 
-a) Click __Users__ menu item in the Sidebar and then click the __Add user__ button.
+![kc assign admin group role](img/kc-groups.png)
 
-b) Enter an email address and a password for the new user, and add the user to the _user_ and _admin_ groups. 
+2. Create moderators and users groups
+
+Repeat the same steps for __moderators__ and __users__ groups.
+
+| **group name** | **roles**      |
+|----------------|----------------|
+| admins         | ROLE_ADMIN     |
+| moderators     | ROLE_MODERATOR |
+| users          | ROLE_USER      |
+
+[Keycloak Groups vs. Roles](https://wjw465150.gitbooks.io/keycloak-documentation/content/server_admin/topics/groups/groups-vs-roles.html)
+
+##### Create Users
+
+1. Create an admin user
+
+a) Click the __Users__ menu item in the left navigation bar and then click the __Add user__ button.
+
+b) Enter __admin__ as username, an email address and a password for the new user, and add the user to the _users_, _moderators_ and _admins_ groups. 
 
 c) Turn on the __Email Verified__ toggle button.
 
-![kc add user](img/kc-add-user.png)
+__User Details:__
+
+| **property**   | **value**                     |
+|----------------|-------------------------------|
+| Username       | admin                         |
+| Email          | admin@rps.internal            |
+| User Enabled   | ON                            |
+| Email Verified | ON                            |
+| Groups         | admins<br>moderators<br>users |
+
+__User Credentials:__
+
+| **property**   | **value**                     |
+|----------------|-------------------------------|
+| Password       | admin                         |
+| Temporary      | OFF                           |
+
+![kc add admin user](img/kc-add-admin-user.png)
 
 d) Set password for the new user.
 
 ![kc set password](img/kc-set-password.png)
 
+2. Create a general user
+
+Repeat the same steps for __test__ user. Add the __test__ user to the _user_ group only.
+
+__User Details:__
+
+| **property**   | **value**                     |
+|----------------|-------------------------------|
+| Username       | test                          |
+| Email          | test@rps.internal             |
+| User Enabled   | ON                            |
+| Email Verified | ON                            |
+| Groups         | users                         |
+
+__User Credentials:__
+
+| **property**   | **value**                     |
+|----------------|-------------------------------|
+| Password       | test                         |
+| Temporary      | OFF                           |
+
+![kc add user](img/kc-add-user.png)
+
+##### OAuth2 Client Configuration
+
+Update the application [Keycloak](https://www.keycloak.org) properties in the microservices [application-<profile>.yml](https://docs.spring.io/spring-boot/docs/current/reference/html/features.html#features.external-config.files) files.
+
+| **property** | **value**                        |
+|--------------|----------------------------------|
+| hostname     | kc.internal                      |
+| port         | 8180                             |
+| realm        | rps-dev                          |
+| client-id    | oauth2-proxy                     |
+| secret       | H0fnsBnCc7Ts22rxhvLcy66s1yvzSRgG |
+
+[Spring Security - OAuth2 configuration](https://docs.spring.io/spring-security/reference/servlet/oauth2/index.html)
+
 ##### Configure Oauth2-Proxy
 
 [Keycloak OIDC Auth Provider](https://oauth2-proxy.github.io/oauth2-proxy/docs/configuration/oauth_provider/#keycloak-oidc-auth-provider)
 
-TODO: oauth2-proxy sidecar configuration
+TODO: grpc security configuration
 
 That's it! Microservices infrastructure [backing services](https://12factor.net/backing-services) is up and running. We
 can start deploying microservices.
@@ -3036,7 +3499,7 @@ named _rps-tls-secret_ that holds the server certificate and the private key:
      > kubectl create secret tls rps-tls-secret --key rps.internal.key --cert rps.internal.crt -n rps-app-dev
 ```
 
-You will see the following output:
+You should see the following output:
 
 ```
       secret/rps-tls-secret created
@@ -3227,6 +3690,10 @@ To get an idea of HTTP/2 performance, you can follow the link below:
 
 * [HTTP/2 Demo](http://www.http2demo.io)
 
+Windows
+
+* [Install Linux on Windows with WSL](https://learn.microsoft.com/en-us/windows/wsl/install)
+
 Kubernetes
 
 * [K8S Cluster-level Logging Architecture](https://kubernetes.io/docs/concepts/cluster-administration/logging/#using-a-node-logging-agent)
@@ -3245,6 +3712,12 @@ Keycloak
 
 * [Configuring Keycloak](https://www.keycloak.org/guides#server)
 * [Authorizing multi-language microservices with oauth2-proxy](https://developers.redhat.com/articles/2021/05/20/authorizing-multi-language-microservices-oauth2-proxy)
+* [Keycloak REST API v18.0](https://documenter.getpostman.com/view/7294517/SzmfZHnd)
+* [JWT (JSON Web Token) Inspection](https://jwt.io)
+
+MongoDB
+
+* [MongoDB Compass GUI](https://www.mongodb.com/products/compass)
 
 ### Microservice patterns used
 

@@ -1,6 +1,7 @@
 package com.al.qdt.rps.cmd.domain.services.grpc;
 
 import com.al.qdt.rps.cmd.domain.services.RpsServiceV2;
+import com.al.qdt.rps.cmd.domain.services.security.AuthenticationService;
 import com.al.qdt.rps.grpc.v1.services.DeleteGameByIdRequest;
 import com.al.qdt.rps.grpc.v1.services.DeleteGameByIdResponse;
 import com.al.qdt.rps.grpc.v1.services.GameRequest;
@@ -17,15 +18,18 @@ import java.util.Set;
 import java.util.UUID;
 
 /**
- * Rps grpc service implementation class.
+ * RPS Game gRPC service implementation class.
+ *
+ * @version 1
  */
 @Slf4j
 @GrpcService
 @RequiredArgsConstructor
 public class RpsGrpcServiceV1 extends RpsCmdServiceGrpc.RpsCmdServiceImplBase {
     private final RpsServiceV2 rpsService;
+    private final AuthenticationService authenticationService;
 
-    private static Set<StreamObserver<GameResponse>> biObservers = new LinkedHashSet<>();
+    private static final Set<StreamObserver<GameResponse>> BI_OBSERVERS = new LinkedHashSet<>();
 
     /**
      * Play game unary rpc service.
@@ -100,39 +104,26 @@ public class RpsGrpcServiceV1 extends RpsCmdServiceGrpc.RpsCmdServiceImplBase {
     public StreamObserver<GameRequest> playBidirectionalStreaming(StreamObserver<GameResponse> responseObserver) {
         log.info("BIDIRECTIONAL GRPC SERVICE: Playing game...");
         // Add response observer to the set
-        biObservers.add(responseObserver);
+        BI_OBSERVERS.add(responseObserver);
         return new StreamObserver<>() {
             @Override
             public void onNext(GameRequest gameRequest) {
                 log.info("Received game inputs: {}", gameRequest);
-                biObservers.stream()
-                        .forEach(o -> o.onNext(processGame(gameRequest)));
+                BI_OBSERVERS.forEach(o -> o.onNext(processGame(gameRequest)));
             }
 
             @Override
             public void onError(Throwable throwable) {
-                biObservers.remove(responseObserver);
+                BI_OBSERVERS.remove(responseObserver);
                 log.error("Error occurred: ", throwable);
             }
 
             @Override
             public void onCompleted() {
-                biObservers.remove(responseObserver);
+                BI_OBSERVERS.remove(responseObserver);
                 log.info("Bidirectional stream completed...");
             }
         };
-    }
-
-    /**
-     * Processes game round inputs.
-     *
-     * @param request game round inputs
-     * @return game result
-     */
-    private GameResponse processGame(GameRequest request) {
-        return GameResponse.newBuilder()
-                .setResult(this.rpsService.play(request.getGame()))
-                .build();
     }
 
     /**
@@ -145,11 +136,32 @@ public class RpsGrpcServiceV1 extends RpsCmdServiceGrpc.RpsCmdServiceImplBase {
     public void deleteById(DeleteGameByIdRequest request, StreamObserver<DeleteGameByIdResponse> responseObserver) {
         final var gameId = UUID.fromString(request.getId());
         log.info("UNARY GRPC SERVICE: Deleting game by id: {}.", gameId.toString());
-        this.rpsService.deleteById(gameId);
+        this.rpsService.deleteById(gameId, this.getUserId());
         // we use the response observer’s onNext() method to return the result
         responseObserver.onNext(DeleteGameByIdResponse.newBuilder().build());
         // we use the response observer’s onCompleted() method to specify that we’ve finished dealing with the RPC
         responseObserver.onCompleted();
         log.info("Unary rpc call completed...");
+    }
+
+    /**
+     * Processes game round inputs.
+     *
+     * @param request game round inputs
+     * @return game result
+     */
+    private GameResponse processGame(GameRequest request) {
+        return GameResponse.newBuilder()
+                .setResult(this.rpsService.play(request, this.getUserId()))
+                .build();
+    }
+
+    /**
+     * Returns currently logged in user id.
+     *
+     * @return user id
+     */
+    private UUID getUserId() {
+        return this.authenticationService.getUserId();
     }
 }

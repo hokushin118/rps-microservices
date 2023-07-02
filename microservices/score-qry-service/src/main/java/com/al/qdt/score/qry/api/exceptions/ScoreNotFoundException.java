@@ -9,7 +9,10 @@ public class ScoreNotFoundException extends RuntimeException {
     // exception message
     public static final String SCORE_BY_ID_NOT_FOUND_EXCEPTION_MESSAGE = "Score with id %s has not been found!";
     // exception message
+    public static final String SCORE_BY_USER_ID_NOT_FOUND_EXCEPTION_MESSAGE = "Scores with user id %s have not been found!";
+    // exception message
     public static final String SCORES_BY_WINNER_NOT_FOUND_EXCEPTION_MESSAGE = "Scores with winner type %s have not been found!";
+    public static final String SCORES_BY_USER_ID_AND_WINNER_NOT_FOUND_EXCEPTION_MESSAGE = "Scores with user id %s and winner type %s have not been found!";
     // exception message
     public static final String SCORES_NOT_FOUND_EXCEPTION_MESSAGE = "Scores have not been found!";
 

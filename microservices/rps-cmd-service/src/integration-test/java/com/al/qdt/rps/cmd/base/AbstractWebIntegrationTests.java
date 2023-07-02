@@ -31,5 +31,6 @@ public abstract class AbstractWebIntegrationTests {
     void injectionTest() {
         assertNotNull(this.mockMvc);
         assertNotNull(this.objectMapper);
+
     }
 }

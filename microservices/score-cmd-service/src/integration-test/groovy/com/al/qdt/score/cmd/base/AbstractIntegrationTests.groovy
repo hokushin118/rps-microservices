@@ -1,6 +1,7 @@
 package com.al.qdt.score.cmd.base
 
 import com.al.qdt.score.cmd.ScoreCmdServiceApp
+import com.al.qdt.score.cmd.domain.services.security.AuthenticationService
 import com.al.qdt.score.cmd.infrastructure.config.TestConfig
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc
@@ -28,7 +29,18 @@ import spock.lang.Stepwise
 class AbstractIntegrationTests extends Specification {
 
     @Autowired
+    AuthenticationService authenticationService
+
+    @Autowired
     MockMvc mockMvc
+
+    void setup() {
+        when: 'Calling the auth service'
+        authenticationService.getUserId()
+
+        then: 'Return randomly generated user id'
+        UUID.randomUUID()
+    }
 
     def 'Testing injections'() {
         expect:

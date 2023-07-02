@@ -6,8 +6,9 @@ import org.springframework.beans.factory.annotation.Autowired
 import spock.lang.Subject
 import spock.lang.Title
 
-import static com.al.qdt.common.enums.Player.USER
-import static com.al.qdt.common.helpers.Constants.TEST_UUID
+import static com.al.qdt.common.domain.enums.Player.USER
+import static com.al.qdt.common.infrastructure.helpers.Constants.TEST_UUID
+import static com.al.qdt.common.infrastructure.helpers.Constants.USER_ONE_ID
 
 @Title("Integration testing of the ScoreMapper class")
 class ScoreMapperITSpec extends AbstractIntegrationTests implements EventTests {
@@ -31,6 +32,7 @@ class ScoreMapperITSpec extends AbstractIntegrationTests implements EventTests {
         then: 'Mapped successfully'
         assert score
         assert score.id == TEST_UUID && score.id == scoresAddedEvent.id
+        assert score.userId == USER_ONE_ID && score.userId == scoresAddedEvent.userId
         assert score.winner == USER && score.winner == scoresAddedEvent.winner
     }
 }

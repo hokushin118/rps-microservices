@@ -2,11 +2,13 @@ package com.al.qdt.score.qry.infrastructure.config
 
 import com.al.qdt.common.infrastructure.queries.QueryDispatcherImpl
 import com.al.qdt.cqrs.infrastructure.QueryDispatcher
+import com.al.qdt.score.qry.domain.services.security.AuthenticationService
 import com.al.qdt.score.qry.infrastructure.handlers.QueryHandler
 import com.al.qdt.score.qry.infrastructure.handlers.ScoreQueryHandler
 import com.al.qdt.score.qry.domain.repositories.ScoreRepository
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.TestConfiguration
+import org.springframework.boot.test.mock.mockito.MockBean
 import org.springframework.context.annotation.Bean
 
 /**
@@ -15,6 +17,9 @@ import org.springframework.context.annotation.Bean
  */
 @TestConfiguration
 class TestConfig {
+
+    @MockBean
+    AuthenticationService authenticationService;
 
     @Autowired
     ScoreRepository scoreRepository

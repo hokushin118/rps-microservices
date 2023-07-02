@@ -16,7 +16,11 @@ import java.util.UUID;
 @SuperBuilder
 public abstract class Message {
     public static final String ID_MUST_NOT_BE_NULL = "Identification must not be null";
+    public static final String USER_ID_MUST_NOT_BE_NULL = "User Id must not be null";
 
     @NotNull(message = ID_MUST_NOT_BE_NULL)
     private UUID id;
+
+    @NotNull(message = USER_ID_MUST_NOT_BE_NULL)
+    private UUID userId;
 }

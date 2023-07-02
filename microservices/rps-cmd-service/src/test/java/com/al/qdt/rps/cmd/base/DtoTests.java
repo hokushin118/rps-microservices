@@ -1,14 +1,17 @@
 package com.al.qdt.rps.cmd.base;
 
 import com.al.qdt.common.api.dto.BaseResponseDto;
+import com.al.qdt.common.api.dto.GameAdminDto;
 import com.al.qdt.common.api.dto.GameDto;
 import com.al.qdt.common.api.dto.GameResponseDto;
 
-import static com.al.qdt.common.enums.Hand.ROCK;
-import static com.al.qdt.common.enums.Hand.SCISSORS;
-import static com.al.qdt.common.enums.Player.USER;
-import static com.al.qdt.common.helpers.Constants.SUCCESS_MESSAGE;
-import static com.al.qdt.common.helpers.Constants.TEST_ID;
+import java.util.UUID;
+
+import static com.al.qdt.common.domain.enums.Hand.ROCK;
+import static com.al.qdt.common.domain.enums.Hand.SCISSORS;
+import static com.al.qdt.common.domain.enums.Player.USER;
+import static com.al.qdt.common.infrastructure.helpers.Constants.SUCCESS_MESSAGE;
+import static com.al.qdt.common.infrastructure.helpers.Constants.TEST_ID;
 
 public interface DtoTests {
 
@@ -39,23 +42,36 @@ public interface DtoTests {
     /**
      * Creates test instance for game dto object.
      *
-     * @param username username
+     * @param userId user id
      * @return game dto object
      */
-    default GameDto createGameDto(String username) {
+    default GameDto createGameDto(UUID userId) {
         return GameDto.builder()
                 .id(TEST_ID)
-                .username(username)
                 .hand(ROCK.name())
                 .build();
     }
 
     /**
-     * Creates test instance for game dto object without username.
+     * Creates test instance for game admin dto object.
+     *
+     * @param userId user id
+     * @return game admin dto object
+     */
+    default GameAdminDto createGameAdminDto(UUID userId) {
+        return GameAdminDto.builder()
+                .id(TEST_ID)
+                .userId(userId.toString())
+                .hand(ROCK.name())
+                .build();
+    }
+
+    /**
+     * Creates test instance for game dto object without userId.
      *
      * @return game dto object
      */
-    default GameDto createGameDtoWithMissedUserName(){
+    default GameDto createGameDtoWithMissedUserId() {
         return GameDto.builder()
                 .hand(ROCK.name())
                 .build();

@@ -8,8 +8,10 @@ import spock.lang.Unroll
 
 import javax.validation.ConstraintViolation
 
-import static com.al.qdt.common.helpers.Constants.TEST_UUID
+import static com.al.qdt.common.infrastructure.helpers.Constants.TEST_UUID
+import static com.al.qdt.common.infrastructure.helpers.Constants.USER_ONE_ID
 import static com.al.qdt.cqrs.messages.Message.ID_MUST_NOT_BE_NULL
+import static com.al.qdt.cqrs.messages.Message.USER_ID_MUST_NOT_BE_NULL
 
 @Title("Testing DeleteScoreCommand class")
 class DeleteScoreValidationSpec extends ValidationBaseTest implements CommandTests {
@@ -19,7 +21,7 @@ class DeleteScoreValidationSpec extends ValidationBaseTest implements CommandTes
 
     // Run before every feature method
     def setup() {
-        expectedDeleteScoreCommand = createDeleteScoreCommand TEST_UUID
+        expectedDeleteScoreCommand = createDeleteScoreCommand TEST_UUID, USER_ONE_ID
     }
 
     // Run after every feature method
@@ -34,7 +36,7 @@ class DeleteScoreValidationSpec extends ValidationBaseTest implements CommandTes
 
     def 'Testing DeleteScoreCommand equals() and hashCode() methods'() {
         given: 'Setup test data'
-        def actualDeleteScoreCommand = createDeleteScoreCommand()
+        def actualDeleteScoreCommand = createDeleteScoreCommand TEST_UUID, USER_ONE_ID
 
         expect:
         assert expectedDeleteScoreCommand == actualDeleteScoreCommand &&
@@ -45,9 +47,9 @@ class DeleteScoreValidationSpec extends ValidationBaseTest implements CommandTes
     }
 
     @Unroll
-    def 'Testing identifier validating constrains with right parameter - #id'(UUID id) {
+    def 'Testing identifier validating constrains with right parameter - #id and #userId'(UUID id, UUID userId) {
         given: 'Setup test data'
-        def deleteScoreCommand = createDeleteScoreCommand id
+        def deleteScoreCommand = createDeleteScoreCommand id, userId
 
         when: 'Validate test data'
         def constraintViolations = validator.validate deleteScoreCommand
@@ -56,24 +58,26 @@ class DeleteScoreValidationSpec extends ValidationBaseTest implements CommandTes
         assert constraintViolations.size() == ZERO_VIOLATIONS
 
         where:
-        id        | _
-        TEST_UUID | _
+        id        | userId
+        TEST_UUID | USER_ONE_ID
     }
 
     @Unroll
-    def 'Testing identifier validating constrains with wrong parameter - #id'(UUID id) {
+    def 'Testing identifier validating constrains with wrong parameter - #id and #userId, we get error message: #error'(UUID id, UUID userId, String error) {
         given: 'Setup test data'
-        def deleteScoreCommand = createDeleteScoreCommand id
+        def deleteScoreCommand = createDeleteScoreCommand id, userId
 
         when: 'Validate test data'
         Set<ConstraintViolation<DeleteScoreCommand>> constraintViolations = validator.validate deleteScoreCommand
 
         then:
-        assert constraintViolations.size() == SINGLE_VIOLATION
-        assert constraintViolations.iterator().next().message == ID_MUST_NOT_BE_NULL
+        assert constraintViolations.size() == count
+        assert constraintViolations.iterator().next().message == error
 
         where:
-        id   | _
-        null | _
+        id        | userId      | count            | error
+        TEST_UUID | null        | SINGLE_VIOLATION | USER_ID_MUST_NOT_BE_NULL
+        null      | USER_ONE_ID | SINGLE_VIOLATION | ID_MUST_NOT_BE_NULL
+        null      | null        | DOUBLE_VIOLATION | USER_ID_MUST_NOT_BE_NULL
     }
 }

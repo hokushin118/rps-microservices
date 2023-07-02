@@ -7,7 +7,7 @@ import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import org.springframework.web.servlet.view.InternalResourceViewResolver;
 
-import static com.al.qdt.common.helpers.Constants.MAX_AGE_SECS;
+import static com.al.qdt.common.infrastructure.helpers.Constants.MAX_AGE_SECS;
 
 @Configuration
 public class MvcCmdConfig implements WebMvcConfigurer {

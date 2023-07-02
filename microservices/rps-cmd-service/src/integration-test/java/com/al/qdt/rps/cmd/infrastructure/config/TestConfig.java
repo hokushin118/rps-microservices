@@ -9,6 +9,7 @@ import com.al.qdt.cqrs.infrastructure.CommandDispatcher;
 import com.al.qdt.cqrs.infrastructure.EventStore;
 import com.al.qdt.cqrs.producers.EventProducer;
 import com.al.qdt.rps.cmd.domain.aggregates.RpsAggregate;
+import com.al.qdt.rps.cmd.domain.services.security.AuthenticationService;
 import com.al.qdt.rps.cmd.infrastructure.handlers.CommandHandler;
 import com.al.qdt.rps.cmd.infrastructure.handlers.RpsCommandHandler;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
@@ -55,6 +56,9 @@ public class TestConfig {
 
     @MockBean
     EventProducer eventProducer;
+
+    @MockBean
+    AuthenticationService authenticationService;
 
     @Bean
     EventSourcingHandler<RpsAggregate> eventSourcingHandler() {

@@ -1,12 +1,12 @@
 package com.al.qdt.rps.qry.api.controllers;
 
 import com.al.qdt.common.api.advices.GlobalRestExceptionHandler;
+import com.al.qdt.rps.grpc.v1.services.ListOfGamesAdminResponse;
 import com.al.qdt.rps.grpc.v1.services.ListOfGamesResponse;
 import com.al.qdt.rps.qry.base.ProtoTests;
 import com.al.qdt.rps.qry.domain.services.RpsServiceV2;
-import com.google.protobuf.StringValue;
+import com.al.qdt.rps.qry.domain.services.security.AuthenticationService;
 import com.google.protobuf.util.JsonFormat;
-import lombok.SneakyThrows;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -22,14 +22,16 @@ import org.springframework.http.converter.protobuf.ProtobufJsonFormatHttpMessage
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
+import java.util.List;
 import java.util.UUID;
 
-import static com.al.qdt.common.helpers.Constants.TEST_UUID;
-import static com.al.qdt.common.helpers.Constants.USERNAME_ONE;
-import static com.al.qdt.common.helpers.Constants.USERNAME_TWO;
+import static com.al.qdt.common.infrastructure.helpers.Constants.TEST_UUID;
+import static com.al.qdt.common.infrastructure.helpers.Constants.USER_ONE_ID;
+import static com.al.qdt.common.infrastructure.helpers.Constants.USER_TWO_ID;
 import static java.nio.charset.StandardCharsets.UTF_8;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.any;
+import static org.mockito.Mockito.lenient;
 import static org.mockito.Mockito.only;
 import static org.mockito.Mockito.reset;
 import static org.mockito.Mockito.verify;
@@ -38,7 +40,8 @@ import static org.springframework.http.MediaType.APPLICATION_JSON;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @ExtendWith(MockitoExtension.class)
 @DisplayName("Testing of the RpsControllerV2 class")
@@ -51,6 +54,9 @@ class RpsControllerV2Test implements ProtoTests {
     @Mock
     RpsServiceV2 rpsService;
 
+    @Mock
+    AuthenticationService authenticationService;
+
     @InjectMocks
     RpsControllerV2 rpsController;
 
@@ -58,7 +64,7 @@ class RpsControllerV2Test implements ProtoTests {
     ArgumentCaptor<UUID> idParamArgumentCaptor;
 
     @Captor
-    ArgumentCaptor<StringValue> stringParamArgumentCaptor;
+    ArgumentCaptor<UUID> userIdParamArgumentCaptor;
 
     @BeforeAll
     static void init() {
@@ -72,47 +78,39 @@ class RpsControllerV2Test implements ProtoTests {
     @BeforeEach
     void setUp() {
         this.idParamArgumentCaptor = ArgumentCaptor.forClass(UUID.class);
-        this.stringParamArgumentCaptor = ArgumentCaptor.forClass(StringValue.class);
+        this.userIdParamArgumentCaptor = ArgumentCaptor.forClass(UUID.class);
+
+        lenient().when(this.authenticationService.getUserId()).thenReturn(UUID.randomUUID());
+
         this.mockMvc = MockMvcBuilders
                 .standaloneSetup(this.rpsController)
                 .addPlaceholderValue("api.version-two", "/v2")
                 .addPlaceholderValue("api.endpoint-games", "games")
+                .addPlaceholderValue("api.endpoint-admin", "admin")
                 .setMessageConverters(protobufJsonFormatHttpMessageConverter)
                 .setControllerAdvice(new GlobalRestExceptionHandler())
                 .build();
     }
 
-    @SneakyThrows(Exception.class)
     @Test
     @DisplayName("Testing of the all() method")
-    void allTest() {
-        final var firstGameDto = createGameDto(USERNAME_ONE);
-        final var secondGameDto = createGameDto(USERNAME_TWO);
-        final var listOfGamesResponse = ListOfGamesResponse.newBuilder()
-                .addGames(firstGameDto)
-                .addGames(secondGameDto)
+    void allTest() throws Exception {
+        final var firstGameAdminDto = createGameAdminDto(USER_ONE_ID);
+        final var secondGameAdminDto = createGameAdminDto(USER_TWO_ID);
+        final var listOfGamesResponse = ListOfGamesAdminResponse.newBuilder()
+                .addAllGames(List.of(firstGameAdminDto, secondGameAdminDto))
                 .build();
 
         when(this.rpsService.all()).thenReturn(listOfGamesResponse);
 
-        this.mockMvc.perform(get("/v2/games")
+        this.mockMvc.perform(get("/v2/admin/games")
                 .contentType(APPLICATION_JSON)
                 .accept(APPLICATION_JSON_VALUE)
                 .characterEncoding(UTF_8))
                 .andDo(print())
                 // response validation
                 .andExpect(status().isOk())
-                .andExpect(content().contentType(APPLICATION_JSON))
-                .andExpect(jsonPath("$.games")
-                        .exists())
-                .andExpect(jsonPath("$.games[0].username")
-                        .value(firstGameDto.getUsername()))
-                .andExpect(jsonPath("$.games[0].hand")
-                        .value(firstGameDto.getHand().name()))
-                .andExpect(jsonPath("$.games[1].username")
-                        .value(secondGameDto.getUsername()))
-                .andExpect(jsonPath("$.games[1].hand")
-                        .value(secondGameDto.getHand().name()));
+                .andExpect(content().contentType(APPLICATION_JSON));
 
         // verify that it was the only invocation and
         // that there's no more unverified interactions
@@ -120,26 +118,21 @@ class RpsControllerV2Test implements ProtoTests {
         reset(this.rpsService);
     }
 
-    @SneakyThrows(Exception.class)
     @Test
     @DisplayName("Testing of the findById() method")
-    void findByIdTest() {
-        final var gameDto = createGameDto(USERNAME_ONE);
+    void findByIdTest() throws Exception {
+        final var gameAdminDto = createGameAdminDto(USER_ONE_ID);
 
-        when(this.rpsService.findById(any(UUID.class))).thenReturn(gameDto);
+        when(this.rpsService.findById(any(UUID.class))).thenReturn(gameAdminDto);
 
-        this.mockMvc.perform(get("/v2/games/{id}", TEST_UUID)
+        this.mockMvc.perform(get("/v2/admin/games/{id}", TEST_UUID)
                 .contentType(APPLICATION_JSON)
                 .accept(APPLICATION_JSON_VALUE)
                 .characterEncoding(UTF_8))
                 .andDo(print())
                 // response validation
                 .andExpect(status().isOk())
-                .andExpect(content().contentType(APPLICATION_JSON))
-                .andExpect(jsonPath("$.username")
-                        .value(gameDto.getUsername()))
-                .andExpect(jsonPath("$.hand")
-                        .value(gameDto.getHand().name()));
+                .andExpect(content().contentType(APPLICATION_JSON));
 
         // verify that it was the only invocation and
         // that there's no more unverified interactions
@@ -148,36 +141,28 @@ class RpsControllerV2Test implements ProtoTests {
         reset(this.rpsService);
     }
 
-    @SneakyThrows(Exception.class)
     @Test
-    @DisplayName("Testing of the findByUsername() method")
-    void findByUsernameTest() {
-        final var gameDto = createGameDto(USERNAME_ONE);
+    @DisplayName("Testing of the findMyGames() method")
+    void findMyGamesTest() throws Exception {
+        final var gameDto = createGameDto(USER_ONE_ID);
         final var listOfGamesResponse = ListOfGamesResponse.newBuilder()
                 .addGames(gameDto)
                 .build();
 
-        when(this.rpsService.findByUsername(any(StringValue.class))).thenReturn(listOfGamesResponse);
+        when(this.rpsService.findMyGames(any(UUID.class))).thenReturn(listOfGamesResponse);
 
-        this.mockMvc.perform(get("/v2/games/users/{username}", USERNAME_ONE)
+        this.mockMvc.perform(get("/v2/games")
                 .contentType(APPLICATION_JSON)
                 .accept(APPLICATION_JSON_VALUE)
                 .characterEncoding(UTF_8))
                 .andDo(print())
                 // response validation
                 .andExpect(status().isOk())
-                .andExpect(content().contentType(APPLICATION_JSON))
-                .andExpect(jsonPath("$.games")
-                        .exists())
-                .andExpect(jsonPath("$.games[0].username")
-                        .value(gameDto.getUsername()))
-                .andExpect(jsonPath("$.games[0].hand")
-                        .value(gameDto.getHand().name()));
+                .andExpect(content().contentType(APPLICATION_JSON));
 
         // verify that it was the only invocation and
         // that there's no more unverified interactions
-        verify(this.rpsService, only()).findByUsername(this.stringParamArgumentCaptor.capture());
-        assertEquals(USERNAME_ONE, this.stringParamArgumentCaptor.getValue().getValue());
+        verify(this.rpsService, only()).findMyGames(this.userIdParamArgumentCaptor.capture());
         reset(this.rpsService);
     }
 }

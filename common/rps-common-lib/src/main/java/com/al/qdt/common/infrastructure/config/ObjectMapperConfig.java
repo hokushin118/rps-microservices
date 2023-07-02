@@ -5,7 +5,9 @@ import com.al.qdt.common.infrastructure.serde.LocalDateSerializer;
 import com.al.qdt.common.infrastructure.serde.LocalDateTimeDeserializer;
 import com.al.qdt.common.infrastructure.serde.LocalDateTimeSerializer;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.PropertyNamingStrategy;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import com.fasterxml.jackson.module.paramnames.ParameterNamesModule;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -25,7 +27,8 @@ public class ObjectMapperConfig {
         javaTimeModule.addSerializer(LocalDateTime.class, new LocalDateTimeSerializer());
         javaTimeModule.addDeserializer(LocalDateTime.class, new LocalDateTimeDeserializer());
         objectMapper.registerModule(javaTimeModule);
-
+        objectMapper.registerModule(new ParameterNamesModule())
+                .setPropertyNamingStrategy(PropertyNamingStrategy.SNAKE_CASE);
         return objectMapper;
     }
 }

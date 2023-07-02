@@ -1,10 +1,11 @@
 package com.al.qdt.common.api.advices;
 
 import com.al.qdt.common.api.errors.ApiError;
-import com.al.qdt.common.exceptions.DispatcherException;
+import com.al.qdt.common.api.exceptions.DispatcherException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
+import org.springframework.core.convert.ConversionFailedException;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -26,11 +27,7 @@ import javax.persistence.EntityNotFoundException;
 import javax.validation.ConstraintViolationException;
 import java.util.Objects;
 
-import static org.springframework.http.HttpStatus.BAD_REQUEST;
-import static org.springframework.http.HttpStatus.CONFLICT;
-import static org.springframework.http.HttpStatus.INTERNAL_SERVER_ERROR;
-import static org.springframework.http.HttpStatus.NOT_FOUND;
-import static org.springframework.http.HttpStatus.UNSUPPORTED_MEDIA_TYPE;
+import static org.springframework.http.HttpStatus.*;
 
 /**
  * Global exception handler class for the standard and custom exceptions.
@@ -146,9 +143,9 @@ public class GlobalRestExceptionHandler extends ResponseEntityExceptionHandler i
     /**
      * Handle NoHandlerFoundException.
      *
-     * @param e the NoHandlerFoundException
+     * @param e       the NoHandlerFoundException
      * @param headers HttpHeaders
-     * @param status HttpStatus
+     * @param status  HttpStatus
      * @param request WebRequest
      * @return the ApiError object
      */
@@ -229,6 +226,20 @@ public class GlobalRestExceptionHandler extends ResponseEntityExceptionHandler i
     @ExceptionHandler(DispatcherException.class)
     protected ResponseEntity<Object> handleDispatcherException(
             DispatcherException e) {
+        final var apiError = new ApiError(BAD_REQUEST);
+        apiError.setMessage(e.getMessage());
+        return buildResponseEntity(apiError);
+    }
+
+    /**
+     * Handle ConversionFailedException.
+     *
+     * @param e the ConversionFailedException
+     * @return the ApiError object
+     */
+    @ExceptionHandler(ConversionFailedException.class)
+    protected ResponseEntity<Object> handleConversionFailedException(
+            ConversionFailedException e) {
         final var apiError = new ApiError(BAD_REQUEST);
         apiError.setMessage(e.getMessage());
         return buildResponseEntity(apiError);

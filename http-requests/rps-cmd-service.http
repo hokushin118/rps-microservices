@@ -1,40 +1,33 @@
 # Play new game v1
 
-POST http://{{host}}/rps-cmd-api/v1/games HTTP/1.1
+POST http://{{host}}:{{rps_cmd_port}}/rps-cmd-api/v1/games HTTP/1.1
 Accept: application/json
 Content-Type: application/json
+Authorization: Bearer {{token}}
 
-{
-  "id": "748873ec-f887-4090-93ff-f8b8cbb34c7a",
-  "username": "User1",
-  "hand": "ROCK"
-}
+"ROCK"
 
 ###
 
 # Play new game v1.1
 
-POST http://{{host}}/rps-cmd-api/v1.1/games HTTP/1.1
+POST http://{{host}}:{{rps_cmd_port}}/rps-cmd-api/v1.1/games HTTP/1.1
 Accept: application/json
 Content-Type: application/json
+Authorization: Bearer {{token}}
 
-{
-  "id": "748873ec-f887-4090-93ff-f8b8cbb34c7a",
-  "username": "User1",
-  "hand": "ROCK"
-}
+"ROCK"
 
 ###
 
 # Play new game v2
 
-POST http://{{host}}/rps-cmd-api/v2/games HTTP/1.1
+POST http://{{host}}:{{rps_cmd_port}}/rps-cmd-api/v2/games HTTP/1.1
 Accept: application/json
 Content-Type: application/json
+Authorization: Bearer {{token}}
 
 {
-  "id": "748873ec-f887-4090-93ff-f8b8cbb34c7a",
-  "username": "User1",
   "hand": "ROCK"
 }
 
@@ -42,13 +35,12 @@ Content-Type: application/json
 
 # Play new game v2.1
 
-POST http://{{host}}/rps-cmd-api/v2.1/games HTTP/1.1
+POST http://{{host}}:{{rps_cmd_port}}/rps-cmd-api/v2.1/games HTTP/1.1
 Accept: application/json
 Content-Type: application/json
+Authorization: Bearer {{token}}
 
 {
-  "id": "748873ec-f887-4090-93ff-f8b8cbb34c7a",
-  "username": "User1",
   "hand": "ROCK"
 }
 

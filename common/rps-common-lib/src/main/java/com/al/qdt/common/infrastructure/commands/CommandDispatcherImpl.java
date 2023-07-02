@@ -1,6 +1,6 @@
 package com.al.qdt.common.infrastructure.commands;
 
-import com.al.qdt.common.exceptions.DispatcherException;
+import com.al.qdt.common.api.exceptions.DispatcherException;
 import com.al.qdt.cqrs.commands.BaseCommand;
 import com.al.qdt.cqrs.commands.CommandHandlerMethod;
 import com.al.qdt.cqrs.infrastructure.CommandDispatcher;

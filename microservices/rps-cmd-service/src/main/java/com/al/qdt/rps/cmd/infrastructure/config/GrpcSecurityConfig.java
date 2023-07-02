@@ -1,0 +1,27 @@
+package com.al.qdt.rps.cmd.infrastructure.config;
+
+import com.al.qdt.rps.grpc.v1.services.RpsCmdServiceGrpc;
+import net.devh.boot.grpc.server.security.check.AccessPredicate;
+import net.devh.boot.grpc.server.security.check.GrpcSecurityMetadataSource;
+import net.devh.boot.grpc.server.security.check.ManualGrpcSecurityMetadataSource;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+
+/**
+ * gRPC API security configuration.
+ */
+@Configuration(proxyBeanMethods = false)
+public class GrpcSecurityConfig {
+
+    @Bean
+    public GrpcSecurityMetadataSource grpcSecurityMetadataSource() {
+        final var source = new ManualGrpcSecurityMetadataSource();
+        source.set(RpsCmdServiceGrpc.getPlayMethod(), AccessPredicate.hasAllRoles("ROLE_USER", "ROLE_ADMIN"));
+        source.set(RpsCmdServiceGrpc.getPlayClientStreamingMethod(), AccessPredicate.hasAllRoles("ROLE_USER", "ROLE_ADMIN"));
+        source.set(RpsCmdServiceGrpc.getPlayServerStreamingMethod(), AccessPredicate.hasAllRoles("ROLE_USER", "ROLE_ADMIN"));
+        source.set(RpsCmdServiceGrpc.getPlayBidirectionalStreamingMethod(), AccessPredicate.hasAllRoles("ROLE_USER", "ROLE_ADMIN"));
+        source.set(RpsCmdServiceGrpc.getDeleteByIdMethod(), AccessPredicate.hasRole("ROLE_ADMIN"));
+        source.setDefault(AccessPredicate.denyAll());
+        return source;
+    }
+}

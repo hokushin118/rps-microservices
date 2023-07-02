@@ -18,9 +18,6 @@ public class GameDto implements Serializable {
     String id;
 
     @NotBlank
-    String username;
-
-    @NotBlank
     String hand;
 
     @JsonPOJOBuilder(withPrefix = "")

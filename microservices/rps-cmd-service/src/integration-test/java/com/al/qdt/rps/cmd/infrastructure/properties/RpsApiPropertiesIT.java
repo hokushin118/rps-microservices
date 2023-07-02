@@ -14,9 +14,10 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 @DisplayName("Integration testing of the RpsApiProperties class")
 @Tag(value = "common")
 class RpsApiPropertiesIT extends AbstractIntegrationTests {
+    private static final String HOSTNAME = "localhost";
     private static final String LICENSE_NAME = "The GNU General Public License, Version 3";
     private static final String LICENSE_URL = "https://www.gnu.org/licenses/gpl-3.0.txt";
-    private static final String DEV_SERVER_BASE_URL = "http://localhost:8081/rps-cmd-api";
+    private static final String DEV_SERVER_BASE_URL = "http://localhost:0/rps-cmd-api";
     private static final String DEV_SERVER_DESCRIPTION = "Dev server";
     private static final String PROD_SERVER_BASE_URL = "http://localhost:8080/rps-cmd-api";
     private static final String PROD_SERVER_DESCRIPTION = "Prod server";
@@ -34,6 +35,7 @@ class RpsApiPropertiesIT extends AbstractIntegrationTests {
     @Test
     @DisplayName("Testing injected properties")
     void propertiesTest() {
+        assertEquals(HOSTNAME, this.rpsApiProperties.getHostname());
         assertEquals(LICENSE_NAME, this.rpsApiProperties.getLicenseName());
         assertEquals(LICENSE_URL, this.rpsApiProperties.getLicenseUrl());
         assertEquals(DEV_SERVER_BASE_URL, this.rpsApiProperties.getDev().getServer().getBaseUrl());
