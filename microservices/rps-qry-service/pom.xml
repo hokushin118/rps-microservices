@@ -582,7 +582,6 @@
                         </goals>
                         <configuration>
                             <skip>${integration-tests.skip}</skip>
-                            <fork>false</fork>
                             <profiles>
                                 <profile>it</profile>
                             </profiles>
@@ -760,8 +759,6 @@
                         <exclude>**/*ITSpec.java</exclude>
                     </excludes>
                     <useSystemClassLoader>false</useSystemClassLoader>
-                    <forkCount>3</forkCount>
-                    <reuseForks>true</reuseForks>
                     <testFailureIgnore>true</testFailureIgnore>
                     <!-- base directory where all reports are written to -->
                     <reportsDirectory>${project.build.directory}/test-reports/unit</reportsDirectory>
