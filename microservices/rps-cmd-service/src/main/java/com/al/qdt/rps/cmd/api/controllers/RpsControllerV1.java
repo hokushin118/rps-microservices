@@ -34,6 +34,7 @@ import java.util.concurrent.CompletableFuture;
 import static com.al.qdt.common.infrastructure.helpers.Constants.GAME_RESPONSE_EXPECTED_JSON;
 import static com.al.qdt.common.infrastructure.helpers.Constants.HANDLER_ERROR_JSON;
 import static com.al.qdt.common.infrastructure.helpers.Constants.HAND_EXAMPLE;
+import static com.al.qdt.common.infrastructure.helpers.Constants.INCORRECT_ID_JSON;
 import static com.al.qdt.common.infrastructure.helpers.Constants.MALFORMED_JSON;
 import static com.al.qdt.common.infrastructure.helpers.Constants.MULTIPLE_HANDLERS_ERROR_JSON;
 import static com.al.qdt.common.infrastructure.helpers.Constants.TEST_ID;
@@ -225,6 +226,12 @@ public class RpsControllerV1 {
                                             name = "Multiple command handlers",
                                             value = MULTIPLE_HANDLERS_ERROR_JSON
                                     )}
+                    )),
+            @ApiResponse(responseCode = "404",
+                    description = "Incorrect game id",
+                    content = @Content(
+                            mediaType = APPLICATION_JSON_VALUE,
+                            schema = @Schema(implementation = ApiError.class, example = INCORRECT_ID_JSON)
                     ))
     })
     @ResponseStatus(HttpStatus.NO_CONTENT)
@@ -280,15 +287,21 @@ public class RpsControllerV1 {
                                             name = "Multiple command handlers",
                                             value = MULTIPLE_HANDLERS_ERROR_JSON
                                     )}
+                    )),
+            @ApiResponse(responseCode = "404",
+                    description = "Incorrect game id",
+                    content = @Content(
+                            mediaType = APPLICATION_JSON_VALUE,
+                            schema = @Schema(implementation = ApiError.class, example = INCORRECT_ID_JSON)
                     ))
     })
     @ResponseStatus(HttpStatus.NO_CONTENT)
     @DeleteMapping("${api.version-one-async}/${api.endpoint-admin}/${api.endpoint-games}/{id}")
     @Timed(value = "game.deleteById.async", description = "Time taken to delete game by id asynchronously", longTask = true)
-    public void deleteByIdAsync(@Parameter(description = "Id of game that needs to be deleted", example = TEST_ID, required = true)
-                                @Valid @NotNull @PathVariable(value = "id") UUID id) {
+    public CompletableFuture<Void> deleteByIdAsync(@Parameter(description = "Id of game that needs to be deleted", example = TEST_ID, required = true)
+                                                   @Valid @NotNull @PathVariable(value = "id") UUID id) {
         log.info("REST CONTROLLER: Deleting game by id: {} asynchronously.", id.toString());
-        this.rpsService.deleteByIdAsync(id, this.getUserId());
+        return this.rpsService.deleteByIdAsync(id, this.getUserId());
     }
 
     /**

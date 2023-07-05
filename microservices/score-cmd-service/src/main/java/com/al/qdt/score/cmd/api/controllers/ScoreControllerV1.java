@@ -27,6 +27,7 @@ import javax.validation.constraints.NotNull;
 import java.util.UUID;
 
 import static com.al.qdt.common.infrastructure.helpers.Constants.HANDLER_ERROR_JSON;
+import static com.al.qdt.common.infrastructure.helpers.Constants.INCORRECT_ID_JSON;
 import static com.al.qdt.common.infrastructure.helpers.Constants.MALFORMED_JSON;
 import static com.al.qdt.common.infrastructure.helpers.Constants.MULTIPLE_HANDLERS_ERROR_JSON;
 import static com.al.qdt.common.infrastructure.helpers.Constants.TEST_ID;
@@ -79,6 +80,12 @@ public class ScoreControllerV1 {
                                             name = "Multiple command handlers",
                                             value = MULTIPLE_HANDLERS_ERROR_JSON
                                     )}
+                    )),
+            @ApiResponse(responseCode = "404",
+                    description = "Incorrect score id",
+                    content = @Content(
+                            mediaType = APPLICATION_JSON_VALUE,
+                            schema = @Schema(implementation = ApiError.class, example = INCORRECT_ID_JSON)
                     ))
     })
     @ResponseStatus(HttpStatus.NO_CONTENT)
