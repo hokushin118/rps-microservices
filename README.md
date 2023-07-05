@@ -19,8 +19,8 @@ Source: [Architecting Cloud Native .NET Applications for Azure](https://learn.mi
 
 ### Technology stack
 
-* [OpenJDK 11](https://openjdk.java.net/projects/jdk/11)
-* [Maven 3.6.0](https://maven.apache.org)
+* [OpenJDK 11](https://openjdk.java.net/projects/jdk/11) or higher
+* [Maven 3.6.0](https://maven.apache.org) or higher
 * [Spring Boot 2.6.1](https://spring.io/projects/spring-boot)
 * [Lombok 1.18.20](https://projectlombok.org)
 * [MapStruct](https://mapstruct.org)
@@ -53,6 +53,8 @@ Microservices active profile is __dev__.
 
 ### Prerequisites
 
+* [OpenJDK 11](https://openjdk.java.net/projects/jdk/11) or higher
+* [Maven 3.6.0](https://maven.apache.org) or higher
 * [Keycloak 18.0.0](https://www.keycloak.org)  
 * [MongoDB Community Edition](https://www.mongodb.com/docs/manual/tutorial/install-mongodb-on-windows)  
 * [Mongo Shell](https://www.mongodb.com/docs/v4.4/mongo/#std-label-compare-mongosh-mongo)  
@@ -61,14 +63,300 @@ Microservices active profile is __dev__.
 * [Redis](https://redis.io)  
 * [MariaDB Community Server 10.6.14](https://mariadb.org)  
 
-### 1. Installing Keycloak on local machine
+### 1. Installing OpenJDK 11 on local machine
+
+* Make sure you have [OpenJDK 11](https://openjdk.java.net/projects/jdk/11) or a higher version installed using the following command:
+
+```
+      > java -version
+```
+
+You should see the following output on Windows 10 machine:
+
+```
+      openjdk version "11.0.19" 2023-04-18
+      OpenJDK Runtime Environment Temurin-11.0.19+7 (build 11.0.19+7)
+      OpenJDK 64-Bit Server VM Temurin-11.0.19+7 (build 11.0.19+7, mixed mode)
+```
+
+or
+
+```
+      openjdk 11.0.19 2023-04-18                                                                                              
+      OpenJDK Runtime Environment (build 11.0.19+7-post-Ubuntu-0ubuntu122.04.1)                                              
+      OpenJDK 64-Bit Server VM (build 11.0.19+7-post-Ubuntu-0ubuntu122.04.1, mixed mode, sharing)     
+```
+
+on Linux Ubuntu 20.04.6 LTS machine. If not, follow the steps below to install it.
+
+#### Windows 10
+
+* Download and extract [OpenJDK11U-jdk_x64_windows_hotspot_11.0.19_7.zip](https://adoptium.net/temurin/releases/?version=11) archive file for Windows x64 from the [Adoptium](https://adoptium.net/temurin/releases/?version=11) website.
+
+* Extract the contents of the [OpenJDK11U-jdk_x64_windows_hotspot_11.0.19_7.zip](https://adoptium.net/temurin/releases/?version=11) archive file to a directory of your choice. _D:\jdks_ for example.
+
+* Add/Update __user environmental variables__. Open a __Command Prompt__ and set the value of the _JAVA_HOME_ environment variable to your [Eclipse Temurin OpenJDK 11](https://adoptium.net/temurin/releases/?version=11) for Windows installation path:
+
+```
+      > setx JAVA_HOME "D:\jdks\jdk-11.0.19+7"
+```
+
+* Add the _bin_ directory contained in your [Eclipse Temurin OpenJDK 11](https://adoptium.net/temurin/releases/?version=11) for Windows installation path to the _PATH_ environment variable:
+
+```
+      > setx PATH "%JAVA_HOME%\bin;%PATH%;"
+```
+
+* Add/Update __system environmental variables__. Open a __Command Prompt__ as __Administrator__ and set the value of the _JAVA_HOME_ environment variable to your [Eclipse Temurin OpenJDK 11](https://adoptium.net/temurin/releases/?version=11) for Windows installation path:
+
+```
+      > setx -m JAVA_HOME "D:\jdks\jdk-11.0.19+7"
+```
+
+* Add the _bin_ directory contained in your [Eclipse Temurin OpenJDK 11](https://adoptium.net/temurin/releases/?version=11) for Windows installation path to the _PATH_ environment variable:
+
+```
+      > setx -m PATH "%JAVA_HOME%\bin;%PATH%;"
+```
+
+__Note:__ The _setx_ command permanently updates the environment variables. To add/update __system environment variables__, you must use the _-m_ switch and open the command prompt using __Administrator__ privilege.
+
+* Restart the __Command Prompt__ to reload the environment variables.
+
+* Finally, verify that the _JAVA_HOME_ and _PATH_ environment variables are set and Java is installed:
+
+```  
+      > echo %JAVA_HOME%  
+      > echo %PATH%
+      > java -version
+```
+
+[Installing and using OpenJDK 11 for Windows](https://access.redhat.com/documentation/ru-ru/openjdk/11/html-single/installing_and_using_openjdk_11_for_windows/index)
+
+#### Linux Ubuntu 20.04.6 LTS
+
+* Install the Java Runtime Environment (JRE) from [OpenJDK 11](https://openjdk.java.net/projects/jdk/11) or higher using the following commands:
+
+```
+      > sudo apt install default-jre
+```
+
+__Note:__ By default, Ubuntu 20.04 includes [OpenJDK 11](https://openjdk.java.net/projects/jdk/11), which is an open-source variant of the JRE and JDK.
+
+* You can have multiple Java installations on one machine. You can configure which version is the default for use on the command line by using the update-alternatives command:
+
+```
+      > sudo update-alternatives --config java  
+```
+
+You should see the following output:
+
+```
+    There is only one alternative in link group java (providing /usr/bin/java): /usr/lib/jvm/java-11-openjdk-amd64/bin/java 
+    Nothing to configure.
+```
+
+It means that we have only single Java installation, [OpenJDK 11](https://openjdk.java.net/projects/jdk/11), on our machine and it's located at the _/usr/lib/jvm/java-11-openjdk-amd64/bin/java_ directory. Note this directory as you will need it in the next step.
+ 
+* Then open the _/etc/environment_ file in any text editor, nano for example, using the following command:
+
+```
+      > sudo nano /etc/environment
+```
+
+Modifying this file will set the environment variables for all users on your machine. 
+
+* At the end of the file, add the following line, making sure to replace Java path with yours obtained in the previous step:
+
+```
+      JAVA_HOME="/usr/lib/jvm/java-11-openjdk-amd64"
+```
+
+__Note:__ Do not include the __bin/__ portion of the Java installation location path to the _JAVA_HOME_
+
+* Then reload this file to apply the changes to your current session with the following command:
+
+```
+      > source /etc/environment
+```
+
+* Finally, verify that the _JAVA_HOME_ environment variable is set and Java is installed:
+
+```  
+      > echo $JAVA_HOME  
+      > java -version  
+```
+
+[How To Install Java with Apt on Ubuntu 20.04](https://www.digitalocean.com/community/tutorials/how-to-install-java-with-apt-on-ubuntu-20-04)
+
+### 2. Installing Maven on local machine
+
+* Make sure you have [Maven](https://openjdk.java.net/projects/jdk/11) or a higher version installed using the following command:
+
+```
+      > mvn -version
+```
+
+You should see the following output on Windows 10 machine:
+
+```
+      Apache Maven 3.9.3 (21122926829f1ead511c958d89bd2f672198ae9f)
+      Maven home: D:\maven\apache-maven-3.9.3
+      Java version: 11.0.19, vendor: Eclipse Adoptium, runtime: D:\jdks\jdk-11.0.19+7
+      Default locale: ru_RU, platform encoding: Cp1251
+      OS name: "windows 10", version: "10.0", arch: "amd64", family: "windows"
+```
+
+or
+
+```
+      Apache Maven 3.9.3 (21122926829f1ead511c958d89bd2f672198ae9f)
+      Maven home: /opt/apache-maven-3.9.3
+      Java version: 11.0.19, vendor: Ubuntu, runtime: /usr/lib/jvm/java-11-openjdk-amd64
+      Default locale: en, platform encoding: UTF-8
+      OS name: "linux", version: "5.10.102.1-microsoft-standard-wsl2", arch: "amd64", family: "unix"
+```
+
+on Linux Ubuntu 20.04.6 LTS machine. If not, follow the steps below to install it.
+
+#### Window 10
+
+* Download the [apache-maven-3.9.3-bin.zip](https://dlcdn.apache.org/maven/maven-3/3.9.3/binaries/apache-maven-3.9.3-bin.zip) binary archive file from the [Apache Maven Project](https://maven.apache.org/download.cgi) website.
+
+* Extract the contents of the [apache-maven-3.9.3-bin.zip](https://dlcdn.apache.org/maven/maven-3/3.9.3/binaries/apache-maven-3.9.3-bin.zip) archive file to a directory of your choice. _D:\maven_ for example.
+
+* Add/Update __user environmental variables__. Open a __Command Prompt__ and set the value of the _M2_HOME_ environment variable for Windows installation path:
+
+```
+      > setx M2_HOME "D:\maven\apache-maven-3.9.3"
+```
+
+* Add the _bin_ directory contained in your [apache-maven-3.9.3-bin.zip](https://dlcdn.apache.org/maven/maven-3/3.9.3/binaries/apache-maven-3.9.3-bin.zip) for Windows installation path to the _PATH_ environment variable:
+
+```
+      > setx PATH "%M2_HOME%\bin;%PATH%;"
+```
+
+* Add/Update __system environmental variables__. Open a __Command Prompt__ as __Administrator__ and set the value of the _M2_HOME_ environment variable to your [apache-maven-3.9.3-bin.zip](https://dlcdn.apache.org/maven/maven-3/3.9.3/binaries/apache-maven-3.9.3-bin.zip) for Windows installation path:
+
+```
+      > setx -m M2_HOME "D:\maven\apache-maven-3.9.3"
+```
+
+* Add the _bin_ directory contained in your [apache-maven-3.9.3-bin.zip](https://dlcdn.apache.org/maven/maven-3/3.9.3/binaries/apache-maven-3.9.3-bin.zip) for Windows installation path to the _PATH_ environment variable:
+
+```
+      > setx -m PATH "%M2_HOME%\bin;%PATH%;"
+```
+
+* Restart the __Command Prompt__ to reload the environment variables.
+
+* Finally, verify that the _M2_HOME_ and _PATH_ environment variables are set and Maven is installed:
+
+```  
+      > echo %M2_HOME%  
+      > echo %PATH%
+      > mvn -version
+```
+
+#### Linux Ubuntu 20.04.6 LTS
+
+* Download the [apache-maven-3.9.3-bin.tar.gz](https://dlcdn.apache.org/maven/maven-3/3.9.3/binaries/apache-maven-3.9.3-bin.tar.gz) binary archive file from the [Apache Maven Project](https://maven.apache.org/download.cgi) website.
+
+```
+      > wget https://dlcdn.apache.org/maven/maven-3/3.9.3/binaries/apache-maven-3.9.3-bin.tar.gz
+```
+
+* Once the download is completed, extract the downloaded file with the following commands:
+
+```
+      > tar -xvzf apache-maven-3.9.3-bin.tar.gz
+```
+
+* Move the extracted files to the _/opt_ directory with the following command:
+
+```
+      > sudo mv apache-maven-3.9.3 /opt
+```
+
+* Remove the downloaded archive:
+
+```
+      > rm apache-maven-3.9.3-bin.tar.gz
+```
+
+* Then open the _/etc/environment_ file in nano text editor, using the following command:
+
+```
+      > sudo nano /etc/environment
+```
+
+* At the end of the file, add the following line:
+
+```
+      M2_HOME="/opt/apache-maven-3.9.3"
+```
+
+* Verify that the _JAVA_HOME_ environment variable is set:
+
+```  
+      > echo $M2_HOME  
+```
+
+You should see the following output:
+
+```  
+      /opt/apache-maven-3.9.3
+```
+
+* Add the _bin_ directory contained in maven path to the _PATH_ environment variable:
+
+```
+      > export PATH="$M2_HOME/bin:$PATH"
+```
+
+* Then reload this file to apply the changes to your current session with the following command:
+
+```
+      > source /etc/environment
+```
+
+* Finally, verify the Maven installation:
+
+```  
+      > mvn -version
+```
+
+You should see the following output:
+
+```
+      Apache Maven 3.9.3 (21122926829f1ead511c958d89bd2f672198ae9f)
+      Maven home: /opt/apache-maven-3.9.3
+      Java version: 11.0.19, vendor: Ubuntu, runtime: /usr/lib/jvm/java-11-openjdk-amd64
+      Default locale: en, platform encoding: UTF-8
+      OS name: "linux", version: "5.10.102.1-microsoft-standard-wsl2", arch: "amd64", family: "unix"
+```
+
+[How to Install Maven on Linux (Ubuntu)](https://www.digitalocean.com/community/tutorials/install-maven-linux-ubuntu)
+
+### 3. Cloning repository to the local machine
+
+* Clone the __rps-microservices__ project to your local machine by executing the following command:
+
+```
+      > git clone https://github.com/hokushin118/rps-microservices.git
+```
+
+### 4. Installing Keycloak standalone server on local machine
+
+#### Window 10
 
 * Download and extract [keycloak-18.8.0.zip](https://github.com/keycloak/keycloak/releases/download/18.0.0/keycloak-18.0.0.zip) archive file from the [Keycloak](https://www.keycloak.org/archive/downloads-18.0.0.html) website.
 
 * Import the _rps-dev_ realm from the _/infrastructure/keycloak/rps-dev-realm.json_ file by executing the following command:.
 
 ```
-   > bin\kc.bat import --dir <path to root directory>\rps-microservices\infrastructure\keycloak\ --override true
+      > bin\kc.bat import --dir <path to root directory>\rps-microservices\infrastructure\keycloak\ --override true
 ```
 
 You should see the following line in the output:
@@ -77,15 +365,125 @@ You should see the following line in the output:
       2023-07-02 16:08:13,347 INFO  [org.keycloak.exportimport.util.ImportUtils] (main) Realm 'rps-dev' imported
 ```
 
-* To start the [Keycloak 18.0.0](https://www.keycloak.org), run the following command:
+* To start the [Keycloak 18.0.0](https://www.keycloak.org) in development mode, run the following command:
 
 ```
-   > bin\kc.bat start-dev --http-port 8180
+      > bin\kc.bat start-dev --http-port 8180
 ```
 
-The [Keycloak 18.0.0](https://www.keycloak.org) will be started in dev mode on port number 8190.
+The [Keycloak 18.0.0](https://www.keycloak.org) will be started in dev mode on port number _8190_.
 
-* Open [http://localhost:8180/](http://localhost:8180/) and create a super user by filling the form with your preferred username and password. 
+#### Linux Ubuntu 20.04.6 LTS
+
+* Ensure your system is updated:
+
+```
+      > sudo apt update && sudo apt upgrade
+```
+
+* Download the [keycloak-18.0.0.tar.gz](https://github.com/keycloak/keycloak/releases/download/18.0.0/keycloak-18.0.0.tar.gz) archive file from the [Keycloak](https://www.keycloak.org/archive/downloads-18.0.0.html) website.
+
+```
+      > wget https://github.com/keycloak/keycloak/releases/download/18.0.0/keycloak-18.0.0.tar.gz
+```
+
+* Once the download is completed, extract the downloaded file with the following commands:
+
+```
+      > tar -xvzf keycloak-18.0.0.tar.gz
+```
+
+* Move the extracted files to the _/opt/keycloak_ directory with the following command:
+
+```
+      > sudo mv keycloak-18.0.0 /opt/keycloak
+```
+
+* Remove the downloaded archive:
+
+```
+      > rm keycloak-18.0.0.tar.gz
+```
+
+* Then open the _/etc/environment_ file using the following command:
+
+```
+      > sudo nano /etc/environment
+```
+
+* At the end of the file, add the following line and save the changes.
+
+```
+      KEYCLOAK_HOME="/opt/keycloak"
+```
+
+* Then reload this file to apply the changes to your current session with the following command:
+
+```
+      > source /etc/environment
+```
+
+* Finally, verify that the _KEYCLOAK_HOME_ environment variable is set:
+
+```  
+      > echo $KEYCLOAK_HOME  
+```
+
+You should see the following output:
+
+```
+      /opt/keycloak
+```
+
+* Create a separate user for the Keycloak service and set the password using the following commands:
+
+```
+      > sudo useradd keycloak -m
+      > sudo usermod --shell /bin/bash keycloak
+      > sudo passwd keycloak
+      > New password: 12345 
+      > Retype new password: 12345 
+```
+
+* Add the user to the __sudoers__ group for it to have _Administrative Privileges_ using the following command:
+
+```
+      > sudo usermod -aG sudo keycloak
+```
+
+* Give the _keycloak_ user ownership of the keycloak files by executing the following command:
+
+```
+      > sudo chown -R keycloak:keycloak $KEYCLOAK_HOME
+```
+
+* Import the _rps-dev_ realm from the _/infrastructure/keycloak/rps-dev-realm.json_ file by executing the following command:
+
+```
+      > sudo $KEYCLOAK_HOME/bin/kc.sh import --dir ./rps-microservices/infrastructure/keycloak --override true
+```
+
+You should see the following line in the output:
+
+```
+      2023-07-02 16:08:13,347 INFO  [org.keycloak.exportimport.util.ImportUtils] (main) Realm 'rps-dev' imported
+```
+
+* To start the [Keycloak 18.0.0](https://www.keycloak.org) in development mode, run the following command:
+
+```
+      > sudo $KEYCLOAK_HOME/bin/kc.sh start-dev --http-port 8180
+```
+
+The [Keycloak 18.0.0](https://www.keycloak.org) will be started in dev mode on port number _8190_.
+
+__Note:__ When running in development mode, [Keycloak 18.0.0](https://www.keycloak.org) uses by default an H2 Database to store its configuration.
+
+[Keycloak on bare metal](https://www.keycloak.org/getting-started/getting-started-zip)
+
+#### Creating Keycloak super user account (Windows 10 and Linux Ubuntu 20.04.6 LTS)
+
+* Open [http://localhost:8180/](http://localhost:8180) and create a super user by filling the form with your preferred username and password. 
 
 ![keycloak welcome page](img/kc-welcome-page.png)
   
@@ -100,16 +498,102 @@ For example:
 [Keycloak Getting Started](https://www.keycloak.org/getting-started/getting-started-zip)  
 [How to export and import Realms in Keycloak](https://www.mastertheboss.com/keycloak/how-to-export-and-import-realms-in-keycloak)
 
-### 2. Installing MongoDB on local machine
+### 5. Installing MongoDB on local machine
+
+#### Window 10
 
 * Download and install [MongoDB Community Edition](https://www.mongodb.com/docs/manual/tutorial/install-mongodb-on-windows) from official website.
 
 * Download and install [Mongo Shell](https://www.mongodb.com/docs/mongodb-shell/install) from official website.
 
+#### Linux Ubuntu 20.04.6 LTS
+
+* Ensure your system is updated:
+
+```
+      > sudo apt update && sudo apt upgrade
+```
+
+* First, import GPK key for the MongoDB apt repository on your system using the following command:
+
+```
+      > sudo apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv 656408E390CFB1F5
+```
+
+Then add MongoDB APT repository url in /etc/apt/sources.list.d/mongodb.list using the following command:
+
+```
+      > echo "deb [ arch=amd64,arm64 ] https://repo.mongodb.org/apt/ubuntu focal/mongodb-org/4.4 multiverse" | sudo tee /etc/apt/sources.list.d/mongodb-org-4.4.list
+```
+
+* And then, install MongoDB on your computer using the following commands:
+
+```
+      > sudo apt update
+      > sudo apt install mongodb-org=4.4.22 mongodb-org-server=4.4.22 mongodb-org-shell=4.4.22 mongodb-org-mongos=4.4.22 mongodb-org-tools=4.4.22
+```
+
+* After installation, MongoDB should start automatically. if not, enable and start it using the following commands:
+
+```
+      > sudo systemctl enable mongod.service
+      > sudo systemctl start mongod.service
+```
+
+* Check the status using the following command:
+
+```
+      > sudo systemctl status mongod.service
+```
+
+* Finally, check installed MongoDB version using the following command:
+
+```
+      > mongod --version
+```
+
+You should see the following output:
+
+```
+      db version v4.4.22
+      Build Info: {
+          "version": "4.4.22",
+          "gitVersion": "fc832685b99221cffb1f5bb5a4ff5ad3e1c416b2",
+          "openSSLVersion": "OpenSSL 1.1.1f  31 Mar 2020",
+          "modules": [],
+          "allocator": "tcmalloc",
+          "environment": {
+              "distmod": "ubuntu2004",
+              "distarch": "x86_64",
+              "target_arch": "x86_64"
+          }
+      }
+```
+
+* Install [Mongo Shell](https://www.mongodb.com/docs/mongodb-shell/install) on your computer using the following commands:
+
+```
+      > sudo apt install mongodb-mongosh=1.1.9
+```
+
+* To prevent unintended upgrades, you can pin the package at the currently installed version:
+
+```
+      echo "mongodb-org hold" | sudo dpkg --set-selections
+      echo "mongodb-org-server hold" | sudo dpkg --set-selections
+      echo "mongodb-mongosh hold" | sudo dpkg --set-selections
+      echo "mongodb-org-mongos hold" | sudo dpkg --set-selections
+      echo "mongodb-org-tools hold" | sudo dpkg --set-selections
+```
+
+[Install MongoDB on Ubuntu](https://www.mongodb.com/docs/manual/tutorial/install-mongodb-on-ubuntu)
+
+#### Creating MongoDB root account (Windows 10 and Linux Ubuntu 20.04.6 LTS)
+
 * Open the _command line tool_ and type the following command:
 
 ```
-   > mongosh
+      > mongosh
 ```
 
 You should see the following output:
@@ -140,7 +624,7 @@ It means that [Mongo Shell](https://www.mongodb.com/docs/v4.4/mongo/#std-label-c
 * Change database to _admin_ by executing the following command in [Mongo Shell](https://www.mongodb.com/docs/v4.4/mongo/#std-label-compare-mongosh-mongo):
 
 ```
-   > use admin
+      > use admin
 ```
 
 You should see the following output:
@@ -149,7 +633,7 @@ You should see the following output:
       switched to db admin
 ```
 
-To create a _root_ user with _root_ build-in role execute the following command in [Mongo Shell](https://www.mongodb.com/docs/v4.4/mongo/#std-label-compare-mongosh-mongo):
+* To create a _root_ user with _root_ build-in role execute the following command in [Mongo Shell](https://www.mongodb.com/docs/v4.4/mongo/#std-label-compare-mongosh-mongo):
 
 ```
       > db.createUser(
@@ -174,7 +658,9 @@ It means that user _root_ user with build-in [_root_](https://www.mongodb.com/do
 
 MongoDB [build-in roles](https://www.mongodb.com/docs/manual/reference/built-in-roles/)
 
-### 3. Adding custom entries to the etc/host file for the Apache Zookeeper and Kafka applications
+### 6. Adding custom entries to the etc/host file for the Apache Zookeeper and Kafka applications
+
+#### Window 10
 
 Open the _C:\windows\system32\drivers\etc\hosts_ file in any text editor and add the following entries and save the file:
 
@@ -182,38 +668,46 @@ Open the _C:\windows\system32\drivers\etc\hosts_ file in any text editor and add
      > 127.0.0.1 zk.internal kafka.internal
 ```
 
-### 4. Deploying Apache Zookeeper on local machine
+#### Linux Ubuntu 20.04.6 LTS
+
+Open the _/etc/hosts_ file using the following command:
+
+```
+     > sudo nano /etc/hosts
+```
+
+Add the following entries and save the file:
+
+```
+     > 127.0.0.1 zk.internal kafka.internal
+```
+
+### 7. Deploying Apache Zookeeper on local machine
+
+#### Window 10
 
 * Download and extract [apache-zookeeper-3.8.0-bin.tar.gz](https://dlcdn.apache.org/zookeeper/zookeeper-3.8.0/apache-zookeeper-3.8.0-bin.tar.gz) archive file from the [Apache Zookeeper](https://www.apache.org/dyn/closer.lua/zookeeper/zookeeper-3.8.0/apache-zookeeper-3.8.0-bin.tar.gz) website.
 
 * Open the _conf_ folder and rename the _zoo_sample.cfg_ file to the _zoo.cfg_.
 
-* On Windows machine open the _conf_ folder and open the _zoo.cfg_ file. Change the path for _dataDir_ from:
+* Open the _zoo.cfg_ file and make changes below:
+
+|  **property**  |   **initial value**   |    **new value**    |
+|----------------|-----------------------|---------------------|
+|    dataDir     |     /tmp/zookeeper    |   D:/data/zookeeper |        
+|    initLimit   |            10         |         5           |
+|    syncLimit   |            5          |         2           |
+
+* Then add the following line to the _zoo.cfg_ file and save changes.
 
 ```
-      dataDir=/tmp/zookeeper 
-```
-
-to
-
-```
-      dataDir=D:/software/apache-zookeeper-3.8.0-bin/data/zookeeper
-```
-
-Then add the following lines to the _zoo.cfg_ file.
-
-```
-      initLimit=5
-      syncLimit=2
       server.1=zk.internal:2888:3888
 ```
-
-and save changes.
 
 * Open the _command line tool_ and execute the following command to start the [apache-zookeeper-3.8.0](https://zookeeper.apache.org) server:
 
 ```
-   > bin\zkServer.cmd
+      > bin\zkServer.cmd
 ```
 
 Note the binding port displayed in the output, it should be _2181_ by default.
@@ -222,56 +716,154 @@ Note the binding port displayed in the output, it should be _2181_ by default.
       2023-07-01 13:37:26,687 [myid:] - INFO  [main:o.a.z.s.NIOServerCnxnFactory@660] - binding to port 0.0.0.0/0.0.0.0:2181
 ```
 
+#### Linux Ubuntu 20.04.6 LTS
+
+* Ensure your system is updated:
+
+```
+      > sudo apt update && sudo apt upgrade
+```
+
+* Download and extract [apache-zookeeper-3.8.0-bin.tar.gz](https://dlcdn.apache.org/zookeeper/zookeeper-3.8.0/apache-zookeeper-3.8.0-bin.tar.gz) archive file from the [Apache Zookeeper](https://www.apache.org/dyn/closer.lua/zookeeper/zookeeper-3.8.0/apache-zookeeper-3.8.0-bin.tar.gz) website.
+
+```
+      > sudo wget https://downloads.apache.org/zookeeper/zookeeper-3.8.0/apache-zookeeper-3.8.0-bin.tar.gz
+      > sudo tar -xvzf apache-zookeeper-3.8.0-bin.tar.gz
+```
+
+* Move the extracted files to the _/opt/zookeeper_ directory with the following command:
+
+```
+      > sudo mv apache-zookeeper-3.8.0-bin /opt/zookeeper
+```
+
+* Then open the _/etc/environment_ file using the following command:
+
+```
+      > sudo nano /etc/environment
+```
+
+* At the end of the file, add the following line and save the changes.
+
+```
+      ZOOKEEPER_HOME="/opt/zookeeper"
+```
+
+* Then reload this file to apply the changes to your current session with the following command:
+
+```
+      > source /etc/environment
+```
+
+* Finally, verify that the _ZOOKEEPER_HOME_ environment variable is set:
+
+```  
+      > echo $ZOOKEEPER_HOME  
+```
+
+You should see the following output:
+
+```
+      /opt/zookeeper
+```
+
+* Create a separate user for the Zookeeper service and set the password using the following commands:
+
+```
+      > sudo useradd zookeeper -m
+      > sudo usermod --shell /bin/bash zookeeper
+      > sudo passwd zookeeper
+      > New password: 12345 
+      > Retype new password: 12345 
+```
+
+* Add the user to the __sudoers__ group for it to have _Administrative Privileges_ using the following command:
+
+```
+      > sudo usermod -aG sudo zookeeper
+```
+
+* Give the _zookeeper_ user ownership of the zookeeper files by executing the following command:
+
+```
+      > sudo chown -R zookeeper:zookeeper $ZOOKEEPER_HOME
+```
+
+* Create a new ZooKeeper directory to store the data on a local machine and give the _zookeeper_ user ownership to that directory by executing the following commands:
+
+```
+      > sudo mkdir -p /data/zookeeper
+      > sudo chown -R zookeeper:zookeeper /data/zookeeper
+```
+
+* Rename the _zoo_sample.cfg_ file to the _zoo.cfg_ with the following command:
+
+```
+      > sudo mv $ZOOKEEPER_HOME/conf/zoo_sample.cfg $ZOOKEEPER_HOME/conf/zoo.cfg
+```
+
+* Open the _zoo.cfg_ file with the following command:
+
+```
+      > sudo nano $ZOOKEEPER_HOME/conf/zoo.cfg
+```
+
+* And make changes below:
+
+|  **property**  |   **initial value**   |    **new value**    |
+|----------------|-----------------------|---------------------|
+|    dataDir     |     /tmp/zookeeper    |   /data/zookeeper   |        
+|    initLimit   |            10         |         5           |
+|    syncLimit   |            5          |         2           |
+
+* Then add the following line to the _zoo.cfg_ file and save changes.
+
+```
+      server.1=zk.internal:2888:3888
+```
+
+* Start the [apache-zookeeper-3.8.0](https://zookeeper.apache.org) server by executing the following command:
+
+```
+      > sudo $ZOOKEEPER_HOME/bin/zkServer.sh start
+```
+
+You should see the following output:
+
+```
+      /usr/bin/java
+      ZooKeeper JMX enabled by default
+      Using config: /opt/zookeeper/bin/../conf/zoo.cfg
+      Starting zookeeper ... STARTED  
+```
+
 [zkServer Command](https://zookeeper.apache.org/doc/r3.8.0/zookeeperTools.html#zkServer)  
 [Zookeeper Admin Guide](https://zookeeper.apache.org/doc/r3.8.0/zookeeperAdmin.html)
 
-### 5. Deploying Apache Kafka on local machine
+### 8. Deploying Apache Kafka on local machine
+
+#### Windows 10
 
 * Download and extract [kafka_2.13-2.7.0.tgz](https://archive.apache.org/dist/kafka/2.7.0/kafka_2.13-2.7.0.tgz) archive file from the [Apache Kafka](https://kafka.apache.org/downloads) website.
 
-* On Windows machine open the _config_ folder and open the _server.properties_ file. Change the path for _log.dirs_ and hostname for _zookeeper.connect_ from:
+* Open the _config_ folder and open the _server.properties_ file. Make the changes below and save the file.
 
-```
-      log.dirs=/tmp/kafka-logs  
-      zookeeper.connect=localhost:2181
-```
+|      **property**      |   **initial value**   |    **new value**     |
+|------------------------|-----------------------|----------------------|
+|    log.dirs            |     /tmp/kafka-logs   |   D:/data/kafka      |        
+|    zookeeper.connect   |     localhost:2181    |   zk.internal:2181   |
 
-to
+* Then open the _config/producer.properties_ file, make the changes below and save the file.
 
-```
-      log.dirs=D:/software/kafka_2.13-2.7.0/data/kafka-logs
-      zookeeper.connect=zk.internal:2181
-```
+|      **property**      |   **initial value**   |     **new value**     |
+|------------------------|-----------------------|-----------------------|
+|    bootstrap.servers   |     localhost:9092    |  kafka.internal:9092  |        
 
-and save changes.
+* Then open the _config/consumer.properties_ file, make the changes below and save the file.
 
-* Then open the _producer.properties_ file. Change the servers for _bootstrap.servers_ from:
-
-```
-      bootstrap.servers=localhost:9092
-```
-
-to
-
-```
-      bootstrap.servers=kafka.internal:9092
-```
-
-and save changes.
-
-* Then open the _consumer.properties_ file. Change the servers for _bootstrap.servers_ from:
-
-```
-      bootstrap.servers=localhost:9092
-```
-
-to
-
-```
-      bootstrap.servers=kafka.internal:9092
-```
-
-and save changes.
+|      **property**      |   **initial value**   |     **new value**     |
+|------------------------|-----------------------|-----------------------|
+|    bootstrap.servers   |     localhost:9092    |  kafka.internal:9092  |        
 
 * Open the _command line tool_ and execute the following command to start the [apache-kafka-2.7.0](https://kafka.apache.org) server:
 
@@ -279,9 +871,136 @@ and save changes.
    > bin\windows\kafka-server-start.bat config\server.properties
 ```
 
-### 6. Deploying Redis on local machine
+#### Linux Ubuntu 20.04.6 LTS
 
-* To install Redis on Windows, we'll first need to [enable WSL2 (Windows Subsystem for Linux)](https://learn.microsoft.com/en-us/windows/wsl/install).
+* Ensure your system is updated:
+
+```
+      > sudo apt update && sudo apt upgrade
+```
+
+* Download and extract [kafka_2.13-2.7.0.tgz](https://archive.apache.org/dist/kafka/2.7.0/kafka_2.13-2.7.0.tgz) archive file from the [Apache Kafka](https://kafka.apache.org/downloads) website.
+
+```
+      > sudo wget https://archive.apache.org/dist/kafka/2.7.0/kafka_2.13-2.7.0.tgz
+      > sudo tar -xvzf kafka_2.13-2.7.0.tgz
+```
+
+*  Move the extracted files to the _/opt/kafka_ directory with the following command:
+
+```
+      > sudo mv kafka_2.13-2.7.0 /opt/kafka
+```
+
+* Then open the _/etc/environment_ file using the following command:
+
+```
+      > sudo nano /etc/environment
+```
+
+* At the end of the file, add the following line and save the changes.
+
+```
+      KAFKA_HOME="/opt/kafka"
+```
+
+* Then reload this file to apply the changes to your current session with the following command:
+
+```
+      > source /etc/environment
+```
+
+* Finally, verify that the _KAFKA_HOME_ environment variable is set:
+
+```  
+      > echo $KAFKA_HOME  
+```
+
+You should see the following output:
+
+```
+      /opt/kafka
+```
+
+* Create a separate user for the Kafka service and set the password using the following commands:
+
+```
+      > sudo useradd kafka -m
+      > sudo usermod --shell /bin/bash kafka
+      > sudo passwd kafka
+      > New password: 12345 
+      > Retype new password: 12345
+```
+
+* Add the user to the __sudoers__ group for it to have _Administrative Privileges_ using the following command:
+
+```
+      > sudo usermod -aG sudo kafka
+```
+
+* Give the _kafka_ user ownership of the kafka files by executing the following command:
+
+```
+      > sudo chown -R kafka:kafka $KAFKA_HOME
+```
+
+* Create a new Kafka directory to store the data on a local machine and give the _kafka_ user ownership to that directory by executing the following commands:
+
+```
+      > sudo mkdir -p /data/kafka
+      > sudo chown -R kafka:kafka /data/kafka
+```
+
+* Open the _config_ folder and open the _server.properties_ file with the following command:
+
+```
+      > sudo nano $KAFKA_HOME/config/server.properties
+```
+
+* Make changes below and save the file.
+
+|      **property**      |   **initial value**   |    **new value**     |
+|------------------------|-----------------------|----------------------|
+|    log.dirs            |     /tmp/kafka-logs   |   /data/kafka      |        
+|    zookeeper.connect   |     localhost:2181    |   zk.internal:2181   |
+
+* Then open the _config/producer.properties_ file with the following command: 
+
+```
+      > sudo nano $KAFKA_HOME/config/producer.properties
+```
+
+* Make the changes below and save the file.
+
+|      **property**      |   **initial value**   |     **new value**     |
+|------------------------|-----------------------|-----------------------|
+|    bootstrap.servers   |     localhost:9092    |  kafka.internal:9092  |        
+
+* Then open the _config/consumer.properties_ file with the following command:
+
+```
+      > sudo nano $KAFKA_HOME/config/consumer.properties
+```
+
+* Finally, open the _config/consumer.properties_ file, make the changes below and save the file.
+
+|      **property**      |   **initial value**   |     **new value**     |
+|------------------------|-----------------------|-----------------------|
+|    bootstrap.servers   |     localhost:9092    |  kafka.internal:9092  |        
+
+* Start the [Apache Kafka](https://kafka.apache.org/downloads) server by executing the following command:
+
+```
+      > sudo $KAFKA_HOME/bin/kafka-server-start.sh $KAFKA_HOME/config/server.properties
+```
+
+[How To Install Apache Kafka on Ubuntu 20.04](https://www.digitalocean.com/community/tutorials/how-to-install-apache-kafka-on-ubuntu-20-04)
+
+### 9. Deploying Redis on local machine
+
+#### Windows 10
+
+* To install [Redis](https://redis.io) on Windows, we'll first need to [enable WSL2 (Windows Subsystem for Linux)](https://learn.microsoft.com/en-us/windows/wsl/install).
 
 You can a list of available Linux distros by executing the following command in Windows PowerShell:
 
@@ -308,15 +1027,19 @@ You'll see the following output:
       openSUSE-Tumbleweed                    openSUSE Tumbleweed
 ```
 
-Then you can install your favorite distro from the list by executing the following command:
+* Then you can install your favorite distro from the list by executing the following command:
 
 ```
       > wsl --install -d <DistroName>
-      for example
-      > wsl --install -d Ubuntu
 ```
 
-And then you can install Redis on your Linux distro (I am using Ubuntu) by executing the following commands:
+for example:
+
+```
+      > wsl --install -d Ubuntu-20.04
+```
+
+* And then you can install [Redis](https://redis.io) on your Linux distro (I am using Ubuntu) by executing the following commands:
 
 ```
       > curl -fsSL https://packages.redis.io/gpg | sudo gpg --dearmor -o /usr/share/keyrings/redis-archive-keyring.gpg
@@ -326,9 +1049,29 @@ And then you can install Redis on your Linux distro (I am using Ubuntu) by execu
       > sudo service redis-server start
 ```
 
-__Note:__ By default, Redis is accessible only from localhost.
+#### Linux Ubuntu 20.04.6 LTS
 
-### 7. Installing MariaDB on local machine
+* Ensure your system is updated:
+
+```
+      > sudo apt update && sudo apt upgrade
+```
+
+* Install [Redis](https://redis.io) on your Linux Ubuntu 20.04.6 LTS machine by executing the following commands:
+
+```
+      > curl -fsSL https://packages.redis.io/gpg | sudo gpg --dearmor -o /usr/share/keyrings/redis-archive-keyring.gpg
+      > echo "deb [signed-by=/usr/share/keyrings/redis-archive-keyring.gpg] https://packages.redis.io/deb $(lsb_release -cs) main" | sudo tee /etc/apt/sources.list.d/redis.list
+      > sudo apt-get update
+      > sudo apt-get install redis
+      > sudo service redis-server start
+```
+
+__Note:__ By default, [Redis](https://redis.io) is accessible only from _localhost_.
+
+### 10. Installing MariaDB on local machine
+
+#### Windows 10
 
 * Download and install [MariaDB Community Server](https://mariadb.com/downloads) version 10.6.14-GA for MS Windows (64-bit) from official website.
 
@@ -347,15 +1090,112 @@ Enable the __Install as service__ checkbox.
 
 [Installing MariaDB MSI Packages on Windows](https://mariadb.com/kb/en/installing-mariadb-msi-packages-on-windows)
 
-### 8. Running the RPS game query microservices on local machine
+#### Linux Ubuntu 20.04.6 LTS
 
-* Run the microservices and open any browser and navigate to the microservices Open API 3.0 definition (REST API).
+* Ensure your system is updated and install software-properties-common package:
 
 ```
-  http://localhost:8081/rps-cmd-api/swagger-ui/index.html 
-  http://localhost:8082/rps-qry-api/swagger-ui/index.html 
-  http://localhost:8083/score-cmd-api/swagger-ui/index.html 
-  http://localhost:8084/score-qry-api/swagger-ui/index.html 
+      > sudo apt update && sudo apt upgrade
+      > sudo apt -y install software-properties-common
+```
+
+* First, we will add the official [MariaDB apt repository](https://mariadb.com/kb/en/mariadb-package-repository-setup-and-usage) using the following command:
+
+```
+      > curl -LsS https://r.mariadb.com/downloads/mariadb_repo_setup | sudo bash -s -- --mariadb-server-version="mariadb-10.6"
+```
+
+Then, install MariaDB server and client.using the following command:
+
+```
+      > sudo apt-get install mariadb-server mariadb-client -y
+```
+
+* Check the status using the following command:
+
+```
+      > sudo systemctl status mariadb
+```
+
+* Finally, check installed MariaDB version using the following command:
+
+```
+      > mysql -V
+```
+
+You should see the following output:
+
+```
+      mysql  Ver 15.1 Distrib 10.6.14-MariaDB, for debian-linux-gnu (x86_64) using readline 5.2
+```
+
+* After installation, secure MariaDB using the following commands:
+
+```
+      > sudo mysql_secure_installation
+```
+
+You will be prompted with several questions. Choose options as shown below.
+
+|                   **question**                             | **answer** | 
+|------------------------------------------------------------|------------|
+|     Enter current password for root (enter for none)       |            | 
+|     Switch to unux_socket authentication [Y/n]             |     Y      | 
+|     Change the root password? [Y/n]                        |     Y      | 
+|     New password:                                          |   12345    | 
+|     Re-enter new password:                                 |   12345    | 
+|     Remove anonymous users? [Y/n]                          |     Y      | 
+|     Disallow root login remotely? [Y/n]                    |     n      | 
+|     Remove the test database and access to it? [Y/n]       |     Y      |
+|     Reload privilege tables now? [Y/n]                     |     Y      |
+
+[MariaDB Package Repository Setup and Usage](https://mariadb.com/kb/en/mariadb-package-repository-setup-and-usage)
+
+#### Validating MariaDB root account (Windows 10 and Linux Ubuntu 20.04.6 LTS)
+
+* Validate the configurations by connecting to MariaDB:
+
+```
+      > mysql -u root -p
+```
+
+You will be prompted with password. Enter root password of 12345.
+
+### 11. Building and Running the RPS game query microservices on local machine
+
+Each microservice has multiple profiles:
+
+|  **profile name**  |  **is default**  |         **purpose**                |
+|--------------------|------------------|------------------------------------|
+|        dev         |        Yes       |  Development on local machine      |
+|        docker      |        No        |  Deployment on Docker Compose      |
+|        it          |        No        |  Running integration tests         |
+|        prod        |        No        |  Deployment on Kubernetes cluster  |
+
+* Execute the _mvn clean install_ command in the root directory of the project to build microservices and its dependencies.
+
+```
+      > mvn clean install
+```
+
+__Note:__ Each microservice and shared dependency should normally be hosted in its own git repository.
+
+* Run the microservices by executing the following commands:
+
+```
+      > java -jar ./microservices/rps-cmd-service/target/rps-cmd-service.jar
+      > java -jar ./microservices/rps-qry-service/target/rps-qry-service.jar
+      > java -jar ./microservices/score-cmd-service/target/score-cmd-service.jar
+      > java -jar ./microservices/score-qry-service/target/score-qry-service.jar
+```
+
+* Open any browser and navigate to the microservices Open API 3.0 definition (REST API).
+
+```
+      http://localhost:8081/rps-cmd-api/swagger-ui/index.html 
+      http://localhost:8082/rps-qry-api/swagger-ui/index.html 
+      http://localhost:8083/score-cmd-api/swagger-ui/index.html 
+      http://localhost:8084/score-qry-api/swagger-ui/index.html 
 ```
 
 * Click on the __Authorize__ button on the microservice Open API 3.0 definition page: 
@@ -471,7 +1311,7 @@ and make sure that all the RPS game microservices are up and running.
     > cd common/rps-grpc-lib
 ```
 
-* And run "mvn clean install" in the root directory of the rps-grpc-lib project to generate Java model classes and
+* And run _mvn clean install_ in the root directory of the rps-grpc-lib project to generate Java model classes and
   service descriptions for microservices from proto3 models.
 
 ```
@@ -484,7 +1324,7 @@ and make sure that all the RPS game microservices are up and running.
     > cd common/cqrs-es-framework
 ```
 
-* And run "mvn clean install" in the root directory of the cqrs-es-framework project to create jar file and install it
+* And run _mvn clean install_ in the root directory of the cqrs-es-framework project to create jar file and install it
   to local .m2 repository.
 
 ```
@@ -497,7 +1337,7 @@ and make sure that all the RPS game microservices are up and running.
     > cd common/rps-common-lib
 ```
 
-* And run "mvn clean install" in the root directory of the rps-common-lib project to create jar file and install it to
+* And run _mvn clean install_ in the root directory of the rps-common-lib project to create jar file and install it to
   local .m2 repository.
 
 ```
@@ -512,7 +1352,7 @@ and make sure that all the RPS game microservices are up and running.
     > cd microservices/rps-cmd-service
 ```
 
-* Run "mvn clean package -P<profile>" in the root directory to create the Rock Paper Scissors Game Command microservice
+* Run _mvn clean package -P<profile>_ in the root directory to create the Rock Paper Scissors Game Command microservice
   app.
 
 ```
@@ -552,7 +1392,7 @@ from the url.
     > cd microservices/rps-qry-service
 ```
 
-* Run "mvn clean package -P<profile>" in the root directory to create the Rock Paper Scissors Game Query microservice
+* Run _mvn clean package -P<profile>_ in the root directory to create the Rock Paper Scissors Game Query microservice
   app.
 
 ```
@@ -589,7 +1429,7 @@ from the url.
     > cd microservices/score-cmd-service
 ```
 
-* Run "mvn clean package -P<profile>" in the root directory to create the Score Command microservice app.
+* Run _mvn clean package -P<profile>_ in the root directory to create the Score Command microservice app.
 
 ```
      > mvn clean package -Pdev
@@ -625,7 +1465,7 @@ from the url.
     > cd microservices/score-qry-service
 ```
 
-* Run "mvn clean package -P<profile>" in the root directory to create the Score Query microservice app.
+* Run _mvn clean package -P<profile>_ in the root directory to create the Score Query microservice app.
 
 ```
      > mvn clean package -Pdev
@@ -778,7 +1618,7 @@ Now, if you run the following command:
       > kubectl top pod -n rps-app-dev
 ```
 
-you will see resources used in specified namespace:
+You should see resources used in specified namespace:
 
 ```
       NAME                                           CPU(cores)   MEMORY(bytes)
@@ -2492,7 +3332,7 @@ If you open the grafana service using the following command:
      > kubectl get service prometheus-grafana -n kube-monitoring -o yaml
 ```
 
-you will see that the default port for Grafana dashboard is 3000:
+You should see that the default port for Grafana dashboard is 3000:
 
 ```
         ports:
