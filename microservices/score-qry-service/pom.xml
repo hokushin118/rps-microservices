@@ -293,6 +293,11 @@
     <dependencies>
         <dependency>
             <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-web</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-data-jpa</artifactId>
         </dependency>
 
@@ -352,11 +357,6 @@
         <dependency>
             <groupId>org.spockframework</groupId>
             <artifactId>spock-spring</artifactId>
-        </dependency>
-
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-web</artifactId>
         </dependency>
 
         <dependency>
@@ -614,7 +614,6 @@
                         </goals>
                         <configuration>
                             <skip>${integration-tests.skip}</skip>
-                            <fork>false</fork>
                             <profiles>
                                 <profile>it</profile>
                             </profiles>
@@ -792,8 +791,6 @@
                         <exclude>**/*ITSpec.java</exclude>
                     </excludes>
                     <useSystemClassLoader>false</useSystemClassLoader>
-                    <forkCount>3</forkCount>
-                    <reuseForks>true</reuseForks>
                     <testFailureIgnore>true</testFailureIgnore>
                     <!-- base directory where all reports are written to -->
                     <reportsDirectory>${project.build.directory}/test-reports/unit</reportsDirectory>

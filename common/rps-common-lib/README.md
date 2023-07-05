@@ -23,7 +23,7 @@ The RPS Game Microservices Common library project contains Rock Paper Scissors g
 ```
     > cd common/rps-common-lib
 ```
-* And run "mvn clean install" in the root directory of the rps-common-lib project to create jar file and install it to local .m2 repository.
+* And run _mvn clean install_ in the root directory of the rps-common-lib project to create jar file and install it to local .m2 repository.
 ```
      > mvn clean install
 ```

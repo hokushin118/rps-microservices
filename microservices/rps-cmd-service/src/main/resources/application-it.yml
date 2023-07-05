@@ -1,6 +1,6 @@
 # Profile for integration tests
 server:
-  port: 8081
+  port: 0
 
 # gRPC server configuration
 grpc:
