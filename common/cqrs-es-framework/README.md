@@ -10,14 +10,12 @@ The CQRS ES Framework project contains the Command Query Responsibility Segregat
 * [JUnit 5.8.2](https://junit.org/junit5/docs/current/user-guide)
 * [Mockito 3.9.0](https://site.mockito.org)
 * [JaCoCo test coverage](https://www.jacoco.org/jacoco)
-
 ### Building the CQRS ES Framework Project from the command line
-
 * Navigate to the common/cqrs-es-framework directory on your computer.
 ```
     > cd common/cqrs-es-framework
 ```
-* And run _mvn clean install_ in the root directory of the cqrs-es-framework project to create jar file and install it to local .m2 repository.
+* And run "mvn clean install" in the root directory of the cqrs-es-framework project to create jar file and install it to local .m2 repository.
 ```
      > mvn clean install
 ```
