@@ -5,8 +5,7 @@ server:
     enabled: true
   tomcat:
     threads:
-      min-spare: 10
-      max: 500
+      max: 100
   http2:
     # Enables http2 support
     enabled: true

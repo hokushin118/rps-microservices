@@ -268,7 +268,7 @@ on Linux Ubuntu 20.04.6 LTS machine. If not, follow the steps below to install i
 ```
 
 If you want to install a specific version of Maven, follow steps below.
- 
+
 * Download the [apache-maven-3.9.3-bin.tar.gz](https://dlcdn.apache.org/maven/maven-3/3.9.3/binaries/apache-maven-3.9.3-bin.tar.gz) binary archive file from the [Apache Maven Project](https://maven.apache.org/download.cgi) website.
 
 ```
