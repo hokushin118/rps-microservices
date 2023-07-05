@@ -311,7 +311,7 @@ If you want to install a specific version of Maven, follow steps below.
       > source /etc/environment
 ```
 
-* Verify that the _JAVA_HOME_ environment variable is set:
+* Verify that the _M2_HOME_ environment variable is set:
 
 ```  
       > echo $M2_HOME  
