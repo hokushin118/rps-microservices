@@ -41,7 +41,7 @@ The Rock Paper Scissors game command microservice provides REST and gRPC APIs fo
     > cd common/rps-grpc-lib
 ```
 
-* And run _mvn clean install_ in the root directory of the rps-grpc-lib project to generate Java model classes and
+* And run "mvn clean install" in the root directory of the rps-grpc-lib project to generate Java model classes and
   service descriptions for microservices from proto3 models.
 
 ```
@@ -54,7 +54,7 @@ The Rock Paper Scissors game command microservice provides REST and gRPC APIs fo
     > cd common/cqrs-es-framework
 ```
 
-* And run _mvn clean install_ in the root directory of the cqrs-es-framework project to create jar file and install it
+* And run "mvn clean install" in the root directory of the cqrs-es-framework project to create jar file and install it
   to local .m2 repository.
 
 ```
@@ -67,7 +67,7 @@ The Rock Paper Scissors game command microservice provides REST and gRPC APIs fo
     > cd common/rps-common-lib
 ```
 
-* And run _mvn clean install_ in the root directory of the rps-common-lib project to create jar file and install it to
+* And run "mvn clean install" in the root directory of the rps-common-lib project to create jar file and install it to
   local .m2 repository.
 
 ```
@@ -82,7 +82,7 @@ The Rock Paper Scissors game command microservice provides REST and gRPC APIs fo
     > cd microservices/rps-cmd-service
 ```
 
-* Run _mvn clean package -P<profile>_ in the root directory to create the Rock Paper Scissors Game Command microservice
+* Run "mvn clean package -P<profile>" in the root directory to create the Rock Paper Scissors Game Command microservice
   app.
 
 ```
