@@ -63,7 +63,7 @@ class DeleteScoreValidationSpec extends ValidationBaseTest implements CommandTes
     }
 
     @Unroll
-    def 'Testing identifier validating constrains with wrong parameter - #id and #userId, we get error message: #errors'(UUID id, UUID userId, List<String> errors) {
+    def 'Testing identifier validating constrains with wrong parameter - #id and #userId, we get error message: #error'(UUID id, UUID userId, String error) {
         given: 'Setup test data'
         def deleteScoreCommand = createDeleteScoreCommand id, userId
 
@@ -72,18 +72,12 @@ class DeleteScoreValidationSpec extends ValidationBaseTest implements CommandTes
 
         then:
         assert constraintViolations.size() == count
-
-        def errorList = constraintViolations.stream()
-                .filter(x -> errors.stream()
-                        .anyMatch(e -> e == ID_MUST_NOT_BE_NULL || e == USER_ID_MUST_NOT_BE_NULL))
-                .collect()
-
-        assert errorList.size() == count
+        assert constraintViolations.iterator().next().message == error
 
         where:
-        id        | userId      | count            | errors
-        TEST_UUID | null        | SINGLE_VIOLATION | [USER_ID_MUST_NOT_BE_NULL]
-        null      | USER_ONE_ID | SINGLE_VIOLATION | [ID_MUST_NOT_BE_NULL]
-        null      | null        | DOUBLE_VIOLATION | [ID_MUST_NOT_BE_NULL, USER_ID_MUST_NOT_BE_NULL]
+        id        | userId      | count            | error
+        TEST_UUID | null        | SINGLE_VIOLATION | USER_ID_MUST_NOT_BE_NULL
+        null      | USER_ONE_ID | SINGLE_VIOLATION | ID_MUST_NOT_BE_NULL
+        null      | null        | DOUBLE_VIOLATION | USER_ID_MUST_NOT_BE_NULL
     }
 }

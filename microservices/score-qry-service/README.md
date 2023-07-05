@@ -44,7 +44,7 @@ The Score query microservice provides REST and gRPC APIs for the Rock Paper Scis
     > cd common/rps-grpc-lib
 ```
 
-* And run _mvn clean install_ in the root directory of the rps-grpc-lib project to generate Java model classes and
+* And run "mvn clean install" in the root directory of the rps-grpc-lib project to generate Java model classes and
   service descriptions for microservices from proto3 models.
 
 ```
@@ -57,7 +57,7 @@ The Score query microservice provides REST and gRPC APIs for the Rock Paper Scis
     > cd common/cqrs-es-framework
 ```
 
-* And run _mvn clean install_ in the root directory of the cqrs-es-framework project to create jar file and install it
+* And run "mvn clean install" in the root directory of the cqrs-es-framework project to create jar file and install it
   to local .m2 repository.
 
 ```
@@ -70,7 +70,7 @@ The Score query microservice provides REST and gRPC APIs for the Rock Paper Scis
     > cd common/rps-common-lib
 ```
 
-* And run _mvn clean install_ in the root directory of the rps-common-lib project to create jar file and install it to
+* And run "mvn clean install" in the root directory of the rps-common-lib project to create jar file and install it to
   local .m2 repository.
 
 ```
@@ -85,7 +85,7 @@ The Score query microservice provides REST and gRPC APIs for the Rock Paper Scis
     > cd microservices/score-qry-service
 ```
 
-* Run _mvn clean package -P<profile>_ in the root directory to create the Score Query microservice app.
+* Run "mvn clean package -P<profile>" in the root directory to create the Score Query microservice app.
 
 ```
      > mvn clean package -Pdev
