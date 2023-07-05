@@ -20,7 +20,7 @@ Source: [Architecting Cloud Native .NET Applications for Azure](https://learn.mi
 ### Technology stack
 
 * [OpenJDK 11](https://openjdk.java.net/projects/jdk/11) or higher
-* [Maven 3.6.0](https://maven.apache.org) or higher
+* [Maven 3.6.3](https://maven.apache.org) or higher
 * [Spring Boot 2.6.1](https://spring.io/projects/spring-boot)
 * [Lombok 1.18.20](https://projectlombok.org)
 * [MapStruct](https://mapstruct.org)
