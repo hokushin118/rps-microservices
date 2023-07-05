@@ -1,6 +1,6 @@
 # Profile for integration tests
 server:
-  port: 8082
+  port: 0
 
 # gRPC server configuration
 grpc:
@@ -27,6 +27,7 @@ spring:
       hibernate:
         # format sql query
         format_sql: true
+
 
   datasource:
     url: jdbc:h2:mem:rpsDB;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE;MODE=MYSQL;DATABASE_TO_LOWER=TRUE;CASE_INSENSITIVE_IDENTIFIERS=TRUE
