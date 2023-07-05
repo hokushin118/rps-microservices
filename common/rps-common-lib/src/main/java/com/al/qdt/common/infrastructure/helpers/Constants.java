@@ -53,7 +53,7 @@ public class Constants {
     // open api
     public static final String HANDLER_ERROR_JSON = "{\n" +
             "  \"apierror\": {\n" +
-            "    \"status\": \"400 BAD_REQUEST\",\n" +
+            "    \"status\": \"BAD_REQUEST\",\n" +
             "    \"timestamp\": \"11-02-2022 07:26:53\",\n" +
             "    \"message\": \"" +
             NO_COMMAND_HANDLER_REGISTERED_EXCEPTION_MESSAGE +
@@ -63,7 +63,7 @@ public class Constants {
 
     public static final String MULTIPLE_HANDLERS_ERROR_JSON = "{\n" +
             "  \"apierror\": {\n" +
-            "    \"status\": \"400 BAD_REQUEST\",\n" +
+            "    \"status\": \"BAD_REQUEST\",\n" +
             "    \"timestamp\": \"11-02-2022 07:26:53\",\n" +
             "    \"message\": \"" +
             SEND_COMMAND_EXCEPTION_MESSAGE +
@@ -73,15 +73,23 @@ public class Constants {
 
     public static final String MALFORMED_JSON = "{\n" +
             "  \"apierror\": {\n" +
-            "    \"status\": \"400 BAD_REQUEST\",\n" +
+            "    \"status\": \"BAD_REQUEST\",\n" +
             "    \"timestamp\": \"11-02-2022 07:26:53\",\n" +
             "    \"message\": \"Validation error!\"\n" +
             "  }\n" +
             "}";
 
+    public static final String INCORRECT_ID_JSON = "{\n" +
+            "  \"apierror\": {\n" +
+            "    \"status\": \"NOT_FOUND\",\n" +
+            "    \"timestamp\": \"11-02-2022 07:26:53\",\n" +
+            "    \"message\": \"Incorrect id provided!\"\n" +
+            "  }\n" +
+            "}";
+
     public static final String GAMES_NOT_FOUND_JSON = "{\n" +
             "  \"apierror\": {\n" +
-            "    \"status\": \"404 NOT_FOUND\",\n" +
+            "    \"status\": \"NOT_FOUND\",\n" +
             "    \"timestamp\": \"11-02-2022 07:26:53\",\n" +
             "    \"message\": \"Games have not been found!\"\n" +
             "  }\n" +
@@ -89,7 +97,7 @@ public class Constants {
 
     public static final String GAME_BY_ID_NOT_FOUND_JSON = "{\n" +
             "  \"apierror\": {\n" +
-            "    \"status\": \"404 NOT_FOUND\",\n" +
+            "    \"status\": \"NOT_FOUND\",\n" +
             "    \"timestamp\": \"11-02-2022 07:26:53\",\n" +
             "    \"message\": \"Game with id 748873ec-f887-4090-93ff-f8b8cbb34c7a has not been found!\"\n" +
             "  }\n" +
@@ -97,7 +105,7 @@ public class Constants {
 
     public static final String GAMES_BY_USER_NOT_FOUND_JSON = "{\n" +
             "  \"apierror\": {\n" +
-            "    \"status\": \"404 NOT_FOUND\",\n" +
+            "    \"status\": \"NOT_FOUND\",\n" +
             "    \"timestamp\": \"11-02-2022 07:26:53\",\n" +
             "    \"message\": \"Games with username User1 have not been found!\"\n" +
             "  }\n" +
@@ -105,7 +113,7 @@ public class Constants {
 
     public static final String SCORES_NOT_FOUND_JSON = "{\n" +
             "  \"apierror\": {\n" +
-            "    \"status\": \"404 NOT_FOUND\",\n" +
+            "    \"status\": \"NOT_FOUND\",\n" +
             "    \"timestamp\": \"11-02-2022 07:26:53\",\n" +
             "    \"message\": \"Scores have not been found!\"\n" +
             "  }\n" +
@@ -113,7 +121,7 @@ public class Constants {
 
     public static final String SCORE_BY_ID_NOT_FOUND_JSON = "{\n" +
             "  \"apierror\": {\n" +
-            "    \"status\": \"404 NOT_FOUND\",\n" +
+            "    \"status\": \"NOT_FOUND\",\n" +
             "    \"timestamp\": \"11-02-2022 07:26:53\",\n" +
             "    \"message\": \"Score with id 748873ec-f887-4090-93ff-f8b8cbb34c7a has not been found!\"\n" +
             "  }\n" +
@@ -121,7 +129,7 @@ public class Constants {
 
     public static final String SCORES_BY_USER_ID_NOT_FOUND_JSON = "{\n" +
             "  \"apierror\": {\n" +
-            "    \"status\": \"404 NOT_FOUND\",\n" +
+            "    \"status\": \"NOT_FOUND\",\n" +
             "    \"timestamp\": \"11-02-2022 07:26:53\",\n" +
             "    \"message\": \"Scores with user id 888873ec-f887-4090-93ff-f8b8cbb34c7a has not been found!\"\n" +
             "  }\n" +

@@ -50,16 +50,11 @@ public class RpsServiceV2Impl extends RpsBaseService implements RpsServiceV2 {
     }
 
     @Override
+    @Async(ASYNC_TASK_EXECUTOR)
     public CompletableFuture<Void> deleteByIdAsync(UUID id, UUID userId) {
         log.info("SERVICE: Deleting game by id asynchronously...");
-        return CompletableFuture.runAsync(() -> this.deleteGameById(id, userId))
-                .whenComplete((result, ex) -> {
-                    if (ex != null) {
-                        log.error("An error occurred: {}", ex.getMessage());
-                    } else {
-                        log.info("The game has been deleted successfully...");
-                    }
-                });
+        this.deleteGameById(id, userId);
+        return CompletableFuture.completedFuture(null);
     }
 
     /**
