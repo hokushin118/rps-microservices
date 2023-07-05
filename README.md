@@ -261,6 +261,14 @@ on Linux Ubuntu 20.04.6 LTS machine. If not, follow the steps below to install i
 
 #### Linux Ubuntu 20.04.6 LTS
 
+* Install Maven on you Linux Ubuntu machine by executing the following command:
+
+```
+      > sudo apt install maven
+```
+
+If you want to install a specific version of Maven, follow steps below.
+ 
 * Download the [apache-maven-3.9.3-bin.tar.gz](https://dlcdn.apache.org/maven/maven-3/3.9.3/binaries/apache-maven-3.9.3-bin.tar.gz) binary archive file from the [Apache Maven Project](https://maven.apache.org/download.cgi) website.
 
 ```
@@ -297,7 +305,13 @@ on Linux Ubuntu 20.04.6 LTS machine. If not, follow the steps below to install i
       M2_HOME="/opt/apache-maven-3.9.3"
 ```
 
-* Verify that the _JAVA_HOME_ environment variable is set:
+* Then reload this file to apply the changes to your current session with the following command:
+
+```
+      > source /etc/environment
+```
+
+* Verify that the _M2_HOME_ environment variable is set:
 
 ```  
       > echo $M2_HOME  
