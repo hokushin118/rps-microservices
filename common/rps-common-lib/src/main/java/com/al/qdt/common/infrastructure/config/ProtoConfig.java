@@ -21,6 +21,7 @@ public class ProtoConfig {
      * Declare it as a primary http message converter.
      *
      * @return converter
+     * @see <a href="https://protobuf.dev/programming-guides/proto3/#json">Json Mapping</a>
      */
     @Bean
     @Primary

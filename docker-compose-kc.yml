@@ -1,46 +1,59 @@
-#version: "3.8"
-#
-#services:
-#  postgres:
-#    image: postgres
-#    environment:
-#      POSTGRES_DB: ${KEYCLOAK_POSTGRES_DB_NAME}
-#      POSTGRES_USER: ${KEYCLOAK_POSTGRES_DB_USER}
-#      POSTGRES_PASSWORD: ${KEYCLOAK_POSTGRES_DB_PASSWORD}
-#    restart:
-#      always
-#
-#  # Keycloak IAS server.
-#  keycloak:
-#    container_name: keycloak
-#    image: jboss/keycloak:${KEYCLOAK_VERSION}
-#    command:
-#      - "-b 0.0.0.0 -Dkeycloak.profile.feature.upload_scripts=enabled -Dkeycloak.import=/opt/jboss/keycloak/imports/realm-export.json"
-#    environment:
-#      DB_VENDOR: POSTGRES
-#      DB_ADDR: postgres
-#      DB_SCHEMA: public
-#      DB_DATABASE: ${KEYCLOAK_POSTGRES_DB_NAME}
-#      DB_USER: ${KEYCLOAK_POSTGRES_DB_USER}
-#      DB_PASSWORD: ${KEYCLOAK_POSTGRES_DB_PASSWORD}
-#      KEYCLOAK_USER: ${KEYCLOAK_USER}
-#      KEYCLOAK_PASSWORD: ${KEYCLOAK_PASSWORD}
-#      PROXY_ADDRESS_FORWARDING: "true"
-#      KEYCLOAK_LOGLEVEL: ${KEYCLOAK_LOGLEVEL}
-#    restart: on-failure
-#    ports:
-#      - 8080:8180 # external port / container port
-#    volumes:
-#      - ./infrastructure/keycloak/rps-dev-realm.json:/opt/jboss/keycloak/imports/realm-export.json
-#    depends_on:
-#      - postgres
-#      - nginx
-#    networks:
-#      - ${BACKEND_NETWORK}
-#    deploy:
-#      replicas: 1
-#
-## networks
-#networks:
-#  rps_net:
-#    name: ${BACKEND_NETWORK}
+version: "3.8"
+
+services:
+  # PostgreSQL object-relational database system is used as Keycloak data storage.
+  postgresql:
+    image: bitnami/postgresql:${KEYCLOAK_POSTGRES_VERSION}
+    restart: unless-stopped
+    ports: # Important: In a production environment you should remove the external port that kept here for debugging purposes.
+      - 5432:5432 # external port / container port
+    env_file:
+      - .env
+    environment:
+      # ALLOW_EMPTY_PASSWORD is recommended only for development
+      - ALLOW_EMPTY_PASSWORD=yes
+      - POSTGRESQL_DATABASE=${KEYCLOAK_POSTGRES_DB_NAME}
+      - POSTGRESQL_USERNAME=${KEYCLOAK_POSTGRES_DB_USER}
+      - POSTGRESQL_PASSWORD=${KEYCLOAK_POSTGRES_DB_PASSWORD}
+    volumes:
+      - postgresql-data:/bitnami/postgresql  # creating a volume to save PostgreSQL data locally
+    networks:
+      - ${BACKEND_NETWORK}
+    deploy:
+      replicas: 1
+
+  # Keycloak IAM (Identity and Access Management) service.
+  keycloak:
+    build:
+      context: .
+      dockerfile: ./docker/keycloak/Dockerfile
+    restart: on-failure
+    ports: # Important: In a production environment you should remove the external port that kept here for debugging purposes.
+      - 8180:8080 # external port / container port
+    env_file:
+      - .env
+    environment:
+      # https://github.com/bitnami/containers/tree/main/bitnami/keycloak#configuration
+      - KEYCLOAK_DATABASE_HOST=${KEYCLOAK_DATABASE_HOST}
+      - KEYCLOAK_DATABASE_PORT=${KEYCLOAK_DATABASE_PORT}
+      - KEYCLOAK_DATABASE_NAME=${KEYCLOAK_POSTGRES_DB_NAME}
+      - KEYCLOAK_DATABASE_USER=${KEYCLOAK_POSTGRES_DB_USER}
+      - KEYCLOAK_DATABASE_PASSWORD=${KEYCLOAK_POSTGRES_DB_PASSWORD}
+      - KEYCLOAK_CREATE_ADMIN_USER=true # Creates admin user on start-up
+      - KEYCLOAK_ADMIN=${KEYCLOAK_ADMIN_USER}
+      - KEYCLOAK_ADMIN_PASSWORD=${KEYCLOAK_ADMIN_PASSWORD}
+    depends_on:
+      - postgresql
+    networks:
+      - ${BACKEND_NETWORK}
+    deploy:
+      replicas: 1
+
+volumes:
+  postgresql-data:
+    driver: local
+
+# networks
+networks:
+  rps_net:
+    name: ${BACKEND_NETWORK}
