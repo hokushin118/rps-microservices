@@ -361,7 +361,7 @@ You should see the following output:
       > git clone https://github.com/hokushin118/rps-microservices.git
 ```
 
-### 4. Installing Keycloak standalone server on local machine
+### 4. Deploying Keycloak standalone server on local machine
 
 #### Window 10
 
@@ -452,7 +452,7 @@ You should see the following output:
 * Create a separate user for the Keycloak service and set the password using the following commands:
 
 ```
-      > sudo useradd keycloak -m
+      > sudo useradd keycloak -m 
       > sudo usermod --shell /bin/bash keycloak
       > sudo passwd keycloak
       > New password: 12345 
@@ -463,6 +463,18 @@ You should see the following output:
 
 ```
       > sudo usermod -aG sudo keycloak
+```
+
+* Hide the account from the login screen:
+
+```
+            > sudo /var/lib/AccountsService/users/keycloak
+```
+and add the following lines to the file:
+
+```
+            [User]
+            SystemAccount=true
 ```
 
 * Give the _keycloak_ user ownership of the keycloak files by executing the following command:
@@ -598,6 +610,12 @@ You should see the following output:
       echo "mongodb-mongosh hold" | sudo dpkg --set-selections
       echo "mongodb-org-mongos hold" | sudo dpkg --set-selections
       echo "mongodb-org-tools hold" | sudo dpkg --set-selections
+```
+
+* You can stop MongoDB service by executing the following command:
+
+```
+      > sudo service mongod stop
 ```
 
 [Install MongoDB on Ubuntu](https://www.mongodb.com/docs/manual/tutorial/install-mongodb-on-ubuntu)
@@ -797,6 +815,18 @@ You should see the following output:
       > sudo usermod -aG sudo zookeeper
 ```
 
+* Hide the account from the login screen:
+
+```
+      > sudo /var/lib/AccountsService/users/zookeeper
+```
+and add the following lines to the file:
+
+```
+      [User]
+      SystemAccount=true
+```
+
 * Give the _zookeeper_ user ownership of the zookeeper files by executing the following command:
 
 ```
@@ -952,6 +982,19 @@ You should see the following output:
       > sudo usermod -aG sudo kafka
 ```
 
+* Hide the account from the login screen:
+
+```
+      > sudo /var/lib/AccountsService/users/kafka
+```
+
+and add the following lines to the file:
+
+```
+      [User]
+      SystemAccount=true
+```
+
 * Give the _kafka_ user ownership of the kafka files by executing the following command:
 
 ```
@@ -1083,6 +1126,12 @@ for example:
 
 __Note:__ By default, [Redis](https://redis.io) is accessible only from _localhost_.
 
+* You can stop Redis service by executing the following command:
+
+```
+      > sudo service redis-server stop
+```
+
 ### 10. Installing MariaDB on local machine
 
 #### Windows 10
@@ -1163,6 +1212,12 @@ You will be prompted with several questions. Choose options as shown below.
 |     Remove the test database and access to it? [Y/n]       |     Y      |
 |     Reload privilege tables now? [Y/n]                     |     Y      |
 
+* You can stop MariaDB service by executing the following command:
+
+```
+      > sudo service mariadb stop
+```
+
 [MariaDB Package Repository Setup and Usage](https://mariadb.com/kb/en/mariadb-package-repository-setup-and-usage)
 
 #### Validating MariaDB root account (Windows 10 and Linux Ubuntu 20.04.6 LTS)
@@ -1175,7 +1230,9 @@ You will be prompted with several questions. Choose options as shown below.
 
 You will be prompted with password. Enter root password of 12345.
 
-### 11. Building and Running the RPS game query microservices on local machine
+### 11. Building and running the RPS game microservices on local machine
+
+* Once the infrastructure ([backing services](https://12factor.net/backing-services)) is deployed, you can build and run microservices.
 
 Each microservice has multiple profiles:
 
@@ -1186,7 +1243,7 @@ Each microservice has multiple profiles:
 |        it          |        No        |  Running integration tests         |
 |        prod        |        No        |  Deployment on Kubernetes cluster  |
 
-* Execute the _mvn clean install_ command in the root directory of the project to build microservices and its dependencies.
+* Execute the _mvn clean install_ command in the root directory of the project to build microservices and its dependencies for running on local machine.
 
 ```
       > mvn clean install
@@ -1203,7 +1260,7 @@ __Note:__ Each microservice and shared dependency should normally be hosted in i
       > java -jar ./microservices/score-qry-service/target/score-qry-service.jar
 ```
 
-* Open any browser and navigate to the microservices Open API 3.0 definition (REST API).
+* Open any browser and navigate to a microservice Open API 3.0 definition (REST API).
 
 ```
       http://localhost:8081/rps-cmd-api/swagger-ui/index.html 
@@ -1260,30 +1317,63 @@ Microservices active profile is __docker__.
 
 ### 1. Installation of Docker Desktop
 
-* If [Docker Desktop](https://www.docker.com/products/docker-desktop) is not already installed navigate to the docker
-  website download and install it on your local machine.
-* To check if it is installed, you can simply run the command:
+* Make sure you have [Docker Desktop](https://www.docker.com/products/docker-desktop) installed using the following command:
 
 ```
-    > docker -v
+      > docker -v
 ```
 
-* [Docker Compose](https://docs.docker.com/compose/install) is also required. To check if it is installed, you can
-  simply run the command:
+You should see the following output:
+
+```
+      Docker version 24.0.2, build cb74dfc
+```
+
+* If [Docker Desktop](https://www.docker.com/products/docker-desktop) is not installed navigate to the docker website download and install it on your local machine.
+
+#### Window 10
+
+* Follow the installation instructions below to install [Docker Desktop](https://www.docker.com/products/docker-desktop) on Windows 10 machine:
+
+[Install Docker Desktop on Windows](https://docs.docker.com/desktop/install/windows-install)
+
+#### Linux Ubuntu 20.04.6 LTS
+
+* Follow the installation instructions below to install [Docker Desktop](https://www.docker.com/products/docker-desktop) on Linux Ubuntu machine:
+
+[Install Docker Desktop on Ubuntu](https://docs.docker.com/desktop/install/ubuntu)
+
+#### Setting up Docker Desktop (Windows 10 and Linux Ubuntu 20.04.6 LTS)
+
+* [Docker Compose](https://docs.docker.com/compose) is also required. [Docker Desktop](https://www.docker.com/products/docker-desktop) includes [Docker Compose](https://docs.docker.com/compose) along with Docker Engine and Docker CLI which are Compose prerequisites.
+
+[Installation scenarios](https://docs.docker.com/compose/install)
+
+* Check if [Docker Compose](https://docs.docker.com/compose) is installed:
 
 ```
     > docker compose version
 ```
 
-* If it is not already installed navigate to the [Docker Compose](https://docs.docker.com/compose/install) website and
-  install it on your local machine.
+You should see the following output:
+
+```
+      Docker Compose version v2.18.1
+```
+
 * Check if Docker Swarm mode is active. To check it, you can simply run the command:
 
 ```
     > docker info
 ```
 
-* If it is not already active, you can simply run the command:
+And check the status of the __Swarm__ property.
+
+```
+      Swarm: inactive
+```
+
+* If it is not active, you can simply run the command:
 
 ```
     > docker swarm init
@@ -1291,19 +1381,36 @@ Microservices active profile is __docker__.
 
 to activate it.
 
-### 2. Deployment of the infrastructure ([backing services](https://12factor.net/backing-services))
-
-* Navigate to the root directory of the RPS Game project on your computer and run the docker compose command below to
-  deploy necessary infrastructure on docker containers in the background.
+You should see the following output:
 
 ```
-     > docker compose -f docker-compose-general.yml -f docker-compose-kafka.yml -f docker-compose-metrics.yml -f docker-compose-api.yml up -d
+      Swarm initialized: current node (1ram5oln14qdk23b08eb5iv3q) is now a manager.
+      
+      To add a worker to this swarm, run the following command:
+      
+          docker swarm join --token SWMTKN-1-0im35q3hssq4ztnp2ftcq8dvyy4zg3sfhfg0twoo80iu8mhv6s-55g0y3u102p52rrunc6our8ji 192.168.1.106:2377
+      
+      To add a manager to this swarm, run 'docker swarm join-token manager' and follow the instructions.
+```
+
+* Launch [Docker Desktop](https://www.docker.com/products/docker-desktop):
+
+```
+    > systemctl --user start docker-desktop
+```
+
+### 2. Deployment of the infrastructure ([backing services](https://12factor.net/backing-services)) and microservices on Docker Compose
+
+* Navigate to the root directory of the RPS Game project on your computer and run the [Docker Compose](https://docs.docker.com/compose) command below to deploy necessary infrastructure on docker containers in the background.
+
+```
+     > docker compose -f docker-compose-kc.yml -f docker-compose-general.yml -f docker-compose-kafka.yml -f docker-compose-metrics.yml -f docker-compose-api.yml up -d
 ```
 
 * Verify that all necessary infrastructure and metrics containers are up and running.
 
 ```
-    > docker compose -f docker-compose-general.yml -f docker-compose-kafka.yml -f docker-compose-metrics.yml -f docker-compose-api ps
+    > docker compose -f docker-compose-kc.yml -f docker-compose-general.yml -f docker-compose-kafka.yml -f docker-compose-metrics.yml -f docker-compose-api.yml ps
 ```
 
 * Navigate to the health checker microservice:
@@ -1315,207 +1422,36 @@ to activate it.
 and make sure that all the RPS game microservices are up and running.
 
 ![health-checks](img/hc.png)
-** Status gets refreshed every 10 seconds
 
-### 3. Building of the necessary common libraries
+** Status gets refreshed every _10 seconds_
 
-* Navigate to the common/rps-grpc-lib directory on your computer.
+### 3. Running the RPS game microservices deployed on Docker
 
-```
-    > cd common/rps-grpc-lib
-```
-
-* And run _mvn clean install_ in the root directory of the rps-grpc-lib project to generate Java model classes and
-  service descriptions for microservices from proto3 models.
+* Open any browser and navigate to a microservice Open API 3.0 definition (REST API).
 
 ```
-     > mvn clean install
+            http://host.docker.internal/rps-cmd-api/swagger-ui/index.html
+            http://host.docker.internal/rps-qry-api/swagger-ui/index.html
+            http://host.docker.internal/score-cmd-api/swagger-ui/index.html
+            http://host.docker.internal/score-qry-api/swagger-ui/index.html
 ```
 
-* Navigate to the common/cqrs-es-framework directory on your computer.
-
-```
-    > cd common/cqrs-es-framework
-```
-
-* And run _mvn clean install_ in the root directory of the cqrs-es-framework project to create jar file and install it
-  to local .m2 repository.
-
-```
-     > mvn clean install
-```
-
-* Navigate to the common/rps-common-lib directory on your computer.
-
-```
-    > cd common/rps-common-lib
-```
-
-* And run _mvn clean install_ in the root directory of the rps-common-lib project to create jar file and install it to
-  local .m2 repository.
-
-```
-     > mvn clean install
-```
-
-### 4. Running the RPS game command microservice from the command line
-
-* Navigate to the root directory of the microservice on your computer.
-
-```
-    > cd microservices/rps-cmd-service
-```
-
-* Run _mvn clean package -P<profile>_ in the root directory to create the Rock Paper Scissors Game Command microservice
-  app.
-
-```
-     > mvn clean package -Pdev
-```
-
-* Run microservice from the _command line_ using spring boot maven plugin. Run "mvn spring-boot:run
-  -Dspring.profiles.active=<profile>" in the root directory of the microservice to launch the Rock Paper Scissors Game
-  Command microservice app.
-
-```
-     > mvn spring-boot:run -Dspring.profiles.active=dev
-```
-
-* Or run microservice from the _command line_. Run "java -jar target/rps-cmd-service.jar" in the root directory of the
-  microservice to launch the Rock Paper Scissors Game Command microservice app.
-
-```
-     > java -jar target/rps-cmd-service.jar
-```
-
-* Open any browser and navigate to the microservice Open API 3.0 definition (REST API).
-
-```
-  http://localhost:8081/rps-cmd-api/swagger-ui/index.html or
-  http://host.docker.internal/rps-cmd-api/swagger-ui/index.html
-```
-
-Note: NGINX is used as API gateway so if you deploy the microservices on docker containers you should remove port number
+__Note:__ NGINX is used as API gateway so if you deploy the microservices on docker containers you should remove port number
 from the url.
 
-### 5. Running the RPS game query microservice from the command line
-
-* Navigate to the root directory of the microservice on your computer.
+* When we don't need infrastructure containers anymore, we can take down containers and delete their corresponding volumes using the down command below:
 
 ```
-    > cd microservices/rps-qry-service
-```
-
-* Run _mvn clean package -P<profile>_ in the root directory to create the Rock Paper Scissors Game Query microservice
-  app.
-
-```
-     > mvn clean package -Pdev
-```
-
-* Run microservice from the _command line_ using spring boot maven plugin. Run "mvn spring-boot:run
-  -Dspring.profiles.active=<profile>" in the root directory of the microservice to launch the Rock Paper Scissors Game
-  Query microservice app.
-
-```
-     > mvn spring-boot:run -Dspring.profiles.active=dev
-```
-
-* Or run microservice from the _command line_. Run "java -jar target/rps-qry-service.jar" in the root directory of the
-  microservice to launch the Rock Paper Scissors Query microservice app.
-
-```
-     > java -jar target/rps-qry-service.jar
-```
-
-* Open any browser and navigate to the microservice Open API 3.0 definition (REST API).
-
-```
-  http://localhost:8082/rps-qry-api/swagger-ui/index.html or
-  http://host.docker.internal/rps-qry-api/swagger-ui/index.html
-```
-
-### 6. Running the Score command microservice from the command line
-
-* Navigate to the root directory of the microservice on your computer.
-
-```
-    > cd microservices/score-cmd-service
-```
-
-* Run _mvn clean package -P<profile>_ in the root directory to create the Score Command microservice app.
-
-```
-     > mvn clean package -Pdev
-```
-
-* Run microservice from the _command line_ using spring boot maven plugin. Run "mvn spring-boot:run
-  -Dspring.profiles.active=<profile>" in the root directory of the microservice to launch the Score Command microservice
-  app.
-
-```
-     > mvn spring-boot:run -Dspring.profiles.active=dev
-```
-
-* Or run microservice from the _command line_. Run "java -jar target/score-cmd-service.jar" in the root directory of the
-  microservice to launch the Score Command microservice app.
-
-```
-     > java -jar target/score-cmd-service.jar
-```
-
-* Open any browser and navigate to the microservice Open API 3.0 definition (REST API).
-
-```
-  http://localhost:8083/score-cmd-api/swagger-ui/index.html or
-  http://host.docker.internal/score-cmd-api/swagger-ui/index.html
-```
-
-### 7. Running the Score query microservice from the command line
-
-* Navigate to the root directory of the microservice on your computer.
-
-```
-    > cd microservices/score-qry-service
-```
-
-* Run _mvn clean package -P<profile>_ in the root directory to create the Score Query microservice app.
-
-```
-     > mvn clean package -Pdev
-```
-
-* Run microservice from the _command line_ using spring boot maven plugin. Run "mvn spring-boot:run
-  -Dspring.profiles.active=<profile>" in the root directory of the microservice to launch the Score Query microservice
-  app.
-
-```
-     > mvn spring-boot:run -Dspring.profiles.active=dev
-```
-
-* Or run microservice from the _command line_. Run "java -jar target/score-qry-service.jar" in the root directory of the
-  microservice to launch the Score Query microservice app.
-
-```
-     > java -jar target/score-qry-service.jar
-```
-
-* Open any browser and navigate to the microservice Open API 3.0 definition (REST API).
-
-```
-  http://localhost:8084/score-qry-api/swagger-ui/index.html  or
-  http://host.docker.internal/score-qry-api/swagger-ui/index.html
+     > docker compose -f docker-compose-kc.yml -f docker-compose-general.yml -f docker-compose-kafka.yml -f docker-compose-metrics.yml -f docker-compose-api.yml down -v
 ```
 
 ***
 
-From experience, Docker Compose is a great option for small-scale applications that don't require a lot of
-infrastructure. It's easy to use and can be deployed quickly. It also a great tool for local development.
+From experience, [Docker Compose](https://docs.docker.com/compose) is a great option for small-scale applications that don't require a lot of infrastructure. It's easy to use and can be deployed quickly. It also a great tool for local development.
 
-However, Docker Compose is not as scalable as Kubernetes and is not that suitable for developing large-scale
-applications. Kubernetes is a more complex but more powerful deployment technique.
+However, [Docker Compose](https://docs.docker.com/compose) is not as scalable as Kubernetes and is not that suitable for developing large-scale applications. Kubernetes is a more complex but more powerful deployment technique.
 
-Docker Compose vs K8S, pros and cons:
+[Docker Compose](https://docs.docker.com/compose) vs K8S, pros and cons:
 
 [Docker Swarm vs Kubernetes: how to choose a container orchestration tool](https://circleci.com/blog/docker-swarm-vs-kubernetes)
 [Kubernetes vs Docker: A comprehensive comparison](https://www.civo.com/blog/kubernetes-vs-docker-a-comprehensive-comparison)
@@ -4606,15 +4542,6 @@ MongoDB
 * [Asynchronous Request-Reply](https://learn.microsoft.com/en-us/azure/architecture/patterns/async-request-reply)
 * [Competing Consumers](https://learn.microsoft.com/en-us/azure/architecture/patterns/competing-consumers)
 * [Leader Election](https://learn.microsoft.com/en-us/azure/architecture/patterns/leader-election)
-
-### Useful Docker commands
-
-* When we don't need infrastructure containers anymore, we can take down containers and delete their corresponding
-  volumes using the down command below:
-
-```
-     > docker compose -f docker-compose-general.yml -f docker-compose-kafka.yml -f docker-compose-metrics.yml -f docker-compose-elk.yml down -v
-```
 
 ### BloomRPC Configuration
 
