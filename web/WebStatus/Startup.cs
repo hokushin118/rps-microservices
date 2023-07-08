@@ -10,6 +10,8 @@ public class Startup
     private const string RpsQryServicePath = "rps-qry-api";
     private const string ScoreCmdServicePath = "score-cmd-api";
     private const string ScoreQryServicePath = "score-qry-api";
+    private const string HealthPath = "health";
+    private const string ActuatorPath = "actuator";
     private const string DockerBaseUrl = "http://host.docker.internal";
 
     public IEnumerable<string> ApiTags { get; } = new[] { "api", "rest", "grpc" };
@@ -33,10 +35,10 @@ public class Startup
         services
             .AddHealthChecks()
             .AddCheck("self", () => HealthCheckResult.Healthy())
-            .AddApiHealth("RPS Game Command Microservice Health Check", ApiTags, new object[] { $"{DockerBaseUrl}/{RpsCmdServicePath}" })
-            .AddApiHealth("RPS Game Query Microservice Health Check", ApiTags, new object[] { $"{DockerBaseUrl}/{RpsQryServicePath}" })
-            .AddApiHealth("Score Command Microservice Health Check", ApiTags, new object[] { $"{DockerBaseUrl}/{ScoreCmdServicePath}" })
-            .AddApiHealth("Score Query Microservice Health Check", ApiTags, new object[] { $"{DockerBaseUrl}/{ScoreQryServicePath}" });
+            .AddApiHealth("RPS Game Command Microservice Health Check", ApiTags, new object[] { $"{DockerBaseUrl}/{RpsCmdServicePath}/{ActuatorPath}/{HealthPath}" })
+            .AddApiHealth("RPS Game Query Microservice Health Check", ApiTags, new object[] { $"{DockerBaseUrl}/{RpsQryServicePath}/{ActuatorPath}/{HealthPath}" })
+            .AddApiHealth("Score Command Microservice Health Check", ApiTags, new object[] { $"{DockerBaseUrl}/{ScoreCmdServicePath}/{ActuatorPath}/{HealthPath}" })
+            .AddApiHealth("Score Query Microservice Health Check", ApiTags, new object[] { $"{DockerBaseUrl}/{ScoreQryServicePath}/{ActuatorPath}/{HealthPath}" });
 
         services
             .AddHealthChecksUI()
