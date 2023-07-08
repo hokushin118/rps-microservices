@@ -43,6 +43,7 @@ services:
       - KEYCLOAK_CREATE_ADMIN_USER=true # Creates admin user on start-up
       - KEYCLOAK_ADMIN=${KEYCLOAK_ADMIN_USER}
       - KEYCLOAK_ADMIN_PASSWORD=${KEYCLOAK_ADMIN_PASSWORD}
+      - KC_HEALTH_ENABLED=true # https://www.keycloak.org/server/health
     depends_on:
       - postgresql
     networks:

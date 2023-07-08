@@ -1423,7 +1423,7 @@ You should see the following output:
 * Navigate to the health checker microservice:
 
 ```
-    > localhost/status/hc-ui
+    > http://localhost/status/hc-ui
 ```
 
 and make sure that all the RPS game microservices are up and running.
