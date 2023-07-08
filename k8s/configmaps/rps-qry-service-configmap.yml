@@ -35,6 +35,7 @@ data:
   keycloak-port: "8080"
   keycloak-realm: rps-dev
   keycloak-client-id: oauth2-proxy
+  app-schema: http
 
 ---
 # ConfigMap holds information about RPS Game Query microservice oauth2-proxy container configuration files

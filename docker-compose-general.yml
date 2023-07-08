@@ -7,7 +7,7 @@ services:
     hostname: ${MONGO_HOSTNAME}
     restart: on-failure
     ports: # Important: In a production environment you should remove the external port that kept here for debugging purposes.
-      - 27017:27017 # docker host port / container port
+      - 28017:27017 # docker host port / container port
     expose:
       - 27017 # opens port 27017 on the container
     env_file:
@@ -29,7 +29,7 @@ services:
     hostname: ${MARIADB_HOSTNAME}
     restart: on-failure
     ports: # Important: In a production environment you should remove the external port that kept here for debugging purposes.
-      - 3306:3306 # external port / container port
+      - 13306:3306 # external port / container port
     env_file:
       - .env
     expose:
@@ -46,9 +46,9 @@ services:
 
   adminer:
     container_name: adminer
-    image: adminer:latest
+    image: adminer:${ADMINER_VERSION}
     ports: # Important: In a production environment you should remove the external port that kept here for debugging purposes.
-      - 9080:8080 # external port / container port
+      - 19080:8080 # external port / container port
     env_file:
       - .env
     networks:
@@ -59,11 +59,11 @@ services:
   # Redis is a high performance key-value database. It shores cached values.
   cache:
     container_name: redis
-    image: bitnami/redis:latest
+    image: bitnami/redis:${REDIS_VERSION}
     hostname: ${REDIS_HOSTNAME}
     restart: on-failure
     ports: # Important: In a production environment you should remove the external port that kept here for debugging purposes.
-      - 6379:6379 # external port / container port
+      - 16379:6379 # external port / container port
     env_file:
       - .env
     command: redis-server --save 20 1 --loglevel warning --protected-mode no --stop-writes-on-bgsave-error no

@@ -35,10 +35,14 @@ keycloak:
   schema: http # schema
   hostname: localhost # hostname
   port: 8180 # port number
+  url: ${schema}://${keycloak.hostname}:${keycloak.port} # url
   realm: rps-dev # realm name
   client-id: oauth2-proxy # client id
   secret: HVxWhjNes0vU3FyxETpmBcYXyV0WVAgw # secret
 
 # OpenApi configuration
 api:
+  schema: http # schema
   hostname: localhost
+  url: ${api.schema}://${api.hostname}:${server.port}${server.servlet.context-path}
+  kc-hostname: localhost

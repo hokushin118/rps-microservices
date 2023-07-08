@@ -125,6 +125,11 @@ spec:
                 configMapKeyRef: # Using ConfigMap
                   name: score-qry-service-configmap
                   key: redis-port
+            - name: SCORE_QRY_SRV_SCHEMA # App schema
+              valueFrom:
+                configMapKeyRef: # Using ConfigMap
+                  name: score-qry-service-configmap
+                  key: app-schema
             - name: OPEN_API_URL
               value: "score-qry-service"
             - name: SCORE_QRY_SERVER_PORT

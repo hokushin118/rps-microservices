@@ -52,14 +52,14 @@ public class RpsServiceV2Impl implements RpsServiceV2 {
     }
 
     @Override
-    @Cacheable(cacheNames = GAMES_ADMIN_USER_ID_PROTO_CACHE_NAME, key = "#userId", sync = true)
+    @Cacheable(cacheNames = GAMES_ADMIN_USER_ID_PROTO_CACHE_NAME, key = "#userId.toString()", sync = true)
     public ListOfGamesAdminResponse findByUserId(UUID userId) {
         log.info("SERVICE: Finding games by userId: {}.", userId);
         return this.toListOfGameAdminDto(this.queryDispatcher.send(new FindGamesByUserIdQuery(userId)));
     }
 
     @Override
-    @Cacheable(cacheNames = GAMES_MY_PROTO_CACHE_NAME, key = "#userId", sync = true)
+    @Cacheable(cacheNames = GAMES_MY_PROTO_CACHE_NAME, key = "#userId.toString()", sync = true)
     public ListOfGamesResponse findMyGames(UUID userId) {
         log.info("SERVICE: Finding scores by userId: {}.", userId);
         return this.toListOfGameDto(this.queryDispatcher.send(new FindGamesByUserIdQuery(userId)));

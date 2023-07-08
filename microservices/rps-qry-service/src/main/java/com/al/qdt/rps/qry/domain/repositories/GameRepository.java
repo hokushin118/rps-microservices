@@ -13,7 +13,6 @@ public interface GameRepository extends JpaRepository<Game, UUID> {
     List<Game> findByUserId(UUID userId);
 
     @Modifying(clearAutomatically = true, flushAutomatically = true)
-    @Query(value = "DELETE FROM game g WHERE g.id = :id",
-            nativeQuery = true)
+    @Query(value = "DELETE FROM game WHERE id = :id", nativeQuery = true)
     void deleteById(@Param("id") UUID id);
 }

@@ -49,10 +49,14 @@ keycloak:
   schema: ${KEYCLOAK_SCHEMA} # schema
   hostname: ${KEYCLOAK_HOSTNAME} # hostname
   port: ${KEYCLOAK_PORT} # port number
+  url: ${KEYCLOAK_SCHEMA}://${KEYCLOAK_HOSTNAME}:${KEYCLOAK_PORT} # url
   realm: ${KEYCLOAK_REALM} # realm name
   client-id: ${KEYCLOAK_CLIENT_ID} # client id
   secret: ${KEYCLOAK_SECRET} # secret
 
 # OpenApi configuration
 api:
+  schema: ${SCORE_CMD_SRV_SCHEMA} # schema
   hostname: ${OPEN_API_URL}
+  url: ${api.schema}://${api.hostname}${server.servlet.context-path}
+  kc-hostname: ${KEYCLOAK_EXT_HOSTNAME}

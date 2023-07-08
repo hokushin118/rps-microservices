@@ -16,7 +16,7 @@ services:
     hostname: ${ZOOKEEPER_HOSTNAME_1}
     restart: on-failure
     ports: # Important: In a production environment you should remove the external port that kept here for debugging purposes.
-      - 2181:2181 # external port / container port
+      - 12181:2181 # external port / container port
     environment:
       - ZOOKEEPER_SERVER_ID=${ZOOKEEPER_SERVER_ID_1}
       - ZOOKEEPER_CLIENT_PORT=${ZOOKEEPER_CLIENT_PORT_1}
@@ -38,7 +38,7 @@ services:
     hostname: ${ZOOKEEPER_HOSTNAME_2}
     restart: on-failure
     ports: # Important: In a production environment you should remove the external port that kept here for debugging purposes.
-      - 2182:2181 # external port / container port
+      - 12182:2181 # external port / container port
     environment:
       - ZOOKEEPER_SERVER_ID=${ZOOKEEPER_SERVER_ID_2}
       - ZOOKEEPER_CLIENT_PORT=${ZOOKEEPER_CLIENT_PORT_2}
@@ -60,7 +60,7 @@ services:
     hostname: ${ZOOKEEPER_HOSTNAME_3}
     restart: on-failure
     ports: # Important: In a production environment you should remove the external port that kept here for debugging purposes.
-      - 2183:2181 # external port / container port
+      - 12183:2181 # external port / container port
     environment:
       - ZOOKEEPER_SERVER_ID=${ZOOKEEPER_SERVER_ID_3}
       - ZOOKEEPER_CLIENT_PORT=${ZOOKEEPER_CLIENT_PORT_3}
@@ -82,7 +82,7 @@ services:
     hostname: ${KAFKA_HOSTNAME_1}
     restart: on-failure
     ports: # Important: In a production environment you should remove the external port that kept here for debugging purposes.
-      - 9093:9093 # external port / container port
+      - 19093:9093 # external port / container port
     environment:
       - KAFKA_CFG_BROKER_ID=${KAFKA_BROKER_ID_1}
       - KAFKA_CFG_ZOOKEEPER_CONNECT=${ZOOKEEPER_HOSTNAME_1}:${ZOOKEEPER_CLIENT_PORT_1},${ZOOKEEPER_HOSTNAME_2}:${ZOOKEEPER_CLIENT_PORT_2},${ZOOKEEPER_HOSTNAME_3}:${ZOOKEEPER_CLIENT_PORT_3}
@@ -112,7 +112,7 @@ services:
     hostname: ${KAFKA_HOSTNAME_2}
     restart: on-failure
     ports: # Important: In a production environment you should remove the external port that kept here for debugging purposes.
-      - 9094:9094 # external port / container port
+      - 19094:9094 # external port / container port
     environment:
       - KAFKA_CFG_BROKER_ID=${KAFKA_BROKER_ID_2}
       - KAFKA_CFG_ZOOKEEPER_CONNECT=${ZOOKEEPER_HOSTNAME_1}:${ZOOKEEPER_CLIENT_PORT_1},${ZOOKEEPER_HOSTNAME_2}:${ZOOKEEPER_CLIENT_PORT_2},${ZOOKEEPER_HOSTNAME_3}:${ZOOKEEPER_CLIENT_PORT_3}
@@ -142,7 +142,7 @@ services:
     hostname: ${KAFKA_HOSTNAME_3}
     restart: on-failure
     ports: # Important: In a production environment you should remove the external port that kept here for debugging purposes.
-      - 9095:9095 # external port / container port
+      - 19095:9095 # external port / container port
     environment:
       - KAFKA_CFG_BROKER_ID=${KAFKA_BROKER_ID_3}
       - KAFKA_CFG_ZOOKEEPER_CONNECT=${ZOOKEEPER_HOSTNAME_1}:${ZOOKEEPER_CLIENT_PORT_1},${ZOOKEEPER_HOSTNAME_2}:${ZOOKEEPER_CLIENT_PORT_2},${ZOOKEEPER_HOSTNAME_3}:${ZOOKEEPER_CLIENT_PORT_3}

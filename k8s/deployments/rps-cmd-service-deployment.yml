@@ -110,6 +110,11 @@ spec:
                 configMapKeyRef: # Using ConfigMap
                   name: rps-cmd-service-configmap
                   key: mongodb-database
+            - name: RPS_CMD_SRV_SCHEMA # App schema
+              valueFrom:
+                configMapKeyRef: # Using ConfigMap
+                  name: rps-cmd-service-configmap
+                  key: app-schema
             - name: OPEN_API_URL
               value: "rps-cmd-service"
             - name: RPS_CMD_SERVER_PORT

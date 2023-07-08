@@ -4,7 +4,7 @@ services:
   # Prometheus (metrics database) - http://<host-ip>:9090
   prometheus:
     container_name: prometheus
-    image: prom/prometheus
+    image: prom/prometheus:${PROMETHEUS_VERSION}
     hostname: ${PROMETHEUS_HOSTNAME}
     restart: on-failure
     ports: # Important: In a production environment you should remove the external port that kept here for debugging purposes.
@@ -29,7 +29,7 @@ services:
   # Grafana (visualize metrics) - http://<host-ip>:3000
   grafana:
     container_name: grafana
-    image: grafana/grafana
+    image: grafana/grafana:${GF_VERSION}
     hostname: ${GF_HOSTNAME}
     restart: on-failure
     user: "104" # setting up the user to use over the Docker container to allow reads/writes over disk
