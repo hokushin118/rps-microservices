@@ -93,14 +93,15 @@ class SecurityConfig {
 
         http.authorizeHttpRequests()
                 // Public endpoints
-                // Actuator readiness and liveness probes, OpenAPI specs and UI should be accessible to anonymous
-                .antMatchers("/actuator/health/readiness", "/actuator/health/liveness")
+                // Actuator health and info probes, OpenAPI specs and UI should be accessible to anonymous
+                .antMatchers("/actuator/health", "/actuator/info", "/actuator/prometheus")
                 .permitAll()
                 .antMatchers(String.format("%s/**", this.restApiDocPath))
                 .permitAll()
                 .antMatchers("/swagger-ui/**")
                 .permitAll()
                 // Private endpoints
+                .antMatchers("/actuator/**").hasAuthority("ROLE_ADMIN")
                 .antMatchers(HttpMethod.POST, String.format("/%s/%s/**", this.adminUrl, this.dbUrl)).hasAuthority("ROLE_ADMIN")
                 .antMatchers(HttpMethod.POST, String.format("/%s/%s/**", this.adminUrl, this.gamesUrl)).hasAuthority("ROLE_ADMIN")
                 .antMatchers(HttpMethod.DELETE, String.format("/%s/%s/**", this.adminUrl, this.gamesUrl)).hasAuthority("ROLE_ADMIN")

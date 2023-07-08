@@ -105,6 +105,11 @@ spec:
                 secretKeyRef: # Using Secrets
                   name: score-cmd-service-secret
                   key: mongodb-admin-password
+            - name: SCORE_CMD_SRV_SCHEMA # App schema
+              valueFrom:
+                configMapKeyRef: # Using ConfigMap
+                  name: score-cmd-service-configmap
+                  key: app-schema
             - name: OPEN_API_URL
               value: "score-cmd-service"
             - name: SCORE_CMD_SERVER_PORT
