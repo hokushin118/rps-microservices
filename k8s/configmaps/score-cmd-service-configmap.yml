@@ -34,6 +34,7 @@ data:
   keycloak-port: "8080"
   keycloak-realm: rps-dev
   keycloak-client-id: oauth2-proxy
+  app-schema: http
 
 ---
 # ConfigMap holds information about Score Command microservice oauth2-proxy container configuration files

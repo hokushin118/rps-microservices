@@ -449,21 +449,34 @@ You should see the following output:
       /opt/keycloak
 ```
 
-* Create a separate user for the Keycloak service and set the password using the following commands:
+* Create a separate user account (service account) for the keycloak service using the following commands:
 
 ```
       > sudo useradd keycloak -m 
       > sudo usermod --shell /bin/bash keycloak
-      > sudo passwd keycloak
-      > New password: 12345 
-      > Retype new password: 12345 
 ```
 
-* Add the user to the __sudoers__ group for it to have _Administrative Privileges_ using the following command:
+__Note:__ It is considered a best practice for using a separate service account for each application. The same can be said about creating a separate group for each service account.  
+
+* Add the user to the __sudo__ group for it to have _Administrative Privileges_ using the following command:
 
 ```
       > sudo usermod -aG sudo keycloak
 ```
+
+* To verify that the _keycloak_ user has been added to the __sudo__ group run the following command:
+
+```
+      > id keycloak
+```
+
+You should see the following output:
+
+```
+      > uid=998(keycloak) gid=1003(keycloak) groups=1003(keycloak),27(sudo)
+```
+
+It means that the _keycloak_ user belongs to two groups: __keycloak__ and __sudo__.
 
 * Hide the account from the login screen:
 
@@ -799,17 +812,14 @@ You should see the following output:
       /opt/zookeeper
 ```
 
-* Create a separate user for the Zookeeper service and set the password using the following commands:
+* Create a separate user account (service account) for the zookeeper service using the following commands:
 
 ```
       > sudo useradd zookeeper -m
       > sudo usermod --shell /bin/bash zookeeper
-      > sudo passwd zookeeper
-      > New password: 12345 
-      > Retype new password: 12345 
 ```
 
-* Add the user to the __sudoers__ group for it to have _Administrative Privileges_ using the following command:
+* Add the user to the __sudo__ group for it to have _Administrative Privileges_ using the following command:
 
 ```
       > sudo usermod -aG sudo zookeeper
@@ -966,17 +976,14 @@ You should see the following output:
       /opt/kafka
 ```
 
-* Create a separate user for the Kafka service and set the password using the following commands:
+* Create a separate user account (service account) for the kafka service using the following commands:
 
 ```
       > sudo useradd kafka -m
       > sudo usermod --shell /bin/bash kafka
-      > sudo passwd kafka
-      > New password: 12345 
-      > Retype new password: 12345
 ```
 
-* Add the user to the __sudoers__ group for it to have _Administrative Privileges_ using the following command:
+* Add the user to the __sudo__ group for it to have _Administrative Privileges_ using the following command:
 
 ```
       > sudo usermod -aG sudo kafka
@@ -1430,10 +1437,10 @@ and make sure that all the RPS game microservices are up and running.
 * Open any browser and navigate to a microservice Open API 3.0 definition (REST API).
 
 ```
-            http://host.docker.internal/rps-cmd-api/swagger-ui/index.html
-            http://host.docker.internal/rps-qry-api/swagger-ui/index.html
-            http://host.docker.internal/score-cmd-api/swagger-ui/index.html
-            http://host.docker.internal/score-qry-api/swagger-ui/index.html
+            http://localhost/rps-cmd-api/swagger-ui/index.html
+            http://localhost/rps-qry-api/swagger-ui/index.html
+            http://localhost/score-cmd-api/swagger-ui/index.html
+            http://localhost/score-qry-api/swagger-ui/index.html
 ```
 
 __Note:__ NGINX is used as API gateway so if you deploy the microservices on docker containers you should remove port number
@@ -1464,7 +1471,7 @@ Microservices active profile is __prod__.
 
 ### Prerequisites
 
-Make sure that k8s is enabled in the Docker Desktop. If not, click on the __Settings__ icon, then on the __Kubernetes__
+Make sure that k8s is enabled in the [Docker Desktop](https://www.docker.com/products/docker-desktop). If not, click on the __Settings__ icon, then on the __Kubernetes__
 tab and check the __Enable Kubernetes__ checkbox.
 
 ![enable_kubernetes](img/desktop-docker-k8s.png)
@@ -1987,7 +1994,7 @@ REST API:
      > curl localhost:9200/_cat/indices?v 
 ```
 
-__Note:__ If you are running a single node cluster (Docker Desktop or MiniKube) you might need to perform the following
+__Note:__ If you are running a single node cluster ([Docker Desktop](https://www.docker.com/products/docker-desktop) or MiniKube) you might need to perform the following
 request against the Elasticsearch REST API::
 
 ```
@@ -3904,7 +3911,7 @@ Now when you have the client secret value for OAuth2 Client __oauth2-proxy__, yo
              --header "Content-Type: application/x-www-form-urlencoded" \ 
              --data-urlencode "grant_type=client_credentials" \
              --data-urlencode "client_id=oauth2-proxy" \
-             --data-urlencode "client_secret=H0fnsBnCc7Ts22rxhvLcy66s1yvzSRgG" 
+             --data-urlencode "client_secret=HVxWhjNes0vU3FyxETpmBcYXyV0WVAgw" 
 ```
 
 You will get an access token that you can use with [Keycloak REST API](https://www.keycloak.org/docs-api/18.0/rest-api):
@@ -3930,7 +3937,7 @@ For example, you can get the user info executing the following command:
              --header "Authorization: Bearer <access token obtained in the previous step>" \
              --data-urlencode "grant_type=client_credentials" \
              --data-urlencode "client_id=oauth2-proxy" \
-             --data-urlencode "client_secret=H0fnsBnCc7Ts22rxhvLcy66s1yvzSRgG"
+             --data-urlencode "client_secret=HVxWhjNes0vU3FyxETpmBcYXyV0WVAgw"
 ```
 
 [Keycloak REST API v18.0](https://documenter.getpostman.com/view/7294517/SzmfZHnd)

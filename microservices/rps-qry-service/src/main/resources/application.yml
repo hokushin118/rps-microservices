@@ -102,17 +102,17 @@ spring:
             scope:
               - openid # Returns the sub claim, which uniquely identifies the user. In an ID Token, iss, aud, exp, iat, and at_hash claims will also be present
               - profile # Returns claims that represent basic profile information, including name, family_name, given_name, middle_name, nickname, picture, and updated_at
-            redirect-uri: http://${api.hostname}:${server.port}${server.servlet.context-path}/login/oauth2/code/${spring.application.name}
+            redirect-uri: ${app.url}/login/oauth2/code/${spring.application.name}
         # OIDC provider configuration
         provider:
           keycloak:
-            issuer-uri: http://${keycloak.hostname}:${keycloak.port}/realms/${keycloak.realm}
+            issuer-uri: ${keycloak.url}/realms/${keycloak.realm}
       # Resource service configuration
       resourceserver:
         jwt:
-          issuer-uri: http://${keycloak.hostname}:${keycloak.port}/realms/${keycloak.realm}
+          issuer-uri: ${keycloak.url}/realms/${keycloak.realm}
           # Used to verify JWT signature
-          jwk-set-uri: http://${keycloak.hostname}:${keycloak.port}/realms/${keycloak.realm}/protocol/openid-connect/certs
+          jwk-set-uri: ${keycloak.url}/realms/${keycloak.realm}/protocol/openid-connect/certs
 
 # Actuator configuration
 management:
@@ -159,11 +159,11 @@ springdoc:
 api:
   dev:
     server:
-      base-url: http://${api.hostname}:${server.port}${server.servlet.context-path}
+      base-url: ${api.url}
       description: Dev server
   prod:
     server:
-      base-url: http://${api.hostname}:8080${server.servlet.context-path}
+      base-url: ${api.url}
       description: Prod server
   endpoint-games: games
   endpoint-admin: admin
@@ -176,6 +176,7 @@ api:
 
 # Application configuration
 app:
+  schema: http # schema
   # Executor configuration
   executor:
     core-pool-size: 2

@@ -1,4 +1,4 @@
-FROM nginx:1.23.1
+FROM nginx:1.23.3-alpine
 
 ## Declare local variables
 ARG TEMP_FOLDER=tmp
@@ -14,6 +14,11 @@ WORKDIR /$TEMP_FOLDER
 RUN rm /etc/nginx/conf.d/default.conf
 # Copy Nginx config template
 COPY ./infrastructure/nginx/conf.d/default.conf /etc/nginx/conf.d/default.conf
+# Copy Nginx certificates
+#COPY ./infrastructure/nginx/certs/* /etc/nginx/ssl/rps/
 
-# Start Nginxm
+EXPOSE 80
+#EXPOSE 443
+
+# Start Nginx
 ENTRYPOINT ["nginx", "-g", "daemon off;"]

@@ -16,6 +16,7 @@ public class RpsKeycloakProperties {
     private String schema; // schema
     private String hostname; // hostname
     private int port; // port
+    private String url; // url
     private String realm; // realm
     private String clientId; // client-id
     private String secret; // secret

@@ -14,6 +14,7 @@ import io.swagger.v3.oas.models.security.SecurityRequirement;
 import io.swagger.v3.oas.models.security.SecurityScheme;
 import io.swagger.v3.oas.models.servers.Server;
 import lombok.RequiredArgsConstructor;
+import lombok.Value;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.boot.info.BuildProperties;
 import org.springframework.context.annotation.Bean;
@@ -63,7 +64,7 @@ public class OpenApiConfig {
     private OAuthFlow createAuthorizationCodeFlow() {
         final var authUrl = String.format("%s://%s:%s/realms/%s/protocol/openid-connect",
                 this.rpsKeycloakProperties.getSchema(),
-                this.rpsKeycloakProperties.getHostname(),
+                this.rpsApiProperties.getKcHostname(),
                 this.rpsKeycloakProperties.getPort(),
                 this.rpsKeycloakProperties.getRealm());
         return new OAuthFlow()

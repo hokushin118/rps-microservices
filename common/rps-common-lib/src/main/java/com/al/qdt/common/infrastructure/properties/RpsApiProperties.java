@@ -19,6 +19,8 @@ public class RpsApiProperties {
 
     private String licenseUrl; // license url
 
+    private String kcHostname; // Keycloak hostname
+
     private EnvProperties dev; // dev server properties
 
     private EnvProperties prod; // prod server properties

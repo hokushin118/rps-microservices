@@ -125,6 +125,11 @@ spec:
                 configMapKeyRef: # Using ConfigMap
                   name: rps-qry-service-configmap
                   key: redis-port
+            - name: RPS_QRY_SRV_SCHEMA # App schema
+              valueFrom:
+                configMapKeyRef: # Using ConfigMap
+                  name: rps-qry-service-configmap
+                  key: app-schema
             - name: OPEN_API_URL
               value: "rps-qry-service"
             - name: RPS_QRY_SERVER_PORT
