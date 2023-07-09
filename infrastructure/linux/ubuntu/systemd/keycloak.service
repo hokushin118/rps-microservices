@@ -1,0 +1,19 @@
+[Unit]
+Description=The Keycloak IAM (Identity and Access Management) service
+After=syslog.target network.target
+
+[Service]
+Type=simple
+User=keycloak
+Group=keycloak
+LimitNOFILE=102642
+PIDFile=/run/keycloak/keycloak.pid
+ExecStart=/opt/keycloak/bin/kc.sh start-dev --http-port 8180
+StandardOutput=syslog
+StandardError=syslog
+Restart=on-failure
+RestartSec=5s
+SyslogIdentifier=keycloak
+
+[Install]
+WantedBy=multi-user.target

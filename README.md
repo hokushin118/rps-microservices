@@ -419,6 +419,12 @@ The [Keycloak 18.0.0](https://www.keycloak.org) will be started in dev mode on p
       > rm keycloak-18.0.0.tar.gz
 ```
 
+* Then copy the Keycloak configuration file for H2 database with the following command:
+
+```
+      > sudo cp ./infrastructure/linux/ubuntu/conf/keycloak.conf /opt/keycloak/conf/keycloak.conf
+```
+
 * Then open the _/etc/environment_ file using the following command:
 
 ```
@@ -508,6 +514,8 @@ You should see the following line in the output:
       2023-07-02 16:08:13,347 INFO  [org.keycloak.exportimport.util.ImportUtils] (main) Realm 'rps-dev' imported
 ```
 
+__Note:__ Skip the next step if you are going to run [Keycloak 18.0.0](https://www.keycloak.org) as _systemd service_.
+
 * To start the [Keycloak 18.0.0](https://www.keycloak.org) in development mode, run the following command:
 
 ```
@@ -519,6 +527,60 @@ The [Keycloak 18.0.0](https://www.keycloak.org) will be started in dev mode on p
 __Note:__ When running in development mode, [Keycloak 18.0.0](https://www.keycloak.org) uses by default an H2 Database to store its configuration.
 
 [Keycloak on bare metal](https://www.keycloak.org/getting-started/getting-started-zip)
+
+#### Configure Keycloak server as a systemd service for Linux Ubuntu 20.04.6 LTS
+
+* You will need to create a _systemd service_ file to manage the Keycloak service. You can copy the sample systemd service with the following command:
+
+```
+      > sudo cp ./infrastructure/linux/ubuntu/systemd/keycloak.service /etc/systemd/system/keycloak.service
+```
+
+* Then, reload the _systemd daemon_ to apply the changes by executing the following command:
+
+```
+      > systemctl daemon-reload
+```
+
+* Then, start the _keycloak_ service and enable it to start at system reboot by executing the following commands:
+
+```
+      > systemctl start keycloak
+      > systemctl enable keycloak
+```
+
+* You can check the status of the _keycloak_ service with the following command:
+
+```
+      > systemctl status keycloak
+```
+
+You should see the following output:
+
+```
+    keycloak.service - The Keycloak IAM (Identity and Access Management) service
+         Loaded: loaded (/etc/systemd/system/keycloak.service; disabled; vendor preset: enabled)
+         Active: active (running) since Sun 2023-07-09 20:21:14 MSK; 43s ago
+       Main PID: 128421 (java)
+          Tasks: 55 (limit: 18682)
+         Memory: 345.2M
+         CGroup: /system.slice/keycloak.service
+                 └─128421 java -Xms64m -Xmx512m -XX:MetaspaceSize=96M -XX:MaxMetaspaceSize=256m -Djava.net.preferIPv4Stack=true -Dkc.home.dir=/opt/keycloak/bin/../ -Djboss.server.config.dir=/opt/keycloak/bi>
+```
+
+You can also view the sys logs by executing the following command:
+
+```
+      > cat /var/log/syslog 
+```
+
+You should see the following lines in the sys log file:
+
+```
+    Jul  9 20:27:14 hokushin-Latitude-3520 keycloak[128836]: 2023-07-09 20:27:14,589 WARN  [org.keycloak.quarkus.runtime.KeycloakMain] (main) Running the server in development mode. DO NOT use this configuration in production.
+```
+
+[How To Use Systemctl to Manage Systemd Services and Units](https://www.digitalocean.com/community/tutorials/how-to-use-systemctl-to-manage-systemd-services-and-units)
 
 #### Creating Keycloak super user account (Windows 10 and Linux Ubuntu 20.04.6 LTS)
 
@@ -4323,8 +4385,7 @@ Generate a public CA key and certificate with the following command:
       > openssl req -x509 -sha256 -newkey rsa:4096 -days 3560 -nodes -keyout rps-public-ca.key -out rps-public-ca.crt -subj '/CN=RPS Public Cert Authority/O=RPS Public CA'
 ```
 
-__Note:__ Skip the next steps if you are not going to use [TLS](https://en.wikipedia.org/wiki/Transport_Layer_Security)
-connection for dev environment.
+__Note:__ Skip the next steps if you are not going to use [TLS](https://en.wikipedia.org/wiki/Transport_Layer_Security) connection for dev environment.
 
 #### 2. Generation self-signed server certificate
 
@@ -4432,8 +4493,7 @@ Repeat the same steps for 4 grpc server certificates. Make sure to change custom
       -subj '/CN=grpc.score.qry.internal/O=grpc.score.qry.internal'
 ```
 
-__Note:__ Skip the next steps if you are not going to use [mTLS](https://en.wikipedia.org/wiki/Mutual_authentication)
-connection for dev environment.
+__Note:__ Skip the next steps if you are not going to use [mTLS](https://en.wikipedia.org/wiki/Mutual_authentication) connection for dev environment.
 
 #### 3. Generating client certificate (mTLS connection)
 
