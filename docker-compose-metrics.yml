@@ -11,15 +11,8 @@ services:
       - 9090:9090 # external port / container port
     env_file:
       - .env
-    command:
-      - --config.file=/etc/prometheus/prometheus.yml
-      - --storage.tsdb.path=/prometheus
-      - --web.console.libraries=/usr/share/prometheus/console_libraries
-      - --web.console.templates=/usr/share/prometheus/consoles
-    extra_hosts:
-      - host.docker.internal:host-gateway # this is to allow a process inside the Docker container to see a process outsite
     volumes:
-      - ./infrastructure/metrics/prometheus:/etc/prometheus
+      - ./infrastructure/metrics/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml # prometheus configuration file
       - prometheus-data:/etc/prometheus # creating a volume to save Prometheus data locally
     networks:
       - ${BACKEND_NETWORK}
@@ -31,7 +24,7 @@ services:
     container_name: grafana
     image: grafana/grafana:${GF_VERSION}
     hostname: ${GF_HOSTNAME}
-    restart: on-failure
+    restart: unless-stopped
     user: "104" # setting up the user to use over the Docker container to allow reads/writes over disk
     ports: # Important: In a production environment you should remove the external port that kept here for debugging purposes.
       - 3000:3000 # external port / container port

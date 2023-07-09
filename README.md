@@ -1408,6 +1408,8 @@ You should see the following output:
 
 ### 2. Deployment of the infrastructure ([backing services](https://12factor.net/backing-services)) and microservices on Docker Compose
 
+#### Deployment of the infrastructure and microservices 
+
 * Navigate to the root directory of the RPS Game project on your computer and run the [Docker Compose](https://docs.docker.com/compose) command below to deploy necessary infrastructure on docker containers in the background.
 
 ```
@@ -1420,7 +1422,7 @@ You should see the following output:
     > docker compose -f docker-compose-kc.yml -f docker-compose-general.yml -f docker-compose-kafka.yml -f docker-compose-metrics.yml -f docker-compose-api.yml ps
 ```
 
-* Navigate to the health checker microservice:
+* Navigate to the _health checker_ microservice:
 
 ```
     > http://localhost/status/hc-ui
@@ -1431,6 +1433,65 @@ and make sure that all the RPS game microservices are up and running.
 ![health-checks](img/hc.png)
 
 ** Status gets refreshed every _10 seconds_
+
+#### Verifying Prometheus
+
+* Navigate to the _prometheus_ endpoint of microservices:
+
+```
+            http://localhost/rps-cmd-api/actuator/prometheus
+            http://localhost/rps-qry-api/actuator/prometheus
+            http://localhost/score-cmd-api/actuator/prometheus
+            http://localhost/score-qry-api/actuator/prometheus
+```
+
+and make sure that all the RPS game microservices are exposing metrics to [Prometheus](https://prometheus.io).
+
+* Then, navigate to the _target_ page (Status -> Targets) of the _prometheus_ microservice:
+
+```
+    > http://localhost:9090/targets
+```
+
+and make sure that [Prometheus](https://prometheus.io) is scraping from our microservices properly.
+
+![scraping jobs](img/prometheus.png)
+
+** Status gets refreshed every _5 seconds_
+
+__Note:__ The [Prometheus](https://prometheus.io) configuration file is located at ./infrastructure/metrics/prometheus/prometheus.yml.
+
+#### Verifying Grafana
+
+* Navigate to the _grafana_ microservice:
+
+```
+    > http://localhost:3000
+```
+
+the login window appears. Enter credentials below:
+
+| **user name**  | **password** |
+|----------------|--------------|
+|     admin      |   admin      |
+
+and then navigate to the _Dashboards_ page:
+
+```
+    > http://localhost:3000/dashboards
+```
+
+You will see the preconfigured dashboards powered by our prometheus datasorce in the list:
+
+![grafana dashboards](img/grafana-dashboards.png)
+
+Select any dashboard from the list. You will be redirected to the dashboard main page. Select the application you want to monitor from the __Application__ dropdown list:
+
+![grafana dashboards application list](img/grafana-dashboard-apps-list.png)
+
+__Note:__ The [Grafana](https://grafana.com) preconfigured datasources are located at the ./infrastructure/metrics/grafana/provisioning/datasources folder. The preconfigured [Grafana](https://grafana.com) dashboard templates are located at the ./infrastructure/metrics/grafana/provisioning/dashboards folder. You can find more dashboard templates from [Grafana Dashboards](https://grafana.com/grafana/dashboards) website.
+
+[Grafana Tutorials](https://grafana.com/tutorials)
 
 ### 3. Running the RPS game microservices deployed on Docker
 
@@ -3165,8 +3226,7 @@ Repeat the same steps for the third (slave) replica set member by changing the n
 
 ### Prometheus, Alertmanager and Grafana (Monitoring Stack) on K8S cluster
 
-_Monitoring Stack_ is an open-source [Prometheus](https://prometheus.io)
-, [Alertmanager](https://prometheus.io/docs/alerting/latest/alertmanager) and Grafana monitoring infrastructure in
+_Monitoring Stack_ is an open-source [Prometheus](https://prometheus.io), [Alertmanager](https://prometheus.io/docs/alerting/latest/alertmanager) and Grafana monitoring infrastructure in
 Kubernetes.
 
 There are three necessary services in _Monitoring Stack_ setup:
@@ -3175,10 +3235,9 @@ There are three necessary services in _Monitoring Stack_ setup:
 
 [Prometheus](https://prometheus.io) is a monitoring system and time-series database.
 
-[Alertmanager](https://prometheus.io/docs/alerting/latest/alertmanager) handles alerts sent by Prometheus server.
+[Alertmanager](https://prometheus.io/docs/alerting/latest/alertmanager) handles alerts sent by [Prometheus](https://prometheus.io) server.
 
-[Grafana](https://grafana.com) is a visualization tool that can use [Prometheus](https://prometheus.io) to create
-dashboards and graphs.
+[Grafana](https://grafana.com) is a visualization tool that can use [Prometheus](https://prometheus.io) to create dashboards and graphs.
 
 _Monitoring Stack_ is used to implement the following patterns:
 
