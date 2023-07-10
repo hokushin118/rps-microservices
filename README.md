@@ -89,7 +89,7 @@ or
 
 on Linux Ubuntu 20.04.6 LTS machine. If not, follow the steps below to install it.
 
-#### Windows 10
+<details><summary>Windows 10</summary>
 
 * Download and extract [OpenJDK11U-jdk_x64_windows_hotspot_11.0.19_7.zip](https://adoptium.net/temurin/releases/?version=11) archive file for Windows x64 from the [Adoptium](https://adoptium.net/temurin/releases/?version=11) website.
 
@@ -133,7 +133,9 @@ __Note:__ The _setx_ command permanently updates the environment variables. To a
 
 [Installing and using OpenJDK 11 for Windows](https://access.redhat.com/documentation/ru-ru/openjdk/11/html-single/installing_and_using_openjdk_11_for_windows/index)
 
-#### Linux Ubuntu 20.04.6 LTS
+</details>
+<br>
+<details><summary>Linux Ubuntu 20.04.6 LTS</summary>
 
 * Install the Java Runtime Environment (JRE) from [OpenJDK 11](https://openjdk.java.net/projects/jdk/11) or higher using the following commands:
 
@@ -189,6 +191,8 @@ __Note:__ Do not include the __bin/__ portion of the Java installation location 
 
 [How To Install Java with Apt on Ubuntu 20.04](https://www.digitalocean.com/community/tutorials/how-to-install-java-with-apt-on-ubuntu-20-04)
 
+</details>
+
 ### 2. Installing Maven on local machine
 
 * Make sure you have [Maven](https://openjdk.java.net/projects/jdk/11) or a higher version installed using the following command:
@@ -219,7 +223,7 @@ or
 
 on Linux Ubuntu 20.04.6 LTS machine. If not, follow the steps below to install it.
 
-#### Window 10
+<details><summary>Windows 10</summary>
 
 * Download the [apache-maven-3.9.3-bin.zip](https://dlcdn.apache.org/maven/maven-3/3.9.3/binaries/apache-maven-3.9.3-bin.zip) binary archive file from the [Apache Maven Project](https://maven.apache.org/download.cgi) website.
 
@@ -259,7 +263,9 @@ on Linux Ubuntu 20.04.6 LTS machine. If not, follow the steps below to install i
       > mvn -version
 ```
 
-#### Linux Ubuntu 20.04.6 LTS
+</details>
+<br>
+<details><summary>Linux Ubuntu 20.04.6 LTS</summary>
 
 * Install Maven on you Linux Ubuntu machine by executing the following command:
 
@@ -353,6 +359,8 @@ You should see the following output:
 
 [How to Install Maven on Linux (Ubuntu)](https://www.digitalocean.com/community/tutorials/install-maven-linux-ubuntu)
 
+</details>
+
 ### 3. Cloning repository to the local machine
 
 * Clone the __rps-microservices__ project to your local machine by executing the following command:
@@ -363,7 +371,7 @@ You should see the following output:
 
 ### 4. Deploying Keycloak standalone server on local machine
 
-#### Window 10
+<details><summary>Window 10</summary>
 
 * Download and extract [keycloak-18.8.0.zip](https://github.com/keycloak/keycloak/releases/download/18.0.0/keycloak-18.0.0.zip) archive file from the [Keycloak](https://www.keycloak.org/archive/downloads-18.0.0.html) website.
 
@@ -387,7 +395,9 @@ You should see the following line in the output:
 
 The [Keycloak 18.0.0](https://www.keycloak.org) will be started in dev mode on port number _8190_.
 
-#### Linux Ubuntu 20.04.6 LTS
+</details>
+<br>
+<details><summary>Linux Ubuntu 20.04.6 LTS</summary>
 
 * Ensure your system is updated:
 
@@ -502,7 +512,7 @@ and add the following lines to the file:
       > sudo chown -R keycloak:keycloak $KEYCLOAK_HOME
 ```
 
-* Import the _rps-dev_ realm from the _/infrastructure/keycloak/rps-dev-realm.json_ file by executing the following command:
+* [Import](https://www.keycloak.org/server/importExport) the _rps-dev_ realm from the _/infrastructure/keycloak/rps-dev-realm.json_ file by executing the following command:
 
 ```
       > sudo mkdir -p $KEYCLOAK_HOME/data/import && sudo cp ./infrastructure/keycloak/rps-dev-realm.json $KEYCLOAK_HOME/data/import/rps-dev-realm.json
@@ -582,7 +592,11 @@ You should see the following lines in the sys log file:
 
 [How To Use Systemctl to Manage Systemd Services and Units](https://www.digitalocean.com/community/tutorials/how-to-use-systemctl-to-manage-systemd-services-and-units)
 
-#### Creating Keycloak super user account (Windows 10 and Linux Ubuntu 20.04.6 LTS)
+</details>
+<br>
+<details><summary>Windows 10 and Linux Ubuntu 20.04.6 LTS</summary>
+
+#### Creating Keycloak super user account
 
 * Open [http://localhost:8180/](http://localhost:8180) and create a super user by filling the form with your preferred username and password. 
 
@@ -599,15 +613,19 @@ For example:
 [Keycloak Getting Started](https://www.keycloak.org/getting-started/getting-started-zip)  
 [How to export and import Realms in Keycloak](https://www.mastertheboss.com/keycloak/how-to-export-and-import-realms-in-keycloak)
 
+</details>
+
 ### 5. Installing MongoDB on local machine
 
-#### Window 10
+<details><summary>Window 10</summary>
 
 * Download and install [MongoDB Community Edition](https://www.mongodb.com/docs/manual/tutorial/install-mongodb-on-windows) from official website.
 
 * Download and install [Mongo Shell](https://www.mongodb.com/docs/mongodb-shell/install) from official website.
 
-#### Linux Ubuntu 20.04.6 LTS
+</details>
+<br>
+<details><summary>Linux Ubuntu 20.04.6 LTS</summary>
 
 * Ensure your system is updated:
 
@@ -695,7 +713,11 @@ You should see the following output:
 
 [Install MongoDB on Ubuntu](https://www.mongodb.com/docs/manual/tutorial/install-mongodb-on-ubuntu)
 
-#### Creating MongoDB root account (Windows 10 and Linux Ubuntu 20.04.6 LTS)
+</details>
+<br>
+<details><summary>Windows 10 and Linux Ubuntu 20.04.6 LTS</summary>
+
+#### Creating MongoDB root account
 
 * Open the _command line tool_ and type the following command:
 
@@ -765,9 +787,11 @@ It means that user _root_ user with build-in [_root_](https://www.mongodb.com/do
 
 MongoDB [build-in roles](https://www.mongodb.com/docs/manual/reference/built-in-roles/)
 
+</details>
+
 ### 6. Adding custom entries to the etc/host file for the Apache Zookeeper and Kafka applications
 
-#### Window 10
+<details><summary>Window 10</summary>
 
 Open the _C:\windows\system32\drivers\etc\hosts_ file in any text editor and add the following entries and save the file:
 
@@ -775,7 +799,9 @@ Open the _C:\windows\system32\drivers\etc\hosts_ file in any text editor and add
      > 127.0.0.1 zk.internal kafka.internal
 ```
 
-#### Linux Ubuntu 20.04.6 LTS
+</details>
+<br>
+<details><summary>Linux Ubuntu 20.04.6 LTS</summary>
 
 Open the _/etc/hosts_ file using the following command:
 
@@ -789,9 +815,11 @@ Add the following entries and save the file:
      > 127.0.0.1 zk.internal kafka.internal
 ```
 
+</details>
+
 ### 7. Deploying Apache Zookeeper on local machine
 
-#### Window 10
+<details><summary>Window 10</summary>
 
 * Download and extract [apache-zookeeper-3.8.0-bin.tar.gz](https://dlcdn.apache.org/zookeeper/zookeeper-3.8.0/apache-zookeeper-3.8.0-bin.tar.gz) archive file from the [Apache Zookeeper](https://www.apache.org/dyn/closer.lua/zookeeper/zookeeper-3.8.0/apache-zookeeper-3.8.0-bin.tar.gz) website.
 
@@ -823,7 +851,9 @@ Note the binding port displayed in the output, it should be _2181_ by default.
       2023-07-01 13:37:26,687 [myid:] - INFO  [main:o.a.z.s.NIOServerCnxnFactory@660] - binding to port 0.0.0.0/0.0.0.0:2181
 ```
 
-#### Linux Ubuntu 20.04.6 LTS
+</details>
+<br>
+<details><summary>Linux Ubuntu 20.04.6 LTS</summary>
 
 * Ensure your system is updated:
 
@@ -956,9 +986,11 @@ You should see the following output:
 [zkServer Command](https://zookeeper.apache.org/doc/r3.8.0/zookeeperTools.html#zkServer)  
 [Zookeeper Admin Guide](https://zookeeper.apache.org/doc/r3.8.0/zookeeperAdmin.html)
 
+</details>
+
 ### 8. Deploying Apache Kafka on local machine
 
-#### Windows 10
+<details><summary>Windows 10</summary>
 
 * Download and extract [kafka_2.13-2.7.0.tgz](https://archive.apache.org/dist/kafka/2.7.0/kafka_2.13-2.7.0.tgz) archive file from the [Apache Kafka](https://kafka.apache.org/downloads) website.
 
@@ -987,7 +1019,9 @@ You should see the following output:
    > bin\windows\kafka-server-start.bat config\server.properties
 ```
 
-#### Linux Ubuntu 20.04.6 LTS
+</details>
+<br>
+<details><summary>Linux Ubuntu 20.04.6 LTS</summary>
 
 * Ensure your system is updated:
 
@@ -1122,9 +1156,11 @@ and add the following lines to the file:
 
 [How To Install Apache Kafka on Ubuntu 20.04](https://www.digitalocean.com/community/tutorials/how-to-install-apache-kafka-on-ubuntu-20-04)
 
+</details>
+
 ### 9. Deploying Redis on local machine
 
-#### Windows 10
+<details><summary>Windows 10</summary>
 
 * To install [Redis](https://redis.io) on Windows, we'll first need to [enable WSL2 (Windows Subsystem for Linux)](https://learn.microsoft.com/en-us/windows/wsl/install).
 
@@ -1175,7 +1211,9 @@ for example:
       > sudo service redis-server start
 ```
 
-#### Linux Ubuntu 20.04.6 LTS
+</details>
+<br>
+<details><summary>Linux Ubuntu 20.04.6 LTS</summary>
 
 * Ensure your system is updated:
 
@@ -1195,15 +1233,37 @@ for example:
 
 __Note:__ By default, [Redis](https://redis.io) is accessible only from _localhost_.
 
-* You can stop Redis service by executing the following command:
+* To prevent unintended upgrades, you can pin the package at the currently installed version:
+
+```
+      > echo "redis hold" | sudo dpkg --set-selections
+```
+
+* Verify the status of the _redis_ package by executing the following command:
+
+```
+      > dpkg --get-selections redis
+```
+
+You should see the following output:
+
+```
+      > redis	hold
+```
+
+* You can stop [Redis](https://redis.io) service by executing the following command:
 
 ```
       > sudo service redis-server stop
 ```
 
+[How To Install and Secure Redis on Ubuntu 22.04](https://www.digitalocean.com/community/tutorials/how-to-install-and-secure-redis-on-ubuntu-22-04)
+
+</details>
+
 ### 10. Installing MariaDB on local machine
 
-#### Windows 10
+<details><summary>Windows 10</summary>
 
 * Download and install [MariaDB Community Server](https://mariadb.com/downloads) version 10.6.14-GA for MS Windows (64-bit) from official website.
 
@@ -1222,7 +1282,9 @@ Enable the __Install as service__ checkbox.
 
 [Installing MariaDB MSI Packages on Windows](https://mariadb.com/kb/en/installing-mariadb-msi-packages-on-windows)
 
-#### Linux Ubuntu 20.04.6 LTS
+</details>
+<br>
+<details><summary>Linux Ubuntu 20.04.6 LTS</summary>
 
 * Ensure your system is updated and install software-properties-common package:
 
@@ -1261,6 +1323,13 @@ You should see the following output:
       mysql  Ver 15.1 Distrib 10.6.14-MariaDB, for debian-linux-gnu (x86_64) using readline 5.2
 ```
 
+* To prevent unintended upgrades, you can pin the package at the currently installed version:
+
+```
+      > echo "mariadb-server hold" | sudo dpkg --set-selections
+      > echo "mariadb-client hold" | sudo dpkg --set-selections
+```
+
 * After installation, secure MariaDB using the following commands:
 
 ```
@@ -1289,7 +1358,11 @@ You will be prompted with several questions. Choose options as shown below.
 
 [MariaDB Package Repository Setup and Usage](https://mariadb.com/kb/en/mariadb-package-repository-setup-and-usage)
 
-#### Validating MariaDB root account (Windows 10 and Linux Ubuntu 20.04.6 LTS)
+</details>
+<br>
+<details><summary>Windows 10 and Linux Ubuntu 20.04.6 LTS</summary>
+
+#### Validating MariaDB root account
 
 * Validate the configurations by connecting to MariaDB:
 
@@ -1298,6 +1371,8 @@ You will be prompted with several questions. Choose options as shown below.
 ```
 
 You will be prompted with password. Enter root password of 12345.
+
+</details>
 
 ### 11. Building and running the RPS game microservices on local machine
 
@@ -1400,17 +1475,21 @@ You should see the following output:
 
 * If [Docker Desktop](https://www.docker.com/products/docker-desktop) is not installed navigate to the docker website download and install it on your local machine.
 
-#### Window 10
+<details><summary>Windows 10</summary>
 
 * Follow the installation instructions below to install [Docker Desktop](https://www.docker.com/products/docker-desktop) on Windows 10 machine:
 
 [Install Docker Desktop on Windows](https://docs.docker.com/desktop/install/windows-install)
 
-#### Linux Ubuntu 20.04.6 LTS
+</details>
+<br>
+<details><summary>Linux Ubuntu 20.04.6 LTS</summary>
 
 * Follow the installation instructions below to install [Docker Desktop](https://www.docker.com/products/docker-desktop) on Linux Ubuntu machine:
 
 [Install Docker Desktop on Ubuntu](https://docs.docker.com/desktop/install/ubuntu)
+
+</details>
 
 #### Setting up Docker Desktop (Windows 10 and Linux Ubuntu 20.04.6 LTS)
 
@@ -1475,7 +1554,7 @@ You should see the following output:
 * Navigate to the root directory of the RPS Game project on your computer and run the [Docker Compose](https://docs.docker.com/compose) command below to deploy necessary infrastructure on docker containers in the background.
 
 ```
-     > docker compose -f docker-compose-kc.yml -f docker-compose-general.yml -f docker-compose-kafka.yml -f docker-compose-metrics.yml -f docker-compose-api.yml up -d
+    > docker compose -f docker-compose-kc.yml -f docker-compose-general.yml -f docker-compose-kafka.yml -f docker-compose-metrics.yml -f docker-compose-api.yml up -d
 ```
 
 * Verify that all necessary infrastructure and metrics containers are up and running.
