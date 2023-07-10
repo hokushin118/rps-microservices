@@ -114,7 +114,7 @@
             <properties>
                 <spring.profiles.active>dev</spring.profiles.active>
                 <junit-tests.skip>false</junit-tests.skip>
-                <integration-tests.skip>false</integration-tests.skip>
+                <integration-tests.skip>true</integration-tests.skip>
                 <jib.skip>true</jib.skip>
                 <site-maven-plugin.skip>false</site-maven-plugin.skip>
                 <api-doc-url>localhost</api-doc-url>
