@@ -505,7 +505,7 @@ and add the following lines to the file:
 * Import the _rps-dev_ realm from the _/infrastructure/keycloak/rps-dev-realm.json_ file by executing the following command:
 
 ```
-      > sudo $KEYCLOAK_HOME/bin/kc.sh import --dir ./rps-microservices/infrastructure/keycloak --override true
+      > sudo mkdir -p $KEYCLOAK_HOME/data/import && sudo cp ./infrastructure/keycloak/rps-dev-realm.json $KEYCLOAK_HOME/data/import/rps-dev-realm.json
 ```
 
 You should see the following line in the output:
@@ -519,7 +519,7 @@ __Note:__ Skip the next step if you are going to run [Keycloak 18.0.0](https://w
 * To start the [Keycloak 18.0.0](https://www.keycloak.org) in development mode, run the following command:
 
 ```
-      > sudo $KEYCLOAK_HOME/bin/kc.sh start-dev --http-port 8180
+      > sudo $KEYCLOAK_HOME/bin/kc.sh start-dev --import-realm --http-port 8180
 ```
 
 The [Keycloak 18.0.0](https://www.keycloak.org) will be started in dev mode on port number _8190_.
