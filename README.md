@@ -136,7 +136,7 @@ __Note:__ The _setx_ command permanently updates the environment variables. To a
 </details>
 <br>
 <details><summary>Linux Ubuntu 20.04.6 LTS</summary>
-
+<br>
 * Install the Java Runtime Environment (JRE) from [OpenJDK 11](https://openjdk.java.net/projects/jdk/11) or higher using the following commands:
 
 ```
@@ -266,7 +266,7 @@ on Linux Ubuntu 20.04.6 LTS machine. If not, follow the steps below to install i
 </details>
 <br>
 <details><summary>Linux Ubuntu 20.04.6 LTS</summary>
-
+<br>
 * Install Maven on you Linux Ubuntu machine by executing the following command:
 
 ```
@@ -398,7 +398,7 @@ The [Keycloak 18.0.0](https://www.keycloak.org) will be started in dev mode on p
 </details>
 <br>
 <details><summary>Linux Ubuntu 20.04.6 LTS</summary>
-
+<br>
 * Ensure your system is updated:
 
 ```
@@ -626,7 +626,7 @@ For example:
 </details>
 <br>
 <details><summary>Linux Ubuntu 20.04.6 LTS</summary>
-
+<br>
 * Ensure your system is updated:
 
 ```
@@ -792,7 +792,7 @@ MongoDB [build-in roles](https://www.mongodb.com/docs/manual/reference/built-in-
 ### 6. Adding custom entries to the etc/host file for the Apache Zookeeper and Kafka applications
 
 <details><summary>Window 10</summary>
-
+<br>
 Open the _C:\windows\system32\drivers\etc\hosts_ file in any text editor and add the following entries and save the file:
 
 ```
@@ -802,7 +802,7 @@ Open the _C:\windows\system32\drivers\etc\hosts_ file in any text editor and add
 </details>
 <br>
 <details><summary>Linux Ubuntu 20.04.6 LTS</summary>
-
+<br>
 Open the _/etc/hosts_ file using the following command:
 
 ```
@@ -854,7 +854,7 @@ Note the binding port displayed in the output, it should be _2181_ by default.
 </details>
 <br>
 <details><summary>Linux Ubuntu 20.04.6 LTS</summary>
-
+<br>
 * Ensure your system is updated:
 
 ```
@@ -1022,7 +1022,7 @@ You should see the following output:
 </details>
 <br>
 <details><summary>Linux Ubuntu 20.04.6 LTS</summary>
-
+<br>
 * Ensure your system is updated:
 
 ```
@@ -1161,7 +1161,7 @@ and add the following lines to the file:
 ### 9. Deploying Redis on local machine
 
 <details><summary>Windows 10</summary>
-
+<br>
 * To install [Redis](https://redis.io) on Windows, we'll first need to [enable WSL2 (Windows Subsystem for Linux)](https://learn.microsoft.com/en-us/windows/wsl/install).
 
 You can a list of available Linux distros by executing the following command in Windows PowerShell:
@@ -1214,7 +1214,7 @@ for example:
 </details>
 <br>
 <details><summary>Linux Ubuntu 20.04.6 LTS</summary>
-
+<br>
 * Ensure your system is updated:
 
 ```
@@ -1264,7 +1264,7 @@ You should see the following output:
 ### 10. Installing MariaDB on local machine
 
 <details><summary>Windows 10</summary>
-
+<br>
 * Download and install [MariaDB Community Server](https://mariadb.com/downloads) version 10.6.14-GA for MS Windows (64-bit) from official website.
 
 Enter _12345_ as root password.
@@ -1285,7 +1285,7 @@ Enable the __Install as service__ checkbox.
 </details>
 <br>
 <details><summary>Linux Ubuntu 20.04.6 LTS</summary>
-
+<br>
 * Ensure your system is updated and install software-properties-common package:
 
 ```
@@ -1476,7 +1476,7 @@ You should see the following output:
 * If [Docker Desktop](https://www.docker.com/products/docker-desktop) is not installed navigate to the docker website download and install it on your local machine.
 
 <details><summary>Windows 10</summary>
-
+<br>
 * Follow the installation instructions below to install [Docker Desktop](https://www.docker.com/products/docker-desktop) on Windows 10 machine:
 
 [Install Docker Desktop on Windows](https://docs.docker.com/desktop/install/windows-install)
@@ -1484,7 +1484,7 @@ You should see the following output:
 </details>
 <br>
 <details><summary>Linux Ubuntu 20.04.6 LTS</summary>
-
+<br>
 * Follow the installation instructions below to install [Docker Desktop](https://www.docker.com/products/docker-desktop) on Linux Ubuntu machine:
 
 [Install Docker Desktop on Ubuntu](https://docs.docker.com/desktop/install/ubuntu)
