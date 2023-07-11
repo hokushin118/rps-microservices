@@ -55,17 +55,18 @@ Microservices active profile is __dev__.
 
 * [OpenJDK 11](https://openjdk.java.net/projects/jdk/11) or higher
 * [Maven 3.6.0](https://maven.apache.org) or higher
-* [Keycloak 18.0.0](https://www.keycloak.org)  
-* [MongoDB Community Edition](https://www.mongodb.com/docs/manual/tutorial/install-mongodb-on-windows)  
-* [Mongo Shell](https://www.mongodb.com/docs/v4.4/mongo/#std-label-compare-mongosh-mongo)  
-* [Apache ZooKeeper 3.8.0](https://zookeeper.apache.org)  
-* [Apache Kafka 2.7.0](https://kafka.apache.org)  
-* [Redis](https://redis.io)  
-* [MariaDB Community Server 10.6.14](https://mariadb.org)  
+* [Keycloak 18.0.0](https://www.keycloak.org)
+* [MongoDB Community Edition](https://www.mongodb.com/docs/manual/tutorial/install-mongodb-on-windows)
+* [Mongo Shell](https://www.mongodb.com/docs/v4.4/mongo/#std-label-compare-mongosh-mongo)
+* [Apache ZooKeeper 3.8.0](https://zookeeper.apache.org)
+* [Apache Kafka 2.7.0](https://kafka.apache.org)
+* [Redis](https://redis.io)
+* [MariaDB Community Server 10.6.14](https://mariadb.org)
 
 ### 1. Installing OpenJDK 11 on local machine
 
-* Make sure you have [OpenJDK 11](https://openjdk.java.net/projects/jdk/11) or a higher version installed using the following command:
+* Make sure you have [OpenJDK 11](https://openjdk.java.net/projects/jdk/11) or a higher version installed using the
+  following command:
 
 ```
       > java -version
@@ -91,35 +92,48 @@ on Linux Ubuntu 20.04.6 LTS machine. If not, follow the steps below to install i
 
 <details><summary>Windows 10</summary>
 
-* Download and extract [OpenJDK11U-jdk_x64_windows_hotspot_11.0.19_7.zip](https://adoptium.net/temurin/releases/?version=11) archive file for Windows x64 from the [Adoptium](https://adoptium.net/temurin/releases/?version=11) website.
+* Download and
+  extract [OpenJDK11U-jdk_x64_windows_hotspot_11.0.19_7.zip](https://adoptium.net/temurin/releases/?version=11) archive
+  file for Windows x64 from the [Adoptium](https://adoptium.net/temurin/releases/?version=11) website.
 
-* Extract the contents of the [OpenJDK11U-jdk_x64_windows_hotspot_11.0.19_7.zip](https://adoptium.net/temurin/releases/?version=11) archive file to a directory of your choice. _D:\jdks_ for example.
+* Extract the contents of
+  the [OpenJDK11U-jdk_x64_windows_hotspot_11.0.19_7.zip](https://adoptium.net/temurin/releases/?version=11) archive file
+  to a directory of your choice. _D:\jdks_ for example.
 
-* Add/Update __user environmental variables__. Open a __Command Prompt__ and set the value of the _JAVA_HOME_ environment variable to your [Eclipse Temurin OpenJDK 11](https://adoptium.net/temurin/releases/?version=11) for Windows installation path:
+* Add/Update __user environmental variables__. Open a __Command Prompt__ and set the value of the _JAVA_HOME_
+  environment variable to your [Eclipse Temurin OpenJDK 11](https://adoptium.net/temurin/releases/?version=11) for
+  Windows installation path:
 
 ```
       > setx JAVA_HOME "D:\jdks\jdk-11.0.19+7"
 ```
 
-* Add the _bin_ directory contained in your [Eclipse Temurin OpenJDK 11](https://adoptium.net/temurin/releases/?version=11) for Windows installation path to the _PATH_ environment variable:
+* Add the _bin_ directory contained in
+  your [Eclipse Temurin OpenJDK 11](https://adoptium.net/temurin/releases/?version=11) for Windows installation path to
+  the _PATH_ environment variable:
 
 ```
       > setx PATH "%JAVA_HOME%\bin;%PATH%;"
 ```
 
-* Add/Update __system environmental variables__. Open a __Command Prompt__ as __Administrator__ and set the value of the _JAVA_HOME_ environment variable to your [Eclipse Temurin OpenJDK 11](https://adoptium.net/temurin/releases/?version=11) for Windows installation path:
+* Add/Update __system environmental variables__. Open a __Command Prompt__ as __Administrator__ and set the value of
+  the _JAVA_HOME_ environment variable to
+  your [Eclipse Temurin OpenJDK 11](https://adoptium.net/temurin/releases/?version=11) for Windows installation path:
 
 ```
       > setx -m JAVA_HOME "D:\jdks\jdk-11.0.19+7"
 ```
 
-* Add the _bin_ directory contained in your [Eclipse Temurin OpenJDK 11](https://adoptium.net/temurin/releases/?version=11) for Windows installation path to the _PATH_ environment variable:
+* Add the _bin_ directory contained in
+  your [Eclipse Temurin OpenJDK 11](https://adoptium.net/temurin/releases/?version=11) for Windows installation path to
+  the _PATH_ environment variable:
 
 ```
       > setx -m PATH "%JAVA_HOME%\bin;%PATH%;"
 ```
 
-__Note:__ The _setx_ command permanently updates the environment variables. To add/update __system environment variables__, you must use the _-m_ switch and open the command prompt using __Administrator__ privilege.
+__Note:__ The _setx_ command permanently updates the environment variables. To add/update __system environment
+variables__, you must use the _-m_ switch and open the command prompt using __Administrator__ privilege.
 
 * Restart the __Command Prompt__ to reload the environment variables.
 
@@ -143,9 +157,11 @@ __Note:__ The _setx_ command permanently updates the environment variables. To a
       > sudo apt install default-jre
 ```
 
-__Note:__ By default, Ubuntu 20.04 includes [OpenJDK 11](https://openjdk.java.net/projects/jdk/11), which is an open-source variant of the JRE and JDK.
+__Note:__ By default, Ubuntu 20.04 includes [OpenJDK 11](https://openjdk.java.net/projects/jdk/11), which is an
+open-source variant of the JRE and JDK.
 
-* You can have multiple Java installations on one machine. You can configure which version is the default for use on the command line by using the update-alternatives command:
+* You can have multiple Java installations on one machine. You can configure which version is the default for use on the
+  command line by using the update-alternatives command:
 
 ```
       > sudo update-alternatives --config java  
@@ -158,17 +174,20 @@ You should see the following output:
     Nothing to configure.
 ```
 
-It means that we have only single Java installation, [OpenJDK 11](https://openjdk.java.net/projects/jdk/11), on our machine and it's located at the _/usr/lib/jvm/java-11-openjdk-amd64/bin/java_ directory. Note this directory as you will need it in the next step.
- 
+It means that we have only single Java installation, [OpenJDK 11](https://openjdk.java.net/projects/jdk/11), on our
+machine and it's located at the _/usr/lib/jvm/java-11-openjdk-amd64/bin/java_ directory. Note this directory as you will
+need it in the next step.
+
 * Then open the _/etc/environment_ file in any text editor, nano for example, using the following command:
 
 ```
       > sudo nano /etc/environment
 ```
 
-Modifying this file will set the environment variables for all users on your machine. 
+Modifying this file will set the environment variables for all users on your machine.
 
-* At the end of the file, add the following line, making sure to replace Java path with yours obtained in the previous step:
+* At the end of the file, add the following line, making sure to replace Java path with yours obtained in the previous
+  step:
 
 ```
       JAVA_HOME="/usr/lib/jvm/java-11-openjdk-amd64"
@@ -195,7 +214,8 @@ __Note:__ Do not include the __bin/__ portion of the Java installation location 
 
 ### 2. Installing Maven on local machine
 
-* Make sure you have [Maven](https://openjdk.java.net/projects/jdk/11) or a higher version installed using the following command:
+* Make sure you have [Maven](https://openjdk.java.net/projects/jdk/11) or a higher version installed using the following
+  command:
 
 ```
       > mvn -version
@@ -225,29 +245,41 @@ on Linux Ubuntu 20.04.6 LTS machine. If not, follow the steps below to install i
 
 <details><summary>Windows 10</summary>
 
-* Download the [apache-maven-3.9.3-bin.zip](https://dlcdn.apache.org/maven/maven-3/3.9.3/binaries/apache-maven-3.9.3-bin.zip) binary archive file from the [Apache Maven Project](https://maven.apache.org/download.cgi) website.
+* Download
+  the [apache-maven-3.9.3-bin.zip](https://dlcdn.apache.org/maven/maven-3/3.9.3/binaries/apache-maven-3.9.3-bin.zip)
+  binary archive file from the [Apache Maven Project](https://maven.apache.org/download.cgi) website.
 
-* Extract the contents of the [apache-maven-3.9.3-bin.zip](https://dlcdn.apache.org/maven/maven-3/3.9.3/binaries/apache-maven-3.9.3-bin.zip) archive file to a directory of your choice. _D:\maven_ for example.
+* Extract the contents of
+  the [apache-maven-3.9.3-bin.zip](https://dlcdn.apache.org/maven/maven-3/3.9.3/binaries/apache-maven-3.9.3-bin.zip)
+  archive file to a directory of your choice. _D:\maven_ for example.
 
-* Add/Update __user environmental variables__. Open a __Command Prompt__ and set the value of the _M2_HOME_ environment variable for Windows installation path:
+* Add/Update __user environmental variables__. Open a __Command Prompt__ and set the value of the _M2_HOME_ environment
+  variable for Windows installation path:
 
 ```
       > setx M2_HOME "D:\maven\apache-maven-3.9.3"
 ```
 
-* Add the _bin_ directory contained in your [apache-maven-3.9.3-bin.zip](https://dlcdn.apache.org/maven/maven-3/3.9.3/binaries/apache-maven-3.9.3-bin.zip) for Windows installation path to the _PATH_ environment variable:
+* Add the _bin_ directory contained in
+  your [apache-maven-3.9.3-bin.zip](https://dlcdn.apache.org/maven/maven-3/3.9.3/binaries/apache-maven-3.9.3-bin.zip)
+  for Windows installation path to the _PATH_ environment variable:
 
 ```
       > setx PATH "%M2_HOME%\bin;%PATH%;"
 ```
 
-* Add/Update __system environmental variables__. Open a __Command Prompt__ as __Administrator__ and set the value of the _M2_HOME_ environment variable to your [apache-maven-3.9.3-bin.zip](https://dlcdn.apache.org/maven/maven-3/3.9.3/binaries/apache-maven-3.9.3-bin.zip) for Windows installation path:
+* Add/Update __system environmental variables__. Open a __Command Prompt__ as __Administrator__ and set the value of
+  the _M2_HOME_ environment variable to
+  your [apache-maven-3.9.3-bin.zip](https://dlcdn.apache.org/maven/maven-3/3.9.3/binaries/apache-maven-3.9.3-bin.zip)
+  for Windows installation path:
 
 ```
       > setx -m M2_HOME "D:\maven\apache-maven-3.9.3"
 ```
 
-* Add the _bin_ directory contained in your [apache-maven-3.9.3-bin.zip](https://dlcdn.apache.org/maven/maven-3/3.9.3/binaries/apache-maven-3.9.3-bin.zip) for Windows installation path to the _PATH_ environment variable:
+* Add the _bin_ directory contained in
+  your [apache-maven-3.9.3-bin.zip](https://dlcdn.apache.org/maven/maven-3/3.9.3/binaries/apache-maven-3.9.3-bin.zip)
+  for Windows installation path to the _PATH_ environment variable:
 
 ```
       > setx -m PATH "%M2_HOME%\bin;%PATH%;"
@@ -275,7 +307,9 @@ on Linux Ubuntu 20.04.6 LTS machine. If not, follow the steps below to install i
 
 If you want to install a specific version of Maven, follow steps below.
 
-* Download the [apache-maven-3.9.3-bin.tar.gz](https://dlcdn.apache.org/maven/maven-3/3.9.3/binaries/apache-maven-3.9.3-bin.tar.gz) binary archive file from the [Apache Maven Project](https://maven.apache.org/download.cgi) website.
+* Download
+  the [apache-maven-3.9.3-bin.tar.gz](https://dlcdn.apache.org/maven/maven-3/3.9.3/binaries/apache-maven-3.9.3-bin.tar.gz)
+  binary archive file from the [Apache Maven Project](https://maven.apache.org/download.cgi) website.
 
 ```
       > wget https://dlcdn.apache.org/maven/maven-3/3.9.3/binaries/apache-maven-3.9.3-bin.tar.gz
@@ -373,9 +407,12 @@ You should see the following output:
 
 <details><summary>Window 10</summary>
 
-* Download and extract [keycloak-18.8.0.zip](https://github.com/keycloak/keycloak/releases/download/18.0.0/keycloak-18.0.0.zip) archive file from the [Keycloak](https://www.keycloak.org/archive/downloads-18.0.0.html) website.
+* Download and
+  extract [keycloak-18.8.0.zip](https://github.com/keycloak/keycloak/releases/download/18.0.0/keycloak-18.0.0.zip)
+  archive file from the [Keycloak](https://www.keycloak.org/archive/downloads-18.0.0.html) website.
 
-* Import the _rps-dev_ realm from the _/infrastructure/keycloak/rps-dev-realm.json_ file by executing the following command:.
+* Import the _rps-dev_ realm from the _/infrastructure/keycloak/rps-dev-realm.json_ file by executing the following
+  command:.
 
 ```
       > bin\kc.bat import --dir <path to root directory>\rps-microservices\infrastructure\keycloak\ --override true
@@ -405,7 +442,9 @@ The [Keycloak 18.0.0](https://www.keycloak.org) will be started in dev mode on p
       > sudo apt update && sudo apt upgrade
 ```
 
-* Download the [keycloak-18.0.0.tar.gz](https://github.com/keycloak/keycloak/releases/download/18.0.0/keycloak-18.0.0.tar.gz) archive file from the [Keycloak](https://www.keycloak.org/archive/downloads-18.0.0.html) website.
+* Download
+  the [keycloak-18.0.0.tar.gz](https://github.com/keycloak/keycloak/releases/download/18.0.0/keycloak-18.0.0.tar.gz)
+  archive file from the [Keycloak](https://www.keycloak.org/archive/downloads-18.0.0.html) website.
 
 ```
       > wget https://github.com/keycloak/keycloak/releases/download/18.0.0/keycloak-18.0.0.tar.gz
@@ -472,7 +511,8 @@ You should see the following output:
       > sudo usermod --shell /bin/bash keycloak
 ```
 
-__Note:__ It is considered a best practice for using a separate service account for each application. The same can be said about creating a separate group for each service account.  
+__Note:__ It is considered a best practice for using a separate service account for each application. The same can be
+said about creating a separate group for each service account.
 
 * Add the user to the __sudo__ group for it to have _Administrative Privileges_ using the following command:
 
@@ -499,6 +539,7 @@ It means that the _keycloak_ user belongs to two groups: __keycloak__ and __sudo
 ```
             > sudo /var/lib/AccountsService/users/keycloak
 ```
+
 and add the following lines to the file:
 
 ```
@@ -512,7 +553,8 @@ and add the following lines to the file:
       > sudo chown -R keycloak:keycloak $KEYCLOAK_HOME
 ```
 
-* [Import](https://www.keycloak.org/server/importExport) the _rps-dev_ realm from the _/infrastructure/keycloak/rps-dev-realm.json_ file by executing the following command:
+* [Import](https://www.keycloak.org/server/importExport) the _rps-dev_ realm from the _
+  /infrastructure/keycloak/rps-dev-realm.json_ file by executing the following command:
 
 ```
       > sudo mkdir -p $KEYCLOAK_HOME/data/import && sudo cp ./infrastructure/keycloak/rps-dev-realm.json $KEYCLOAK_HOME/data/import/rps-dev-realm.json
@@ -534,13 +576,15 @@ __Note:__ Skip the next step if you are going to run [Keycloak 18.0.0](https://w
 
 The [Keycloak 18.0.0](https://www.keycloak.org) will be started in dev mode on port number _8190_.
 
-__Note:__ When running in development mode, [Keycloak 18.0.0](https://www.keycloak.org) uses by default an H2 Database to store its configuration.
+__Note:__ When running in development mode, [Keycloak 18.0.0](https://www.keycloak.org) uses by default an H2 Database
+to store its configuration.
 
 [Keycloak on bare metal](https://www.keycloak.org/getting-started/getting-started-zip)
 
 #### Configure Keycloak server as a systemd service for Linux Ubuntu 20.04.6 LTS
 
-* You will need to create a _systemd service_ file to manage the Keycloak service. You can copy the sample systemd service with the following command:
+* You will need to create a _systemd service_ file to manage the Keycloak service. You can copy the sample systemd
+  service with the following command:
 
 ```
       > sudo cp ./infrastructure/linux/ubuntu/systemd/keycloak.service /etc/systemd/system/keycloak.service
@@ -598,17 +642,18 @@ You should see the following lines in the sys log file:
 
 #### Creating Keycloak super user account
 
-* Open [http://localhost:8180/](http://localhost:8180) and create a super user by filling the form with your preferred username and password. 
+* Open [http://localhost:8180](http://localhost:8180) and create a super user by filling the form with your preferred username and password.  
 
 ![keycloak welcome page](img/kc-welcome-page.png)
-  
+
 For example:
 
 | **user name**  | **password** |
 |----------------|--------------|
 |     admin      |     admin    |
 
-* Open [Keycloak admin panel](http://localhost:8180/admin), enter super user credentials and make sure that __rps-dev__ realm and test users has successfully been imported. 
+* Open [Keycloak admin panel](http://localhost:8180/admin), enter super user credentials and make sure that __rps-dev__
+  realm and test users has successfully been imported.
 
 [Keycloak Getting Started](https://www.keycloak.org/getting-started/getting-started-zip)  
 [How to export and import Realms in Keycloak](https://www.mastertheboss.com/keycloak/how-to-export-and-import-realms-in-keycloak)
@@ -619,7 +664,9 @@ For example:
 
 <details><summary>Window 10</summary>
 
-* Download and install [MongoDB Community Edition](https://www.mongodb.com/docs/manual/tutorial/install-mongodb-on-windows) from official website.
+* Download and
+  install [MongoDB Community Edition](https://www.mongodb.com/docs/manual/tutorial/install-mongodb-on-windows) from
+  official website.
 
 * Download and install [Mongo Shell](https://www.mongodb.com/docs/mongodb-shell/install) from official website.
 
@@ -689,7 +736,8 @@ You should see the following output:
       }
 ```
 
-* Install [Mongo Shell](https://www.mongodb.com/docs/mongodb-shell/install) on your computer using the following commands:
+* Install [Mongo Shell](https://www.mongodb.com/docs/mongodb-shell/install) on your computer using the following
+  commands:
 
 ```
       > sudo apt install mongodb-mongosh=1.1.9
@@ -748,9 +796,11 @@ You should see the following output:
       test>
 ```
 
-It means that [Mongo Shell](https://www.mongodb.com/docs/v4.4/mongo/#std-label-compare-mongosh-mongo) has successfully been started:
+It means that [Mongo Shell](https://www.mongodb.com/docs/v4.4/mongo/#std-label-compare-mongosh-mongo) has successfully
+been started:
 
-* Change database to _admin_ by executing the following command in [Mongo Shell](https://www.mongodb.com/docs/v4.4/mongo/#std-label-compare-mongosh-mongo):
+* Change database to _admin_ by executing the following command
+  in [Mongo Shell](https://www.mongodb.com/docs/v4.4/mongo/#std-label-compare-mongosh-mongo):
 
 ```
       > use admin
@@ -762,7 +812,8 @@ You should see the following output:
       switched to db admin
 ```
 
-* To create a _root_ user with _root_ build-in role execute the following command in [Mongo Shell](https://www.mongodb.com/docs/v4.4/mongo/#std-label-compare-mongosh-mongo):
+* To create a _root_ user with _root_ build-in role execute the following command
+  in [Mongo Shell](https://www.mongodb.com/docs/v4.4/mongo/#std-label-compare-mongosh-mongo):
 
 ```
       > db.createUser(
@@ -779,7 +830,8 @@ You should see the following output:
       { ok: 1 }
 ```
 
-It means that user _root_ user with build-in [_root_](https://www.mongodb.com/docs/manual/reference/built-in-roles) role has successfully been created. 
+It means that user _root_ user with build-in [_root_](https://www.mongodb.com/docs/manual/reference/built-in-roles) role
+has successfully been created.
 
 | **user name**  | **password** |  **role** |
 |----------------|--------------|-----------|
@@ -821,7 +873,11 @@ Add the following entries and save the file:
 
 <details><summary>Window 10</summary>
 
-* Download and extract [apache-zookeeper-3.8.0-bin.tar.gz](https://dlcdn.apache.org/zookeeper/zookeeper-3.8.0/apache-zookeeper-3.8.0-bin.tar.gz) archive file from the [Apache Zookeeper](https://www.apache.org/dyn/closer.lua/zookeeper/zookeeper-3.8.0/apache-zookeeper-3.8.0-bin.tar.gz) website.
+* Download and
+  extract [apache-zookeeper-3.8.0-bin.tar.gz](https://dlcdn.apache.org/zookeeper/zookeeper-3.8.0/apache-zookeeper-3.8.0-bin.tar.gz)
+  archive file from
+  the [Apache Zookeeper](https://www.apache.org/dyn/closer.lua/zookeeper/zookeeper-3.8.0/apache-zookeeper-3.8.0-bin.tar.gz)
+  website.
 
 * Open the _conf_ folder and rename the _zoo_sample.cfg_ file to the _zoo.cfg_.
 
@@ -839,7 +895,8 @@ Add the following entries and save the file:
       server.1=zk.internal:2888:3888
 ```
 
-* Open the _command line tool_ and execute the following command to start the [apache-zookeeper-3.8.0](https://zookeeper.apache.org) server:
+* Open the _command line tool_ and execute the following command to start
+  the [apache-zookeeper-3.8.0](https://zookeeper.apache.org) server:
 
 ```
       > bin\zkServer.cmd
@@ -861,7 +918,11 @@ Note the binding port displayed in the output, it should be _2181_ by default.
       > sudo apt update && sudo apt upgrade
 ```
 
-* Download and extract [apache-zookeeper-3.8.0-bin.tar.gz](https://dlcdn.apache.org/zookeeper/zookeeper-3.8.0/apache-zookeeper-3.8.0-bin.tar.gz) archive file from the [Apache Zookeeper](https://www.apache.org/dyn/closer.lua/zookeeper/zookeeper-3.8.0/apache-zookeeper-3.8.0-bin.tar.gz) website.
+* Download and
+  extract [apache-zookeeper-3.8.0-bin.tar.gz](https://dlcdn.apache.org/zookeeper/zookeeper-3.8.0/apache-zookeeper-3.8.0-bin.tar.gz)
+  archive file from
+  the [Apache Zookeeper](https://www.apache.org/dyn/closer.lua/zookeeper/zookeeper-3.8.0/apache-zookeeper-3.8.0-bin.tar.gz)
+  website.
 
 ```
       > sudo wget https://downloads.apache.org/zookeeper/zookeeper-3.8.0/apache-zookeeper-3.8.0-bin.tar.gz
@@ -922,6 +983,7 @@ You should see the following output:
 ```
       > sudo /var/lib/AccountsService/users/zookeeper
 ```
+
 and add the following lines to the file:
 
 ```
@@ -935,7 +997,8 @@ and add the following lines to the file:
       > sudo chown -R zookeeper:zookeeper $ZOOKEEPER_HOME
 ```
 
-* Create a new ZooKeeper directory to store the data on a local machine and give the _zookeeper_ user ownership to that directory by executing the following commands:
+* Create a new ZooKeeper directory to store the data on a local machine and give the _zookeeper_ user ownership to that
+  directory by executing the following commands:
 
 ```
       > sudo mkdir -p /data/zookeeper
@@ -992,7 +1055,8 @@ You should see the following output:
 
 <details><summary>Windows 10</summary>
 
-* Download and extract [kafka_2.13-2.7.0.tgz](https://archive.apache.org/dist/kafka/2.7.0/kafka_2.13-2.7.0.tgz) archive file from the [Apache Kafka](https://kafka.apache.org/downloads) website.
+* Download and extract [kafka_2.13-2.7.0.tgz](https://archive.apache.org/dist/kafka/2.7.0/kafka_2.13-2.7.0.tgz) archive
+  file from the [Apache Kafka](https://kafka.apache.org/downloads) website.
 
 * Open the _config_ folder and open the _server.properties_ file. Make the changes below and save the file.
 
@@ -1013,7 +1077,8 @@ You should see the following output:
 |------------------------|-----------------------|-----------------------|
 |    bootstrap.servers   |     localhost:9092    |  kafka.internal:9092  |        
 
-* Open the _command line tool_ and execute the following command to start the [apache-kafka-2.7.0](https://kafka.apache.org) server:
+* Open the _command line tool_ and execute the following command to start
+  the [apache-kafka-2.7.0](https://kafka.apache.org) server:
 
 ```
    > bin\windows\kafka-server-start.bat config\server.properties
@@ -1029,14 +1094,15 @@ You should see the following output:
       > sudo apt update && sudo apt upgrade
 ```
 
-* Download and extract [kafka_2.13-2.7.0.tgz](https://archive.apache.org/dist/kafka/2.7.0/kafka_2.13-2.7.0.tgz) archive file from the [Apache Kafka](https://kafka.apache.org/downloads) website.
+* Download and extract [kafka_2.13-2.7.0.tgz](https://archive.apache.org/dist/kafka/2.7.0/kafka_2.13-2.7.0.tgz) archive
+  file from the [Apache Kafka](https://kafka.apache.org/downloads) website.
 
 ```
       > sudo wget https://archive.apache.org/dist/kafka/2.7.0/kafka_2.13-2.7.0.tgz
       > sudo tar -xvzf kafka_2.13-2.7.0.tgz
 ```
 
-*  Move the extracted files to the _/opt/kafka_ directory with the following command:
+* Move the extracted files to the _/opt/kafka_ directory with the following command:
 
 ```
       > sudo mv kafka_2.13-2.7.0 /opt/kafka
@@ -1104,7 +1170,8 @@ and add the following lines to the file:
       > sudo chown -R kafka:kafka $KAFKA_HOME
 ```
 
-* Create a new Kafka directory to store the data on a local machine and give the _kafka_ user ownership to that directory by executing the following commands:
+* Create a new Kafka directory to store the data on a local machine and give the _kafka_ user ownership to that
+  directory by executing the following commands:
 
 ```
       > sudo mkdir -p /data/kafka
@@ -1124,7 +1191,7 @@ and add the following lines to the file:
 |    log.dirs            |     /tmp/kafka-logs   |   /data/kafka      |        
 |    zookeeper.connect   |     localhost:2181    |   zk.internal:2181   |
 
-* Then open the _config/producer.properties_ file with the following command: 
+* Then open the _config/producer.properties_ file with the following command:
 
 ```
       > sudo nano $KAFKA_HOME/config/producer.properties
@@ -1201,7 +1268,8 @@ for example:
       > wsl --install -d Ubuntu-20.04
 ```
 
-* And then you can install [Redis](https://redis.io) on your Linux distro (I am using Ubuntu) by executing the following commands:
+* And then you can install [Redis](https://redis.io) on your Linux distro (I am using Ubuntu) by executing the following
+  commands:
 
 ```
       > curl -fsSL https://packages.redis.io/gpg | sudo gpg --dearmor -o /usr/share/keyrings/redis-archive-keyring.gpg
@@ -1267,8 +1335,7 @@ You should see the following output:
 <br>
 * Download and install [MariaDB Community Server](https://mariadb.com/downloads) version 10.6.14-GA for MS Windows (64-bit) from official website.
 
-Enter _12345_ as root password.
-Enable the __Enable access from remote machines for 'root' user__ checkbox.
+Enter _12345_ as root password. Enable the __Enable access from remote machines for 'root' user__ checkbox.
 
 | **user name**  | **password** | 
 |----------------|--------------|
@@ -1293,7 +1360,9 @@ Enable the __Install as service__ checkbox.
       > sudo apt -y install software-properties-common
 ```
 
-* First, we will add the official [MariaDB apt repository](https://mariadb.com/kb/en/mariadb-package-repository-setup-and-usage) using the following command:
+* First, we will add the
+  official [MariaDB apt repository](https://mariadb.com/kb/en/mariadb-package-repository-setup-and-usage) using the
+  following command:
 
 ```
       > curl -LsS https://r.mariadb.com/downloads/mariadb_repo_setup | sudo bash -s -- --mariadb-server-version="mariadb-10.6"
@@ -1374,9 +1443,12 @@ You will be prompted with password. Enter root password of 12345.
 
 </details>
 
+[MariaDB Data-at-Rest Encryption Overview](https://mariadb.com/kb/en/data-at-rest-encryption-overview)
+
 ### 11. Building and running the RPS game microservices on local machine
 
-* Once the infrastructure ([backing services](https://12factor.net/backing-services)) is deployed, you can build and run microservices.
+* Once the infrastructure ([backing services](https://12factor.net/backing-services)) is deployed, you can build and run
+  microservices.
 
 Each microservice has multiple profiles:
 
@@ -1387,7 +1459,8 @@ Each microservice has multiple profiles:
 |        it          |        No        |  Running integration tests         |
 |        prod        |        No        |  Deployment on Kubernetes cluster  |
 
-* Execute the _mvn clean install_ command in the root directory of the project to build microservices and its dependencies for running on local machine.
+* Execute the _mvn clean install_ command in the root directory of the project to build microservices and its
+  dependencies for running on local machine.
 
 ```
       > mvn clean install
@@ -1413,7 +1486,7 @@ __Note:__ Each microservice and shared dependency should normally be hosted in i
       http://localhost:8084/score-qry-api/swagger-ui/index.html 
 ```
 
-* Click on the __Authorize__ button on the microservice Open API 3.0 definition page: 
+* Click on the __Authorize__ button on the microservice Open API 3.0 definition page:
 
 ![authorize button](img/authorize-button.png)
 
@@ -1425,7 +1498,8 @@ which opens a pop-up window below:
 
 ![keycloak auth page](img/kc-auth-page.png)
 
-* Enter credentials to get appropriate access to the REST API endpoints and click on the __Sign In__ button. You will be redirected back to the Open API 3.0 definition page. You should see the authentication success pop-up window.
+* Enter credentials to get appropriate access to the REST API endpoints and click on the __Sign In__ button. You will be
+  redirected back to the Open API 3.0 definition page. You should see the authentication success pop-up window.
 
 ![authorize pop-up success](img/authorize-popup-success.png)
 
@@ -1438,22 +1512,27 @@ Available realm test users with corresponding roles:
 |     admin      |   admin      |    __ROLE_ADMIN__, __ROLE_USER__   |
 |     test       |   test       |    __ROLE_USER__                   |
 
-__Note:__ Don't confuse __admin__ super user with realm __admin__ test user. 
+__Note:__ Don't confuse __admin__ super user with realm __admin__ test user.
 
 Available test realm roles:
 
-|      **role**    |           **description**                                                                            |
+|      **role**    |           **
+description**                                                                            |
 |------------------|------------------------------------------------------------------------------------------------------|
-|   __ROLE_ADMIN__ |  view all games, find any game by id, <br>delete any game by id, delete any score by id              | 
-|   __ROLE_USER__  |  play a game, view all games played by the user, <br>view all scores of the games played by the user |
+|   __
+ROLE_ADMIN__ |  view all games, find any game by id, <br>delete any game by id, delete any score by id              | 
+|   __
+ROLE_USER__  |  play a game, view all games played by the user, <br>view all scores of the games played by the user |
 
-__Notes:__ [Spring security](https://spring.io/guides/topicals/spring-security-architecture) manages endpoint access control om microservice level.
+__Notes:__ [Spring security](https://spring.io/guides/topicals/spring-security-architecture) manages endpoint access
+control om microservice level.
 
-_SecurityConfig_ and _GrpcSecurityConfig_ configuration files configure microservice endpoints access control based on Keycloak realm users and roles.
+_SecurityConfig_ and _GrpcSecurityConfig_ configuration files configure microservice endpoints access control based on
+Keycloak realm users and roles.
 
 ## Docker Compose - Deploying the application on Docker Compose
 
-Microservices active profile is __docker__. 
+Microservices active profile is __docker__.
 
 ### Prerequisites
 
@@ -1461,7 +1540,8 @@ Microservices active profile is __docker__.
 
 ### 1. Installation of Docker Desktop
 
-* Make sure you have [Docker Desktop](https://www.docker.com/products/docker-desktop) installed using the following command:
+* Make sure you have [Docker Desktop](https://www.docker.com/products/docker-desktop) installed using the following
+  command:
 
 ```
       > docker -v
@@ -1473,7 +1553,8 @@ You should see the following output:
       Docker version 24.0.2, build cb74dfc
 ```
 
-* If [Docker Desktop](https://www.docker.com/products/docker-desktop) is not installed navigate to the docker website download and install it on your local machine.
+* If [Docker Desktop](https://www.docker.com/products/docker-desktop) is not installed navigate to the docker website
+  download and install it on your local machine.
 
 <details><summary>Windows 10</summary>
 <br>
@@ -1493,7 +1574,10 @@ You should see the following output:
 
 #### Setting up Docker Desktop (Windows 10 and Linux Ubuntu 20.04.6 LTS)
 
-* [Docker Compose](https://docs.docker.com/compose) is also required. [Docker Desktop](https://www.docker.com/products/docker-desktop) includes [Docker Compose](https://docs.docker.com/compose) along with Docker Engine and Docker CLI which are Compose prerequisites.
+* [Docker Compose](https://docs.docker.com/compose) is also
+  required. [Docker Desktop](https://www.docker.com/products/docker-desktop)
+  includes [Docker Compose](https://docs.docker.com/compose) along with Docker Engine and Docker CLI which are Compose
+  prerequisites.
 
 [Installation scenarios](https://docs.docker.com/compose/install)
 
@@ -1547,21 +1631,622 @@ You should see the following output:
     > systemctl --user start docker-desktop
 ```
 
-### 2. Deployment of the infrastructure ([backing services](https://12factor.net/backing-services)) and microservices on Docker Compose
+### 2. Deploying Keycloak standalone server on Docker Compose
 
-#### Deployment of the infrastructure and microservices 
+<br>
+<details><summary>Windows 10 and Linux Ubuntu 20.04.6 LTS</summary>
+<br>
 
-* Navigate to the root directory of the RPS Game project on your computer and run the [Docker Compose](https://docs.docker.com/compose) command below to deploy necessary infrastructure on docker containers in the background.
+#### 2.1 Make sure that necessary ports are not in use
+
+* First of all, make sure that _15432_ and _28080_ port numbers are not in use. You can find the process/service
+  listening on a particular port by running the command below:
 
 ```
-    > docker compose -f docker-compose-kc.yml -f docker-compose-general.yml -f docker-compose-kafka.yml -f docker-compose-metrics.yml -f docker-compose-api.yml up -d
+    > sudo fuser 15432/tcp
+    > sudo fuser 28080/tcp
 ```
 
-* Verify that all necessary infrastructure and metrics containers are up and running.
+If specified port is in use you should see the process number listening to the specified port in the output:
 
 ```
-    > docker compose -f docker-compose-kc.yml -f docker-compose-general.yml -f docker-compose-kafka.yml -f docker-compose-metrics.yml -f docker-compose-api.yml ps
+    > 15432/tcp:           279607
 ```
+
+If so, kill the process by executing the following command:
+
+```
+    > sudo fuser -k 15432/tcp
+```
+
+#### 2.2 Deploying Keycloak standalone server on Docker Compose
+
+* Then navigate to the root directory of the RPS Game project on your computer and run
+  the [Docker Compose](https://docs.docker.com/compose) command below to
+  deploy [Keycloak 18.0.0](https://www.keycloak.org) on Docker Compose in the background:
+
+```
+    > docker compose -f docker-compose-kc.yml up -d
+```
+
+You should see the following output:
+
+```
+    [+] Running 4/4
+    ✔ Network rps_net                             Created     0.2s
+    ✔ Volume "rps-microservices_postgresql-data"  Created     0.0s
+    ✔ Container rps-microservices-postgresql-1    Started     2.0s
+    ✔ Container keycloak                          Started     2.1s
+```
+
+#### 2.3 Verifying deployment
+
+* Verify that [Keycloak 18.0.0](https://www.keycloak.org) and [PostgreSQL](https://www.postgresql.org) containers are up
+  and running by executing the following command:
+
+```
+    > docker compose -f docker-compose-kc.yml ps
+```
+
+You should see the following output:
+
+```
+    NAME                             IMAGE                                     COMMAND                  SERVICE             CREATED             STATUS              PORTS
+    keycloak                         rps-microservices-keycloak                "/opt/bitnami/keyclo…"   keycloak            2 minutes ago       Up 2 minutes        0.0.0.0:28080->8080/tcp
+    rps-microservices-postgresql-1   bitnami/postgresql:14.2.0-debian-10-r95   "/opt/bitnami/script…"   postgresql          2 minutes ago       Up 2 minutes        0.0.0.0:15432->5432/tcp
+```
+
+It means that [Keycloak 18.0.0](https://www.keycloak.org) and [PostgreSQL](https://www.postgresql.org) containers are up
+and running.
+
+#### 2.4 Taking down containers
+
+* When we don't need keycloak container anymore, we can take down containers and delete their corresponding
+  volumes (-v) using the down command below:
+
+```
+     > docker compose -f docker-compose-kc.yml down -v
+```
+
+</details>
+
+### 3. Deploying MongoDB, MariaDB and Redis standalone database servers on Docker Compose
+
+<br>
+<details><summary>Windows 10 and Linux Ubuntu 20.04.6 LTS</summary>
+<br>
+
+#### 3.1 Make sure that necessary ports are not in use
+
+* First of all, make sure that _28017_, _13306_, _16379_ and _19080_ port numbers are not in use. You can find the
+  process/service listening on a particular port by running the command below:
+
+```
+    > sudo fuser 28017/tcp
+    > sudo fuser 13306/tcp
+    > sudo fuser 16379/tcp
+    > sudo fuser 19080/tcp
+```
+
+If specified port is in use you should see the process number listening to the specified port in the output:
+
+```
+    > 28017/tcp:           390432
+```
+
+If so, kill the process by executing the following command:
+
+```
+    > sudo fuser -k 28017/tcp
+```
+
+#### 3.2 Deploying MongoDB, MariaDB and Redis standalone database servers on Docker Compose
+
+* Navigate (if it's not already in) to the root directory of the RPS Game project on your computer and run
+  the [Docker Compose](https://docs.docker.com/compose) command below to deploy standalone database servers on Docker
+  Compose in the background:
+
+```
+    > docker compose -f docker-compose-general.yml up -d
+```
+
+You should see the following output:
+
+```
+    [+] Running 4/4
+     ✔ Container adminer  Started     0.0s 
+     ✔ Container redis    Started     0.0s 
+     ✔ Container mongodb  Started     0.0s 
+     ✔ Container mariadb  Started     0.0s 
+```
+
+__Note:__ [Adminer](https://www.adminer.org) database management tool is not necessary but can be useful.
+
+#### 3.3 Verifying deployment
+
+* Verify that [MongoDB](https://www.mongodb.com), [MariaDB](https://mariadb.org) and [Redis](https://redis.io)
+  containers are up and running by executing the following command:
+
+```
+    > docker compose -f docker-compose-general.yml ps
+```
+
+You should see the following output:
+
+```
+    NAME                             IMAGE                                     COMMAND                  SERVICE             CREATED             STATUS              PORTS
+    adminer                          adminer:4.8.1                             "entrypoint.sh php -…"   adminer             6 minutes ago       Up 5 minutes        0.0.0.0:19080->8080/tcp
+    mariadb                          bitnami/mariadb:10.6                      "/opt/bitnami/script…"   mariadb             6 minutes ago       Up 5 minutes        0.0.0.0:13306->3306/tcp
+    mongodb                          mongo:4.4                                 "docker-entrypoint.s…"   mongo               6 minutes ago       Up 5 minutes        0.0.0.0:28017->27017/tcp
+    redis                            bitnami/redis:4.0.9-r24                   "/app-entrypoint.sh …"   cache               6 minutes ago       Up 5 minutes        0.0.0.0:16379->6379/tcp
+```
+
+It means that [MongoDB](https://www.mongodb.com), [MariaDB](https://mariadb.org) and [Redis](https://redis.io)
+containers are up and running.
+
+#### 3.4 Taking down containers
+
+* When we don't need database containers anymore, we can take down containers and delete their corresponding
+  volumes (-v) using the down command below:
+
+```
+     > docker compose -f docker-compose-general.yml down -v
+```
+
+</details>
+
+### 4. Deploying Kafka cluster on Docker Compose
+
+<br>
+<details><summary>Windows 10 and Linux Ubuntu 20.04.6 LTS</summary>
+<br>
+
+#### 4.1 Make sure that necessary ports are not in use
+
+* First of all, make sure that _12181_, _12182_, _12183_, _19093_, _19094_ and _19095_ port numbers are not in use. You
+  can find the process/service listening on a particular port by running the command below:
+
+```
+    > sudo fuser 12181/tcp
+    > sudo fuser 12182/tcp
+    > sudo fuser 12183/tcp
+    > sudo fuser 19093/tcp
+    > sudo fuser 19094/tcp
+    > sudo fuser 19095/tcp
+```
+
+If specified port is in use you should see the process number listening to the specified port in the output:
+
+```
+    > 12181/tcp:           390512
+```
+
+If so, kill the process by executing the following command:
+
+```
+    > sudo fuser -k 12181/tcp
+```
+
+#### 4.2 Deploying Kafka cluster on Docker Compose
+
+* Navigate (if it's not already in) to the root directory of the RPS Game project on your computer and run
+  the [Docker Compose](https://docs.docker.com/compose) command below to deploy Kafka cluster on Docker Compose in the
+  background:
+
+```
+    > docker compose -f docker-compose-kafka.yml up -d
+```
+
+You should see the following output:
+
+```
+    [+] Running 6/6
+     ✔ Container zk-3     Started     0.0s 
+     ✔ Container zk-1     Started     0.0s 
+     ✔ Container zk-2     Started     0.0s 
+     ✔ Container kafka-3  Started     0.0s 
+     ✔ Container kafka-1  Started     0.0s 
+     ✔ Container kafka-2  Started     0.0s
+```
+
+#### 4.3 Verifying deployment
+
+* Verify that Zookeeper and Kafka containers are up and running by executing the
+  following [command](https://docs.docker.com/engine/reference/commandline/compose_ps):
+
+```
+    > docker compose -f docker-compose-kafka.yml ps
+```
+
+You should see the following output:
+
+```
+    NAME                             IMAGE                                     COMMAND                  SERVICE             CREATED             STATUS              PORTS
+    kafka-1                          bitnami/kafka:2.7.0                       "/opt/bitnami/script…"   kafka-1             4 minutes ago       Up 3 minutes        9092/tcp, 0.0.0.0:19093->9093/tcp
+    kafka-2                          bitnami/kafka:2.7.0                       "/opt/bitnami/script…"   kafka-2             4 minutes ago       Up 3 minutes        9092/tcp, 0.0.0.0:19094->9094/tcp
+    kafka-3                          bitnami/kafka:2.7.0                       "/opt/bitnami/script…"   kafka-3             4 minutes ago       Up 3 minutes        9092/tcp, 0.0.0.0:19095->9095/tcp
+    zk-1                             bitnami/zookeeper:3.8.0                   "/opt/bitnami/script…"   zk-1                4 minutes ago       Up 4 minutes        2888/tcp, 3888/tcp, 8080/tcp, 0.0.0.0:12181->2181/tcp
+    zk-2                             bitnami/zookeeper:3.8.0                   "/opt/bitnami/script…"   zk-2                4 minutes ago       Up 4 minutes        2888/tcp, 3888/tcp, 8080/tcp, 0.0.0.0:12182->2181/tcp
+    zk-3                             bitnami/zookeeper:3.8.0                   "/opt/bitnami/script…"   zk-3                4 minutes ago       Up 4 minutes        2888/tcp, 3888/tcp, 8080/tcp, 0.0.0.0:12183->2181/tcp
+```
+
+It means that Zookeeper and Kafka containers are up and running.
+
+#### 4.4 Taking down containers
+
+* When we don't need Kafka cluster anymore, we can take down containers and delete their corresponding
+  volumes (-v) using the down command below:
+
+```
+     > docker compose -f docker-compose-kafka.yml down -v
+```
+
+</details>
+
+### 5. Deploying RPS Game Command microservice on Docker Compose
+
+<br>
+<details><summary>Windows 10 and Linux Ubuntu 20.04.6 LTS</summary>
+<br>
+
+#### 5.1 Make sure that necessary ports are not in use
+
+* First of all, make sure that _18081_ and _16566_ port numbers are not in use. You can find the process/service
+  listening on a particular port by running the command below:
+
+```
+    > sudo fuser 18081/tcp
+    > sudo fuser 16566/tcp
+```
+
+If specified port is in use you should see the process number listening to the specified port in the output:
+
+```
+    > 18081/tcp:           747527
+```
+
+If so, kill the process by executing the following command:
+
+```
+    > sudo fuser -k 18081/tcp
+```
+
+#### 5.2 Deploying RPS Game Command microservice on Docker Compose
+
+* Navigate (if it's not already in) to the root directory of the RPS Game project on your computer and run
+  the [Docker Compose](https://docs.docker.com/compose) command below to deploy the RPS Game Command microservice on
+  Docker Compose in the background:
+
+```
+    > docker compose -f docker-compose-api-rps-cmd.yml up -d
+```
+
+You should see the following output:
+
+```
+    [+] Running 1/1
+     ✔ Container rps-cmd-service  Started 
+```
+
+#### 5.3 Verifying deployment
+
+* Verify that RPS Game Command microservice container is up and running by executing the
+  following [command](https://docs.docker.com/engine/reference/commandline/compose_ps):
+
+```
+    > docker compose -f docker-compose-api-rps-cmd.yml ps
+```
+
+You should see the following output:
+
+```
+    NAME                             IMAGE                                     COMMAND                  SERVICE             CREATED             STATUS              PORTS
+    rps-cmd-service                  rps-microservices-rps-cmd-service         "java -Dspring.profi…"   rps-cmd-service     2 minutes ago       Up 2 minutes        8080/tcp, 0.0.0.0:18081->80/tcp, 0.0.0.0:16566->6565/tcp
+```
+
+It means that RPS Game Command microservice is up and running.
+
+#### 5.4 Taking down containers
+
+* When we don't need RPS Game Command microservice anymore, we can take down container and delete their corresponding
+  volumes (-v) using the down command below:
+
+```
+     > docker compose -f docker-compose-api-rps-cmd.yml down -v
+```
+
+</details>
+
+### 6. Deploying RPS Game Query microservice on Docker Compose
+
+<br>
+<details><summary>Windows 10 and Linux Ubuntu 20.04.6 LTS</summary>
+<br>
+
+#### 6.1 Make sure that necessary ports are not in use
+
+* First of all, make sure that _18082_ and _16567_ port numbers are not in use. You can find the process/service
+  listening on a particular port by running the command below:
+
+```
+    > sudo fuser 18082/tcp
+    > sudo fuser 16567/tcp
+```
+
+If specified port is in use you should see the process number listening to the specified port in the output:
+
+```
+    > 18082/tcp:           747527
+```
+
+If so, kill the process by executing the following command:
+
+```
+    > sudo fuser -k 18082/tcp
+```
+
+#### 6.2 Deploying RPS Game Query microservice on Docker Compose
+
+* Navigate (if it's not already in) to the root directory of the RPS Game project on your computer and run
+  the [Docker Compose](https://docs.docker.com/compose) command below to deploy the RPS Game Query microservice on
+  Docker Compose in the background:
+
+```
+    > docker compose -f docker-compose-api-rps-qry.yml up -d
+```
+
+You should see the following output:
+
+```
+    [+] Running 1/1
+     ✔ Container rps-qry-service  Started 
+```
+
+#### 6.3 Verifying deployment
+
+* Verify that RPS Game Query microservice container is up and running by executing the
+  following [command](https://docs.docker.com/engine/reference/commandline/compose_ps):
+
+```
+    > docker compose -f docker-compose-api-rps-qry.yml ps
+```
+
+You should see the following output:
+
+```
+    NAME                             IMAGE                                     COMMAND                  SERVICE             CREATED             STATUS              PORTS
+    rps-qry-service                  rps-microservices-rps-qry-service         "java -Dspring.profi…"   rps-qry-service     2 minutes ago       Up 2 minutes        8080/tcp, 0.0.0.0:18082->80/tcp, 0.0.0.0:16567->6565/tcp
+```
+
+It means that RPS Game Query microservice is up and running.
+
+#### 6.4 Taking down containers
+
+* When we don't need RPS Game Query microservice anymore, we can take down container and delete their corresponding
+  volumes (-v) using the down command below:
+
+```
+     > docker compose -f docker-compose-api-rps-qry.yml down -v
+```
+
+</details>
+
+### 7. Deploying Score Command microservice on Docker Compose
+
+<br>
+<details><summary>Windows 10 and Linux Ubuntu 20.04.6 LTS</summary>
+<br>
+
+#### 7.1 Make sure that necessary ports are not in use
+
+* First of all, make sure that _18083_ and _16568_ port numbers are not in use. You can find the process/service
+  listening on a particular port by running the command below:
+
+```
+    > sudo fuser 18083/tcp
+    > sudo fuser 16568/tcp
+```
+
+If specified port is in use you should see the process number listening to the specified port in the output:
+
+```
+    > 18083/tcp:           767527
+```
+
+If so, kill the process by executing the following command:
+
+```
+    > sudo fuser -k 18083/tcp
+```
+
+#### 7.2 Deploying Score Command microservice on Docker Compose
+
+* Navigate (if it's not already in) to the root directory of the RPS Game project on your computer and run
+  the [Docker Compose](https://docs.docker.com/compose) command below to deploy the Score Command microservice on Docker
+  Compose in the background:
+
+```
+    > docker compose -f docker-compose-api-score-cmd.yml up -d
+```
+
+You should see the following output:
+
+```
+    [+] Running 1/1
+     ✔ Container score-cmd-service  Started 
+```
+
+#### 7.3 Verifying deployment
+
+* Verify that Score Command microservice container is up and running by executing the
+  following [command](https://docs.docker.com/engine/reference/commandline/compose_ps):
+
+```
+    > docker compose -f docker-compose-api-score-cmd.yml ps
+```
+
+You should see the following output:
+
+```
+    NAME                             IMAGE                                     COMMAND                  SERVICE             CREATED             STATUS              PORTS
+    score-cmd-service                rps-microservices-score-cmd-service       "java -Dspring.profi…"   score-cmd-service   2 minutes ago       Up 2 minutes        8080/tcp, 0.0.0.0:18083->80/tcp, 0.0.0.0:16568->6565/tcp
+```
+
+It means that Score Command microservice is up and running.
+
+#### 7.4 Taking down containers
+
+* When we don't need Score Command microservice anymore, we can take down container and delete their corresponding
+  volumes (-v) using the down command below:
+
+```
+     > docker compose -f docker-compose-api-score-cmd.yml down -v
+```
+
+</details>
+
+### 8. Deploying Score Query microservice on Docker Compose
+
+<br>
+<details><summary>Windows 10 and Linux Ubuntu 20.04.6 LTS</summary>
+<br>
+
+#### 8.1 Make sure that necessary ports are not in use
+
+* First of all, make sure that _18084_ and _16569_ port numbers are not in use. You can find the process/service
+  listening on a particular port by running the command below:
+
+```
+    > sudo fuser 18084/tcp
+    > sudo fuser 16569/tcp
+```
+
+If specified port is in use you should see the process number listening to the specified port in the output:
+
+```
+    > 18084/tcp:           788527
+```
+
+If so, kill the process by executing the following command:
+
+```
+    > sudo fuser -k 18084/tcp
+```
+
+#### 8.2 Deploying Score Query microservice on Docker Compose
+
+* Navigate (if it's not already in) to the root directory of the RPS Game project on your computer and run
+  the [Docker Compose](https://docs.docker.com/compose) command below to deploy the Score Query microservice on Docker
+  Compose in the background:
+
+```
+    > docker compose -f docker-compose-api-score-qry.yml up -d
+```
+
+You should see the following output:
+
+```
+    [+] Running 1/1
+     ✔ Container score-qry-service  Started 
+```
+
+#### 8.3 Verifying deployment
+
+* Verify that Score Query microservice container is up and running by executing the
+  following [command](https://docs.docker.com/engine/reference/commandline/compose_ps):
+
+```
+    > docker compose -f docker-compose-api-score-qry.yml ps
+```
+
+You should see the following output:
+
+```
+    NAME                             IMAGE                                     COMMAND                  SERVICE             CREATED             STATUS              PORTS
+    score-qry-service                rps-microservices-score-qry-service       "java -Dspring.profi…"   score-qry-service   2 minutes ago       Up 2 minutes        8080/tcp, 0.0.0.0:18084->80/tcp, 0.0.0.0:16569->6565/tcp
+```
+
+It means that Score Query microservice is up and running.
+
+#### 8.4 Taking down containers
+
+* When we don't need Score Query microservice anymore, we can take down container and delete their corresponding
+  volumes (-v) using the down command below:
+
+```
+     > docker compose -f docker-compose-api-score-qry.yml down -v
+```
+
+</details>
+
+### 9. Deploying Nginx api gateway and Health Monitoring backing service on Docker Compose
+
+<br>
+<details><summary>Windows 10 and Linux Ubuntu 20.04.6 LTS</summary>
+<br>
+
+#### 9.1 Make sure that necessary ports are not in use
+
+* First of all, make sure that _80_, and _15000_ port numbers are not in use. You can find the process/service listening
+  on a particular port by running the command below:
+
+```
+    > sudo fuser 80/tcp
+    > sudo fuser 15000/tcp
+```
+
+If specified port is in use you should see the process number listening to the specified port in the output:
+
+```
+    > 15000/tcp:           629059
+```
+
+If so, kill the process by executing the following command:
+
+```
+    > sudo fuser -k 15000/tcp
+```
+
+#### 9.2 Deploying Nginx and Health Monitoring on Docker Compose
+
+* Navigate (if it's not already in) to the root directory of the RPS Game project on your computer and run
+  the [Docker Compose](https://docs.docker.com/compose) command below to deploy Nginx api gateway and [Health Monitoring](https://learn.microsoft.com/en-us/dotnet/architecture/microservices/implement-resilient-applications/monitor-app-health) backing microservice on Docker Compose in the
+  background:
+
+```
+    > docker compose -f docker-compose-api.yml up -d
+```
+
+You should see the following output:
+
+```
+    [+] Running 2/2
+     ✔ Container nginx        Started     0.0s 
+     ✔ Container webstatus    Started     0.0s 
+```
+
+__Note:__ [Health Monitoring](https://learn.microsoft.com/en-us/dotnet/architecture/microservices/implement-resilient-applications/monitor-app-health) backing microservice is not necessary but can be useful.
+
+#### 9.3 Verifying deployment
+
+* Verify that Nginx and [Health Monitoring](https://learn.microsoft.com/en-us/dotnet/architecture/microservices/implement-resilient-applications/monitor-app-health) containers are up and running by executing the
+  following [command](https://docs.docker.com/engine/reference/commandline/compose_ps):
+
+```
+    > docker compose -f docker-compose-api.yml ps
+```
+
+You should see the following output:
+
+```
+  NAME                             IMAGE                                     COMMAND                  SERVICE             CREATED              STATUS                          PORTS
+  nginx                            rps-microservices-nginx                   "nginx -g 'daemon of…"   nginx               About a minute ago   Up About a minute   
+  webstatus                        rps-microservices-webstatus               "dotnet WebStatus.dll"   webstatus           About a minute ago   Up About a minute               80/tcp, 0.0.0.0:15000->5000/tcp
+```
+
+It means that Nginx and [Health Monitoring](https://learn.microsoft.com/en-us/dotnet/architecture/microservices/implement-resilient-applications/monitor-app-health) containers are up and running.
+
+#### 9.4 Using the Health Monitoring
 
 * Navigate to the _health checker_ microservice:
 
@@ -1575,7 +2260,81 @@ and make sure that all the RPS game microservices are up and running.
 
 ** Status gets refreshed every _10 seconds_
 
-#### Verifying Prometheus
+#### 9.5 Taking down containers
+
+* When we don't need Nginx and [Health Monitoring](https://learn.microsoft.com/en-us/dotnet/architecture/microservices/implement-resilient-applications/monitor-app-health) microservices anymore, we can take down containers and delete their corresponding
+  volumes (-v) using the down command below:
+
+```
+     > docker compose -f docker-compose-api.yml down -v
+```
+
+</details>
+
+### 10. Deploying Prometheus and Grafana backing service on Docker Compose
+
+<br>
+<details><summary>Windows 10 and Linux Ubuntu 20.04.6 LTS</summary>
+<br>
+
+#### 10.1 Make sure that necessary ports are not in use
+
+* First of all, make sure that _9090_, and _3000_ port numbers are not in use. You can find the process/service listening
+  on a particular port by running the command below:
+
+```
+    > sudo fuser 9090/tcp
+    > sudo fuser 3000/tcp
+```
+
+If specified port is in use you should see the process number listening to the specified port in the output:
+
+```
+    > 9090/tcp:           629059
+```
+
+If so, kill the process by executing the following command:
+
+```
+    > sudo fuser -k 9090/tcp
+```
+
+#### 10.2 Deploying Prometheus and Grafana on Docker Compose
+
+* Navigate (if it's not already in) to the root directory of the RPS Game project on your computer and run the [Docker Compose](https://docs.docker.com/compose) command below to deploy [Prometheus](https://prometheus.io) and [Grafana](https://prometheus.io/docs/visualization/grafana) on Docker Compose in the background:
+
+```
+    > docker compose -f docker-compose-metrics.yml up -d
+```
+
+You should see the following output:
+
+```
+    [+] Running 6/6
+     ✔ Container prometheus     Started     0.0s 
+     ✔ Container grafana        Started     0.0s 
+```
+
+#### 10.3 Verifying deployment
+
+* Verify that Prometheus and Grafana containers are up and running by executing the
+  following [command](https://docs.docker.com/engine/reference/commandline/compose_ps):
+
+```
+    > docker compose -f docker-compose-metrics.yml ps
+```
+
+You should see the following output:
+
+```
+  NAME                             IMAGE                                     COMMAND                  SERVICE             CREATED              STATUS                          PORTS
+  grafana                          grafana/grafana:10.0.1                    "/run.sh"                grafana             About a minute ago   Up About a minute               0.0.0.0:3000->3000/tcp
+  prometheus                       prom/prometheus:v2.45.0                   "/bin/prometheus --c…"   prometheus          About a minute ago   Up About a minute               0.0.0.0:9090->9090/tcp
+```
+
+It means that [Prometheus](https://prometheus.io) and [Grafana](https://prometheus.io/docs/visualization/grafana) containers are up and running.
+
+#### 10.4 Using Prometheus
 
 * Navigate to the _prometheus_ endpoint of microservices:
 
@@ -1600,9 +2359,9 @@ and make sure that [Prometheus](https://prometheus.io) is scraping from our micr
 
 ** Status gets refreshed every _5 seconds_
 
-__Note:__ The [Prometheus](https://prometheus.io) configuration file is located at ./infrastructure/metrics/prometheus/prometheus.yml.
+__Note:__ The [Prometheus](https://prometheus.io) configuration file is located at _./infrastructure/metrics/prometheus/prometheus.yml_.
 
-#### Verifying Grafana
+#### 10.5 Using Grafana
 
 * Navigate to the _grafana_ microservice:
 
@@ -1622,7 +2381,7 @@ and then navigate to the _Dashboards_ page:
     > http://localhost:3000/dashboards
 ```
 
-You will see the preconfigured dashboards powered by our prometheus datasorce in the list:
+You will see the preconfigured dashboards powered by our _prometheus datasorce_ in the list:
 
 ![grafana dashboards](img/grafana-dashboards.png)
 
@@ -1630,11 +2389,23 @@ Select any dashboard from the list. You will be redirected to the dashboard main
 
 ![grafana dashboards application list](img/grafana-dashboard-apps-list.png)
 
-__Note:__ The [Grafana](https://grafana.com) preconfigured datasources are located at the ./infrastructure/metrics/grafana/provisioning/datasources folder. The preconfigured [Grafana](https://grafana.com) dashboard templates are located at the ./infrastructure/metrics/grafana/provisioning/dashboards folder. You can find more dashboard templates from [Grafana Dashboards](https://grafana.com/grafana/dashboards) website.
+__Note:__ The [Grafana](https://grafana.com) preconfigured datasources are located at the _./infrastructure/metrics/grafana/provisioning/datasources_ folder. The preconfigured [Grafana](https://grafana.com)
+dashboard templates are located at the _./infrastructure/metrics/grafana/provisioning/dashboards_ folder. You can find more dashboard templates from [Grafana Dashboards](https://grafana.com/grafana/dashboards) website.
 
 [Grafana Tutorials](https://grafana.com/tutorials)
 
-### 3. Running the RPS game microservices deployed on Docker
+#### 10.6 Taking down containers
+
+* When we don't need Prometheus and Grafana microservices anymore, we can take down containers and delete their corresponding
+  volumes (-v) using the down command below:
+
+```
+     > docker compose -f docker-compose-metrics.yml down -v
+```
+
+</details>
+
+### 3. Running the RPS game microservices deployed on Docker Compose
 
 * Open any browser and navigate to a microservice Open API 3.0 definition (REST API).
 
@@ -1645,20 +2416,17 @@ __Note:__ The [Grafana](https://grafana.com) preconfigured datasources are locat
             http://localhost/score-qry-api/swagger-ui/index.html
 ```
 
-__Note:__ NGINX is used as API gateway so if you deploy the microservices on docker containers you should remove port number
-from the url.
-
-* When we don't need infrastructure containers anymore, we can take down containers and delete their corresponding volumes using the down command below:
-
-```
-     > docker compose -f docker-compose-kc.yml -f docker-compose-general.yml -f docker-compose-kafka.yml -f docker-compose-metrics.yml -f docker-compose-api.yml down -v
-```
+__Note:__ NGINX is used as API gateway so if you deploy the microservices on docker containers you should remove port
+number from the url.
 
 ***
 
-From experience, [Docker Compose](https://docs.docker.com/compose) is a great option for small-scale applications that don't require a lot of infrastructure. It's easy to use and can be deployed quickly. It also a great tool for local development.
+From experience, [Docker Compose](https://docs.docker.com/compose) is a great option for small-scale applications that
+don't require a lot of infrastructure. It's easy to use and can be deployed quickly. It also a great tool for local
+development.
 
-However, [Docker Compose](https://docs.docker.com/compose) is not as scalable as Kubernetes and is not that suitable for developing large-scale applications. Kubernetes is a more complex but more powerful deployment technique.
+However, [Docker Compose](https://docs.docker.com/compose) is not as scalable as Kubernetes and is not that suitable for
+developing large-scale applications. Kubernetes is a more complex but more powerful deployment technique.
 
 [Docker Compose](https://docs.docker.com/compose) vs K8S, pros and cons:
 
@@ -1673,7 +2441,8 @@ Microservices active profile is __prod__.
 
 ### Prerequisites
 
-Make sure that k8s is enabled in the [Docker Desktop](https://www.docker.com/products/docker-desktop). If not, click on the __Settings__ icon, then on the __Kubernetes__
+Make sure that k8s is enabled in the [Docker Desktop](https://www.docker.com/products/docker-desktop). If not, click on
+the __Settings__ icon, then on the __Kubernetes__
 tab and check the __Enable Kubernetes__ checkbox.
 
 ![enable_kubernetes](img/desktop-docker-k8s.png)
@@ -2196,8 +2965,8 @@ REST API:
      > curl localhost:9200/_cat/indices?v 
 ```
 
-__Note:__ If you are running a single node cluster ([Docker Desktop](https://www.docker.com/products/docker-desktop) or MiniKube) you might need to perform the following
-request against the Elasticsearch REST API::
+__Note:__ If you are running a single node cluster ([Docker Desktop](https://www.docker.com/products/docker-desktop) or
+MiniKube) you might need to perform the following request against the Elasticsearch REST API::
 
 ```
      > curl --location --request PUT 'localhost:9200/_settings' \
@@ -3367,7 +4136,8 @@ Repeat the same steps for the third (slave) replica set member by changing the n
 
 ### Prometheus, Alertmanager and Grafana (Monitoring Stack) on K8S cluster
 
-_Monitoring Stack_ is an open-source [Prometheus](https://prometheus.io), [Alertmanager](https://prometheus.io/docs/alerting/latest/alertmanager) and Grafana monitoring infrastructure in
+_Monitoring Stack_ is an open-source [Prometheus](https://prometheus.io)
+, [Alertmanager](https://prometheus.io/docs/alerting/latest/alertmanager) and Grafana monitoring infrastructure in
 Kubernetes.
 
 There are three necessary services in _Monitoring Stack_ setup:
@@ -3376,9 +4146,11 @@ There are three necessary services in _Monitoring Stack_ setup:
 
 [Prometheus](https://prometheus.io) is a monitoring system and time-series database.
 
-[Alertmanager](https://prometheus.io/docs/alerting/latest/alertmanager) handles alerts sent by [Prometheus](https://prometheus.io) server.
+[Alertmanager](https://prometheus.io/docs/alerting/latest/alertmanager) handles alerts sent
+by [Prometheus](https://prometheus.io) server.
 
-[Grafana](https://grafana.com) is a visualization tool that can use [Prometheus](https://prometheus.io) to create dashboards and graphs.
+[Grafana](https://grafana.com) is a visualization tool that can use [Prometheus](https://prometheus.io) to create
+dashboards and graphs.
 
 _Monitoring Stack_ is used to implement the following patterns:
 
@@ -3839,19 +4611,19 @@ The messages should appear in the Kafka message consumer.
 
 ### Keycloak on K8S cluster
 
-[Keycloak](https://www.keycloak.org) is an open source authentication server that implements OpenID Connect (OIDC) and OAuth 2.0 standards. It's used to
-allow [SSO (Single Sign-On)](https://en.wikipedia.org/wiki/Single_sign-on) with identity and access management aimed at modern
-applications and services.
+[Keycloak](https://www.keycloak.org) is an open source authentication server that implements OpenID Connect (OIDC) and
+OAuth 2.0 standards. It's used to allow [SSO (Single Sign-On)](https://en.wikipedia.org/wiki/Single_sign-on) with
+identity and access management aimed at modern applications and services.
 
 The [Keycloak](https://www.keycloak.org) exposes endpoints to support standard functionality, including:
 
-- Authorize (authenticate the end user)  
-- [JWT Token](https://en.wikipedia.org/wiki/JSON_Web_Token) (request a token programmatically)  
-- Discovery (metadata about the server)  
-- User Info (get user information with a valid access token)  
-- Device Authorization (used to start device flow authorization)  
-- Introspection (token validation)  
-- Revocation (token revocation)  
+- Authorize (authenticate the end user)
+- [JWT Token](https://en.wikipedia.org/wiki/JSON_Web_Token) (request a token programmatically)
+- Discovery (metadata about the server)
+- User Info (get user information with a valid access token)
+- Device Authorization (used to start device flow authorization)
+- Introspection (token validation)
+- Revocation (token revocation)
 - End Session (trigger single sign-out across all apps)
 
 [Keycloak](https://www.keycloak.org) is used to implement the following patterns:
@@ -3865,8 +4637,8 @@ __Architecture Diagram__
 
 Source: [Server Installation and Configuration Guide](https://www.keycloak.org/docs/19.0.0/server_installation)
 
-In our setup, we use [PostgreSQL](https://www.postgresql.org) as a database for [Keycloak](https://www.keycloak.org) to persist data such as users,
-clients and realms, but you can choose any other database from the list below. 
+In our setup, we use [PostgreSQL](https://www.postgresql.org) as a database for [Keycloak](https://www.keycloak.org) to
+persist data such as users, clients and realms, but you can choose any other database from the list below.
 
 [List of supported databases](https://www.keycloak.org/server/db)
 
@@ -3965,7 +4737,8 @@ You should see the following output:
 
 #### 4. Deploying Keycloak
 
-To deploy [Keycloak](https://www.keycloak.org) on K8S cluster with [PostgreSQL](https://www.postgresql.org) database execute the following command:
+To deploy [Keycloak](https://www.keycloak.org) on K8S cluster with [PostgreSQL](https://www.postgresql.org) database
+execute the following command:
 
 ```
      > helm install keycloak \
@@ -4042,8 +4815,8 @@ You should see the following output:
       keycloak-postgresql-0   1/1     Running   0          6m50s   10.244.0.15   minikube   <none>           <none>
 ```
 
-__Note:__ To access the Keycloak server locally, we have to forward a local port 80 to the Kubernetes node running Keycloak
-with the following command:
+__Note:__ To access the Keycloak server locally, we have to forward a local port 80 to the Kubernetes node running
+Keycloak with the following command:
 
 ```
      > kubectl port-forward --address 0.0.0.0 service/keycloak 8080:80 -n kube-auth
@@ -4051,7 +4824,8 @@ with the following command:
 
 #### 5. Setting up Keycloak
 
-To access the [Keycloak](https://www.keycloak.org) Administration Console, open the following URL in the browser: [http://kc.internal/admin](http://kc.internal/admin)
+To access the [Keycloak](https://www.keycloak.org) Administration Console, open the following URL in the
+browser: [http://kc.internal/admin](http://kc.internal/admin)
 
 ##### Create realm
 
@@ -4067,10 +4841,15 @@ b) Enter __rps-dev__ in the __Add realm__ __Name__ field then click the __Create
 
 ##### Configure an [Open ID Connect (OIDC)](https://wjw465150.gitbooks.io/keycloak-documentation/content/server_admin/topics/sso-protocols/oidc.html) Client
 
-[Open ID Connect (OIDC)](https://wjw465150.gitbooks.io/keycloak-documentation/content/server_admin/topics/sso-protocols/oidc.html) is a modern [SSO (Single Sign-On)](https://en.wikipedia.org/wiki/Single_sign-on) protocol built on top of the [OAuth 2.0 Authorization Framework](https://datatracker.ietf.org/doc/html/rfc6749).
-[Open ID Connect (OIDC)](https://wjw465150.gitbooks.io/keycloak-documentation/content/server_admin/topics/sso-protocols/oidc.html) makes use of [JWT (JSON Web Token)](https://jwt.io) in the form of __identity__ (contains information about the logged user such as the username and the email) and __access__ (contains access data such as the roles) tokens.
+[Open ID Connect (OIDC)](https://wjw465150.gitbooks.io/keycloak-documentation/content/server_admin/topics/sso-protocols/oidc.html)
+is a modern [SSO (Single Sign-On)](https://en.wikipedia.org/wiki/Single_sign-on) protocol built on top of
+the [OAuth 2.0 Authorization Framework](https://datatracker.ietf.org/doc/html/rfc6749).
+[Open ID Connect (OIDC)](https://wjw465150.gitbooks.io/keycloak-documentation/content/server_admin/topics/sso-protocols/oidc.html)
+makes use of [JWT (JSON Web Token)](https://jwt.io) in the form of __identity__ (contains information about the logged
+user such as the username and the email) and __access__ (contains access data such as the roles) tokens.
 
-With the new realm created, let's create a client that is an application or group of applications that will authenticate in this Realm.
+With the new realm created, let's create a client that is an application or group of applications that will authenticate
+in this Realm.
 
 a) Click __Clients__ menu item in the left navigation bar and then click the __Create__ button.
 
@@ -4078,23 +4857,34 @@ b) Enter the __Client ID__. The __Client ID__ is a string used to identify our c
 
 c) Select the Client Protocol __openid-connect__ from the drop-down menu and click the __Save__ button.
 
-d) From the __Access Type__ drop-down menu, select __confidential__ option. This is the access type for server-side applications.
+d) From the __Access Type__ drop-down menu, select __confidential__ option. This is the access type for server-side
+applications.
 
 ![kc clients](img/kc-clients-1.png)
 
-e) In the __Valid Redirect URIs__ box, you can add multiple URLs that are valid to be redirected after the authentication. If this _oauth2-proxy_ client will be used for multiple applications on your cluster, you can add a wildcard like [https://your-domain.com/*](https://your-domain.com/*). In my configuration, I've added [http://rps.internal/*](http://rps.internal/*) and [https://rps.internal/*](https://rps.internal/*).
+e) In the __Valid Redirect URIs__ box, you can add multiple URLs that are valid to be redirected after the
+authentication. If this _oauth2-proxy_ client will be used for multiple applications on your cluster, you can add a
+wildcard like [https://your-domain.com/*](https://your-domain.com/*). In my configuration, I've
+added [http://rps.internal/*](http://rps.internal/*) and [https://rps.internal/*](https://rps.internal/*).
 
-f) Confirm that the __Standard Flow Enabled__ and __Direct Access Grants Enabled__ toggle buttons are enabled. The __Standard Flow Enabled__ property is used to activate the [Authorization Code Flow](https://www.keycloak.org/docs/latest/server_admin/index.html?ref=thomasvitale.com#authorization-code-flow).
+f) Confirm that the __Standard Flow Enabled__ and __Direct Access Grants Enabled__ toggle buttons are enabled. The __
+Standard Flow Enabled__ property is used to activate
+the [Authorization Code Flow](https://www.keycloak.org/docs/latest/server_admin/index.html?ref=thomasvitale.com#authorization-code-flow)
+.
 
-g) Turn on the [__Service Accounts Enabled__](https://wjw465150.gitbooks.io/keycloak-documentation/content/server_admin/topics/clients/oidc/service-accounts.html) toggle button.
+g) Turn on the [__Service Accounts
+Enabled__](https://wjw465150.gitbooks.io/keycloak-documentation/content/server_admin/topics/clients/oidc/service-accounts.html)
+toggle button.
 
-h) Turn on the __Implicit Flow Enabled__ toggle button. It's required for [OpenAPI 3.0 OAuth 2.0 authentication](https://swagger.io/docs/specification/authentication/oauth2).
+h) Turn on the __Implicit Flow Enabled__ toggle button. It's required
+for [OpenAPI 3.0 OAuth 2.0 authentication](https://swagger.io/docs/specification/authentication/oauth2).
 
 i) Click the __Save__ button to persist changes.
 
 ![kc clients](img/kc-clients-2.png)
 
-The webpage will automatically be refreshed, and you will see a new tab called __Credentials__. Click on the __Credentials__ tab and copy the value of the __Secret__ textbox as you will need this in the next steps.
+The webpage will automatically be refreshed, and you will see a new tab called __Credentials__. Click on the __
+Credentials__ tab and copy the value of the __Secret__ textbox as you will need this in the next steps.
 
 ```
       H0fnsBnCc7Ts22rxhvLcy66s1yvzSRgG
@@ -4104,7 +4894,8 @@ The webpage will automatically be refreshed, and you will see a new tab called _
 
 That's it. We have created a client that we can use to authenticate the users visiting our application.
 
-Now when you have the client secret value for OAuth2 Client __oauth2-proxy__, you can request an access token using the __client-credentials__ grant type, execute the following command:
+Now when you have the client secret value for OAuth2 Client __oauth2-proxy__, you can request an access token using
+the __client-credentials__ grant type, execute the following command:
 
 ```
       > curl --location --request POST "http://kc.internal/realms/rps-dev/protocol/openid-connect/token" \
@@ -4146,11 +4937,12 @@ For example, you can get the user info executing the following command:
 
 __Groups mapper__
 
-a) Select the __Mappers__ tab on the __Create Protocol Mapper__ page, add a new mapper and enter all the groups using the following settings:
+a) Select the __Mappers__ tab on the __Create Protocol Mapper__ page, add a new mapper and enter all the groups using
+the following settings:
 
 b) Enter the __Name__. We will use __groups__.
 
-c) From the __Mapper Type__ drop-down menu, select __Group Membership__ option. 
+c) From the __Mapper Type__ drop-down menu, select __Group Membership__ option.
 
 d) Enter the __Token Claim Name__. We will use __groups__.
 
@@ -4162,7 +4954,8 @@ f) Click the __Save__ button to persist changes.
 
 __Audience mapper__
 
-a) Select the __Mappers__ tab on the __Create Protocol Mapper__ page, add a new mapper and enter all the groups using the following settings:
+a) Select the __Mappers__ tab on the __Create Protocol Mapper__ page, add a new mapper and enter all the groups using
+the following settings:
 
 b) Enter the __Name__. We will use __audience__.
 
@@ -4196,7 +4989,9 @@ Repeat the same steps for the __ROLE_USER__ and __ROLE_MODERATOR__ roles.
 
 ##### Configure the User Groups
 
-In [Keycloak](https://www.keycloak.org), [Groups](https://wjw465150.gitbooks.io/keycloak-documentation/content/server_admin/topics/groups.html) are just a collection of users that you can apply roles and attributes to in one place.
+In [Keycloak](https://www.keycloak.org)
+, [Groups](https://wjw465150.gitbooks.io/keycloak-documentation/content/server_admin/topics/groups.html) are just a
+collection of users that you can apply roles and attributes to in one place.
 
 1. Create an admin group
 
@@ -4228,7 +5023,8 @@ Repeat the same steps for __moderators__ and __users__ groups.
 
 a) Click the __Users__ menu item in the left navigation bar and then click the __Add user__ button.
 
-b) Enter __admin__ as username, an email address and a password for the new user, and add the user to the _users_, _moderators_ and _admins_ groups. 
+b) Enter __admin__ as username, an email address and a password for the new user, and add the user to the _users_, _
+moderators_ and _admins_ groups.
 
 c) Turn on the __Email Verified__ toggle button.
 
@@ -4280,7 +5076,9 @@ __User Credentials:__
 
 ##### OAuth2 Client Configuration
 
-Update the application [Keycloak](https://www.keycloak.org) properties in the microservices [application-<profile>.yml](https://docs.spring.io/spring-boot/docs/current/reference/html/features.html#features.external-config.files) files.
+Update the application [Keycloak](https://www.keycloak.org) properties in the
+microservices [application-<profile>.yml](https://docs.spring.io/spring-boot/docs/current/reference/html/features.html#features.external-config.files)
+files.
 
 | **property** | **value**                        |
 |--------------|----------------------------------|
@@ -4464,7 +5262,8 @@ Generate a public CA key and certificate with the following command:
       > openssl req -x509 -sha256 -newkey rsa:4096 -days 3560 -nodes -keyout rps-public-ca.key -out rps-public-ca.crt -subj '/CN=RPS Public Cert Authority/O=RPS Public CA'
 ```
 
-__Note:__ Skip the next steps if you are not going to use [TLS](https://en.wikipedia.org/wiki/Transport_Layer_Security) connection for dev environment.
+__Note:__ Skip the next steps if you are not going to use [TLS](https://en.wikipedia.org/wiki/Transport_Layer_Security)
+connection for dev environment.
 
 #### 2. Generation self-signed server certificate
 
@@ -4572,7 +5371,8 @@ Repeat the same steps for 4 grpc server certificates. Make sure to change custom
       -subj '/CN=grpc.score.qry.internal/O=grpc.score.qry.internal'
 ```
 
-__Note:__ Skip the next steps if you are not going to use [mTLS](https://en.wikipedia.org/wiki/Mutual_authentication) connection for dev environment.
+__Note:__ Skip the next steps if you are not going to use [mTLS](https://en.wikipedia.org/wiki/Mutual_authentication)
+connection for dev environment.
 
 #### 3. Generating client certificate (mTLS connection)
 

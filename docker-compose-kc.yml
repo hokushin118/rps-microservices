@@ -25,6 +25,7 @@ services:
   # Keycloak IAM (Identity and Access Management) service.
   keycloak:
     container_name: keycloak
+    hostname: keycloak
     build:
       context: .
       dockerfile: ./docker/keycloak/Dockerfile
