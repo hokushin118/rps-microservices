@@ -15,17 +15,13 @@ services:
     volumes:
       - ./infrastructure/nginx/conf.d/default.conf:/etc/nginx/conf.d/default.conf
       - ./infrastructure/ssl:/ssl
-    depends_on:
-      - rps-cmd-service
-      - rps-qry-service
-      - score-cmd-service
-      - score-qry-service
     networks:
       - ${BACKEND_NETWORK}
     deploy:
       replicas: 1
 
-  # The WebStatus application monitors microservices health
+  # The Health Monitoring application monitors microservices health
+  # https://learn.microsoft.com/en-us/dotnet/architecture/microservices/implement-resilient-applications/monitor-app-health
   webstatus:
     container_name: webstatus
     build:
@@ -46,134 +42,6 @@ services:
       - nginx
     networks:
       - ${BACKEND_NETWORK}
-    deploy:
-      replicas: 1
-
-  # The Rock Paper Scissors game command microservice provides REST and gRPC APIs for the RPS game.
-  rps-cmd-service:
-    container_name: rps-cmd-service
-    #    image: hokushin/rps-cmd-service:${RPS_CMD_SRV_VERSION}
-    build:
-      context: .
-      dockerfile: ./docker/rps-cmd-service/Dockerfile
-    hostname: ${RPS_CMD_SRV_HOSTNAME}
-    restart: on-failure
-    environment:
-      - JVM_OPTS=-Xmx8g -Xms8g -XX:MaxPermSize=1024m
-      - SERVER_PORT=${RPS_CMD_SERVER_PORT}
-      - GRPC_SERVER_PORT=${RPS_CMD_GRPC_SERVER_PORT}
-    labels:
-      collect_logs_with_filebeat: true
-      decode_log_event_to_json: true
-    ports: # Important: In a production environment you should remove the external port that kept here for debugging purposes.
-      - 8081:80 # external port / container port
-      - 6566:6565 # external port / container port
-    env_file:
-      - .env
-    networks:
-      - ${BACKEND_NETWORK}
-    depends_on:
-      - keycloak
-      - mongo
-      - kafka-1
-      - kafka-2
-      - kafka-3
-    deploy:
-      replicas: 1
-
-  # The Rock Paper Scissors game query microservice provides REST and gRPC APIs for the RPS game.
-  rps-qry-service:
-    container_name: rps-qry-service
-    #    image: hokushin/rps-qry-service:${RPS_QRY_SRV_VERSION}
-    build:
-      context: .
-      dockerfile: ./docker/rps-qry-service/Dockerfile
-    hostname: ${RPS_QRY_SRV_HOSTNAME}
-    restart: on-failure
-    environment:
-      - JVM_OPTS=-Xmx8g -Xms8g -XX:MaxPermSize=1024m
-      - SERVER_PORT=${RPS_QRY_SERVER_PORT}
-      - GRPC_SERVER_PORT=${RPS_QRY_GRPC_SERVER_PORT}
-    labels:
-      collect_logs_with_filebeat: true
-      decode_log_event_to_json: true
-    ports: # Important: In a production environment you should remove the external port that kept here for debugging purposes.
-      - 8082:80 # external port / container port
-      - 6567:6565 # external port / container port
-    env_file:
-      - .env
-    networks:
-      - ${BACKEND_NETWORK}
-    depends_on:
-      - keycloak
-      - mariadb
-      - kafka-1
-      - kafka-2
-      - kafka-3
-    deploy:
-      replicas: 1
-
-  # The Score command microservice provides REST and gRPC APIs for the RPS game.
-  score-cmd-service:
-    container_name: score-cmd-service
-    #    image: hokushin/score-cmd-service:${SCORE_CMD_SRV_VERSION}
-    build:
-      context: .
-      dockerfile: ./docker/score-cmd-service/Dockerfile
-    hostname: ${SCORE_CMD_SRV_HOSTNAME}
-    restart: on-failure
-    environment:
-      - JVM_OPTS=-Xmx8g -Xms8g -XX:MaxPermSize=1024m
-      - SERVER_PORT=${SCORE_CMD_SERVER_PORT}
-      - GRPC_SERVER_PORT=${SCORE_CMD_GRPC_SERVER_PORT}
-    labels:
-      collect_logs_with_filebeat: true
-      decode_log_event_to_json: true
-    ports: # Important: In a production environment you should remove the external port that kept here for debugging purposes.
-      - 8083:80 # external port / container port
-      - 6568:6565 # external port / container port
-    env_file:
-      - .env
-    networks:
-      - ${BACKEND_NETWORK}
-    depends_on:
-      - keycloak
-      - mongo
-      - kafka-1
-      - kafka-2
-      - kafka-3
-    deploy:
-      replicas: 1
-
-  # The Score query microservice provides REST and gRPC APIs for the RPS game.
-  score-qry-service:
-    container_name: score-qry-service
-    #    image: hokushin/score-qry-service:${SCORE_QRY_SRV_VERSION}
-    build:
-      context: .
-      dockerfile: ./docker/score-qry-service/Dockerfile
-    hostname: ${SCORE_QRY_SRV_HOSTNAME}
-    restart: on-failure
-    environment:
-      - JVM_OPTS=-Xmx8g -Xms8g -XX:MaxPermSize=1024m
-      - SERVER_PORT=${SCORE_QRY_SERVER_PORT}
-      - GRPC_SERVER_PORT=${SCORE_QRY_GRPC_SERVER_PORT}
-    labels:
-      collect_logs_with_filebeat: true
-      decode_log_event_to_json: true
-    ports: # Important: In a production environment you should remove the external port that kept here for debugging purposes.
-      - 8084:80 # external port / container port
-      - 6569:6565 # external port / container port
-    env_file:
-      - .env
-    networks:
-      - ${BACKEND_NETWORK}
-    depends_on:
-      - keycloak
-      - mariadb
-      - kafka-1
-      - kafka-2
-      - kafka-3
     deploy:
       replicas: 1
 
