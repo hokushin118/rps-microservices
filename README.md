@@ -1685,7 +1685,7 @@ __Note:__ Make sure that necessary external ports are not in use. If so, kill th
 ```
 
 </details>
-<br>
+
 <details><summary>Linux Ubuntu 20.04.6 LTS</summary>
 
 ```
