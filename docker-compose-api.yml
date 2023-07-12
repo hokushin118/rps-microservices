@@ -1,5 +1,8 @@
 version: "3.8"
 
+# Project name
+name: rps-app
+
 services:
   # Nginx reverse proxy server acts as api gateway.
   nginx:

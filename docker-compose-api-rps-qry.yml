@@ -1,5 +1,8 @@
 version: "3.8"
 
+# Project name
+name: rps-app
+
 services:
   # The Rock Paper Scissors game query microservice provides REST and gRPC APIs for the RPS game.
   rps-qry-service:

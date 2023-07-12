@@ -1,5 +1,8 @@
 version: "3.8"
 
+# Project name
+name: rps-app
+
 services:
   # PostgreSQL object-relational database system is used as Keycloak data storage.
   postgresql:
