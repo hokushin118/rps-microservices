@@ -1,5 +1,8 @@
 version: "3.8"
 
+# Project name
+name: rps-app
+
 services:
   # Prometheus (metrics database) - http://<host-ip>:9090
   prometheus:
