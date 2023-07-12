@@ -1650,8 +1650,8 @@ You should see the following output:
 ```
     [+] Running 4/4
     ✔ Network rps_net                             Created     0.2s
-    ✔ Volume "rps-microservices_postgresql-data"  Created     0.0s
-    ✔ Container rps-microservices-postgresql-1    Started     2.0s
+    ✔ Volume "rps_app_postgresql-data"            Created     0.0s
+    ✔ Container rps-app-postgresql-1              Started     2.0s
     ✔ Container keycloak                          Started     2.1s
 ```
 
@@ -1668,8 +1668,8 @@ You should see the following output:
 
 ```
     NAME                             IMAGE                                     COMMAND                  SERVICE             CREATED             STATUS              PORTS
-    keycloak                         rps-microservices-keycloak                "/opt/bitnami/keyclo…"   keycloak            2 minutes ago       Up 2 minutes        0.0.0.0:28080->8080/tcp
-    rps-microservices-postgresql-1   bitnami/postgresql:14.2.0-debian-10-r95   "/opt/bitnami/script…"   postgresql          2 minutes ago       Up 2 minutes        0.0.0.0:15432->5432/tcp
+    keycloak                         rps-app-keycloak                          "/opt/bitnami/keyclo…"   keycloak            2 minutes ago       Up 2 minutes        0.0.0.0:28080->8080/tcp
+    rps-app-postgresql-1             bitnami/postgresql:14.2.0-debian-10-r95   "/opt/bitnami/script…"   postgresql          2 minutes ago       Up 2 minutes        0.0.0.0:15432->5432/tcp
 ```
 
 It means that [Keycloak 18.0.0](https://www.keycloak.org) and [PostgreSQL](https://www.postgresql.org) containers are up
@@ -1880,7 +1880,7 @@ You should see the following output:
 
 ```
     NAME                             IMAGE                                     COMMAND                  SERVICE             CREATED             STATUS              PORTS
-    rps-cmd-service                  rps-microservices-rps-cmd-service         "java -Dspring.profi…"   rps-cmd-service     2 minutes ago       Up 2 minutes        8080/tcp, 0.0.0.0:18081->80/tcp, 0.0.0.0:16566->6565/tcp
+    rps-cmd-service                  rps-app-rps-cmd-service                   "java -Dspring.profi…"   rps-cmd-service     2 minutes ago       Up 2 minutes        8080/tcp, 0.0.0.0:18081->80/tcp, 0.0.0.0:16566->6565/tcp
 ```
 
 It means that RPS Game Command microservice is up and running.
@@ -1932,7 +1932,7 @@ You should see the following output:
 
 ```
     NAME                             IMAGE                                     COMMAND                  SERVICE             CREATED             STATUS              PORTS
-    rps-qry-service                  rps-microservices-rps-qry-service         "java -Dspring.profi…"   rps-qry-service     2 minutes ago       Up 2 minutes        8080/tcp, 0.0.0.0:18082->80/tcp, 0.0.0.0:16567->6565/tcp
+    rps-qry-service                  rps-app-rps-qry-service                   "java -Dspring.profi…"   rps-qry-service     2 minutes ago       Up 2 minutes        8080/tcp, 0.0.0.0:18082->80/tcp, 0.0.0.0:16567->6565/tcp
 ```
 
 It means that RPS Game Query microservice is up and running.
@@ -1984,7 +1984,7 @@ You should see the following output:
 
 ```
     NAME                             IMAGE                                     COMMAND                  SERVICE             CREATED             STATUS              PORTS
-    score-cmd-service                rps-microservices-score-cmd-service       "java -Dspring.profi…"   score-cmd-service   2 minutes ago       Up 2 minutes        8080/tcp, 0.0.0.0:18083->80/tcp, 0.0.0.0:16568->6565/tcp
+    score-cmd-service                rps-app-score-cmd-service                 "java -Dspring.profi…"   score-cmd-service   2 minutes ago       Up 2 minutes        8080/tcp, 0.0.0.0:18083->80/tcp, 0.0.0.0:16568->6565/tcp
 ```
 
 It means that Score Command microservice is up and running.
@@ -2036,7 +2036,7 @@ You should see the following output:
 
 ```
     NAME                             IMAGE                                     COMMAND                  SERVICE             CREATED             STATUS              PORTS
-    score-qry-service                rps-microservices-score-qry-service       "java -Dspring.profi…"   score-qry-service   2 minutes ago       Up 2 minutes        8080/tcp, 0.0.0.0:18084->80/tcp, 0.0.0.0:16569->6565/tcp
+    score-qry-service                rps-app-score-qry-service                 "java -Dspring.profi…"   score-qry-service   2 minutes ago       Up 2 minutes        8080/tcp, 0.0.0.0:18084->80/tcp, 0.0.0.0:16569->6565/tcp
 ```
 
 It means that Score Query microservice is up and running.
@@ -2091,8 +2091,8 @@ You should see the following output:
 
 ```
   NAME                             IMAGE                                     COMMAND                  SERVICE             CREATED              STATUS                          PORTS
-  nginx                            rps-microservices-nginx                   "nginx -g 'daemon of…"   nginx               About a minute ago   Up About a minute   
-  webstatus                        rps-microservices-webstatus               "dotnet WebStatus.dll"   webstatus           About a minute ago   Up About a minute               80/tcp, 0.0.0.0:15000->5000/tcp
+  nginx                            rps-app-nginx                             "nginx -g 'daemon of…"   nginx               About a minute ago   Up About a minute   
+  webstatus                        rps-app-webstatus                         "dotnet WebStatus.dll"   webstatus           About a minute ago   Up About a minute               80/tcp, 0.0.0.0:15000->5000/tcp
 ```
 
 It means that Nginx and [Health Monitoring](https://learn.microsoft.com/en-us/dotnet/architecture/microservices/implement-resilient-applications/monitor-app-health) containers are up and running.
