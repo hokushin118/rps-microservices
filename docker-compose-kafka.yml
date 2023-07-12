@@ -9,6 +9,9 @@
 
 version: "3.8"
 
+# Project name
+name: rps-app
+
 services:
   zk-1:
     container_name: zk-1
