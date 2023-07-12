@@ -1516,16 +1516,12 @@ __Note:__ Don't confuse __admin__ super user with realm __admin__ test user.
 
 Available test realm roles:
 
-|      **role**    |           **
-description**                                                                            |
+|      **role**    |           **description**                                                                            |
 |------------------|------------------------------------------------------------------------------------------------------|
-|   __
-ROLE_ADMIN__ |  view all games, find any game by id, <br>delete any game by id, delete any score by id              | 
-|   __
-ROLE_USER__  |  play a game, view all games played by the user, <br>view all scores of the games played by the user |
+|   __ROLE_ADMIN__ |  view all games, find any game by id, <br>delete any game by id, delete any score by id              | 
+|   __ROLE_USER__  |  play a game, view all games played by the user, <br>view all scores of the games played by the user |
 
-__Notes:__ [Spring security](https://spring.io/guides/topicals/spring-security-architecture) manages endpoint access
-control om microservice level.
+__Notes:__ [Spring security](https://spring.io/guides/topicals/spring-security-architecture) manages endpoint access control om microservice level.
 
 _SecurityConfig_ and _GrpcSecurityConfig_ configuration files configure microservice endpoints access control based on
 Keycloak realm users and roles.
@@ -1631,6 +1627,8 @@ You should see the following output:
     > systemctl --user start docker-desktop
 ```
 
+* Ensure that sufficient resources have been allocated to Docker Compose.
+
 ### 2. Deploying Keycloak standalone server on Docker Compose
 
 <br>
@@ -1677,7 +1675,42 @@ You should see the following output:
 It means that [Keycloak 18.0.0](https://www.keycloak.org) and [PostgreSQL](https://www.postgresql.org) containers are up
 and running.
 
-#### 2.3 Taking down containers
+__Note:__ Make sure that necessary external ports are not in use. If so, kill the processes by executing the following commands:
+
+<details><summary>Windows 10</summary>
+
+```
+    > netstat -ano | findStr "<necessary external port>"
+    > tasklist /fi "<pid of the proccess>"
+```
+
+</details>
+<br>
+<details><summary>Linux Ubuntu 20.04.6 LTS</summary>
+
+```
+    > sudo fuser -k <necessary external port>/tcp
+```
+
+</details>
+
+#### 2.3 Using the Keycloak
+
+* Navigate to the _keycloak_ microservice administration console:
+
+```
+    > http://localhost:28080/admin
+```
+
+Enter credentials below:
+
+| **user name**  | **password** |  
+|----------------|--------------|
+|     admin      |   admin      |
+
+and make sure that _rps-dev_ realm has been activated.
+
+#### 2.4 Taking down containers
 
 * When we don't need keycloak container anymore, we can take down containers and delete their corresponding
   volumes (-v) using the down command below:
