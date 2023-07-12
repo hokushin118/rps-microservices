@@ -1637,29 +1637,7 @@ You should see the following output:
 <details><summary>Windows 10 and Linux Ubuntu 20.04.6 LTS</summary>
 <br>
 
-#### 2.1 Make sure that necessary ports are not in use
-
-* First of all, make sure that _15432_ and _28080_ port numbers are not in use. You can find the process/service
-  listening on a particular port by running the command below:
-
-```
-    > sudo fuser 15432/tcp
-    > sudo fuser 28080/tcp
-```
-
-If specified port is in use you should see the process number listening to the specified port in the output:
-
-```
-    > 15432/tcp:           279607
-```
-
-If so, kill the process by executing the following command:
-
-```
-    > sudo fuser -k 15432/tcp
-```
-
-#### 2.2 Deploying Keycloak standalone server on Docker Compose
+#### 2.1 Deploying Keycloak standalone server on Docker Compose
 
 * Then navigate to the root directory of the RPS Game project on your computer and run
   the [Docker Compose](https://docs.docker.com/compose) command below to
@@ -1679,7 +1657,7 @@ You should see the following output:
     ✔ Container keycloak                          Started     2.1s
 ```
 
-#### 2.3 Verifying deployment
+#### 2.2 Verifying deployment
 
 * Verify that [Keycloak 18.0.0](https://www.keycloak.org) and [PostgreSQL](https://www.postgresql.org) containers are up
   and running by executing the following command:
@@ -1699,7 +1677,7 @@ You should see the following output:
 It means that [Keycloak 18.0.0](https://www.keycloak.org) and [PostgreSQL](https://www.postgresql.org) containers are up
 and running.
 
-#### 2.4 Taking down containers
+#### 2.3 Taking down containers
 
 * When we don't need keycloak container anymore, we can take down containers and delete their corresponding
   volumes (-v) using the down command below:
@@ -1716,31 +1694,7 @@ and running.
 <details><summary>Windows 10 and Linux Ubuntu 20.04.6 LTS</summary>
 <br>
 
-#### 3.1 Make sure that necessary ports are not in use
-
-* First of all, make sure that _28017_, _13306_, _16379_ and _19080_ port numbers are not in use. You can find the
-  process/service listening on a particular port by running the command below:
-
-```
-    > sudo fuser 28017/tcp
-    > sudo fuser 13306/tcp
-    > sudo fuser 16379/tcp
-    > sudo fuser 19080/tcp
-```
-
-If specified port is in use you should see the process number listening to the specified port in the output:
-
-```
-    > 28017/tcp:           390432
-```
-
-If so, kill the process by executing the following command:
-
-```
-    > sudo fuser -k 28017/tcp
-```
-
-#### 3.2 Deploying MongoDB, MariaDB and Redis standalone database servers on Docker Compose
+#### 3.1 Deploying MongoDB, MariaDB and Redis standalone database servers on Docker Compose
 
 * Navigate (if it's not already in) to the root directory of the RPS Game project on your computer and run
   the [Docker Compose](https://docs.docker.com/compose) command below to deploy standalone database servers on Docker
@@ -1762,7 +1716,7 @@ You should see the following output:
 
 __Note:__ [Adminer](https://www.adminer.org) database management tool is not necessary but can be useful.
 
-#### 3.3 Verifying deployment
+#### 3.2 Verifying deployment
 
 * Verify that [MongoDB](https://www.mongodb.com), [MariaDB](https://mariadb.org) and [Redis](https://redis.io)
   containers are up and running by executing the following command:
@@ -1784,7 +1738,7 @@ You should see the following output:
 It means that [MongoDB](https://www.mongodb.com), [MariaDB](https://mariadb.org) and [Redis](https://redis.io)
 containers are up and running.
 
-#### 3.4 Taking down containers
+#### 3.3 Taking down containers
 
 * When we don't need database containers anymore, we can take down containers and delete their corresponding
   volumes (-v) using the down command below:
@@ -1801,33 +1755,7 @@ containers are up and running.
 <details><summary>Windows 10 and Linux Ubuntu 20.04.6 LTS</summary>
 <br>
 
-#### 4.1 Make sure that necessary ports are not in use
-
-* First of all, make sure that _12181_, _12182_, _12183_, _19093_, _19094_ and _19095_ port numbers are not in use. You
-  can find the process/service listening on a particular port by running the command below:
-
-```
-    > sudo fuser 12181/tcp
-    > sudo fuser 12182/tcp
-    > sudo fuser 12183/tcp
-    > sudo fuser 19093/tcp
-    > sudo fuser 19094/tcp
-    > sudo fuser 19095/tcp
-```
-
-If specified port is in use you should see the process number listening to the specified port in the output:
-
-```
-    > 12181/tcp:           390512
-```
-
-If so, kill the process by executing the following command:
-
-```
-    > sudo fuser -k 12181/tcp
-```
-
-#### 4.2 Deploying Kafka cluster on Docker Compose
+#### 4.1 Deploying Kafka cluster on Docker Compose
 
 * Navigate (if it's not already in) to the root directory of the RPS Game project on your computer and run
   the [Docker Compose](https://docs.docker.com/compose) command below to deploy Kafka cluster on Docker Compose in the
@@ -1849,7 +1777,7 @@ You should see the following output:
      ✔ Container kafka-2  Started     0.0s
 ```
 
-#### 4.3 Verifying deployment
+#### 4.2 Verifying deployment
 
 * Verify that Zookeeper and Kafka containers are up and running by executing the
   following [command](https://docs.docker.com/engine/reference/commandline/compose_ps):
@@ -1872,7 +1800,7 @@ You should see the following output:
 
 It means that Zookeeper and Kafka containers are up and running.
 
-#### 4.4 Taking down containers
+#### 4.3 Taking down containers
 
 * When we don't need Kafka cluster anymore, we can take down containers and delete their corresponding
   volumes (-v) using the down command below:
@@ -1889,29 +1817,7 @@ It means that Zookeeper and Kafka containers are up and running.
 <details><summary>Windows 10 and Linux Ubuntu 20.04.6 LTS</summary>
 <br>
 
-#### 5.1 Make sure that necessary ports are not in use
-
-* First of all, make sure that _18081_ and _16566_ port numbers are not in use. You can find the process/service
-  listening on a particular port by running the command below:
-
-```
-    > sudo fuser 18081/tcp
-    > sudo fuser 16566/tcp
-```
-
-If specified port is in use you should see the process number listening to the specified port in the output:
-
-```
-    > 18081/tcp:           747527
-```
-
-If so, kill the process by executing the following command:
-
-```
-    > sudo fuser -k 18081/tcp
-```
-
-#### 5.2 Deploying RPS Game Command microservice on Docker Compose
+#### 5.1 Deploying RPS Game Command microservice on Docker Compose
 
 * Navigate (if it's not already in) to the root directory of the RPS Game project on your computer and run
   the [Docker Compose](https://docs.docker.com/compose) command below to deploy the RPS Game Command microservice on
@@ -1928,7 +1834,7 @@ You should see the following output:
      ✔ Container rps-cmd-service  Started 
 ```
 
-#### 5.3 Verifying deployment
+#### 5.2 Verifying deployment
 
 * Verify that RPS Game Command microservice container is up and running by executing the
   following [command](https://docs.docker.com/engine/reference/commandline/compose_ps):
@@ -1946,7 +1852,7 @@ You should see the following output:
 
 It means that RPS Game Command microservice is up and running.
 
-#### 5.4 Taking down containers
+#### 5.3 Taking down containers
 
 * When we don't need RPS Game Command microservice anymore, we can take down container and delete their corresponding
   volumes (-v) using the down command below:
@@ -1963,29 +1869,7 @@ It means that RPS Game Command microservice is up and running.
 <details><summary>Windows 10 and Linux Ubuntu 20.04.6 LTS</summary>
 <br>
 
-#### 6.1 Make sure that necessary ports are not in use
-
-* First of all, make sure that _18082_ and _16567_ port numbers are not in use. You can find the process/service
-  listening on a particular port by running the command below:
-
-```
-    > sudo fuser 18082/tcp
-    > sudo fuser 16567/tcp
-```
-
-If specified port is in use you should see the process number listening to the specified port in the output:
-
-```
-    > 18082/tcp:           747527
-```
-
-If so, kill the process by executing the following command:
-
-```
-    > sudo fuser -k 18082/tcp
-```
-
-#### 6.2 Deploying RPS Game Query microservice on Docker Compose
+#### 6.1 Deploying RPS Game Query microservice on Docker Compose
 
 * Navigate (if it's not already in) to the root directory of the RPS Game project on your computer and run
   the [Docker Compose](https://docs.docker.com/compose) command below to deploy the RPS Game Query microservice on
@@ -2002,7 +1886,7 @@ You should see the following output:
      ✔ Container rps-qry-service  Started 
 ```
 
-#### 6.3 Verifying deployment
+#### 6.2 Verifying deployment
 
 * Verify that RPS Game Query microservice container is up and running by executing the
   following [command](https://docs.docker.com/engine/reference/commandline/compose_ps):
@@ -2020,7 +1904,7 @@ You should see the following output:
 
 It means that RPS Game Query microservice is up and running.
 
-#### 6.4 Taking down containers
+#### 6.3 Taking down containers
 
 * When we don't need RPS Game Query microservice anymore, we can take down container and delete their corresponding
   volumes (-v) using the down command below:
@@ -2037,29 +1921,7 @@ It means that RPS Game Query microservice is up and running.
 <details><summary>Windows 10 and Linux Ubuntu 20.04.6 LTS</summary>
 <br>
 
-#### 7.1 Make sure that necessary ports are not in use
-
-* First of all, make sure that _18083_ and _16568_ port numbers are not in use. You can find the process/service
-  listening on a particular port by running the command below:
-
-```
-    > sudo fuser 18083/tcp
-    > sudo fuser 16568/tcp
-```
-
-If specified port is in use you should see the process number listening to the specified port in the output:
-
-```
-    > 18083/tcp:           767527
-```
-
-If so, kill the process by executing the following command:
-
-```
-    > sudo fuser -k 18083/tcp
-```
-
-#### 7.2 Deploying Score Command microservice on Docker Compose
+#### 7.1 Deploying Score Command microservice on Docker Compose
 
 * Navigate (if it's not already in) to the root directory of the RPS Game project on your computer and run
   the [Docker Compose](https://docs.docker.com/compose) command below to deploy the Score Command microservice on Docker
@@ -2076,7 +1938,7 @@ You should see the following output:
      ✔ Container score-cmd-service  Started 
 ```
 
-#### 7.3 Verifying deployment
+#### 7.2 Verifying deployment
 
 * Verify that Score Command microservice container is up and running by executing the
   following [command](https://docs.docker.com/engine/reference/commandline/compose_ps):
@@ -2094,7 +1956,7 @@ You should see the following output:
 
 It means that Score Command microservice is up and running.
 
-#### 7.4 Taking down containers
+#### 7.3 Taking down containers
 
 * When we don't need Score Command microservice anymore, we can take down container and delete their corresponding
   volumes (-v) using the down command below:
@@ -2111,29 +1973,7 @@ It means that Score Command microservice is up and running.
 <details><summary>Windows 10 and Linux Ubuntu 20.04.6 LTS</summary>
 <br>
 
-#### 8.1 Make sure that necessary ports are not in use
-
-* First of all, make sure that _18084_ and _16569_ port numbers are not in use. You can find the process/service
-  listening on a particular port by running the command below:
-
-```
-    > sudo fuser 18084/tcp
-    > sudo fuser 16569/tcp
-```
-
-If specified port is in use you should see the process number listening to the specified port in the output:
-
-```
-    > 18084/tcp:           788527
-```
-
-If so, kill the process by executing the following command:
-
-```
-    > sudo fuser -k 18084/tcp
-```
-
-#### 8.2 Deploying Score Query microservice on Docker Compose
+#### 8.1 Deploying Score Query microservice on Docker Compose
 
 * Navigate (if it's not already in) to the root directory of the RPS Game project on your computer and run
   the [Docker Compose](https://docs.docker.com/compose) command below to deploy the Score Query microservice on Docker
@@ -2150,7 +1990,7 @@ You should see the following output:
      ✔ Container score-qry-service  Started 
 ```
 
-#### 8.3 Verifying deployment
+#### 8.2 Verifying deployment
 
 * Verify that Score Query microservice container is up and running by executing the
   following [command](https://docs.docker.com/engine/reference/commandline/compose_ps):
@@ -2168,7 +2008,7 @@ You should see the following output:
 
 It means that Score Query microservice is up and running.
 
-#### 8.4 Taking down containers
+#### 8.3 Taking down containers
 
 * When we don't need Score Query microservice anymore, we can take down container and delete their corresponding
   volumes (-v) using the down command below:
@@ -2185,29 +2025,7 @@ It means that Score Query microservice is up and running.
 <details><summary>Windows 10 and Linux Ubuntu 20.04.6 LTS</summary>
 <br>
 
-#### 9.1 Make sure that necessary ports are not in use
-
-* First of all, make sure that _80_, and _15000_ port numbers are not in use. You can find the process/service listening
-  on a particular port by running the command below:
-
-```
-    > sudo fuser 80/tcp
-    > sudo fuser 15000/tcp
-```
-
-If specified port is in use you should see the process number listening to the specified port in the output:
-
-```
-    > 15000/tcp:           629059
-```
-
-If so, kill the process by executing the following command:
-
-```
-    > sudo fuser -k 15000/tcp
-```
-
-#### 9.2 Deploying Nginx and Health Monitoring on Docker Compose
+#### 9.1 Deploying Nginx and Health Monitoring on Docker Compose
 
 * Navigate (if it's not already in) to the root directory of the RPS Game project on your computer and run
   the [Docker Compose](https://docs.docker.com/compose) command below to deploy Nginx api gateway and [Health Monitoring](https://learn.microsoft.com/en-us/dotnet/architecture/microservices/implement-resilient-applications/monitor-app-health) backing microservice on Docker Compose in the
@@ -2227,7 +2045,7 @@ You should see the following output:
 
 __Note:__ [Health Monitoring](https://learn.microsoft.com/en-us/dotnet/architecture/microservices/implement-resilient-applications/monitor-app-health) backing microservice is not necessary but can be useful.
 
-#### 9.3 Verifying deployment
+#### 9.2 Verifying deployment
 
 * Verify that Nginx and [Health Monitoring](https://learn.microsoft.com/en-us/dotnet/architecture/microservices/implement-resilient-applications/monitor-app-health) containers are up and running by executing the
   following [command](https://docs.docker.com/engine/reference/commandline/compose_ps):
@@ -2246,7 +2064,7 @@ You should see the following output:
 
 It means that Nginx and [Health Monitoring](https://learn.microsoft.com/en-us/dotnet/architecture/microservices/implement-resilient-applications/monitor-app-health) containers are up and running.
 
-#### 9.4 Using the Health Monitoring
+#### 9.3 Using the Health Monitoring
 
 * Navigate to the _health checker_ microservice:
 
@@ -2260,7 +2078,7 @@ and make sure that all the RPS game microservices are up and running.
 
 ** Status gets refreshed every _10 seconds_
 
-#### 9.5 Taking down containers
+#### 9.4 Taking down containers
 
 * When we don't need Nginx and [Health Monitoring](https://learn.microsoft.com/en-us/dotnet/architecture/microservices/implement-resilient-applications/monitor-app-health) microservices anymore, we can take down containers and delete their corresponding
   volumes (-v) using the down command below:
@@ -2277,29 +2095,7 @@ and make sure that all the RPS game microservices are up and running.
 <details><summary>Windows 10 and Linux Ubuntu 20.04.6 LTS</summary>
 <br>
 
-#### 10.1 Make sure that necessary ports are not in use
-
-* First of all, make sure that _9090_, and _3000_ port numbers are not in use. You can find the process/service listening
-  on a particular port by running the command below:
-
-```
-    > sudo fuser 9090/tcp
-    > sudo fuser 3000/tcp
-```
-
-If specified port is in use you should see the process number listening to the specified port in the output:
-
-```
-    > 9090/tcp:           629059
-```
-
-If so, kill the process by executing the following command:
-
-```
-    > sudo fuser -k 9090/tcp
-```
-
-#### 10.2 Deploying Prometheus and Grafana on Docker Compose
+#### 10.1 Deploying Prometheus and Grafana on Docker Compose
 
 * Navigate (if it's not already in) to the root directory of the RPS Game project on your computer and run the [Docker Compose](https://docs.docker.com/compose) command below to deploy [Prometheus](https://prometheus.io) and [Grafana](https://prometheus.io/docs/visualization/grafana) on Docker Compose in the background:
 
@@ -2315,7 +2111,7 @@ You should see the following output:
      ✔ Container grafana        Started     0.0s 
 ```
 
-#### 10.3 Verifying deployment
+#### 10.2 Verifying deployment
 
 * Verify that Prometheus and Grafana containers are up and running by executing the
   following [command](https://docs.docker.com/engine/reference/commandline/compose_ps):
@@ -2334,7 +2130,7 @@ You should see the following output:
 
 It means that [Prometheus](https://prometheus.io) and [Grafana](https://prometheus.io/docs/visualization/grafana) containers are up and running.
 
-#### 10.4 Using Prometheus
+#### 10.3 Using Prometheus
 
 * Navigate to the _prometheus_ endpoint of microservices:
 
@@ -2361,7 +2157,7 @@ and make sure that [Prometheus](https://prometheus.io) is scraping from our micr
 
 __Note:__ The [Prometheus](https://prometheus.io) configuration file is located at _./infrastructure/metrics/prometheus/prometheus.yml_.
 
-#### 10.5 Using Grafana
+#### 10.4 Using Grafana
 
 * Navigate to the _grafana_ microservice:
 
@@ -2394,7 +2190,7 @@ dashboard templates are located at the _./infrastructure/metrics/grafana/provisi
 
 [Grafana Tutorials](https://grafana.com/tutorials)
 
-#### 10.6 Taking down containers
+#### 10.5 Taking down containers
 
 * When we don't need Prometheus and Grafana microservices anymore, we can take down containers and delete their corresponding
   volumes (-v) using the down command below:
