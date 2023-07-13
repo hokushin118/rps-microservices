@@ -1,25 +1,36 @@
+# https://www.elastic.co/guide/en/beats/filebeat/6.8/configuration-autodiscover.html
 filebeat.autodiscover:
   providers:
     - type: docker
-      labels.dedot: true
       templates:
         - condition:
             contains:
-              container.labels.collect_logs_with_filebeat: true
+              docker.container.image: ${CONTAINER_NAME}
           config:
-            - type: container
-              format: docker
-              paths:
-                - /var/lib/docker/containers/${data.docker.container.id}/*.log
-              processors:
-                - decode_json_fields:
-                    when.equals:
-                      docker.container.labels.decode_log_event_to_json_object: true
-                    fields: ["message"]
-                    target: ""
-                    overwrite_keys: true
+            - type: docker
+              containers.ids:
+                - "${data.docker.container.id}"
+              exclude_lines: [ "^\\s+[\\-`('.|_]" ]  # drop asciiart lines
 
+# Filter and enhance logs
+# https://www.elastic.co/guide/en/beats/filebeat/6.8/filtering-and-enhancing-data.html
+processors:
+  - drop_fields: # https://www.elastic.co/guide/en/beats/filebeat/6.8/defining-processors.html
+      fields: [ 'agent', 'container', 'ecs', 'log', 'input', 'docker', 'host' ]
+
+#----------------------------- Console output ------------------------------#
+#output.console.pretty: true
+
+#----------------------------- Logstash output -----------------------------#
 output.logstash:
-  hosts: "logstash:5044"
+  hosts: "${LOGSTASH_HOSTNAME}:${LOGSTASH_PORT}"
+
+#----------------------------- Kafka output --------------------------------#
+#output.kafka:
+#  hosts: ["${KAFKA_HOSTNAME_1}:${KAFKA_BROKER_PORT_1}", "${KAFKA_HOSTNAME_2}:${KAFKA_BROKER_PORT_2}", "${KAFKA_HOSTNAME_3}:${KAFKA_BROKER_PORT_3}"]
+#  topic: pam-server-test
+#  partition.round_robin:
+#    reachable_only: false
+#  required_acks: 1
 
 logging.metrics.enabled: false

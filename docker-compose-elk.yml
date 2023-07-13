@@ -6,13 +6,11 @@ name: rps-app
 services:
   # Elasticsearch stores and indexes the data.
   elasticsearch:
-    container_name: elasticsearch
     image: elastic/elasticsearch:${ELASTICSEARCH_VERSION}
-    hostname: ${ELASTICSEARCH_HOSTNAME}
     restart: on-failure
     ports: # Important: In a production environment you should remove the external port that kept here for debugging purposes.
-      - 9200:9200 # Elasticsearch HTTP, external port / container port
-      - 9300:9300 # Elasticsearch TCP transport, external port / container port
+      - 9200:9200 # Elasticsearch HTTP, external port / container port (Elasticsearch HTTP)
+      - 9300:9300 # Elasticsearch TCP transport, external port / container port (Elasticsearch TCP transport)
     env_file:
       - .env
     environment:
@@ -26,7 +24,6 @@ services:
       # see: https://www.elastic.co/guide/en/elasticsearch/reference/current/bootstrap-checks.html
       - discovery.type=single-node
     volumes:
-      #      - ./infrastructure/elk/elasticsearch/config/elasticsearch.yml:/etc/elasticsearch/config/elasticsearch.yml
       - ./infrastructure/elk/elasticsearch/config/elasticsearch.yml:/usr/share/elasticsearch/config/elasticsearch.yml:ro
       - elasticsearch-data:/usr/share/elasticsearch/data # Persistence data
     networks:
@@ -36,24 +33,21 @@ services:
 
   # Logstash is used to collect, parse, transform, and buffer data from a variety of sources.
   logstash:
-    container_name: logstash
     image: elastic/logstash:${LOGSTASH_VERSION}
-    hostname: ${LOGSTASH_HOSTNAME}
     restart: on-failure
     ports: # Important: In a production environment you should remove the external port that kept here for debugging purposes.
-      - 5044:5044 # Logstash Beats input, external port / container port
-      - 50000:50000/tcp # external port / container port
-      - 50000:50000/udp # external port / container port
-      - 9600:9600 # external port / container port
+      - 5044:5044 # Logstash Beats input, external port / container port (Logstash Beats input)
+      - 50000:50000/tcp # external port / container port (Logstash TCP input)
+      - 50000:50000/udp # external port / container port (Logstash UDP input)
+      - 9600:9600 # external port / container port (Logstash monitoring API)
     env_file:
       - .env
     environment:
       - LS_JAVA_OPTS=-Xms256m -Xmx256m
       - LOGSTASH_INTERNAL_PASSWORD=${LOGSTASH_INTERNAL_PASSWORD}
-      - XPACK_MONITORING_ENABLED=false
     volumes:
-      - ./infrastructure/elk/logstash/pipeline:/usr/share/logstash/pipeline # Pipeline configuration
-      - ./infrastructure/elk/logstash/config:/usr/share/logstash/config
+      - ./infrastructure/elk/logstash/pipeline/logstash.conf:/usr/share/logstash/pipeline/logstash.conf # Pipeline configuration
+      - ./infrastructure/elk/logstash/config/logstash.yml:/usr/share/logstash/config/logstash.yml
     depends_on:
       - elasticsearch
     networks:
@@ -63,9 +57,7 @@ services:
 
   # Kibana acts as an analytics and visualization layer on top of Elasticsearch.
   kibana:
-    container_name: kibana
     image: elastic/kibana:${KIBANA_VERSION}
-    hostname: ${KIBANA_HOSTNAME}
     restart: on-failure
     ports: # Important: In a production environment you should remove the external port that kept here for debugging purposes.
       - 5601:5601 # external port / container port
@@ -74,30 +66,9 @@ services:
     environment:
       - KIBANA_SYSTEM_PASSWORD=${KIBANA_SYSTEM_PASSWORD}
     volumes:
-      - ./infrastructure/elk/kibana/config:/usr/share/kibana/config
+      - ./infrastructure/elk/kibana/config/kibana.yml:/usr/share/kibana/config/kibana.yml
     depends_on:
       - elasticsearch
-    networks:
-      - ${BACKEND_NETWORK}
-    deploy:
-      replicas: 1
-
-  # Filebeat is a log data shipper for local log files. It monitors all the logs in the log directory and forwards them to Logstash.
-  filebeat:
-    container_name: filebeat
-    image: elastic/filebeat:${FILEBEAT_VERSION}
-    hostname: ${FILEBEAT_HOSTNAME}
-    restart: on-failure
-    user: root # Allow access to log files and docker.sock
-    env_file:
-      - .env
-    volumes:
-      - ./infrastructure/elk/filebeat:/etc/filebeat  # Configuration file
-      - /var/lib/docker/containers:/var/lib/docker/containers    # Docker logs
-      - /var/run/docker.sock:/var/run/docker.sock                # Additional information about containers
-      - filebeat-data:/usr/share/filebeat/data                 # Persistence data
-    depends_on:
-      - logstash
     networks:
       - ${BACKEND_NETWORK}
     deploy:

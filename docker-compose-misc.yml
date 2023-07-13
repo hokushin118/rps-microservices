@@ -1,0 +1,21 @@
+version: "3.8"
+
+# Project name
+name: rps-app
+
+  adminer:
+    container_name: adminer
+    image: adminer:${ADMINER_VERSION}
+    ports: # Important: In a production environment you should remove the external port that kept here for debugging purposes.
+      - 19080:8080 # external port / container port
+    env_file:
+      - .env
+    networks:
+      - ${BACKEND_NETWORK}
+    deploy:
+      replicas: 1
+
+# networks
+networks:
+  rps_net:
+    name: ${BACKEND_NETWORK}
