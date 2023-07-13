@@ -1,6 +1,13 @@
----
-## Default Logstash configuration from logstash-docker.
-## from https://github.com/elastic/logstash-docker/blob/master/build/logstash/config/logstash-oss.yml
-#
-http.host: "0.0.0.0"
+# https://github.com/elastic/logstash/tree/6.8/config
+http.host: 0.0.0.0
 path.config: /usr/share/logstash/pipeline
+
+#
+# ------------ X-Pack Settings (not applicable for OSS build)--------------
+#
+# X-Pack Monitoring
+# https://www.elastic.co/guide/en/logstash/current/monitoring-logstash.html
+xpack.monitoring.elasticsearch.password: admin
+xpack.monitoring.elasticsearch.hosts: ["http://${ELASTICSEARCH_HOSTNAME}:${ELASTICSEARCH_PORT}"]
+xpack.monitoring.elasticsearch.username: logstash_system
+xpack.monitoring.enabled: true

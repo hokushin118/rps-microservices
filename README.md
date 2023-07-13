@@ -1629,6 +1629,38 @@ You should see the following output:
 
 * Ensure that sufficient resources have been allocated to Docker Compose.
 
+* Set [COMPOSE_PROJECT_NAME](https://docs.docker.com/compose/environment-variables/envvars/#compose_project_name) environmental variables:
+
+<details><summary>Windows 10</summary>
+
+```
+    > setx COMPOSE_PROJECT_NAME "rps-app"
+```
+
+</details>
+
+<details><summary>Linux Ubuntu 20.04.6 LTS</summary>
+
+```
+    > export COMPOSE_PROJECT_NAME=rps-app
+    > source /etc/environment
+```
+
+</details>
+
+__Mote:__ By default, the [log file](https://docs.docker.com/engine/reference/commandline/container_logs) directory is: 
+
+<details><summary>Linux Ubuntu 20.04.6 LTS</summary>
+<br>
+
+```
+      _/var/lib/docker/containers/<container_id>_
+```
+
+</details>
+
+on the host where the container is running.
+
 ### 2. Deploying Keycloak standalone server on Docker Compose
 
 <br>
@@ -2218,8 +2250,8 @@ Select any dashboard from the list. You will be redirected to the dashboard main
 
 ![grafana dashboards application list](img/grafana-dashboard-apps-list.png)
 
-__Note:__ The [Grafana](https://grafana.com) preconfigured datasources are located at the _./infrastructure/metrics/grafana/provisioning/datasources_ folder. The preconfigured [Grafana](https://grafana.com)
-dashboard templates are located at the _./infrastructure/metrics/grafana/provisioning/dashboards_ folder. You can find more dashboard templates from [Grafana Dashboards](https://grafana.com/grafana/dashboards) website.
+__Note:__ The [Grafana](https://grafana.com) preconfigured datasources are stored in the _./infrastructure/metrics/grafana/provisioning/datasources_ folder. The preconfigured [Grafana](https://grafana.com)
+dashboard templates are stored in the _./infrastructure/metrics/grafana/provisioning/dashboards_ folder. You can find more dashboard templates from [Grafana Dashboards](https://grafana.com/grafana/dashboards) website.
 
 [Grafana Tutorials](https://grafana.com/tutorials)
 
@@ -2233,6 +2265,114 @@ dashboard templates are located at the _./infrastructure/metrics/grafana/provisi
 ```
 
 </details>
+
+### 11. Deploying Elasticsearch, Logstash, Filebeat and Kibana backing service on Docker Compose
+
+<br>
+<details><summary>Windows 10 and Linux Ubuntu 20.04.6 LTS</summary>
+<br>
+
+#### 11.1 Deploying Elasticsearch, Logstash, Filebeat and Kibana on Docker Compose
+
+* Navigate (if it's not already in) to the root directory of the RPS Game project on your computer and run the [Docker Compose](https://docs.docker.com/compose) command below to deploy [Elasticsearch](https://www.elastic.co), [Logstash](https://www.elastic.co/logstash) and [Kibana](https://www.elastic.co/kibana) on Docker Compose in the background:
+
+```
+    > docker compose -f docker-compose-elk.yml up -d
+```
+
+You should see the following output:
+
+```
+    [+] Running 6/6
+     ✔ Container elasticsearch              Started     5.9s 
+     ✔ Container kibana                     Started     6.9s 
+     ✔ Container logstash                   Started     7.0s 
+     ✔ Container filebeat                   Started     8.0s
+```
+
+#### 11.2 Verifying deployment
+
+* Verify that [Elasticsearch](https://www.elastic.co), [Logstash](https://www.elastic.co/logstash), [Filebeat](https://www.elastic.co/beats/filebeat) and [Kibana](https://www.elastic.co/kibana) containers are up and running by executing the
+  following [command](https://docs.docker.com/engine/reference/commandline/compose_ps):
+
+```
+    > docker compose -f docker-compose-elk.yml ps
+```
+
+You should see the following output:
+
+```
+  NAME                   IMAGE                                     COMMAND                  SERVICE             CREATED             STATUS                  PORTS
+  elasticsearch          elastic/elasticsearch:6.8.23              "/usr/local/bin/dock…"   elasticsearch       3 hours ago         Up Less than a second   0.0.0.0:9200->9200/tcp, 0.0.0.0:9300->9300/tcp
+  filebeat               elastic/filebeat:6.8.23                   "/usr/local/bin/dock…"   filebeat            3 hours ago         Up 3 hours              
+  kibana                 elastic/kibana:6.8.23                     "/usr/local/bin/kiba…"   kibana              3 hours ago         Up About a minute       0.0.0.0:5601->5601/tcp
+  logstash               elastic/logstash:6.8.23                   "/usr/local/bin/dock…"   logstash            3 hours ago         Up 3 hours              0.0.0.0:5044->5044/tcp, 0.0.0.0:9600->9600/tcp, 0.0.0.0:50000->50000/tcp, 0.0.0.0:50000->50000/udp
+```
+
+It means that [Elasticsearch](https://www.elastic.co), [Logstash](https://www.elastic.co/logstash), [Filebeat](https://www.elastic.co/beats/filebeat) and [Kibana](https://www.elastic.co/kibana) containers are up and running.
+
+#### 11.3 Using Kibana
+
+* Navigate to the _kibana_ microservice:
+
+```
+    > http://localhost:5601
+```
+
+__Note:__ When attempting to access [Kibana](https://www.elastic.co/kibana) while it’s starting, a message saying that [Kibana](https://www.elastic.co/kibana) is not ready yet will be displayed in the browser. Give it a minute or two and then you are good to go.
+
+When using [Kibana](https://www.elastic.co/kibana), you will need to add the index __"rps-app-%{+YYYY.MM.dd}"__ we created earlier in logstash config file _./infrastructure/elk/logstash/pipeline/logstash.conf_ to get the information:
+
+```
+    elasticsearch {
+      hosts => "http://host.docker.internal:9200"
+      index => "rps-app-%{+YYYY.MM.dd}"
+      user => "${LOGSTASH_INTERNAL_USER}"
+      password => "${LOGSTASH_INTERNAL_PASSWORD}"
+    }
+```
+
+To do this, access the [Kibana](https://www.elastic.co/kibana) and on the left hand side menu, click the __Discover__ menu item.
+
+![kibana discover](img/kibana-home.png)
+
+[Kibana](https://www.elastic.co/kibana) uses index patterns for retrieving data from [Elasticsearch](https://www.elastic.co). So, to get started, you must create an index pattern. In this page, you should see an index that has been created by Logstash. To create a pattern for matching this index, enter __rps-app-*__ and then click the Next button.
+
+![kibana create index pattern](img/kibana-create-index-pattern.png)
+
+Then pick a field for filtering the data by time. Choose __@timestamp__ field from the __Time Filter field name__ drop-down list and click the __Create Index Pattern__ button.
+
+![kibana add time filter](img/kibana-time-filter.png)  
+
+The __rps-app-*__ index pattern will be created.
+
+![kibana index created](img/kibana-index-created.png)  
+
+Click again the __Discover__ menu item and the log events related to the RPS Game application will be shown:
+
+![kibana logs](img/kibana-logs.png)  
+
+__Note:__ The [Elasticsearch](https://www.elastic.co) configuration is stored in the _./infrastructure/elk/elasticsearch/config/elasticsearch.yml_ file.  
+The [Logstash](https://www.elastic.co/logstash) configuration is stored in the _./infrastructure/elk/logstash_ folder.   
+The [Filebeat](https://www.elastic.co/beats/filebeat) configuration is stored in the _./infrastructure/elk/filebeat_ folder.   
+The [Kibana](https://www.elastic.co/kibana) configuration is stored in the _./infrastructure/elk/kibana/config/kibana.yml_ file. 
+
+[Running Elasticsearch on Docker](https://www.elastic.co/guide/en/elasticsearch/reference/6.8/docker.html)  
+[Running Kibana on Docker](https://www.elastic.co/guide/en/kibana/6.8/docker.html)  
+[Kibana Tutorials](https://www.elastic.co/guide/en/kibana/current/get-started.html)
+
+#### 11.4 Taking down containers
+
+* When we don't need [Elasticsearch](https://www.elastic.co), [Logstash](https://www.elastic.co/logstash) and [Kibana](https://www.elastic.co/kibana) backing microservices anymore, we can take down containers and delete their corresponding
+  volumes (-v) using the down command below:
+
+```
+     > docker compose -f docker-compose-elk.yml down -v
+```
+
+</details>
+
+[Getting started with the Elastic Stack and Docker-Compose](https://www.elastic.co/blog/getting-started-with-the-elastic-stack-and-docker-compose)
 
 ### 3. Running the RPS game microservices deployed on Docker Compose
 

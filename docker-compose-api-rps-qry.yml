@@ -6,7 +6,7 @@ name: rps-app
 services:
   # The Rock Paper Scissors game query microservice provides REST and gRPC APIs for the RPS game.
   rps-qry-service:
-    container_name: rps-qry-service
+    container_name: ${RPS_QRY_SRV_HOSTNAME}
     #    image: hokushin/rps-qry-service:${RPS_QRY_SRV_VERSION}
     build:
       context: .
@@ -25,6 +25,32 @@ services:
       - ${RPS_QRY_GRPC_SERVER_PORT}:6565 # external port / container port
     env_file:
       - .env
+    networks:
+      - ${BACKEND_NETWORK}
+    deploy:
+      replicas: 1
+
+  # Filebeat is a log data shipper for local log files. It monitors all the logs in the log directory and forwards them to Logstash.
+  # Emulate sidecar pattern behaviour
+  filebeat:
+    container_name: filebeat-${RPS_QRY_SRV_HOSTNAME}
+    image: elastic/filebeat:${FILEBEAT_VERSION}
+    restart: on-failure
+    labels:
+      co.elastic.logs/enabled: "false"
+    user: root # Run as root user
+    command: -e --strict.perms=false # -e flag to log to stderr and disable syslog/file output
+    env_file:
+      - .env
+    environment:
+      - CONTAINER_NAME=${COMPOSE_PROJECT_NAME}-${RPS_QRY_SRV_HOSTNAME}
+      - LOGSTASH_URL=${LOGSTASH_HOSTNAME}:${LOGSTASH_PORT}
+    volumes:
+      - ./infrastructure/elk/filebeat/filebeat.yml:/etc/filebeat/filebeat.yml:ro  # Configuration file
+      - /var/lib/docker/containers:/var/lib/docker/containers:ro
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+    depends_on:
+      - rps-qry-service
     networks:
       - ${BACKEND_NETWORK}
     deploy:
