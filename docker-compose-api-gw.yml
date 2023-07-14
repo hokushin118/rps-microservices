@@ -1,0 +1,28 @@
+version: "3.8"
+
+# Project name
+name: rps-app
+
+services:
+  # Nginx reverse proxy server acts as api gateway for REST and gRPC microservices
+  nginx:
+    hostname: ${NGINX_HOSTNAME}
+    build:
+      context: .
+      dockerfile: ./docker/nginx/Dockerfile
+    restart: on-failure
+    ports: # Important: In a production environment you should remove the external port that kept here for debugging purposes.
+      - 80:80 # NGINX HTTP, external port / container port
+    #      - 443:443 # NGINX HTTPS, external port / container port
+    volumes:
+      - ./infrastructure/nginx/conf.d/default.conf:/etc/nginx/conf.d/default.conf:ro # Nginx configuration
+      - ./infrastructure/ssl:/ssl
+    networks:
+      - ${BACKEND_NETWORK}
+    deploy:
+      replicas: 1
+
+# networks
+networks:
+  rps_net:
+    name: ${BACKEND_NETWORK}
