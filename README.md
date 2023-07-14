@@ -2350,6 +2350,7 @@ The [Kibana](https://www.elastic.co/kibana) configuration is stored in the _./in
 [Running Elasticsearch on Docker](https://www.elastic.co/guide/en/elasticsearch/reference/6.8/docker.html)  
 [Running Kibana on Docker](https://www.elastic.co/guide/en/kibana/6.8/docker.html)  
 [Kibana Tutorials](https://www.elastic.co/guide/en/kibana/current/get-started.html)
+[Getting started with the Elastic Stack and Docker-Compose](https://www.elastic.co/blog/getting-started-with-the-elastic-stack-and-docker-compose)
 
 #### 11.4 Taking down containers
 
@@ -2361,8 +2362,6 @@ The [Kibana](https://www.elastic.co/kibana) configuration is stored in the _./in
 ```
 
 </details>
-
-[Getting started with the Elastic Stack and Docker-Compose](https://www.elastic.co/blog/getting-started-with-the-elastic-stack-and-docker-compose)
 
 ### 12. Deploying Health Monitoring backing microservice and Adminer database management tool on Docker Compose
 
