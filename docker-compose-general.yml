@@ -5,7 +5,6 @@ name: rps-app
 
 services:
   mongo:
-    container_name: mongodb
     image: mongo:${MONGO_VERSION}
     hostname: ${MONGO_HOSTNAME}
     restart: on-failure
@@ -27,7 +26,6 @@ services:
       replicas: 1
 
   mariadb:
-    container_name: mariadb
     image: bitnami/mariadb:${MARIADB_VERSION}
     hostname: ${MARIADB_HOSTNAME}
     restart: on-failure
@@ -49,7 +47,6 @@ services:
 
   # Redis is a high performance key-value database. It shores cached values.
   cache:
-    container_name: redis
     image: bitnami/redis:${REDIS_VERSION}
     hostname: ${REDIS_HOSTNAME}
     restart: on-failure
