@@ -74,6 +74,31 @@ services:
     deploy:
       replicas: 1
 
+  # Filebeat is a log data shipper for local log files. It monitors all the logs in the log directory of docker for specified containers
+  # and forwards them to Logstash.
+  filebeat:
+    image: elastic/filebeat:${FILEBEAT_VERSION}
+    restart: on-failure
+    labels:
+      co.elastic.logs/enabled: "false"
+    user: root # Run as root user
+    command: -e --strict.perms=false # -e flag to log to stderr and disable syslog/file output
+    env_file:
+      - .env
+    environment:
+      - LOGSTASH_URL=${LOGSTASH_HOSTNAME}:${LOGSTASH_PORT}
+    volumes:
+      - ./infrastructure/elk/filebeat/filebeat.yml:/usr/share/filebeat/filebeat.yml:ro  # Configuration file
+      - /var/lib/docker/containers:/var/lib/docker/containers:ro
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+    depends_on:
+      - elasticsearch
+      - logstash
+    networks:
+      - ${BACKEND_NETWORK}
+    deploy:
+      replicas: 1
+
 # persistent volumes location
 volumes:
   elasticsearch-data:

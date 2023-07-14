@@ -1684,7 +1684,7 @@ You should see the following output:
     ✔ Network rps_net                             Created     0.2s
     ✔ Volume "rps_app_postgresql-data"            Created     0.0s
     ✔ Container rps-app-postgresql-1              Started     2.0s
-    ✔ Container keycloak                          Started     2.1s
+    ✔ Container rps-app-keycloak-1                Started     2.1s
 ```
 
 #### 2.2 Verifying deployment
@@ -1700,7 +1700,7 @@ You should see the following output:
 
 ```
     NAME                             IMAGE                                     COMMAND                  SERVICE             CREATED             STATUS              PORTS
-    keycloak                         rps-app-keycloak                          "/opt/bitnami/keyclo…"   keycloak            2 minutes ago       Up 2 minutes        0.0.0.0:28080->8080/tcp
+    rps-app-keycloak-1    m          rps-app-keycloak                          "/opt/bitnami/keyclo…"   keycloak            2 minutes ago       Up 2 minutes        0.0.0.0:28080->8080/tcp
     rps-app-postgresql-1             bitnami/postgresql:14.2.0-debian-10-r95   "/opt/bitnami/script…"   postgresql          2 minutes ago       Up 2 minutes        0.0.0.0:15432->5432/tcp
 ```
 
@@ -1772,14 +1772,11 @@ and make sure that _rps-dev_ realm has been activated.
 You should see the following output:
 
 ```
-    [+] Running 4/4
-     ✔ Container adminer  Started     0.0s 
-     ✔ Container redis    Started     0.0s 
-     ✔ Container mongodb  Started     0.0s 
-     ✔ Container mariadb  Started     0.0s 
+    [+] Running 3/3
+     ✔ Container rps-app-redis-1    Started     0.0s 
+     ✔ Container rps-app-mongodb-1  Started     0.0s 
+     ✔ Container rps-app-mariadb-1  Started     0.0s 
 ```
-
-__Note:__ [Adminer](https://www.adminer.org) database management tool is not necessary but can be useful.
 
 #### 3.2 Verifying deployment
 
@@ -1794,14 +1791,12 @@ You should see the following output:
 
 ```
     NAME                             IMAGE                                     COMMAND                  SERVICE             CREATED             STATUS              PORTS
-    adminer                          adminer:4.8.1                             "entrypoint.sh php -…"   adminer             6 minutes ago       Up 5 minutes        0.0.0.0:19080->8080/tcp
-    mariadb                          bitnami/mariadb:10.6                      "/opt/bitnami/script…"   mariadb             6 minutes ago       Up 5 minutes        0.0.0.0:13306->3306/tcp
-    mongodb                          mongo:4.4                                 "docker-entrypoint.s…"   mongo               6 minutes ago       Up 5 minutes        0.0.0.0:28017->27017/tcp
-    redis                            bitnami/redis:4.0.9-r24                   "/app-entrypoint.sh …"   cache               6 minutes ago       Up 5 minutes        0.0.0.0:16379->6379/tcp
+    rps-app-mariadb-1                bitnami/mariadb:10.6                      "/opt/bitnami/script…"   mariadb             6 minutes ago       Up 5 minutes        0.0.0.0:13306->3306/tcp
+    rps-app-mongodb-1                mongo:4.4                                 "docker-entrypoint.s…"   mongo               6 minutes ago       Up 5 minutes        0.0.0.0:28017->27017/tcp
+    rps-app-redis-1                  bitnami/redis:4.0.9-r24                   "/app-entrypoint.sh …"   cache               6 minutes ago       Up 5 minutes        0.0.0.0:16379->6379/tcp
 ```
 
-It means that [MongoDB](https://www.mongodb.com), [MariaDB](https://mariadb.org) and [Redis](https://redis.io)
-containers are up and running.
+It means that [MongoDB](https://www.mongodb.com), [MariaDB](https://mariadb.org) and [Redis](https://redis.io) containers are up and running.
 
 #### 3.3 Taking down containers
 
@@ -1834,12 +1829,12 @@ You should see the following output:
 
 ```
     [+] Running 6/6
-     ✔ Container zk-3     Started     0.0s 
-     ✔ Container zk-1     Started     0.0s 
-     ✔ Container zk-2     Started     0.0s 
-     ✔ Container kafka-3  Started     0.0s 
-     ✔ Container kafka-1  Started     0.0s 
-     ✔ Container kafka-2  Started     0.0s
+     ✔ Container rps-app-zk-3-1     Started     0.0s 
+     ✔ Container rps-app-zk-1-1     Started     0.0s 
+     ✔ Container rps-app-zk-2-1     Started     0.0s 
+     ✔ Container rps-app-kafka-3-1  Started     0.0s 
+     ✔ Container rps-app-kafka-1-1  Started     0.0s 
+     ✔ Container rps-app-kafka-2-1  Started     0.0s
 ```
 
 #### 4.2 Verifying deployment
@@ -1855,12 +1850,12 @@ You should see the following output:
 
 ```
     NAME                             IMAGE                                     COMMAND                  SERVICE             CREATED             STATUS              PORTS
-    kafka-1                          bitnami/kafka:2.7.0                       "/opt/bitnami/script…"   kafka-1             4 minutes ago       Up 3 minutes        9092/tcp, 0.0.0.0:19093->9093/tcp
-    kafka-2                          bitnami/kafka:2.7.0                       "/opt/bitnami/script…"   kafka-2             4 minutes ago       Up 3 minutes        9092/tcp, 0.0.0.0:19094->9094/tcp
-    kafka-3                          bitnami/kafka:2.7.0                       "/opt/bitnami/script…"   kafka-3             4 minutes ago       Up 3 minutes        9092/tcp, 0.0.0.0:19095->9095/tcp
-    zk-1                             bitnami/zookeeper:3.8.0                   "/opt/bitnami/script…"   zk-1                4 minutes ago       Up 4 minutes        2888/tcp, 3888/tcp, 8080/tcp, 0.0.0.0:12181->2181/tcp
-    zk-2                             bitnami/zookeeper:3.8.0                   "/opt/bitnami/script…"   zk-2                4 minutes ago       Up 4 minutes        2888/tcp, 3888/tcp, 8080/tcp, 0.0.0.0:12182->2181/tcp
-    zk-3                             bitnami/zookeeper:3.8.0                   "/opt/bitnami/script…"   zk-3                4 minutes ago       Up 4 minutes        2888/tcp, 3888/tcp, 8080/tcp, 0.0.0.0:12183->2181/tcp
+    rps-app-kafka-1-1                bitnami/kafka:2.7.0                       "/opt/bitnami/script…"   kafka-1             4 minutes ago       Up 3 minutes        9092/tcp, 0.0.0.0:19093->9093/tcp
+    rps-app-kafka-2-1                bitnami/kafka:2.7.0                       "/opt/bitnami/script…"   kafka-2             4 minutes ago       Up 3 minutes        9092/tcp, 0.0.0.0:19094->9094/tcp
+    rps-app-kafka-3-1                bitnami/kafka:2.7.0                       "/opt/bitnami/script…"   kafka-3             4 minutes ago       Up 3 minutes        9092/tcp, 0.0.0.0:19095->9095/tcp
+    rps-app-zk-1-1                   bitnami/zookeeper:3.8.0                   "/opt/bitnami/script…"   zk-1                4 minutes ago       Up 4 minutes        2888/tcp, 3888/tcp, 8080/tcp, 0.0.0.0:12181->2181/tcp
+    rps-app-zk-2-1                   bitnami/zookeeper:3.8.0                   "/opt/bitnami/script…"   zk-2                4 minutes ago       Up 4 minutes        2888/tcp, 3888/tcp, 8080/tcp, 0.0.0.0:12182->2181/tcp
+    rps-app-zk-3-1                   bitnami/zookeeper:3.8.0                   "/opt/bitnami/script…"   zk-3                4 minutes ago       Up 4 minutes        2888/tcp, 3888/tcp, 8080/tcp, 0.0.0.0:12183->2181/tcp
 ```
 
 It means that Zookeeper and Kafka containers are up and running.
@@ -1896,7 +1891,7 @@ You should see the following output:
 
 ```
     [+] Running 1/1
-     ✔ Container rps-cmd-service  Started 
+     ✔ Container rps-app-rps-cmd-service-1             Started       1.7s 
 ```
 
 #### 5.2 Verifying deployment
@@ -1912,7 +1907,7 @@ You should see the following output:
 
 ```
     NAME                             IMAGE                                     COMMAND                  SERVICE             CREATED             STATUS              PORTS
-    rps-cmd-service                  rps-app-rps-cmd-service                   "java -Dspring.profi…"   rps-cmd-service     2 minutes ago       Up 2 minutes        8080/tcp, 0.0.0.0:18081->80/tcp, 0.0.0.0:16566->6565/tcp
+    rps-app-rps-cmd-service-1        rps-app-rps-cmd-service                   "java -Dspring.profi…"   rps-cmd-service     2 minutes ago       Up 2 minutes        8080/tcp, 0.0.0.0:18081->80/tcp, 0.0.0.0:16566->6565/tcp
 ```
 
 It means that RPS Game Command microservice is up and running.
@@ -1948,7 +1943,7 @@ You should see the following output:
 
 ```
     [+] Running 1/1
-     ✔ Container rps-qry-service  Started 
+     ✔ Container rps-app-rps-qry-service-1             Started       2.3s 
 ```
 
 #### 6.2 Verifying deployment
@@ -1964,7 +1959,7 @@ You should see the following output:
 
 ```
     NAME                             IMAGE                                     COMMAND                  SERVICE             CREATED             STATUS              PORTS
-    rps-qry-service                  rps-app-rps-qry-service                   "java -Dspring.profi…"   rps-qry-service     2 minutes ago       Up 2 minutes        8080/tcp, 0.0.0.0:18082->80/tcp, 0.0.0.0:16567->6565/tcp
+    rps-app-rps-qry-service-1        rps-app-rps-qry-service                   "java -Dspring.profi…"   rps-qry-service     2 minutes ago       Up 2 minutes        8080/tcp, 0.0.0.0:18082->80/tcp, 0.0.0.0:16567->6565/tcp
 ```
 
 It means that RPS Game Query microservice is up and running.
@@ -2000,7 +1995,7 @@ You should see the following output:
 
 ```
     [+] Running 1/1
-     ✔ Container score-cmd-service  Started 
+     ✔ Container rps-app-score-cmd-service-1           Started       2.0s 
 ```
 
 #### 7.2 Verifying deployment
@@ -2016,7 +2011,7 @@ You should see the following output:
 
 ```
     NAME                             IMAGE                                     COMMAND                  SERVICE             CREATED             STATUS              PORTS
-    score-cmd-service                rps-app-score-cmd-service                 "java -Dspring.profi…"   score-cmd-service   2 minutes ago       Up 2 minutes        8080/tcp, 0.0.0.0:18083->80/tcp, 0.0.0.0:16568->6565/tcp
+    rps-app-score-cmd-service-1      rps-app-score-cmd-service                 "java -Dspring.profi…"   score-cmd-service   2 minutes ago       Up 2 minutes        8080/tcp, 0.0.0.0:18083->80/tcp, 0.0.0.0:16568->6565/tcp
 ```
 
 It means that Score Command microservice is up and running.
@@ -2052,7 +2047,7 @@ You should see the following output:
 
 ```
     [+] Running 1/1
-     ✔ Container score-qry-service  Started 
+     ✔ Container rps-app-score-qry-service-1           Started       1.9s 
 ```
 
 #### 8.2 Verifying deployment
@@ -2068,7 +2063,7 @@ You should see the following output:
 
 ```
     NAME                             IMAGE                                     COMMAND                  SERVICE             CREATED             STATUS              PORTS
-    score-qry-service                rps-app-score-qry-service                 "java -Dspring.profi…"   score-qry-service   2 minutes ago       Up 2 minutes        8080/tcp, 0.0.0.0:18084->80/tcp, 0.0.0.0:16569->6565/tcp
+    rps-app-score-qry-service-1      rps-app-score-qry-service                 "java -Dspring.profi…"   score-qry-service   2 minutes ago       Up 2 minutes        8080/tcp, 0.0.0.0:18084->80/tcp, 0.0.0.0:16569->6565/tcp
 ```
 
 It means that Score Query microservice is up and running.
@@ -2084,72 +2079,56 @@ It means that Score Query microservice is up and running.
 
 </details>
 
-### 9. Deploying Nginx api gateway and Health Monitoring backing service on Docker Compose
+### 9. Deploying Nginx as api gateway for REST and gRPC microservices on Docker Compose
 
 <br>
 <details><summary>Windows 10 and Linux Ubuntu 20.04.6 LTS</summary>
 <br>
 
-#### 9.1 Deploying Nginx and Health Monitoring on Docker Compose
+#### 9.1 Deploying Nginx as API gateway for REST and gRPC microservices on Docker Compose
 
 * Navigate (if it's not already in) to the root directory of the RPS Game project on your computer and run
-  the [Docker Compose](https://docs.docker.com/compose) command below to deploy Nginx api gateway and [Health Monitoring](https://learn.microsoft.com/en-us/dotnet/architecture/microservices/implement-resilient-applications/monitor-app-health) backing microservice on Docker Compose in the
+  the [Docker Compose](https://docs.docker.com/compose) command below to deploy [Nginx](https://www.nginx.com) as api gateway for REST and gRPC microservices on Docker Compose in the
   background:
 
 ```
-    > docker compose -f docker-compose-api.yml up -d
+    > docker compose -f docker-compose-api-gw.yml up -d
 ```
 
 You should see the following output:
 
 ```
-    [+] Running 2/2
-     ✔ Container nginx        Started     0.0s 
-     ✔ Container webstatus    Started     0.0s 
+    [+] Running 1/1
+     ✔ Container rps-app-nginx-1        Started     0.0s 
 ```
-
-__Note:__ [Health Monitoring](https://learn.microsoft.com/en-us/dotnet/architecture/microservices/implement-resilient-applications/monitor-app-health) backing microservice is not necessary but can be useful.
 
 #### 9.2 Verifying deployment
 
-* Verify that Nginx and [Health Monitoring](https://learn.microsoft.com/en-us/dotnet/architecture/microservices/implement-resilient-applications/monitor-app-health) containers are up and running by executing the
-  following [command](https://docs.docker.com/engine/reference/commandline/compose_ps):
+* Verify that [Nginx](https://www.nginx.com) container is up and running by executing the following [command](https://docs.docker.com/engine/reference/commandline/compose_ps):
 
 ```
-    > docker compose -f docker-compose-api.yml ps
+    > docker compose -f docker-compose-api-gw.yml ps
 ```
 
 You should see the following output:
 
 ```
   NAME                             IMAGE                                     COMMAND                  SERVICE             CREATED              STATUS                          PORTS
-  nginx                            rps-app-nginx                             "nginx -g 'daemon of…"   nginx               About a minute ago   Up About a minute   
-  webstatus                        rps-app-webstatus                         "dotnet WebStatus.dll"   webstatus           About a minute ago   Up About a minute               80/tcp, 0.0.0.0:15000->5000/tcp
+  rps-app-nginx-1                            rps-app-nginx                             "nginx -g 'daemon of…"   nginx               About a minute ago   Up About a minute   
 ```
 
-It means that Nginx and [Health Monitoring](https://learn.microsoft.com/en-us/dotnet/architecture/microservices/implement-resilient-applications/monitor-app-health) containers are up and running.
+It means that Nginx container is up and running.
 
-#### 9.3 Using the Health Monitoring
+__Note:__ The [Nginx](https://www.nginx.com) configuration is stored in the _./infrastructure/nginx/conf.d/default.conf_ file.
 
-* Navigate to the _health checker_ microservice:
+[Building Microservices: Using an API Gateway](https://www.nginx.com/blog/building-microservices-using-an-api-gateway)
 
-```
-    > http://localhost/status/hc-ui
-```
+#### 9.3 Taking down containers
 
-and make sure that all the RPS game microservices are up and running.
-
-![health-checks](img/hc.png)
-
-** Status gets refreshed every _10 seconds_
-
-#### 9.4 Taking down containers
-
-* When we don't need Nginx and [Health Monitoring](https://learn.microsoft.com/en-us/dotnet/architecture/microservices/implement-resilient-applications/monitor-app-health) microservices anymore, we can take down containers and delete their corresponding
-  volumes (-v) using the down command below:
+* When we don't need [Nginx](https://www.nginx.com) api gateway anymore, we can take down container and delete its corresponding volumes (-v) using the down command below:
 
 ```
-     > docker compose -f docker-compose-api.yml down -v
+     > docker compose -f docker-compose-api-gw.yml down -v
 ```
 
 </details>
@@ -2171,7 +2150,7 @@ and make sure that all the RPS game microservices are up and running.
 You should see the following output:
 
 ```
-    [+] Running 6/6
+    [+] Running 2/2
      ✔ Container prometheus     Started     0.0s 
      ✔ Container grafana        Started     0.0s 
 ```
@@ -2283,11 +2262,11 @@ dashboard templates are stored in the _./infrastructure/metrics/grafana/provisio
 You should see the following output:
 
 ```
-    [+] Running 6/6
-     ✔ Container elasticsearch              Started     5.9s 
-     ✔ Container kibana                     Started     6.9s 
-     ✔ Container logstash                   Started     7.0s 
-     ✔ Container filebeat                   Started     8.0s
+    [+] Running 4/4
+     ✔ Container rps-app-elasticsearch-1              Started     5.9s 
+     ✔ Container rps-app-kibana-1                     Started     6.9s 
+     ✔ Container rps-app-logstash-1                   Started     7.0s 
+     ✔ Container rps-app-filebeat-1                   Started     8.0s
 ```
 
 #### 11.2 Verifying deployment
@@ -2302,11 +2281,11 @@ You should see the following output:
 You should see the following output:
 
 ```
-  NAME                   IMAGE                                     COMMAND                  SERVICE             CREATED             STATUS                  PORTS
-  elasticsearch          elastic/elasticsearch:6.8.23              "/usr/local/bin/dock…"   elasticsearch       3 hours ago         Up Less than a second   0.0.0.0:9200->9200/tcp, 0.0.0.0:9300->9300/tcp
-  filebeat               elastic/filebeat:6.8.23                   "/usr/local/bin/dock…"   filebeat            3 hours ago         Up 3 hours              
-  kibana                 elastic/kibana:6.8.23                     "/usr/local/bin/kiba…"   kibana              3 hours ago         Up About a minute       0.0.0.0:5601->5601/tcp
-  logstash               elastic/logstash:6.8.23                   "/usr/local/bin/dock…"   logstash            3 hours ago         Up 3 hours              0.0.0.0:5044->5044/tcp, 0.0.0.0:9600->9600/tcp, 0.0.0.0:50000->50000/tcp, 0.0.0.0:50000->50000/udp
+  NAME                             IMAGE                                     COMMAND                  SERVICE             CREATED             STATUS                  PORTS
+  rps-app-elasticsearch-1          elastic/elasticsearch:6.8.23              "/usr/local/bin/dock…"   elasticsearch       3 hours ago         Up Less than a second   0.0.0.0:9200->9200/tcp, 0.0.0.0:9300->9300/tcp
+  rps-app-filebeat-1               elastic/filebeat:6.8.23                   "/usr/local/bin/dock…"   filebeat            3 hours ago         Up 3 hours              
+  rps-app-kibana-1                 elastic/kibana:6.8.23                     "/usr/local/bin/kiba…"   kibana              3 hours ago         Up About a minute       0.0.0.0:5601->5601/tcp
+  rps-app-logstash-1               elastic/logstash:6.8.23                   "/usr/local/bin/dock…"   logstash            3 hours ago         Up 3 hours              0.0.0.0:5044->5044/tcp, 0.0.0.0:9600->9600/tcp, 0.0.0.0:50000->50000/tcp, 0.0.0.0:50000->50000/udp
 ```
 
 It means that [Elasticsearch](https://www.elastic.co), [Logstash](https://www.elastic.co/logstash), [Filebeat](https://www.elastic.co/beats/filebeat) and [Kibana](https://www.elastic.co/kibana) containers are up and running.
@@ -2354,8 +2333,19 @@ Click again the __Discover__ menu item and the log events related to the RPS Gam
 
 __Note:__ The [Elasticsearch](https://www.elastic.co) configuration is stored in the _./infrastructure/elk/elasticsearch/config/elasticsearch.yml_ file.  
 The [Logstash](https://www.elastic.co/logstash) configuration is stored in the _./infrastructure/elk/logstash_ folder.   
-The [Filebeat](https://www.elastic.co/beats/filebeat) configuration is stored in the _./infrastructure/elk/filebeat_ folder.   
-The [Kibana](https://www.elastic.co/kibana) configuration is stored in the _./infrastructure/elk/kibana/config/kibana.yml_ file. 
+The [Filebeat](https://www.elastic.co/beats/filebeat) configuration is stored in the _./infrastructure/elk/filebeat/filebeat.yml_ file.   
+
+__Note:__ The [Filebeat](https://www.elastic.co/beats/filebeat) collects logs only from containers ending with __"-service"__. It can be changed in the _./infrastructure/elk/filebeat/filebeat.yml_ file.
+
+```
+        - condition:
+            contains:
+              docker.container.image: "-service" # collect logs from containers ending with "-service"
+```
+
+There are currently six official Beats from Elastic: [Beats Family](https://www.elastic.co/beats)
+
+The [Kibana](https://www.elastic.co/kibana) configuration is stored in the _./infrastructure/elk/kibana/config/kibana.yml_ file.
 
 [Running Elasticsearch on Docker](https://www.elastic.co/guide/en/elasticsearch/reference/6.8/docker.html)  
 [Running Kibana on Docker](https://www.elastic.co/guide/en/kibana/6.8/docker.html)  
@@ -2373,6 +2363,74 @@ The [Kibana](https://www.elastic.co/kibana) configuration is stored in the _./in
 </details>
 
 [Getting started with the Elastic Stack and Docker-Compose](https://www.elastic.co/blog/getting-started-with-the-elastic-stack-and-docker-compose)
+
+### 12. Deploying Health Monitoring backing microservice and Adminer database management tool on Docker Compose
+
+<br>
+<details><summary>Windows 10 and Linux Ubuntu 20.04.6 LTS</summary>
+<br>
+
+#### 12.1 Deploying Health Monitoring backing microservice and Adminer database management tool on Docker Compose
+
+* Navigate (if it's not already in) to the root directory of the RPS Game project on your computer and run the [Docker Compose](https://docs.docker.com/compose) command below to deploy [Health Monitoring](https://learn.microsoft.com/en-us/dotnet/architecture/microservices/implement-resilient-applications/monitor-app-health) and Adminer on Docker Compose in the background:
+
+```
+    > docker compose -f docker-compose-misc.yml up -d
+```
+
+__Note:__ [Health Monitoring](https://learn.microsoft.com/en-us/dotnet/architecture/microservices/implement-resilient-applications/monitor-app-health) backing microservice and [Adminer](https://www.adminer.org) database management tool are not necessary but can be useful.
+
+You should see the following output:
+
+```
+    [+] Running 2/2
+     ✔ Container adminer                    Started     5.9s 
+     ✔ Container webstatus                  Started     6.9s 
+```
+
+#### 12.2 Verifying deployment
+
+* Verify that [Health Monitoring](https://learn.microsoft.com/en-us/dotnet/architecture/microservices/implement-resilient-applications/monitor-app-health) and Adminer containers are up and running by executing the following [command](https://docs.docker.com/engine/reference/commandline/compose_ps):
+
+```
+    > docker compose -f docker-compose-misc.yml ps
+```
+
+You should see the following output:
+
+```
+  NAME                   IMAGE                                     COMMAND                  SERVICE             CREATED             STATUS                  PORTS
+  adminer                adminer:4.8.1                             "entrypoint.sh php -…"   adminer             About a minute ago  Up About a minute       0.0.0.0:19080->8080/tcp
+  webstatus              rps-app-webstatus                         "dotnet WebStatus.dll"   webstatus           About a minute ago  Up About a minute       80/tcp, 0.0.0.0:15000->5000/tcp
+```
+
+It means that [Health Monitoring](https://learn.microsoft.com/en-us/dotnet/architecture/microservices/implement-resilient-applications/monitor-app-health) and Adminer containers are up and running.
+
+#### 12.3 Using the Health Monitoring
+
+* Navigate to the _webstatus_ microservice:
+
+```
+    > http://localhost:5000/status/hc-ui
+```
+
+and make sure that all the RPS game microservices are up and running.
+
+![health-checks](img/hc.png)
+
+** Status gets refreshed every _10 seconds_
+
+[Health Monitoring](https://learn.microsoft.com/en-us/dotnet/architecture/microservices/implement-resilient-applications/monitor-app-health)
+
+#### 12.4 Taking down containers
+
+* When we don't need [Health Monitoring](https://learn.microsoft.com/en-us/dotnet/architecture/microservices/implement-resilient-applications/monitor-app-health) backing microservice and Adminer database management tool anymore, we can take down containers and delete their corresponding volumes (-v) using the down command below:
+
+```
+     > docker compose -f docker-compose-misc.yml down -v
+```
+
+</details>
 
 ### 3. Running the RPS game microservices deployed on Docker Compose
 

@@ -3,6 +3,32 @@ version: "3.8"
 # Project name
 name: rps-app
 
+services:
+  # The Health Monitoring application monitors microservices health
+  # https://learn.microsoft.com/en-us/dotnet/architecture/microservices/implement-resilient-applications/monitor-app-health
+  webstatus:
+    container_name: webstatus
+    build:
+      context: .
+      dockerfile: ./docker/webstatus/Dockerfile
+    hostname: webstatus
+    restart: on-failure
+    env_file:
+      - .env
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - Logging:LogLevel:Default=Debug
+      - Logging:Loglevel:Microsoft=Warning
+      - Logging:LogLevel:HealthChecks=Debug
+      - HealthChecksUI__HealthChecks__0__Name=Rock Paper Scissors Game
+      - HealthChecksUI__HealthChecks__0__Uri=${HEALTH_MONITORING_URL}
+    ports:
+      - 5000:5000 # external port / container port
+    networks:
+      - ${BACKEND_NETWORK}
+    deploy:
+      replicas: 1
+
   adminer:
     container_name: adminer
     image: adminer:${ADMINER_VERSION}

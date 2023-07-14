@@ -14,7 +14,6 @@ name: rps-app
 
 services:
   zk-1:
-    container_name: zk-1
     image: bitnami/zookeeper:${ZOOKEEPER_VERSION}
     hostname: ${ZOOKEEPER_HOSTNAME_1}
     restart: on-failure
@@ -36,7 +35,6 @@ services:
       replicas: 1
 
   zk-2:
-    container_name: zk-2
     image: bitnami/zookeeper:${ZOOKEEPER_VERSION}
     hostname: ${ZOOKEEPER_HOSTNAME_2}
     restart: on-failure
@@ -58,7 +56,6 @@ services:
       replicas: 1
 
   zk-3:
-    container_name: zk-3
     image: bitnami/zookeeper:${ZOOKEEPER_VERSION}
     hostname: ${ZOOKEEPER_HOSTNAME_3}
     restart: on-failure
@@ -80,7 +77,6 @@ services:
       replicas: 1
 
   kafka-1:
-    container_name: kafka-1
     image: bitnami/kafka:${KAFKA_VERSION}
     hostname: ${KAFKA_HOSTNAME_1}
     restart: on-failure
@@ -110,7 +106,6 @@ services:
       replicas: 1
 
   kafka-2:
-    container_name: kafka-2
     image: bitnami/kafka:${KAFKA_VERSION}
     hostname: ${KAFKA_HOSTNAME_2}
     restart: on-failure
@@ -140,7 +135,6 @@ services:
       replicas: 1
 
   kafka-3:
-    container_name: kafka-3
     image: bitnami/kafka:${KAFKA_VERSION}
     hostname: ${KAFKA_HOSTNAME_3}
     restart: on-failure

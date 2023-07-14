@@ -27,7 +27,7 @@ services:
     container_name: grafana
     image: grafana/grafana:${GF_VERSION}
     hostname: ${GF_HOSTNAME}
-    restart: unless-stopped
+    restart: on-failure
     user: "104" # setting up the user to use over the Docker container to allow reads/writes over disk
     ports: # Important: In a production environment you should remove the external port that kept here for debugging purposes.
       - 3000:3000 # external port / container port

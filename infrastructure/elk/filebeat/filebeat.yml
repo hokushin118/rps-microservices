@@ -5,7 +5,7 @@ filebeat.autodiscover:
       templates:
         - condition:
             contains:
-              docker.container.image: ${CONTAINER_NAME}
+              docker.container.image: "-service" # collect logs from containers ending with "-service"
           config:
             - type: docker
               containers.ids:
