@@ -7,6 +7,7 @@ import com.al.qdt.cqrs.queries.BaseQuery;
 import com.al.qdt.cqrs.queries.QueryHandlerMethod;
 import org.springframework.stereotype.Service;
 
+import java.util.AbstractMap;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -36,16 +37,4 @@ public class QueryDispatcherImpl implements QueryDispatcher {
         }
         return handlers.get(0).handle(query);
     }
-
-//    @Override
-//    public <T extends BaseQuery, U extends AbstractEntity> List<U> send(T query) {
-//        final var handlers = this.routes.get(query.getClass());
-//        if (handlers == null || handlers.isEmpty()) {
-//            throw new DispatcherException(NO_COMMAND_HANDLER_REGISTERED_EXCEPTION_MESSAGE);
-//        }
-//        if (handlers.size() > 1) {
-//            throw new DispatcherException(SEND_COMMAND_EXCEPTION_MESSAGE);
-//        }
-//        return handlers.get(0).handle(query);
-//    }
 }

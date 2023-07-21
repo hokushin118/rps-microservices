@@ -1,8 +1,12 @@
 package com.al.qdt.rps.qry.domain.services;
 
-import com.al.qdt.common.api.dto.GameAdminDto;
-import com.al.qdt.common.api.dto.GameDto;
+import com.al.qdt.common.api.dto.PagingDto;
 import com.al.qdt.cqrs.infrastructure.QueryDispatcher;
+import com.al.qdt.cqrs.queries.SortingOrder;
+import com.al.qdt.rps.qry.api.dto.GameAdminDto;
+import com.al.qdt.rps.qry.api.dto.GameAdminPagedResponseDto;
+import com.al.qdt.rps.qry.api.dto.GameDto;
+import com.al.qdt.rps.qry.api.dto.GamePagedResponseDto;
 import com.al.qdt.rps.qry.api.queries.FindAllGamesQuery;
 import com.al.qdt.rps.qry.api.queries.FindGameByIdQuery;
 import com.al.qdt.rps.qry.api.queries.FindGamesByUserIdQuery;
@@ -128,28 +132,6 @@ public class RpsServiceV1Impl implements RpsServiceV1 {
                         .totalElements((Long) games.getKey())
                         .build())
                 .build();
-    }
-
-    @Override
-    @Cacheable(cacheNames = GAME_ADMIN_CACHE_NAME, key = "#id.toString()", sync = true)
-    public GameAdminDto findById(UUID id) {
-        log.info("SERVICE: Finding game by id: {}.", id);
-        final List<Game> games = this.queryDispatcher.send(new FindGameByIdQuery(id));
-        return this.gameDtoMapper.toGameAdminDto(games.get(0));
-    }
-
-    @Override
-    @Cacheable(cacheNames = GAMES_ADMIN_USER_ID_CACHE_NAME, key = "#userId.toString()", sync = true)
-    public Iterable<GameAdminDto> findByUserId(UUID userId) {
-        log.info("SERVICE: Finding games by userId: {}.", userId);
-        return this.toListOfGameAdminDto(this.queryDispatcher.send(new FindGamesByUserIdQuery(userId)));
-    }
-
-    @Override
-    @Cacheable(cacheNames = GAMES_MY_CACHE_NAME, key = "#userId.toString()", sync = true)
-    public Iterable<GameDto> findMyGames(UUID userId) {
-        log.info("SERVICE: Finding scores by userId: {}.", userId);
-        return this.toListOfGameDto(this.queryDispatcher.send(new FindGamesByUserIdQuery(userId)));
     }
 
     /**
