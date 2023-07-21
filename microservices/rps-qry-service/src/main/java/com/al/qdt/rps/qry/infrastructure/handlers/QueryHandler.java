@@ -5,6 +5,7 @@ import com.al.qdt.rps.qry.api.queries.FindAllGamesQuery;
 import com.al.qdt.rps.qry.api.queries.FindGameByIdQuery;
 import com.al.qdt.rps.qry.api.queries.FindGamesByUserIdQuery;
 
+import java.util.AbstractMap;
 import java.util.List;
 
 public interface QueryHandler {
