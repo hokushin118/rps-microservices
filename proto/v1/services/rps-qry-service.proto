@@ -1,10 +1,12 @@
+// https://protobuf.dev/programming-guides/style/
 syntax = "proto3";
 
 package v1.services;
 
-
 import "google/protobuf/wrappers.proto";
 import "v1/dto/game.proto";
+import "v1/common/paging.proto";
+import "v1/common/sorting.proto";
 
 option go_package = "/pb";
 
@@ -15,16 +17,22 @@ option java_multiple_files = true;
 /* The message definition of the request for all games. */
 message ListOfGamesRequest {
   google.protobuf.StringValue user_id = 1 [json_name = "userId"]; // user id of the games to be found
+  google.protobuf.Int32Value current_page = 2 [json_name = "current_page"]; // current page
+  google.protobuf.Int32Value page_size = 3 [json_name = "page_size"]; // page size
+  google.protobuf.StringValue sort_by = 4 [json_name = "sort_by"]; // sorting field
+  v1.common.SortingOrder sorting_order = 5 [json_name = "sorting_order"]; // sorting order
 }
 
-/* The message definition of the list of games. */
+/* The message definition of the paginated list of games. */
 message ListOfGamesResponse {
   repeated v1.dto.GameDto games = 1 [json_name = "games"]; // list of games
+  v1.common.PagingDto paging = 2 [json_name = "paging"]; // paging
 }
 
-/* The message definition of the list of games for admin users. */
+/* The message definition of the list of gpaginate ames for admin users. */
 message ListOfGamesAdminResponse {
   repeated v1.dto.GameAdminDto games = 1 [json_name = "games"]; // list of games
+  v1.common.PagingDto paging = 2 [json_name = "paging"]; // paging
 }
 
 /* The rps query service definition. */

@@ -1,8 +1,8 @@
 package com.al.qdt.rps.cmd.api.controllers;
 
-import com.al.qdt.common.api.dto.GameResponseDto;
+import com.al.qdt.rps.cmd.api.dto.GameResponseDto;
 import com.al.qdt.common.api.errors.ApiError;
-import com.al.qdt.rps.cmd.api.dtos.GameRequestDto;
+import com.al.qdt.rps.cmd.api.dto.GameRequestDto;
 import com.al.qdt.rps.cmd.domain.services.RpsServiceV2;
 import com.al.qdt.rps.cmd.domain.services.security.AuthenticationService;
 import com.al.qdt.rps.grpc.v1.dto.GameResultDto;

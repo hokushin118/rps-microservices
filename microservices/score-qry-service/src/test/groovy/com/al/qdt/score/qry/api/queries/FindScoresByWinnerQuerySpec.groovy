@@ -18,7 +18,9 @@ class FindScoresByWinnerQuerySpec extends ValidationBaseTest {
 
     // Run before every feature method
     def setup() {
-        expectedFindScoresByWinnerQuery = new FindScoresByWinnerQuery(TEST_WINNER)
+        expectedFindScoresByWinnerQuery = FindScoresByWinnerQuery.builder()
+                .winner(TEST_WINNER)
+                .build()
     }
 
     // Run after every feature method
@@ -33,7 +35,9 @@ class FindScoresByWinnerQuerySpec extends ValidationBaseTest {
 
     def 'Testing FindScoresByWinnerQuery equals() and hashCode() methods'() {
         given: 'Setup test data'
-        def actualFindScoresByWinnerQuery = new FindScoresByWinnerQuery(TEST_WINNER)
+        def actualFindScoresByWinnerQuery = FindScoresByWinnerQuery.builder()
+                .winner(TEST_WINNER)
+                .build()
 
         expect:
         assert expectedFindScoresByWinnerQuery == actualFindScoresByWinnerQuery &&
@@ -46,7 +50,9 @@ class FindScoresByWinnerQuerySpec extends ValidationBaseTest {
     @Unroll
     def 'Testing winner validating constrains with right parameters = #winner'(String winner) {
         given: 'Setup test data'
-        def findScoresByWinnerQuery = new FindScoresByWinnerQuery(winner)
+        def findScoresByWinnerQuery = FindScoresByWinnerQuery.builder()
+                .winner(winner)
+                .build()
 
         when: 'Validate test data'
         def constraintViolations = validator.validate findScoresByWinnerQuery
@@ -55,14 +61,16 @@ class FindScoresByWinnerQuerySpec extends ValidationBaseTest {
         assert constraintViolations.size() == ZERO_VIOLATIONS
 
         where:
-        winner       | _
-        TEST_WINNER  | _
+        winner      | _
+        TEST_WINNER | _
     }
 
     @Unroll
     def 'Testing winner validating constrains with wrong parameter - #winner'(String winner) {
         given: 'Setup test data'
-        def findScoresByWinnerQuery = new FindScoresByWinnerQuery(winner)
+        def findScoresByWinnerQuery = FindScoresByWinnerQuery.builder()
+                .winner(winner)
+                .build()
 
         when: 'Validate test data'
         Set<ConstraintViolation<FindScoresByWinnerQuery>> constraintViolations = validator.validate findScoresByWinnerQuery

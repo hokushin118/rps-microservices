@@ -1,7 +1,7 @@
 package com.al.qdt.rps.cmd.api.controllers;
 
-import com.al.qdt.common.api.dto.BaseResponseDto;
 import com.al.qdt.common.api.errors.ApiError;
+import com.al.qdt.rps.cmd.api.dto.BaseResponseDto;
 import com.al.qdt.rps.cmd.domain.services.DbServiceV1;
 import com.al.qdt.rps.cmd.domain.services.security.AuthenticationService;
 import io.micrometer.core.annotation.Timed;
@@ -46,6 +46,8 @@ public class DbControllerV1 {
      *
      * @return operation result
      * @version 1
+     * @deprecated <p>
+     * This method is deprecated.
      */
     @Operation(operationId = "restore-db-json",
             summary = "Restores database",
@@ -92,6 +94,8 @@ public class DbControllerV1 {
      *
      * @return operation result
      * @version 1.1
+     * @deprecated <p>
+     * This method is deprecated.
      */
     @Operation(operationId = "restore-db-async-json",
             summary = "Restores database asynchronously",
@@ -135,9 +139,10 @@ public class DbControllerV1 {
 
     /**
      * Returns currently logged in user id.
+     *
      * @return user id
      */
-    private UUID getUserId(){
+    private UUID getUserId() {
         return this.authenticationService.getUserId();
     }
 }

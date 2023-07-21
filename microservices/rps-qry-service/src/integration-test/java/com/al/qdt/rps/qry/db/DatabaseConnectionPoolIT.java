@@ -1,7 +1,6 @@
 package com.al.qdt.rps.qry.db;
 
 import com.al.qdt.rps.qry.base.AbstractIntegrationTests;
-import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Tag;
@@ -13,7 +12,6 @@ import javax.sql.DataSource;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
-@Slf4j
 @DisplayName("Integration testing of the datasource")
 @Tag(value = "database")
 class DatabaseConnectionPoolIT extends AbstractIntegrationTests {
@@ -32,7 +30,6 @@ class DatabaseConnectionPoolIT extends AbstractIntegrationTests {
     @Test
     @DisplayName("Testing datasource type")
     void dataSourceTest() {
-        log.debug("DataSource name: {}", dataSource.getClass().getName());
         assertEquals(DATASOURCE_NAME, dataSource.getClass().getName());
     }
 }

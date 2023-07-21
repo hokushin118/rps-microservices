@@ -52,6 +52,8 @@ public class ScoreControllerV1 {
      *
      * @param id score id, must not be null or empty
      * @version 1
+     * @deprecated <p>
+     * This method is deprecated.
      */
     @Operation(operationId = "delete-by-id-json",
             summary = "Deletes score by id",

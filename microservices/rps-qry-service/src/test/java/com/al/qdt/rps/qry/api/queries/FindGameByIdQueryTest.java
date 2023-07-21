@@ -24,7 +24,9 @@ class FindGameByIdQueryTest extends ValidationBaseTest {
 
     @BeforeEach
     void setUp() {
-        this.expectedFindGameByIdQuery = new FindGameByIdQuery(TEST_UUID);
+        this.expectedFindGameByIdQuery = FindGameByIdQuery.builder()
+                .id(TEST_UUID)
+                .build();
     }
 
     @AfterEach
@@ -43,7 +45,9 @@ class FindGameByIdQueryTest extends ValidationBaseTest {
     @Test
     @DisplayName("Testing FindGameByIdQuery equals() and hashCode() methods")
     void equalsAndHashCodeTest() {
-        final var actualFindGameByIdQuery = new FindGameByIdQuery(TEST_UUID);
+        final var actualFindGameByIdQuery = FindGameByIdQuery.builder()
+                .id(TEST_UUID)
+                .build();
 
         assertTrue(this.expectedFindGameByIdQuery.equals(actualFindGameByIdQuery) &&
                 actualFindGameByIdQuery.equals(this.expectedFindGameByIdQuery));
@@ -62,7 +66,9 @@ class FindGameByIdQueryTest extends ValidationBaseTest {
     @NullSource
     @DisplayName("Testing identification validating constrains with wrong parameters")
     void identificationIsNull(UUID id) {
-        final var actualFindGameByIdQuery = new FindGameByIdQuery(id);
+        final var actualFindGameByIdQuery = FindGameByIdQuery.builder()
+                .id(id)
+                .build();
         final var constraintViolations = validator.validate(actualFindGameByIdQuery);
 
         assertEquals(SINGLE_VIOLATION, constraintViolations.size());

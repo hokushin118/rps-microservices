@@ -2,8 +2,11 @@ syntax = "proto3";
 
 package v1.services;
 
+import "google/protobuf/wrappers.proto";
 import "v1/dto/score.proto";
+import "v1/common/paging.proto";
 import "v1/common/player.proto";
+import "v1/common/sorting.proto";
 
 option go_package = "/pb";
 
@@ -19,21 +22,37 @@ message FindScoreByIdRequest {
 /* The message definition of the find score by user id request data. */
 message FindScoreByUserIdRequest {
   string user_id = 1 [json_name = "user_id"];  // user id of the score to be found
+  google.protobuf.Int32Value current_page = 2 [json_name = "current_page"]; // current page
+  google.protobuf.Int32Value page_size = 3 [json_name = "page_size"]; // page size
+  google.protobuf.StringValue sort_by = 4 [json_name = "sort_by"]; // sorting field
+  v1.common.SortingOrder sorting_order = 5 [json_name = "sorting_order"]; // sorting order
 }
 
 /* The message definition of the find my scores request data. */
 message FindMyScoresRequest {
+  google.protobuf.Int32Value current_page = 1 [json_name = "current_page"]; // current page
+  google.protobuf.Int32Value page_size = 2 [json_name = "page_size"]; // page size
+  google.protobuf.StringValue sort_by = 3 [json_name = "sort_by"]; // sorting field
+  v1.common.SortingOrder sorting_order = 4 [json_name = "sorting_order"]; // sorting order
 }
 
 /* The message definition of the find scores by winner request data. */
 message FindScoreByWinnerRequest {
   v1.common.Player winner = 1 [json_name = "winner"]; // game round winner
+  google.protobuf.Int32Value current_page = 2 [json_name = "current_page"]; // current page
+  google.protobuf.Int32Value page_size = 3 [json_name = "page_size"]; // page size
+  google.protobuf.StringValue sort_by = 4 [json_name = "sort_by"]; // sorting field
+  v1.common.SortingOrder sorting_order = 5 [json_name = "sorting_order"]; // sorting order
 }
 
 /* The message definition of the find scores by userId and winner request data. */
 message FindScoreByUserIdAndWinnerRequest {
   string user_id = 1 [json_name = "user_id"];  // user id of the score to be found
   v1.common.Player winner = 2 [json_name = "winner"]; // game round winner
+  google.protobuf.Int32Value current_page = 3 [json_name = "current_page"]; // current page
+  google.protobuf.Int32Value page_size = 4 [json_name = "page_size"]; // page size
+  google.protobuf.StringValue sort_by = 5 [json_name = "sort_by"]; // sorting field
+  v1.common.SortingOrder sorting_order = 6 [json_name = "sorting_order"]; // sorting order
 }
 
 /* The message definition of the found score. */
@@ -48,16 +67,22 @@ message ScoreAdminResponse {
 
 /* The message definition of the request for all scores. */
 message ListOfScoresRequest {
+  google.protobuf.Int32Value current_page = 1 [json_name = "current_page"]; // current page
+  google.protobuf.Int32Value page_size = 2 [json_name = "page_size"]; // page size
+  google.protobuf.StringValue sort_by = 3 [json_name = "sort_by"]; // sorting field
+  v1.common.SortingOrder sorting_order = 4 [json_name = "sorting_order"]; // sorting order
 }
 
-/* The message definition of the list of scores. */
+/* The message definition of the paginated list of scores. */
 message ListOfScoresResponse {
   repeated v1.dto.ScoreDto scores = 1 [json_name = "scores"]; // list of scores
+  v1.common.PagingDto paging = 2 [json_name = "paging"]; // paging
 }
 
-/* The message definition of the list of scores for admin users. */
+/* The message definition of the list of paginated scores for admin users. */
 message ListOfScoresAdminResponse {
   repeated v1.dto.ScoreAdminDto scores = 1 [json_name = "scores"]; // list of scores
+  v1.common.PagingDto paging = 2 [json_name = "paging"]; // paging
 }
 
 /* The Score query service definition. */

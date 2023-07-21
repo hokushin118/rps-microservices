@@ -1,5 +1,6 @@
 package com.al.qdt.rps.qry.domain.mappers;
 
+import com.al.qdt.rps.grpc.v1.common.SortingOrder;
 import com.al.qdt.rps.qry.base.EntityTests;
 import com.al.qdt.rps.qry.domain.entities.Game;
 import org.junit.jupiter.api.DisplayName;
@@ -67,5 +68,24 @@ class GameProtoMapperTest implements EntityTests {
         final var gameAdminDto = assertDoesNotThrow(() -> this.gameProtoMapper.toGameAdminDto(game));
 
         assertNull(gameAdminDto);
+    }
+
+    @Test
+    @DisplayName("Testing of the toSortingOrder() method")
+    void toSortingOrderTest() {
+        final var sortingOrderProto = SortingOrder.ASC;
+        final var sortingOrder = this.gameProtoMapper.toSortingOrder(sortingOrderProto);
+
+        assertNotNull(sortingOrder);
+        assertEquals("ASC", sortingOrder.name());
+    }
+
+    @ParameterizedTest
+    @NullSource
+    @DisplayName("Testing of the toSortingOrder() method with null parameter")
+    void toSortingOrderWithNullTest(SortingOrder sortingOrderProto) {
+        final var sortingOrder = assertDoesNotThrow(() -> this.gameProtoMapper.toSortingOrder(sortingOrderProto));
+
+        assertNull(sortingOrder);
     }
 }

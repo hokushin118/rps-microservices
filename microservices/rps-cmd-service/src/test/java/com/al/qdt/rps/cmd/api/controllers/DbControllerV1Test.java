@@ -1,8 +1,8 @@
 package com.al.qdt.rps.cmd.api.controllers;
 
 import com.al.qdt.common.api.advices.GlobalRestExceptionHandler;
-import com.al.qdt.common.api.dto.BaseResponseDto;
 import com.al.qdt.rps.cmd.api.advices.InvalidUserInputExceptionHandler;
+import com.al.qdt.rps.cmd.api.dto.BaseResponseDto;
 import com.al.qdt.rps.cmd.base.DtoTests;
 import com.al.qdt.rps.cmd.domain.services.DbServiceV1;
 import com.al.qdt.rps.cmd.domain.services.security.AuthenticationService;
@@ -22,13 +22,18 @@ import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 
 import static java.nio.charset.StandardCharsets.UTF_8;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.any;
+import static org.mockito.Mockito.lenient;
+import static org.mockito.Mockito.only;
+import static org.mockito.Mockito.reset;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyNoMoreInteractions;
+import static org.mockito.Mockito.when;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.asyncDispatch;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.request;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -51,7 +56,7 @@ class DbControllerV1Test implements DtoTests {
 
     @BeforeEach
     void setUp() {
-        this.baseResponse = createBaseResponse();
+        this.baseResponse = createBaseResponseDto();
 
         lenient().when(this.authenticationService.getUserId()).thenReturn(UUID.randomUUID());
 

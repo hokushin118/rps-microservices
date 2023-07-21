@@ -29,15 +29,15 @@ RUN mvn clean install -f /common/rps-grpc-lib/pom.xml -s /settings/settings.xml 
 
 # Copy the cqrs-es-framework project and build it
 COPY ./common/cqrs-es-framework /common/cqrs-es-framework
-RUN mvn clean install -f /common/cqrs-es-framework/pom.xml  -s /settings/settings.xml -DskipTests
+RUN mvn clean install -f /common/cqrs-es-framework/pom.xml -s /settings/settings.xml -DskipTests
 
 # Copy the rps-common-lib project and build it
 COPY ./common/rps-common-lib /common/rps-common-lib
-RUN mvn clean install -f /common/rps-common-lib/pom.xml  -s /settings/settings.xml -DskipTests
+RUN mvn clean install -f /common/rps-common-lib/pom.xml -s /settings/settings.xml -DskipTests
 
 # Copy the rps-cmd-service project and build it
 COPY ./microservices/$APP_NAME /microservices/$APP_NAME
-RUN mvn clean package -f /microservices/$APP_NAME/pom.xml  -s /settings/settings.xml -DskipTests
+RUN mvn clean package -f /microservices/$APP_NAME/pom.xml -s /settings/settings.xml -DskipTests
 
 # Step 2: APPLICATION CONTAINER
 FROM openjdk:11.0.11-jre-slim AS publish

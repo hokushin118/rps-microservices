@@ -40,7 +40,7 @@ public class ScoreGrpcServiceV1 extends ScoreQryServiceGrpc.ScoreQryServiceImplB
     @Override
     public void listOfScores(ListOfScoresRequest request, StreamObserver<ListOfScoresAdminResponse> responseObserver) {
         log.info("UNARY GRPC SERVICE: Getting all scores.");
-        responseObserver.onNext(this.scoreService.all());
+        responseObserver.onNext(this.scoreService.all(request.getCurrentPage().getValue(), request.getPageSize().getValue(), request.getSortBy().getValue(), request.getSortingOrder()));
         responseObserver.onCompleted();
     }
 
@@ -72,7 +72,7 @@ public class ScoreGrpcServiceV1 extends ScoreQryServiceGrpc.ScoreQryServiceImplB
     public void findByUserId(FindScoreByUserIdRequest request, StreamObserver<ListOfScoresAdminResponse> responseObserver) {
         final var userId = UUID.fromString(request.getUserId());
         log.info("UNARY GRPC SERVICE: Finding scores by userId: {}.", userId);
-        responseObserver.onNext(this.scoreService.findByUserId(userId));
+        responseObserver.onNext(this.scoreService.findByUserId(userId, request.getCurrentPage().getValue(), request.getPageSize().getValue(), request.getSortBy().getValue(), request.getSortingOrder()));
         responseObserver.onCompleted();
     }
 
@@ -85,7 +85,7 @@ public class ScoreGrpcServiceV1 extends ScoreQryServiceGrpc.ScoreQryServiceImplB
     @Override
     public void findByWinner(FindScoreByWinnerRequest request, StreamObserver<ListOfScoresAdminResponse> responseObserver) {
         log.info("UNARY GRPC SERVICE: Finding scores by winner: {}.", request.getWinner());
-        responseObserver.onNext(this.scoreService.findByWinner(request.getWinner()));
+        responseObserver.onNext(this.scoreService.findByWinner(request.getWinner(), request.getCurrentPage().getValue(), request.getPageSize().getValue(), request.getSortBy().getValue(), request.getSortingOrder()));
         responseObserver.onCompleted();
     }
 
@@ -99,7 +99,7 @@ public class ScoreGrpcServiceV1 extends ScoreQryServiceGrpc.ScoreQryServiceImplB
     public void findByUserIdAndWinner(FindScoreByUserIdAndWinnerRequest request, StreamObserver<ListOfScoresAdminResponse> responseObserver) {
         final var userId = UUID.fromString(request.getUserId());
         log.info("UNARY GRPC SERVICE: Finding scores by user id : {} and winner: {}.", userId, request.getWinner());
-        responseObserver.onNext(this.scoreService.findByUserIdAndWinner(userId, request.getWinner()));
+        responseObserver.onNext(this.scoreService.findByUserIdAndWinner(userId, request.getWinner(), request.getCurrentPage().getValue(), request.getPageSize().getValue(), request.getSortBy().getValue(), request.getSortingOrder()));
         responseObserver.onCompleted();
     }
 
@@ -112,7 +112,7 @@ public class ScoreGrpcServiceV1 extends ScoreQryServiceGrpc.ScoreQryServiceImplB
     @Override
     public void findMyScores(FindMyScoresRequest request, StreamObserver<ListOfScoresResponse> responseObserver) {
         log.info("UNARY GRPC SERVICE: Finding my scores...");
-        responseObserver.onNext(this.scoreService.findMyScores(this.getUserId()));
+        responseObserver.onNext(this.scoreService.findMyScores(this.getUserId(), request.getCurrentPage().getValue(), request.getPageSize().getValue(), request.getSortBy().getValue(), request.getSortingOrder()));
         responseObserver.onCompleted();
     }
 

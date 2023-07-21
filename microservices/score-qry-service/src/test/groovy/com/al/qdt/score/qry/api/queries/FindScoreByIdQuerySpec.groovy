@@ -18,7 +18,9 @@ class FindScoreByIdQuerySpec extends ValidationBaseTest {
 
     // Run before every feature method
     def setup() {
-        expectedFindScoreByIdQuery = new FindScoreByIdQuery(TEST_UUID)
+        expectedFindScoreByIdQuery = FindScoreByIdQuery.builder()
+                .id(TEST_UUID)
+                .build()
     }
 
     // Run after every feature method
@@ -33,7 +35,9 @@ class FindScoreByIdQuerySpec extends ValidationBaseTest {
 
     def 'Testing FindScoreByIdQuery equals() and hashCode() methods'() {
         given: 'Setup test data'
-        def actualFindScoresByIdQuery = new FindScoreByIdQuery(TEST_UUID)
+        def actualFindScoresByIdQuery = FindScoreByIdQuery.builder()
+                .id(TEST_UUID)
+                .build()
 
         expect:
         assert expectedFindScoreByIdQuery == actualFindScoresByIdQuery &&
@@ -46,7 +50,9 @@ class FindScoreByIdQuerySpec extends ValidationBaseTest {
     @Unroll
     def 'Testing identification validating constrains with right parameters = #id'(UUID id) {
         given: 'Setup test data'
-        def findScoresByIdQuery = new FindScoreByIdQuery(id)
+        def findScoresByIdQuery = FindScoreByIdQuery.builder()
+                .id(id)
+                .build()
 
         when: 'Validate test data'
         def constraintViolations = validator.validate findScoresByIdQuery
@@ -62,7 +68,9 @@ class FindScoreByIdQuerySpec extends ValidationBaseTest {
     @Unroll
     def 'Testing identification validating constrains with wrong parameters = #id'(UUID id) {
         given: 'Setup test data'
-        def findScoresByIdQuery = new FindScoreByIdQuery(id)
+        def findScoresByIdQuery = FindScoreByIdQuery.builder()
+                .id(id)
+                .build()
 
         when: 'Validate test data'
         Set<ConstraintViolation<FindScoreByIdQuery>> constraintViolations = validator.validate findScoresByIdQuery

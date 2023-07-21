@@ -1,6 +1,7 @@
 package com.al.qdt.rps.qry.api.controllers;
 
 import com.al.qdt.common.api.advices.GlobalRestExceptionHandler;
+import com.al.qdt.rps.grpc.v1.common.SortingOrder;
 import com.al.qdt.rps.grpc.v1.services.ListOfGamesAdminResponse;
 import com.al.qdt.rps.grpc.v1.services.ListOfGamesResponse;
 import com.al.qdt.rps.qry.base.ProtoTests;
@@ -87,6 +88,10 @@ class RpsControllerV2Test implements ProtoTests {
                 .addPlaceholderValue("api.version-two", "/v2")
                 .addPlaceholderValue("api.endpoint-games", "games")
                 .addPlaceholderValue("api.endpoint-admin", "admin")
+                .addPlaceholderValue("api.default-page-number", "1")
+                .addPlaceholderValue("api.default-page-size", "10")
+                .addPlaceholderValue("api.default-sort-by", "id")
+                .addPlaceholderValue("api.default-sort-order", "ASC")
                 .setMessageConverters(protobufJsonFormatHttpMessageConverter)
                 .setControllerAdvice(new GlobalRestExceptionHandler())
                 .build();
@@ -95,17 +100,21 @@ class RpsControllerV2Test implements ProtoTests {
     @Test
     @DisplayName("Testing of the all() method")
     void allTest() throws Exception {
-        final var firstGameAdminDto = createGameAdminDto(USER_ONE_ID);
-        final var secondGameAdminDto = createGameAdminDto(USER_TWO_ID);
+        final var firstGameAdminDto = createGameAdminProtoDto(USER_ONE_ID);
+        final var secondGameAdminDto = createGameAdminProtoDto(USER_TWO_ID);
         final var listOfGamesResponse = ListOfGamesAdminResponse.newBuilder()
                 .addAllGames(List.of(firstGameAdminDto, secondGameAdminDto))
                 .build();
 
-        when(this.rpsService.all()).thenReturn(listOfGamesResponse);
+        when(this.rpsService.all(any(Integer.class), any(Integer.class), any(String.class), any(SortingOrder.class))).thenReturn(listOfGamesResponse);
 
         this.mockMvc.perform(get("/v2/admin/games")
                 .contentType(APPLICATION_JSON)
                 .accept(APPLICATION_JSON_VALUE)
+                .param("currentPage", "1")
+                .param("pageSize", "10")
+                .param("sortBy", "id")
+                .param("sortingOrder", "ASC")
                 .characterEncoding(UTF_8))
                 .andDo(print())
                 // response validation
@@ -114,14 +123,14 @@ class RpsControllerV2Test implements ProtoTests {
 
         // verify that it was the only invocation and
         // that there's no more unverified interactions
-        verify(this.rpsService, only()).all();
+        verify(this.rpsService, only()).all(any(Integer.class), any(Integer.class), any(String.class), any(SortingOrder.class));
         reset(this.rpsService);
     }
 
     @Test
     @DisplayName("Testing of the findById() method")
     void findByIdTest() throws Exception {
-        final var gameAdminDto = createGameAdminDto(USER_ONE_ID);
+        final var gameAdminDto = createGameAdminProtoDto(USER_ONE_ID);
 
         when(this.rpsService.findById(any(UUID.class))).thenReturn(gameAdminDto);
 
@@ -144,16 +153,20 @@ class RpsControllerV2Test implements ProtoTests {
     @Test
     @DisplayName("Testing of the findMyGames() method")
     void findMyGamesTest() throws Exception {
-        final var gameDto = createGameDto(USER_ONE_ID);
+        final var gameDto = createGameProtoDto(USER_ONE_ID);
         final var listOfGamesResponse = ListOfGamesResponse.newBuilder()
                 .addGames(gameDto)
                 .build();
 
-        when(this.rpsService.findMyGames(any(UUID.class))).thenReturn(listOfGamesResponse);
+        when(this.rpsService.findMyGames(any(UUID.class), any(Integer.class), any(Integer.class), any(String.class), any(SortingOrder.class))).thenReturn(listOfGamesResponse);
 
         this.mockMvc.perform(get("/v2/games")
                 .contentType(APPLICATION_JSON)
                 .accept(APPLICATION_JSON_VALUE)
+                .param("currentPage", "1")
+                .param("pageSize", "10")
+                .param("sortBy", "id")
+                .param("sortingOrder", "ASC")
                 .characterEncoding(UTF_8))
                 .andDo(print())
                 // response validation
@@ -162,7 +175,7 @@ class RpsControllerV2Test implements ProtoTests {
 
         // verify that it was the only invocation and
         // that there's no more unverified interactions
-        verify(this.rpsService, only()).findMyGames(this.userIdParamArgumentCaptor.capture());
+        verify(this.rpsService, only()).findMyGames(this.userIdParamArgumentCaptor.capture(), any(Integer.class), any(Integer.class), any(String.class), any(SortingOrder.class));
         reset(this.rpsService);
     }
 }

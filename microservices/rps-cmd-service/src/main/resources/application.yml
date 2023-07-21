@@ -121,9 +121,11 @@ management:
 # Open Api 3.0 configuration
 # https://springdoc.org
 springdoc:
-  api-docs:
-    path: /v3/api-docs
   swagger-ui:
+    config-url: ${server.servlet.context-path}/v3/api-docs/swagger-config
+    # disable swagger default url
+    disable-swagger-default-url: true
+    url: ${server.servlet.context-path}/v3/api-docs
     display-request-duration: true
     groups-order: DESC
     operationsSorter: method
@@ -133,7 +135,6 @@ springdoc:
       app-name: swagger-ui
       client-id: ${keycloak.client-id}
       realm: ${keycloak.realm}
-      client-secret: ${keycloak.secret}
   # packages to include
   packages-to-scan: com.al.qdt.rps.cmd.api
   # enables pretty-printed output of the OpenApi specification
