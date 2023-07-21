@@ -47,11 +47,12 @@ Source: [Architecting Cloud Native .NET Applications for Azure](https://learn.mi
 
 ** H2 in-memory database engine is used for __it__ profile only
 
-## Local Deployment - Deploying the application locally
-
-Microservices active profile is __dev__.
+## Deploying the application
 
 ### 1. Setting up the environment
+<details><summary>Local Machine</summary>
+<br>
+Microservices active profile is __dev__.
 
 #### 1.1 Prerequisites
 
@@ -74,7 +75,9 @@ Microservices active profile is __dev__.
       > java -version
 ```
 
-You should see the following output on Windows 10 machine:
+<details><summary>Windows 10</summary>
+<br>
+You should see the following output:
 
 ```
       openjdk version "11.0.19" 2023-04-18
@@ -82,17 +85,7 @@ You should see the following output on Windows 10 machine:
       OpenJDK 64-Bit Server VM Temurin-11.0.19+7 (build 11.0.19+7, mixed mode)
 ```
 
-or
-
-```
-      openjdk 11.0.19 2023-04-18                                                                                              
-      OpenJDK Runtime Environment (build 11.0.19+7-post-Ubuntu-0ubuntu122.04.1)                                              
-      OpenJDK 64-Bit Server VM (build 11.0.19+7-post-Ubuntu-0ubuntu122.04.1, mixed mode, sharing)     
-```
-
-on Linux Ubuntu 20.04.6 LTS machine. If not, follow the steps below to install it.
-
-<details><summary>Windows 10</summary>
+If not, follow the steps below to install it.
 
 * Download and
   extract [OpenJDK11U-jdk_x64_windows_hotspot_11.0.19_7.zip](https://adoptium.net/temurin/releases/?version=11) archive
@@ -153,6 +146,17 @@ variables__, you must use the _-m_ switch and open the command prompt using __Ad
 <br>
 <details><summary>Linux Ubuntu 20.04.6 LTS</summary>
 <br>
+
+You should see the following output:
+
+```
+      openjdk 11.0.19 2023-04-18                                                                                              
+      OpenJDK Runtime Environment (build 11.0.19+7-post-Ubuntu-0ubuntu122.04.1)                                              
+      OpenJDK 64-Bit Server VM (build 11.0.19+7-post-Ubuntu-0ubuntu122.04.1, mixed mode, sharing)     
+```
+
+If not, follow the steps below to install it.
+
 * Install the Java Runtime Environment (JRE) from [OpenJDK 11](https://openjdk.java.net/projects/jdk/11) or higher using the following commands:
 
 ```
@@ -214,7 +218,7 @@ __Note:__ Do not include the __bin/__ portion of the Java installation location 
 
 </details>
 
-#### 1.3 Installing Maven on local machine
+#### 1.3. Installing Maven on local machine
 
 * Make sure you have [Maven](https://openjdk.java.net/projects/jdk/11) or a higher version installed using the following
   command:
@@ -223,7 +227,9 @@ __Note:__ Do not include the __bin/__ portion of the Java installation location 
       > mvn -version
 ```
 
-You should see the following output on Windows 10 machine:
+<details><summary>Windows 10</summary>
+<br>
+You should see the following output:
 
 ```
       Apache Maven 3.9.3 (21122926829f1ead511c958d89bd2f672198ae9f)
@@ -233,19 +239,7 @@ You should see the following output on Windows 10 machine:
       OS name: "windows 10", version: "10.0", arch: "amd64", family: "windows"
 ```
 
-or
-
-```
-      Apache Maven 3.9.3 (21122926829f1ead511c958d89bd2f672198ae9f)
-      Maven home: /opt/apache-maven-3.9.3
-      Java version: 11.0.19, vendor: Ubuntu, runtime: /usr/lib/jvm/java-11-openjdk-amd64
-      Default locale: en, platform encoding: UTF-8
-      OS name: "linux", version: "5.10.102.1-microsoft-standard-wsl2", arch: "amd64", family: "unix"
-```
-
-on Linux Ubuntu 20.04.6 LTS machine. If not, follow the steps below to install it.
-
-<details><summary>Windows 10</summary>
+If not, follow the steps below to install it.
 
 * Download
   the [apache-maven-3.9.3-bin.zip](https://dlcdn.apache.org/maven/maven-3/3.9.3/binaries/apache-maven-3.9.3-bin.zip)
@@ -301,6 +295,18 @@ on Linux Ubuntu 20.04.6 LTS machine. If not, follow the steps below to install i
 <br>
 <details><summary>Linux Ubuntu 20.04.6 LTS</summary>
 <br>
+You should see the following output:
+
+```
+      Apache Maven 3.9.3 (21122926829f1ead511c958d89bd2f672198ae9f)
+      Maven home: /opt/apache-maven-3.9.3
+      Java version: 11.0.19, vendor: Ubuntu, runtime: /usr/lib/jvm/java-11-openjdk-amd64
+      Default locale: en, platform encoding: UTF-8
+      OS name: "linux", version: "5.10.102.1-microsoft-standard-wsl2", arch: "amd64", family: "unix"
+```
+
+If not, follow the steps below to install it.
+
 * Install Maven on you Linux Ubuntu machine by executing the following command:
 
 ```
@@ -396,8 +402,150 @@ You should see the following output:
 [How to Install Maven on Linux (Ubuntu)](https://www.digitalocean.com/community/tutorials/install-maven-linux-ubuntu)
 
 </details>
+</details>
+<br>
+<details><summary>Docker Compose</summary>
+<br>
+Microservices active profile is __docker__.
 
-### 2. Cloning repository to the local machine
+#### 1.1 Prerequisites
+
+* [Docker Desktop](https://www.docker.com/products/docker-desktop)
+
+#### 1.2 Installation of Docker Desktop
+
+* Make sure you have [Docker Desktop](https://www.docker.com/products/docker-desktop) installed using the following
+  command:
+
+```
+      > docker -v
+```
+
+You should see the following output:
+
+```
+      Docker version 24.0.2, build cb74dfc
+```
+
+* If [Docker Desktop](https://www.docker.com/products/docker-desktop) is not installed navigate to the docker website
+  download and install it on your local machine.
+
+<details><summary>Windows 10</summary>
+<br>
+* Follow the installation instructions below to install [Docker Desktop](https://www.docker.com/products/docker-desktop) on Windows 10 machine:
+
+[Install Docker Desktop on Windows](https://docs.docker.com/desktop/install/windows-install)
+
+</details>
+<br>
+<details><summary>Linux Ubuntu 20.04.6 LTS</summary>
+<br>
+* Follow the installation instructions below to install [Docker Desktop](https://www.docker.com/products/docker-desktop) on Linux Ubuntu machine:
+
+[Install Docker Desktop on Ubuntu](https://docs.docker.com/desktop/install/ubuntu)
+
+</details>
+
+#### 1.3 Setting up Docker Desktop (Windows 10 and Linux Ubuntu 20.04.6 LTS)
+
+* [Docker Compose](https://docs.docker.com/compose) is also
+  required. [Docker Desktop](https://www.docker.com/products/docker-desktop)
+  includes [Docker Compose](https://docs.docker.com/compose) along with Docker Engine and Docker CLI which are Compose
+  prerequisites.
+
+[Installation scenarios](https://docs.docker.com/compose/install)
+
+* Check if [Docker Compose](https://docs.docker.com/compose) is installed:
+
+```
+    > docker compose version
+```
+
+You should see the following output:
+
+```
+      Docker Compose version v2.18.1
+```
+
+* Check if Docker Swarm mode is active. To check it, you can simply run the command:
+
+```
+    > docker info
+```
+
+And check the status of the __Swarm__ property.
+
+```
+      Swarm: inactive
+```
+
+* If it is not active, you can simply run the command:
+
+```
+    > docker swarm init
+```
+
+to activate it.
+
+You should see the following output:
+
+```
+      Swarm initialized: current node (1ram5oln14qdk23b08eb5iv3q) is now a manager.
+      
+      To add a worker to this swarm, run the following command:
+      
+          docker swarm join --token SWMTKN-1-0im35q3hssq4ztnp2ftcq8dvyy4zg3sfhfg0twoo80iu8mhv6s-55g0y3u102p52rrunc6our8ji 192.168.1.106:2377
+      
+      To add a manager to this swarm, run 'docker swarm join-token manager' and follow the instructions.
+```
+
+* Launch [Docker Desktop](https://www.docker.com/products/docker-desktop):
+
+```
+    > systemctl --user start docker-desktop
+```
+
+* Ensure that sufficient resources have been allocated to Docker Compose.
+
+* Set [COMPOSE_PROJECT_NAME](https://docs.docker.com/compose/environment-variables/envvars/#compose_project_name) environmental variables:
+
+<details><summary>Windows 10</summary>
+
+```
+    > setx COMPOSE_PROJECT_NAME "rps-app"
+```
+
+</details>
+<br>
+<details><summary>Linux Ubuntu 20.04.6 LTS</summary>
+
+```
+    > export COMPOSE_PROJECT_NAME=rps-app
+    > source /etc/environment
+```
+
+</details>
+
+__Mote:__ By default, the [log file](https://docs.docker.com/engine/reference/commandline/container_logs) directory is: 
+
+<details><summary>Linux Ubuntu 20.04.6 LTS</summary>
+<br>
+
+```
+      _/var/lib/docker/containers/<container_id>_
+```
+
+</details>
+
+on the host where the container is running.
+
+</details>
+
+### 2. Cloning repository
+<details><summary>Local Machine</summary>
+<br>
+
+#### 2.1. Cloning repository to a local (host) machine
 
 * Clone the __rps-microservices__ project to your local machine by executing the following command:
 
@@ -405,25 +553,15 @@ You should see the following output:
       > git clone https://github.com/hokushin118/rps-microservices.git
 ```
 
-### 3. Building the RPS game microservices on local machine
+#### 2.2 Building the RPS game microservices on a local machine
 
-* Once the cloning is completed, go to the _rps-microservices_ folder by executing the following command:
+* Once the cloning is completed, go to the rps-microservices folder by executing the following command:
 
 ```
       > cd rps-microservices
 ```
 
-Each microservice has multiple profiles:
-
-|  **profile name**  |  **is default**  |         **purpose**                |
-|--------------------|------------------|------------------------------------|
-|        dev         |        Yes       |  Development on local machine      |
-|        docker      |        No        |  Deployment on Docker Compose      |
-|        it          |        No        |  Running integration tests         |
-|        prod        |        No        |  Deployment on Kubernetes cluster  |
-
-* Execute the _mvn clean install_ command in the root directory of the project to build microservices and its
-  dependencies for running on a local machine.
+* Execute the _mvn clean install_ command in the root directory of the project to build microservices and its dependencies locally.
 
 ```
       > mvn clean install
@@ -431,9 +569,13 @@ Each microservice has multiple profiles:
 
 __Note:__ Each microservice and shared dependency should normally be hosted in its own git repository.
 
-### 4. Deploying Keycloak standalone server on local machine
+</details>
 
-#### 4.1 Deploying Keycloak standalone server
+### 3. Deploying Keycloak
+<details><summary>Local Machine</summary>
+<br>
+
+#### 3.1 Deploying Keycloak standalone server on local machine
 
 <details><summary>Window 10</summary>
 
@@ -611,7 +753,7 @@ to store its configuration.
 
 [Keycloak on bare metal](https://www.keycloak.org/getting-started/getting-started-zip)
 
-#### 4.2 Configure Keycloak server as a systemd service for Linux Ubuntu 20.04.6 LTS
+#### 3.2 Configuring Keycloak server as a systemd service for Linux Ubuntu 20.04.6 LTS
 
 * You will need to create a _systemd service_ file to manage the Keycloak service. You can copy the sample systemd
   service with the following command:
@@ -668,10 +810,7 @@ You should see the following lines in the sys log file:
 
 </details>
 
-#### 4.3 Creating Keycloak super user account
-
-<br>
-<details><summary>Windows 10 and Linux Ubuntu 20.04.6 LTS</summary>
+#### 3.3 Creating Keycloak super user account
 
 * Open [http://localhost:8180](http://localhost:8180) and create a super user by filling the form with your preferred username and password.
 
@@ -690,10 +829,103 @@ For example:
 [How to export and import Realms in Keycloak](https://www.mastertheboss.com/keycloak/how-to-export-and-import-realms-in-keycloak)
 
 </details>
+<br>
+<details><summary>Docker Compose</summary>
+<br>
 
-### 5. Deploying MongoDB on local machine
+#### 3.1 Deploying Keycloak standalone server on Docker Compose
 
-#### 5.1 Deploying MongoDB
+* Then navigate to the root directory of the RPS Game project on your computer and run
+  the [Docker Compose](https://docs.docker.com/compose) command below to
+  deploy [Keycloak 18.0.0](https://www.keycloak.org) on Docker Compose in the background:
+
+```
+    > docker compose -f docker-compose-kc.yml up -d
+```
+
+You should see the following output:
+
+```
+    [+] Running 4/4
+    ✔ Network rps_net                             Created     0.2s
+    ✔ Volume "rps_app_postgresql-data"            Created     0.0s
+    ✔ Container rps-app-postgresql-1              Started     2.0s
+    ✔ Container rps-app-keycloak-1                Started     2.1s
+```
+
+#### 3.2 Verifying deployment
+
+* Verify that [Keycloak 18.0.0](https://www.keycloak.org) and [PostgreSQL](https://www.postgresql.org) containers are up
+  and running by executing the following command:
+
+```
+    > docker compose -f docker-compose-kc.yml ps
+```
+
+You should see the following output:
+
+```
+    NAME                             IMAGE                                     COMMAND                  SERVICE             CREATED             STATUS              PORTS
+    rps-app-keycloak-1    m          rps-app-keycloak                          "/opt/bitnami/keyclo…"   keycloak            2 minutes ago       Up 2 minutes        0.0.0.0:28080->8080/tcp
+    rps-app-postgresql-1             bitnami/postgresql:14.2.0-debian-10-r95   "/opt/bitnami/script…"   postgresql          2 minutes ago       Up 2 minutes        0.0.0.0:15432->5432/tcp
+```
+
+It means that [Keycloak 18.0.0](https://www.keycloak.org) and [PostgreSQL](https://www.postgresql.org) containers are up
+and running.
+
+__Note:__ Make sure that necessary external ports are not in use. If so, kill the processes by executing the following commands:
+
+<details><summary>Windows 10</summary>
+
+```
+    > netstat -ano | findStr "<necessary external port>"
+    > tasklist /fi "<pid of the proccess>"
+```
+
+</details>
+
+<details><summary>Linux Ubuntu 20.04.6 LTS</summary>
+
+```
+    > sudo fuser -k <necessary external port>/tcp
+```
+
+</details>
+
+#### 3.3 Using the Keycloak
+
+* Navigate to the _keycloak_ microservice administration console:
+
+```
+    > http://localhost:28080/admin
+```
+
+Enter credentials below:
+
+| **user name**  | **password** |  
+|----------------|--------------|
+|     admin      |   admin      |
+
+and make sure that _rps-dev_ realm has been activated.
+
+#### 3.4 Taking down containers
+
+* When we don't need keycloak container anymore, we can take down containers and delete their corresponding
+  volumes (-v) using the down command below:
+
+```
+     > docker compose -f docker-compose-kc.yml down -v
+```
+
+</details>
+
+### 4. Deploying MongoDB, MariaDB and Redis database servers
+<details><summary>Local Machine</summary>
+<br>
+
+#### 4.1. Deploying MongoDB on local machine
+
+##### 4.1.1 Deploying MongoDB
 
 <details><summary>Window 10</summary>
 
@@ -798,7 +1030,7 @@ You should see the following output:
 <br>
 <details><summary>Windows 10 and Linux Ubuntu 20.04.6 LTS</summary>
 
-#### 5.2 Creating MongoDB root account
+##### 4.1.2 Creating MongoDB root account
 
 * Open the _command line tool_ and type the following command:
 
@@ -874,7 +1106,292 @@ MongoDB [build-in roles](https://www.mongodb.com/docs/manual/reference/built-in-
 
 </details>
 
-### 6. Adding custom entries to the etc/host file for the Apache Zookeeper and Apache Kafka services
+#### 4.2. Deploying MariaDB on local machine
+
+##### 4.2.1 Deploying MariaDB
+
+<details><summary>Windows 10</summary>
+<br>
+* Download and install [MariaDB Community Server](https://mariadb.com/downloads) version 10.6.14-GA for MS Windows (64-bit) from official website.
+
+Enter _12345_ as root password. Enable the __Enable access from remote machines for 'root' user__ checkbox.
+
+| **user name**  | **password** | 
+|----------------|--------------|
+|     root       |   12345      | 
+
+![mariadb password](img/mariadb-password.png)
+
+Enable the __Install as service__ checkbox.
+
+![mariadb properties](img/mariadb-properties.png)
+
+[Installing MariaDB MSI Packages on Windows](https://mariadb.com/kb/en/installing-mariadb-msi-packages-on-windows)
+
+</details>
+<br>
+<details><summary>Linux Ubuntu 20.04.6 LTS</summary>
+<br>
+* Ensure your system is updated and install software-properties-common package:
+
+```
+      > sudo apt update && sudo apt upgrade
+      > sudo apt -y install software-properties-common
+```
+
+* First, we will add the
+  official [MariaDB apt repository](https://mariadb.com/kb/en/mariadb-package-repository-setup-and-usage) using the
+  following command:
+
+```
+      > curl -LsS https://r.mariadb.com/downloads/mariadb_repo_setup | sudo bash -s -- --mariadb-server-version="mariadb-10.6"
+```
+
+Then, install MariaDB server and client.using the following command:
+
+```
+      > sudo apt-get install mariadb-server mariadb-client -y
+```
+
+* Check the status using the following command:
+
+```
+      > sudo systemctl status mariadb
+```
+
+* Finally, check installed MariaDB version using the following command:
+
+```
+      > mysql -V
+```
+
+You should see the following output:
+
+```
+      mysql  Ver 15.1 Distrib 10.6.14-MariaDB, for debian-linux-gnu (x86_64) using readline 5.2
+```
+
+* To prevent unintended upgrades, you can pin the package at the currently installed version:
+
+```
+      > echo "mariadb-server hold" | sudo dpkg --set-selections
+      > echo "mariadb-client hold" | sudo dpkg --set-selections
+```
+
+* After installation, secure MariaDB using the following commands:
+
+```
+      > sudo mysql_secure_installation
+```
+
+You will be prompted with several questions. Choose options as shown below.
+
+|                   **question**                             | **answer** | 
+|------------------------------------------------------------|------------|
+|     Enter current password for root (enter for none)       |            | 
+|     Switch to unux_socket authentication [Y/n]             |     Y      | 
+|     Change the root password? [Y/n]                        |     Y      | 
+|     New password:                                          |   12345    | 
+|     Re-enter new password:                                 |   12345    | 
+|     Remove anonymous users? [Y/n]                          |     Y      | 
+|     Disallow root login remotely? [Y/n]                    |     n      | 
+|     Remove the test database and access to it? [Y/n]       |     Y      |
+|     Reload privilege tables now? [Y/n]                     |     Y      |
+
+* You can stop MariaDB service by executing the following command:
+
+```
+      > sudo service mariadb stop
+```
+
+[MariaDB Package Repository Setup and Usage](https://mariadb.com/kb/en/mariadb-package-repository-setup-and-usage)
+
+</details>
+<br>
+<details><summary>Windows 10 and Linux Ubuntu 20.04.6 LTS</summary>
+
+##### 4.2.2 Validating MariaDB root account
+
+* Validate the configurations by connecting to MariaDB:
+
+```
+      > mysql -u root -p
+```
+
+You will be prompted with password. Enter root password of 12345.
+
+##### 4.2.3 MariaDB Data-at-Rest Encryption
+
+[MariaDB Data-at-Rest Encryption Overview](https://mariadb.com/kb/en/data-at-rest-encryption-overview)
+
+</details>
+
+#### 4.3 Deploying Redis on local machine
+
+##### 4.3.1 Deploying Redis
+
+<details><summary>Windows 10</summary>
+<br>
+* To install [Redis](https://redis.io) on Windows, we'll first need to [enable WSL2 (Windows Subsystem for Linux)](https://learn.microsoft.com/en-us/windows/wsl/install).
+
+You can a list of available Linux distros by executing the following command in Windows PowerShell:
+
+```
+      > wsl --list --online
+```
+
+You'll see the following output:
+
+```
+      NAME                                   FRIENDLY NAME
+      Ubuntu                                 Ubuntu
+      Debian                                 Debian GNU/Linux
+      kali-linux                             Kali Linux Rolling
+      Ubuntu-18.04                           Ubuntu 18.04 LTS
+      Ubuntu-20.04                           Ubuntu 20.04 LTS
+      Ubuntu-22.04                           Ubuntu 22.04 LTS
+      OracleLinux_7_9                        Oracle Linux 7.9
+      OracleLinux_8_7                        Oracle Linux 8.7
+      OracleLinux_9_1                        Oracle Linux 9.1
+      openSUSE-Leap-15.5                     openSUSE Leap 15.5
+      SUSE-Linux-Enterprise-Server-15-SP4    SUSE Linux Enterprise Server 15 SP4
+      SUSE-Linux-Enterprise-Server-15-SP5    SUSE Linux Enterprise Server 15 SP5
+      openSUSE-Tumbleweed                    openSUSE Tumbleweed
+```
+
+* Then you can install your favorite distro from the list by executing the following command:
+
+```
+      > wsl --install -d <DistroName>
+```
+
+for example:
+
+```
+      > wsl --install -d Ubuntu-20.04
+```
+
+* And then you can install [Redis](https://redis.io) on your Linux distro (I am using Ubuntu) by executing the following
+  commands:
+
+```
+      > curl -fsSL https://packages.redis.io/gpg | sudo gpg --dearmor -o /usr/share/keyrings/redis-archive-keyring.gpg
+      > echo "deb [signed-by=/usr/share/keyrings/redis-archive-keyring.gpg] https://packages.redis.io/deb $(lsb_release -cs) main" | sudo tee /etc/apt/sources.list.d/redis.list
+      > sudo apt-get update
+      > sudo apt-get install redis
+      > sudo service redis-server start
+```
+
+</details>
+<br>
+<details><summary>Linux Ubuntu 20.04.6 LTS</summary>
+<br>
+* Ensure your system is updated:
+
+```
+      > sudo apt update && sudo apt upgrade
+```
+
+* Install [Redis](https://redis.io) on your Linux Ubuntu 20.04.6 LTS machine by executing the following commands:
+
+```
+      > curl -fsSL https://packages.redis.io/gpg | sudo gpg --dearmor -o /usr/share/keyrings/redis-archive-keyring.gpg
+      > echo "deb [signed-by=/usr/share/keyrings/redis-archive-keyring.gpg] https://packages.redis.io/deb $(lsb_release -cs) main" | sudo tee /etc/apt/sources.list.d/redis.list
+      > sudo apt-get update
+      > sudo apt-get install redis
+      > sudo service redis-server start
+```
+
+__Note:__ By default, [Redis](https://redis.io) is accessible only from _localhost_.
+
+* To prevent unintended upgrades, you can pin the package at the currently installed version:
+
+```
+      > echo "redis hold" | sudo dpkg --set-selections
+```
+
+* Verify the status of the _redis_ package by executing the following command:
+
+```
+      > dpkg --get-selections redis
+```
+
+You should see the following output:
+
+```
+      > redis	hold
+```
+
+* You can stop [Redis](https://redis.io) service by executing the following command:
+
+```
+      > sudo service redis-server stop
+```
+
+[How To Install and Secure Redis on Ubuntu 22.04](https://www.digitalocean.com/community/tutorials/how-to-install-and-secure-redis-on-ubuntu-22-04)
+
+</details>
+
+</details>
+<br>
+<details><summary>Docker Desktop</summary>
+<br>
+
+#### 4.1 Deploying MongoDB, MariaDB and Redis standalone database servers on Docker Compose
+
+* Navigate (if it's not already in) to the root directory of the RPS Game project on your computer and run
+  the [Docker Compose](https://docs.docker.com/compose) command below to deploy standalone database servers on Docker
+  Compose in the background:
+
+```
+    > docker compose -f docker-compose-general.yml up -d
+```
+
+You should see the following output:
+
+```
+    [+] Running 3/3
+     ✔ Container rps-app-redis-1    Started     0.0s 
+     ✔ Container rps-app-mongodb-1  Started     0.0s 
+     ✔ Container rps-app-mariadb-1  Started     0.0s 
+```
+
+##### 4.2 Verifying deployment
+
+* Verify that [MongoDB](https://www.mongodb.com), [MariaDB](https://mariadb.org) and [Redis](https://redis.io)
+  containers are up and running by executing the following command:
+
+```
+    > docker compose -f docker-compose-general.yml ps
+```
+
+You should see the following output:
+
+```
+    NAME                             IMAGE                                     COMMAND                  SERVICE             CREATED             STATUS              PORTS
+    rps-app-mariadb-1                bitnami/mariadb:10.6                      "/opt/bitnami/script…"   mariadb             6 minutes ago       Up 5 minutes        0.0.0.0:13306->3306/tcp
+    rps-app-mongodb-1                mongo:4.4                                 "docker-entrypoint.s…"   mongo               6 minutes ago       Up 5 minutes        0.0.0.0:28017->27017/tcp
+    rps-app-redis-1                  bitnami/redis:4.0.9-r24                   "/app-entrypoint.sh …"   cache               6 minutes ago       Up 5 minutes        0.0.0.0:16379->6379/tcp
+```
+
+It means that [MongoDB](https://www.mongodb.com), [MariaDB](https://mariadb.org) and [Redis](https://redis.io) containers are up and running.
+
+#### 4.3 Taking down containers
+
+* When we don't need database containers anymore, we can take down containers and delete their corresponding
+  volumes (-v) using the down command below:
+
+```
+     > docker compose -f docker-compose-general.yml down -v
+```
+
+</details>
+
+### 5. Deploying Apache Zookeeper and Apache Kafka
+<details><summary>Local Machine</summary>
+<br>
+
+#### 5.1 Adding custom entries to the etc/host file for the Apache Zookeeper and Kafka applications on local machine
 
 <details><summary>Window 10</summary>
 <br>
@@ -902,9 +1419,7 @@ Add the following entries and save the file:
 
 </details>
 
-### 7. Deploying Apache Zookeeper on local machine
-
-#### 7.1 Deploying Apache Zookeeper
+#### 5.2 Deploying Apache Zookeeper on local machine
 
 <details><summary>Window 10</summary>
 
@@ -1086,9 +1601,7 @@ You should see the following output:
 
 </details>
 
-### 8. Deploying Apache Kafka on local machine
-
-#### 8.1 Deploying Apache Kafka
+#### 5.3 Deploying Apache Kafka on local machine
 
 <details><summary>Windows 10</summary>
 
@@ -1262,233 +1775,638 @@ and add the following lines to the file:
 
 </details>
 
-### 9. Deploying Redis on local machine
-
-#### 9.1 Deploying Redis
-
-<details><summary>Windows 10</summary>
-<br>
-* To install [Redis](https://redis.io) on Windows, we'll first need to [enable WSL2 (Windows Subsystem for Linux)](https://learn.microsoft.com/en-us/windows/wsl/install).
-
-You can a list of available Linux distros by executing the following command in Windows PowerShell:
-
-```
-      > wsl --list --online
-```
-
-You'll see the following output:
-
-```
-      NAME                                   FRIENDLY NAME
-      Ubuntu                                 Ubuntu
-      Debian                                 Debian GNU/Linux
-      kali-linux                             Kali Linux Rolling
-      Ubuntu-18.04                           Ubuntu 18.04 LTS
-      Ubuntu-20.04                           Ubuntu 20.04 LTS
-      Ubuntu-22.04                           Ubuntu 22.04 LTS
-      OracleLinux_7_9                        Oracle Linux 7.9
-      OracleLinux_8_7                        Oracle Linux 8.7
-      OracleLinux_9_1                        Oracle Linux 9.1
-      openSUSE-Leap-15.5                     openSUSE Leap 15.5
-      SUSE-Linux-Enterprise-Server-15-SP4    SUSE Linux Enterprise Server 15 SP4
-      SUSE-Linux-Enterprise-Server-15-SP5    SUSE Linux Enterprise Server 15 SP5
-      openSUSE-Tumbleweed                    openSUSE Tumbleweed
-```
-
-* Then you can install your favorite distro from the list by executing the following command:
-
-```
-      > wsl --install -d <DistroName>
-```
-
-for example:
-
-```
-      > wsl --install -d Ubuntu-20.04
-```
-
-* And then you can install [Redis](https://redis.io) on your Linux distro (I am using Ubuntu) by executing the following
-  commands:
-
-```
-      > curl -fsSL https://packages.redis.io/gpg | sudo gpg --dearmor -o /usr/share/keyrings/redis-archive-keyring.gpg
-      > echo "deb [signed-by=/usr/share/keyrings/redis-archive-keyring.gpg] https://packages.redis.io/deb $(lsb_release -cs) main" | sudo tee /etc/apt/sources.list.d/redis.list
-      > sudo apt-get update
-      > sudo apt-get install redis
-      > sudo service redis-server start
-```
-
 </details>
 <br>
-<details><summary>Linux Ubuntu 20.04.6 LTS</summary>
+<details><summary>Docker Compose</summary>
 <br>
-* Ensure your system is updated:
+
+#### 5.1 Deploying Kafka cluster on Docker Compose
+
+* Navigate (if it's not already in) to the root directory of the RPS Game project on your computer and run
+  the [Docker Compose](https://docs.docker.com/compose) command below to deploy Kafka cluster on Docker Compose in the
+  background:
 
 ```
-      > sudo apt update && sudo apt upgrade
-```
-
-* Install [Redis](https://redis.io) on your Linux Ubuntu 20.04.6 LTS machine by executing the following commands:
-
-```
-      > curl -fsSL https://packages.redis.io/gpg | sudo gpg --dearmor -o /usr/share/keyrings/redis-archive-keyring.gpg
-      > echo "deb [signed-by=/usr/share/keyrings/redis-archive-keyring.gpg] https://packages.redis.io/deb $(lsb_release -cs) main" | sudo tee /etc/apt/sources.list.d/redis.list
-      > sudo apt-get update
-      > sudo apt-get install redis
-      > sudo service redis-server start
-```
-
-__Note:__ By default, [Redis](https://redis.io) is accessible only from _localhost_.
-
-* To prevent unintended upgrades, you can pin the package at the currently installed version:
-
-```
-      > echo "redis hold" | sudo dpkg --set-selections
-```
-
-* Verify the status of the _redis_ package by executing the following command:
-
-```
-      > dpkg --get-selections redis
+    > docker compose -f docker-compose-kafka.yml up -d
 ```
 
 You should see the following output:
 
 ```
-      > redis	hold
+    [+] Running 6/6
+     ✔ Container rps-app-zk-3-1     Started     0.0s 
+     ✔ Container rps-app-zk-1-1     Started     0.0s 
+     ✔ Container rps-app-zk-2-1     Started     0.0s 
+     ✔ Container rps-app-kafka-3-1  Started     0.0s 
+     ✔ Container rps-app-kafka-1-1  Started     0.0s 
+     ✔ Container rps-app-kafka-2-1  Started     0.0s
 ```
 
-* You can stop [Redis](https://redis.io) service by executing the following command:
+#### 5.2 Verifying deployment
+
+* Verify that Zookeeper and Kafka containers are up and running by executing the
+  following [command](https://docs.docker.com/engine/reference/commandline/compose_ps):
 
 ```
-      > sudo service redis-server stop
+    > docker compose -f docker-compose-kafka.yml ps
 ```
 
-[How To Install and Secure Redis on Ubuntu 22.04](https://www.digitalocean.com/community/tutorials/how-to-install-and-secure-redis-on-ubuntu-22-04)
+You should see the following output:
+
+```
+    NAME                             IMAGE                                     COMMAND                  SERVICE             CREATED             STATUS              PORTS
+    rps-app-kafka-1-1                bitnami/kafka:2.7.0                       "/opt/bitnami/script…"   kafka-1             4 minutes ago       Up 3 minutes        9092/tcp, 0.0.0.0:19093->9093/tcp
+    rps-app-kafka-2-1                bitnami/kafka:2.7.0                       "/opt/bitnami/script…"   kafka-2             4 minutes ago       Up 3 minutes        9092/tcp, 0.0.0.0:19094->9094/tcp
+    rps-app-kafka-3-1                bitnami/kafka:2.7.0                       "/opt/bitnami/script…"   kafka-3             4 minutes ago       Up 3 minutes        9092/tcp, 0.0.0.0:19095->9095/tcp
+    rps-app-zk-1-1                   bitnami/zookeeper:3.8.0                   "/opt/bitnami/script…"   zk-1                4 minutes ago       Up 4 minutes        2888/tcp, 3888/tcp, 8080/tcp, 0.0.0.0:12181->2181/tcp
+    rps-app-zk-2-1                   bitnami/zookeeper:3.8.0                   "/opt/bitnami/script…"   zk-2                4 minutes ago       Up 4 minutes        2888/tcp, 3888/tcp, 8080/tcp, 0.0.0.0:12182->2181/tcp
+    rps-app-zk-3-1                   bitnami/zookeeper:3.8.0                   "/opt/bitnami/script…"   zk-3                4 minutes ago       Up 4 minutes        2888/tcp, 3888/tcp, 8080/tcp, 0.0.0.0:12183->2181/tcp
+```
+
+It means that Zookeeper and Kafka containers are up and running.
+
+#### 5.3 Taking down containers
+
+* When we don't need Kafka cluster anymore, we can take down containers and delete their corresponding
+  volumes (-v) using the down command below:
+
+```
+     > docker compose -f docker-compose-kafka.yml down -v
+```
 
 </details>
 
-### 10. Deploying MariaDB on local machine
-
-#### 10.1 Deploying MariaDB
-
-<details><summary>Windows 10</summary>
+### 6. Deploying RPS Game Command microservice
+<details><summary>Docker Compose</summary>
 <br>
-* Download and install [MariaDB Community Server](https://mariadb.com/downloads) version 10.6.14-GA for MS Windows (64-bit) from official website.
 
-Enter _12345_ as root password. Enable the __Enable access from remote machines for 'root' user__ checkbox.
+#### 6.1 Deploying RPS Game Command microservice on Docker Compose
 
-| **user name**  | **password** | 
+* Navigate (if it's not already in) to the root directory of the RPS Game project on your computer and run
+  the [Docker Compose](https://docs.docker.com/compose) command below to deploy the RPS Game Command microservice on
+  Docker Compose in the background:
+
+```
+    > docker compose -f docker-compose-api-rps-cmd.yml up -d
+```
+
+You should see the following output:
+
+```
+    [+] Running 1/1
+     ✔ Container rps-app-rps-cmd-service-1             Started       1.7s 
+```
+
+#### 6.2 Verifying deployment
+
+* Verify that RPS Game Command microservice container is up and running by executing the
+  following [command](https://docs.docker.com/engine/reference/commandline/compose_ps):
+
+```
+    > docker compose -f docker-compose-api-rps-cmd.yml ps
+```
+
+You should see the following output:
+
+```
+    NAME                             IMAGE                                     COMMAND                  SERVICE             CREATED             STATUS              PORTS
+    rps-app-rps-cmd-service-1        rps-app-rps-cmd-service                   "java -Dspring.profi…"   rps-cmd-service     2 minutes ago       Up 2 minutes        8080/tcp, 0.0.0.0:18081->80/tcp, 0.0.0.0:16566->6565/tcp
+```
+
+It means that RPS Game Command microservice is up and running.
+
+#### 6.3 Taking down containers
+
+* When we don't need RPS Game Command microservice anymore, we can take down container and delete their corresponding
+  volumes (-v) using the down command below:
+
+```
+     > docker compose -f docker-compose-api-rps-cmd.yml down -v
+```
+
+</details>
+
+### 7. Deploying RPS Game Query microservice
+<details><summary>Docker Compose</summary>
+<br>
+
+#### 7.1 Deploying RPS Game Query microservice on Docker Compose
+
+* Navigate (if it's not already in) to the root directory of the RPS Game project on your computer and run
+  the [Docker Compose](https://docs.docker.com/compose) command below to deploy the RPS Game Query microservice on
+  Docker Compose in the background:
+
+```
+    > docker compose -f docker-compose-api-rps-qry.yml up -d
+```
+
+You should see the following output:
+
+```
+    [+] Running 1/1
+     ✔ Container rps-app-rps-qry-service-1             Started       2.3s 
+```
+
+#### 7.2 Verifying deployment
+
+* Verify that RPS Game Query microservice container is up and running by executing the
+  following [command](https://docs.docker.com/engine/reference/commandline/compose_ps):
+
+```
+    > docker compose -f docker-compose-api-rps-qry.yml ps
+```
+
+You should see the following output:
+
+```
+    NAME                             IMAGE                                     COMMAND                  SERVICE             CREATED             STATUS              PORTS
+    rps-app-rps-qry-service-1        rps-app-rps-qry-service                   "java -Dspring.profi…"   rps-qry-service     2 minutes ago       Up 2 minutes        8080/tcp, 0.0.0.0:18082->80/tcp, 0.0.0.0:16567->6565/tcp
+```
+
+It means that RPS Game Query microservice is up and running.
+
+#### 7.3 Taking down containers
+
+* When we don't need RPS Game Query microservice anymore, we can take down container and delete their corresponding
+  volumes (-v) using the down command below:
+
+```
+     > docker compose -f docker-compose-api-rps-qry.yml down -v
+```
+
+</details>
+
+### 8. Deploying Score Command microservice
+<details><summary>Docker Compose</summary>
+<br>
+
+#### 8.1 Deploying Score Command microservice on Docker Compose
+
+* Navigate (if it's not already in) to the root directory of the RPS Game project on your computer and run
+  the [Docker Compose](https://docs.docker.com/compose) command below to deploy the Score Command microservice on Docker
+  Compose in the background:
+
+```
+    > docker compose -f docker-compose-api-score-cmd.yml up -d
+```
+
+You should see the following output:
+
+```
+    [+] Running 1/1
+     ✔ Container rps-app-score-cmd-service-1           Started       2.0s 
+```
+
+#### 8.2 Verifying deployment
+
+* Verify that Score Command microservice container is up and running by executing the
+  following [command](https://docs.docker.com/engine/reference/commandline/compose_ps):
+
+```
+    > docker compose -f docker-compose-api-score-cmd.yml ps
+```
+
+You should see the following output:
+
+```
+    NAME                             IMAGE                                     COMMAND                  SERVICE             CREATED             STATUS              PORTS
+    rps-app-score-cmd-service-1      rps-app-score-cmd-service                 "java -Dspring.profi…"   score-cmd-service   2 minutes ago       Up 2 minutes        8080/tcp, 0.0.0.0:18083->80/tcp, 0.0.0.0:16568->6565/tcp
+```
+
+It means that Score Command microservice is up and running.
+
+#### 8.3 Taking down containers
+
+* When we don't need Score Command microservice anymore, we can take down container and delete their corresponding
+  volumes (-v) using the down command below:
+
+```
+     > docker compose -f docker-compose-api-score-cmd.yml down -v
+```
+
+</details>
+
+### 9. Deploying Score Query microservice
+<details><summary>Docker Compose</summary>
+<br>
+
+#### 9.1 Deploying Score Query microservice on Docker Compose
+
+* Navigate (if it's not already in) to the root directory of the RPS Game project on your computer and run
+  the [Docker Compose](https://docs.docker.com/compose) command below to deploy the Score Query microservice on Docker
+  Compose in the background:
+
+```
+    > docker compose -f docker-compose-api-score-qry.yml up -d
+```
+
+You should see the following output:
+
+```
+    [+] Running 1/1
+     ✔ Container rps-app-score-qry-service-1           Started       1.9s 
+```
+
+#### 9.2 Verifying deployment
+
+* Verify that Score Query microservice container is up and running by executing the
+  following [command](https://docs.docker.com/engine/reference/commandline/compose_ps):
+
+```
+    > docker compose -f docker-compose-api-score-qry.yml ps
+```
+
+You should see the following output:
+
+```
+    NAME                             IMAGE                                     COMMAND                  SERVICE             CREATED             STATUS              PORTS
+    rps-app-score-qry-service-1      rps-app-score-qry-service                 "java -Dspring.profi…"   score-qry-service   2 minutes ago       Up 2 minutes        8080/tcp, 0.0.0.0:18084->80/tcp, 0.0.0.0:16569->6565/tcp
+```
+
+It means that Score Query microservice is up and running.
+
+#### 9.3 Taking down containers
+
+* When we don't need Score Query microservice anymore, we can take down container and delete their corresponding
+  volumes (-v) using the down command below:
+
+```
+     > docker compose -f docker-compose-api-score-qry.yml down -v
+```
+
+</details>
+
+### 10. Deploying Nginx as api gateway for REST and gRPC microservices
+<details><summary>Docker Compose</summary>
+<br>
+
+#### 10.1 Deploying Nginx as API gateway for REST and gRPC microservices on Docker Compose
+
+* Navigate (if it's not already in) to the root directory of the RPS Game project on your computer and run
+  the [Docker Compose](https://docs.docker.com/compose) command below to deploy [Nginx](https://www.nginx.com) as api gateway for REST and gRPC microservices on Docker Compose in the
+  background:
+
+```
+    > docker compose -f docker-compose-api-gw.yml up -d
+```
+
+You should see the following output:
+
+```
+    [+] Running 1/1
+     ✔ Container rps-app-nginx-1        Started     0.0s 
+```
+
+#### 10.2 Verifying deployment
+
+* Verify that [Nginx](https://www.nginx.com) container is up and running by executing the following [command](https://docs.docker.com/engine/reference/commandline/compose_ps):
+
+```
+    > docker compose -f docker-compose-api-gw.yml ps
+```
+
+You should see the following output:
+
+```
+  NAME                             IMAGE                                     COMMAND                  SERVICE             CREATED              STATUS                          PORTS
+  rps-app-nginx-1                            rps-app-nginx                             "nginx -g 'daemon of…"   nginx               About a minute ago   Up About a minute   
+```
+
+It means that Nginx container is up and running.
+
+__Note:__ The [Nginx](https://www.nginx.com) configuration is stored in the _./infrastructure/nginx/conf.d/default.conf_ file.
+
+[Building Microservices: Using an API Gateway](https://www.nginx.com/blog/building-microservices-using-an-api-gateway)
+
+#### 10.3 Taking down containers
+
+* When we don't need [Nginx](https://www.nginx.com) api gateway anymore, we can take down container and delete its corresponding volumes (-v) using the down command below:
+
+```
+     > docker compose -f docker-compose-api-gw.yml down -v
+```
+
+</details>
+
+### 11. Deploying Prometheus and Grafana backing service
+<details><summary>Docker Compose</summary>
+<br>
+
+#### 11.1 Deploying Prometheus and Grafana on Docker Compose
+
+* Navigate (if it's not already in) to the root directory of the RPS Game project on your computer and run the [Docker Compose](https://docs.docker.com/compose) command below to deploy [Prometheus](https://prometheus.io) and [Grafana](https://prometheus.io/docs/visualization/grafana) on Docker Compose in the background:
+
+```
+    > docker compose -f docker-compose-metrics.yml up -d
+```
+
+You should see the following output:
+
+```
+    [+] Running 2/2
+     ✔ Container prometheus     Started     0.0s 
+     ✔ Container grafana        Started     0.0s 
+```
+
+#### 11.2 Verifying deployment
+
+* Verify that Prometheus and Grafana containers are up and running by executing the
+  following [command](https://docs.docker.com/engine/reference/commandline/compose_ps):
+
+```
+    > docker compose -f docker-compose-metrics.yml ps
+```
+
+You should see the following output:
+
+```
+  NAME                             IMAGE                                     COMMAND                  SERVICE             CREATED              STATUS                          PORTS
+  grafana                          grafana/grafana:10.0.1                    "/run.sh"                grafana             About a minute ago   Up About a minute               0.0.0.0:3000->3000/tcp
+  prometheus                       prom/prometheus:v2.45.0                   "/bin/prometheus --c…"   prometheus          About a minute ago   Up About a minute               0.0.0.0:9090->9090/tcp
+```
+
+It means that [Prometheus](https://prometheus.io) and [Grafana](https://prometheus.io/docs/visualization/grafana) containers are up and running.
+
+#### 11.3 Using Prometheus
+
+* Navigate to the _prometheus_ endpoint of microservices:
+
+```
+            http://localhost/rps-cmd-api/actuator/prometheus
+            http://localhost/rps-qry-api/actuator/prometheus
+            http://localhost/score-cmd-api/actuator/prometheus
+            http://localhost/score-qry-api/actuator/prometheus
+```
+
+and make sure that all the RPS game microservices are exposing metrics to [Prometheus](https://prometheus.io).
+
+* Then, navigate to the _target_ page (Status -> Targets) of the _prometheus_ microservice:
+
+```
+    > http://localhost:9090/targets
+```
+
+and make sure that [Prometheus](https://prometheus.io) is scraping from our microservices properly.
+
+![scraping jobs](img/prometheus.png)
+
+** Status gets refreshed every _5 seconds_
+
+__Note:__ The [Prometheus](https://prometheus.io) configuration file is located at _./infrastructure/metrics/prometheus/prometheus.yml_.
+
+#### 11.4 Using Grafana
+
+* Navigate to the _grafana_ microservice:
+
+```
+    > http://localhost:3000
+```
+
+the login window appears. Enter credentials below:
+
+| **user name**  | **password** |
 |----------------|--------------|
-|     root       |   12345      | 
+|     admin      |   admin      |
 
-![mariadb password](img/mariadb-password.png)
+and then navigate to the _Dashboards_ page:
 
-Enable the __Install as service__ checkbox.
+```
+    > http://localhost:3000/dashboards
+```
 
-![mariadb properties](img/mariadb-properties.png)
+You will see the preconfigured dashboards powered by our _prometheus datasorce_ in the list:
 
-[Installing MariaDB MSI Packages on Windows](https://mariadb.com/kb/en/installing-mariadb-msi-packages-on-windows)
+![grafana dashboards](img/grafana-dashboards.png)
+
+Select any dashboard from the list. You will be redirected to the dashboard main page. Select the application you want to monitor from the __Application__ dropdown list:
+
+![grafana dashboards application list](img/grafana-dashboard-apps-list.png)
+
+__Note:__ The [Grafana](https://grafana.com) preconfigured datasources are stored in the _./infrastructure/metrics/grafana/provisioning/datasources_ folder. The preconfigured [Grafana](https://grafana.com)
+dashboard templates are stored in the _./infrastructure/metrics/grafana/provisioning/dashboards_ folder. You can find more dashboard templates from [Grafana Dashboards](https://grafana.com/grafana/dashboards) website.
+
+[Grafana Tutorials](https://grafana.com/tutorials)
+
+#### 11.5 Taking down containers
+
+* When we don't need Prometheus and Grafana microservices anymore, we can take down containers and delete their corresponding
+  volumes (-v) using the down command below:
+
+```
+     > docker compose -f docker-compose-metrics.yml down -v
+```
 
 </details>
+
+### 12. Deploying Elasticsearch, Logstash, Filebeat and Kibana backing service
+<details><summary>Docker Compose</summary>
 <br>
-<details><summary>Linux Ubuntu 20.04.6 LTS</summary>
-<br>
-* Ensure your system is updated and install software-properties-common package:
+
+#### 12.1 Deploying Elasticsearch, Logstash, Filebeat and Kibana on Docker Compose
+
+* Navigate (if it's not already in) to the root directory of the RPS Game project on your computer and run the [Docker Compose](https://docs.docker.com/compose) command below to deploy [Elasticsearch](https://www.elastic.co), [Logstash](https://www.elastic.co/logstash) and [Kibana](https://www.elastic.co/kibana) on Docker Compose in the background:
 
 ```
-      > sudo apt update && sudo apt upgrade
-      > sudo apt -y install software-properties-common
-```
-
-* First, we will add the
-  official [MariaDB apt repository](https://mariadb.com/kb/en/mariadb-package-repository-setup-and-usage) using the
-  following command:
-
-```
-      > curl -LsS https://r.mariadb.com/downloads/mariadb_repo_setup | sudo bash -s -- --mariadb-server-version="mariadb-10.6"
-```
-
-Then, install MariaDB server and client.using the following command:
-
-```
-      > sudo apt-get install mariadb-server mariadb-client -y
-```
-
-* Check the status using the following command:
-
-```
-      > sudo systemctl status mariadb
-```
-
-* Finally, check installed MariaDB version using the following command:
-
-```
-      > mysql -V
+    > docker compose -f docker-compose-elk.yml up -d
 ```
 
 You should see the following output:
 
 ```
-      mysql  Ver 15.1 Distrib 10.6.14-MariaDB, for debian-linux-gnu (x86_64) using readline 5.2
+    [+] Running 4/4
+     ✔ Container rps-app-elasticsearch-1              Started     5.9s 
+     ✔ Container rps-app-kibana-1                     Started     6.9s 
+     ✔ Container rps-app-logstash-1                   Started     7.0s 
+     ✔ Container rps-app-filebeat-1                   Started     8.0s
 ```
 
-* To prevent unintended upgrades, you can pin the package at the currently installed version:
+#### 12.2 Verifying deployment
+
+* Verify that [Elasticsearch](https://www.elastic.co), [Logstash](https://www.elastic.co/logstash), [Filebeat](https://www.elastic.co/beats/filebeat) and [Kibana](https://www.elastic.co/kibana) containers are up and running by executing the
+  following [command](https://docs.docker.com/engine/reference/commandline/compose_ps):
 
 ```
-      > echo "mariadb-server hold" | sudo dpkg --set-selections
-      > echo "mariadb-client hold" | sudo dpkg --set-selections
+    > docker compose -f docker-compose-elk.yml ps
 ```
 
-* After installation, secure MariaDB using the following commands:
+You should see the following output:
 
 ```
-      > sudo mysql_secure_installation
+  NAME                             IMAGE                                     COMMAND                  SERVICE             CREATED             STATUS                  PORTS
+  rps-app-elasticsearch-1          elastic/elasticsearch:6.8.23              "/usr/local/bin/dock…"   elasticsearch       3 hours ago         Up Less than a second   0.0.0.0:9200->9200/tcp, 0.0.0.0:9300->9300/tcp
+  rps-app-filebeat-1               elastic/filebeat:6.8.23                   "/usr/local/bin/dock…"   filebeat            3 hours ago         Up 3 hours              
+  rps-app-kibana-1                 elastic/kibana:6.8.23                     "/usr/local/bin/kiba…"   kibana              3 hours ago         Up About a minute       0.0.0.0:5601->5601/tcp
+  rps-app-logstash-1               elastic/logstash:6.8.23                   "/usr/local/bin/dock…"   logstash            3 hours ago         Up 3 hours              0.0.0.0:5044->5044/tcp, 0.0.0.0:9600->9600/tcp, 0.0.0.0:50000->50000/tcp, 0.0.0.0:50000->50000/udp
 ```
 
-You will be prompted with several questions. Choose options as shown below.
+It means that [Elasticsearch](https://www.elastic.co), [Logstash](https://www.elastic.co/logstash), [Filebeat](https://www.elastic.co/beats/filebeat) and [Kibana](https://www.elastic.co/kibana) containers are up and running.
 
-|                   **question**                             | **answer** | 
-|------------------------------------------------------------|------------|
-|     Enter current password for root (enter for none)       |            | 
-|     Switch to unux_socket authentication [Y/n]             |     Y      | 
-|     Change the root password? [Y/n]                        |     Y      | 
-|     New password:                                          |   12345    | 
-|     Re-enter new password:                                 |   12345    | 
-|     Remove anonymous users? [Y/n]                          |     Y      | 
-|     Disallow root login remotely? [Y/n]                    |     n      | 
-|     Remove the test database and access to it? [Y/n]       |     Y      |
-|     Reload privilege tables now? [Y/n]                     |     Y      |
+#### 12.3 Using Kibana
 
-* You can stop MariaDB service by executing the following command:
+* Navigate to the _kibana_ microservice:
 
 ```
-      > sudo service mariadb stop
+    > http://localhost:5601
 ```
 
-[MariaDB Package Repository Setup and Usage](https://mariadb.com/kb/en/mariadb-package-repository-setup-and-usage)
+__Note:__ When attempting to access [Kibana](https://www.elastic.co/kibana) while it’s starting, a message saying that [Kibana](https://www.elastic.co/kibana) is not ready yet will be displayed in the browser. Give it a minute or two and then you are good to go.
+
+When using [Kibana](https://www.elastic.co/kibana), you will need to add the index __"rps-app-%{+YYYY.MM.dd}"__ we created earlier in logstash config file _./infrastructure/elk/logstash/pipeline/logstash.conf_ to get the information:
+
+```
+    elasticsearch {
+      hosts => "http://host.docker.internal:9200"
+      index => "rps-app-%{+YYYY.MM.dd}"
+      user => "${LOGSTASH_INTERNAL_USER}"
+      password => "${LOGSTASH_INTERNAL_PASSWORD}"
+    }
+```
+
+To do this, access the [Kibana](https://www.elastic.co/kibana) and on the left hand side menu, click the __Discover__ menu item.
+
+![kibana discover](img/kibana-home.png)
+
+[Kibana](https://www.elastic.co/kibana) uses index patterns for retrieving data from [Elasticsearch](https://www.elastic.co). So, to get started, you must create an index pattern. In this page, you should see an index that has been created by Logstash. To create a pattern for matching this index, enter __rps-app-*__ and then click the Next button.
+
+![kibana create index pattern](img/kibana-create-index-pattern.png)
+
+Then pick a field for filtering the data by time. Choose __@timestamp__ field from the __Time Filter field name__ drop-down list and click the __Create Index Pattern__ button.
+
+![kibana add time filter](img/kibana-time-filter.png)  
+
+The __rps-app-*__ index pattern will be created.
+
+![kibana index created](img/kibana-index-created.png)  
+
+Click again the __Discover__ menu item and the log events related to the RPS Game application will be shown:
+
+![kibana logs](img/kibana-logs.png)  
+
+__Note:__ The [Elasticsearch](https://www.elastic.co) configuration is stored in the _./infrastructure/elk/elasticsearch/config/elasticsearch.yml_ file.  
+The [Logstash](https://www.elastic.co/logstash) configuration is stored in the _./infrastructure/elk/logstash_ folder.   
+The [Filebeat](https://www.elastic.co/beats/filebeat) configuration is stored in the _./infrastructure/elk/filebeat/filebeat.yml_ file.   
+
+__Note:__ The [Filebeat](https://www.elastic.co/beats/filebeat) collects logs only from containers ending with __"-service"__. It can be changed in the _./infrastructure/elk/filebeat/filebeat.yml_ file.
+
+```
+        - condition:
+            contains:
+              docker.container.image: "-service" # collect logs from containers ending with "-service"
+```
+
+There are currently six official Beats from Elastic: [Beats Family](https://www.elastic.co/beats)
+
+The [Kibana](https://www.elastic.co/kibana) configuration is stored in the _./infrastructure/elk/kibana/config/kibana.yml_ file.
+
+[Running Elasticsearch on Docker](https://www.elastic.co/guide/en/elasticsearch/reference/6.8/docker.html)  
+[Running Kibana on Docker](https://www.elastic.co/guide/en/kibana/6.8/docker.html)  
+[Kibana Tutorials](https://www.elastic.co/guide/en/kibana/current/get-started.html)
+[Getting started with the Elastic Stack and Docker-Compose](https://www.elastic.co/blog/getting-started-with-the-elastic-stack-and-docker-compose)
+
+#### 12.4 Taking down containers
+
+* When we don't need [Elasticsearch](https://www.elastic.co), [Logstash](https://www.elastic.co/logstash) and [Kibana](https://www.elastic.co/kibana) backing microservices anymore, we can take down containers and delete their corresponding
+  volumes (-v) using the down command below:
+
+```
+     > docker compose -f docker-compose-elk.yml down -v
+```
 
 </details>
+
+### 13. Deploying Health Monitoring backing microservice and Adminer database management tool
+<details><summary>Docker Compose</summary>
 <br>
-<details><summary>Windows 10 and Linux Ubuntu 20.04.6 LTS</summary>
 
-#### 10.2 Validating MariaDB root account
+#### 13.1 Deploying Health Monitoring backing microservice and Adminer database management tool on Docker Compose
 
-* Validate the configurations by connecting to MariaDB:
+* Navigate (if it's not already in) to the root directory of the RPS Game project on your computer and run the [Docker Compose](https://docs.docker.com/compose) command below to deploy [Health Monitoring](https://learn.microsoft.com/en-us/dotnet/architecture/microservices/implement-resilient-applications/monitor-app-health) and Adminer on Docker Compose in the background:
 
 ```
-      > mysql -u root -p
+    > docker compose -f docker-compose-misc.yml up -d
 ```
 
-You will be prompted with password. Enter root password of 12345.
+__Note:__ [Health Monitoring](https://learn.microsoft.com/en-us/dotnet/architecture/microservices/implement-resilient-applications/monitor-app-health) backing microservice and [Adminer](https://www.adminer.org) database management tool are not necessary but can be useful.
+
+You should see the following output:
+
+```
+    [+] Running 2/2
+     ✔ Container adminer                    Started     5.9s 
+     ✔ Container webstatus                  Started     6.9s 
+```
+
+#### 13.2 Verifying deployment
+
+* Verify that [Health Monitoring](https://learn.microsoft.com/en-us/dotnet/architecture/microservices/implement-resilient-applications/monitor-app-health) and Adminer containers are up and running by executing the following [command](https://docs.docker.com/engine/reference/commandline/compose_ps):
+
+```
+    > docker compose -f docker-compose-misc.yml ps
+```
+
+You should see the following output:
+
+```
+  NAME                   IMAGE                                     COMMAND                  SERVICE             CREATED             STATUS                  PORTS
+  adminer                adminer:4.8.1                             "entrypoint.sh php -…"   adminer             About a minute ago  Up About a minute       0.0.0.0:19080->8080/tcp
+  webstatus              rps-app-webstatus                         "dotnet WebStatus.dll"   webstatus           About a minute ago  Up About a minute       80/tcp, 0.0.0.0:15000->5000/tcp
+```
+
+It means that [Health Monitoring](https://learn.microsoft.com/en-us/dotnet/architecture/microservices/implement-resilient-applications/monitor-app-health) and Adminer containers are up and running.
+
+#### 13.3 Using the Health Monitoring
+
+* Navigate to the _webstatus_ microservice:
+
+```
+    > http://localhost:5000/status/hc-ui
+```
+
+and make sure that all the RPS game microservices are up and running.
+
+![health-checks](img/hc.png)
+
+** Status gets refreshed every _10 seconds_
+
+[Health Monitoring](https://learn.microsoft.com/en-us/dotnet/architecture/microservices/implement-resilient-applications/monitor-app-health)
+
+#### 13.4 Taking down containers
+
+* When we don't need [Health Monitoring](https://learn.microsoft.com/en-us/dotnet/architecture/microservices/implement-resilient-applications/monitor-app-health) backing microservice and Adminer database management tool anymore, we can take down containers and delete their corresponding volumes (-v) using the down command below:
+
+```
+     > docker compose -f docker-compose-misc.yml down -v
+```
 
 </details>
 
-[MariaDB Data-at-Rest Encryption Overview](https://mariadb.com/kb/en/data-at-rest-encryption-overview)
+### 14. Running the RPS game microservices
+<details><summary>Local Machine</summary>
+<br>
+* Once the infrastructure ([backing services](https://12factor.net/backing-services)) is deployed, you can build and run
+  microservices.
 
-### 11. Running the RPS game microservices on local machine
+Each microservice has multiple profiles:
 
-* Once the infrastructure ([backing services](https://12factor.net/backing-services)) is deployed, you can run microservices.
+|  **profile name**  |  **is default**  |         **purpose**                |
+|--------------------|------------------|------------------------------------|
+|        dev         |        Yes       |  Development on local machine      |
+|        docker      |        No        |  Deployment on Docker Compose      |
+|        it          |        No        |  Running integration tests         |
+|        prod        |        No        |  Deployment on Kubernetes cluster  |
+
+#### 11.1 Building the RPS game microservices on local machine
+
+* Execute the _mvn clean install_ command in the root directory of the project to build microservices and its
+  dependencies for running on local machine.
+
+```
+      > mvn clean install
+```
+
+__Note:__ Each microservice and shared dependency should normally be hosted in its own git repository.
+
+#### 11.2 Running the RPS game microservices on local machine
 
 * Run the microservices by executing the following commands:
 
@@ -1508,6 +2426,25 @@ You will be prompted with password. Enter root password of 12345.
       http://localhost:8084/score-qry-api/swagger-ui/index.html 
 ```
 
+</details>
+<br>
+<details><summary>Docker Compose</summary>
+<br>
+* Open any browser and navigate to a microservice Open API 3.0 definition (REST API).
+
+```
+            http://localhost/rps-cmd-api/swagger-ui/index.html
+            http://localhost/rps-qry-api/swagger-ui/index.html
+            http://localhost/score-cmd-api/swagger-ui/index.html
+            http://localhost/score-qry-api/swagger-ui/index.html
+```
+
+__Note:__ NGINX is used as API gateway so if you deploy the microservices on docker containers you should remove port
+number from the url.
+</details>
+<br>
+<details><summary>Local Machine && Docker Desktop</summary>
+<br>
 * Click on the __Authorize__ button on the microservice Open API 3.0 definition page:
 
 ![authorize button](img/authorize-button.png)
@@ -1548,926 +2485,9 @@ __Notes:__ [Spring security](https://spring.io/guides/topicals/spring-security-a
 _SecurityConfig_ and _GrpcSecurityConfig_ configuration files configure microservice endpoints access control based on
 Keycloak realm users and roles.
 
-## Docker Compose - Deploying the application on Docker Compose
-
-Microservices active profile is __docker__.
-
-### 1. Setting up the environment
-
-#### 1.1 Prerequisites
-
-* [Docker Desktop](https://www.docker.com/products/docker-desktop)
-
-#### 1.2 Installation of Docker Desktop
-
-* Make sure you have [Docker Desktop](https://www.docker.com/products/docker-desktop) installed using the following
-  command:
-
-```
-      > docker -v
-```
-
-You should see the following output:
-
-```
-      Docker version 24.0.2, build cb74dfc
-```
-
-* If [Docker Desktop](https://www.docker.com/products/docker-desktop) is not installed navigate to the docker website
-  download and install it on your local machine.
-
-<details><summary>Windows 10</summary>
-<br>
-* Follow the installation instructions below to install [Docker Desktop](https://www.docker.com/products/docker-desktop) on Windows 10 machine:
-
-[Install Docker Desktop on Windows](https://docs.docker.com/desktop/install/windows-install)
-
-</details>
-<br>
-<details><summary>Linux Ubuntu 20.04.6 LTS</summary>
-<br>
-* Follow the installation instructions below to install [Docker Desktop](https://www.docker.com/products/docker-desktop) on Linux Ubuntu machine:
-
-[Install Docker Desktop on Ubuntu](https://docs.docker.com/desktop/install/ubuntu)
-
 </details>
 
-#### 1.3 Setting up Docker Desktop (Windows 10 and Linux Ubuntu 20.04.6 LTS)
-
-* [Docker Compose](https://docs.docker.com/compose) is also
-  required. [Docker Desktop](https://www.docker.com/products/docker-desktop)
-  includes [Docker Compose](https://docs.docker.com/compose) along with Docker Engine and Docker CLI which are Compose
-  prerequisites.
-
-[Installation scenarios](https://docs.docker.com/compose/install)
-
-* Check if [Docker Compose](https://docs.docker.com/compose) is installed:
-
-```
-    > docker compose version
-```
-
-You should see the following output:
-
-```
-      Docker Compose version v2.18.1
-```
-
-* Check if Docker Swarm mode is active. To check it, you can simply run the command:
-
-```
-    > docker info
-```
-
-And check the status of the __Swarm__ property.
-
-```
-      Swarm: inactive
-```
-
-* If it is not active, you can simply run the command:
-
-```
-    > docker swarm init
-```
-
-to activate it.
-
-You should see the following output:
-
-```
-      Swarm initialized: current node (1ram5oln14qdk23b08eb5iv3q) is now a manager.
-      
-      To add a worker to this swarm, run the following command:
-      
-          docker swarm join --token SWMTKN-1-0im35q3hssq4ztnp2ftcq8dvyy4zg3sfhfg0twoo80iu8mhv6s-55g0y3u102p52rrunc6our8ji 192.168.1.106:2377
-      
-      To add a manager to this swarm, run 'docker swarm join-token manager' and follow the instructions.
-```
-
-* Launch [Docker Desktop](https://www.docker.com/products/docker-desktop):
-
-```
-    > systemctl --user start docker-desktop
-```
-
-* Ensure that sufficient resources have been allocated to Docker Compose.
-
-* Set [COMPOSE_PROJECT_NAME](https://docs.docker.com/compose/environment-variables/envvars/#compose_project_name) environmental variables:
-
-<details><summary>Windows 10</summary>
-
-```
-    > setx COMPOSE_PROJECT_NAME "rps-app"
-```
-
-</details>
-
-<details><summary>Linux Ubuntu 20.04.6 LTS</summary>
-
-```
-    > export COMPOSE_PROJECT_NAME=rps-app
-    > source /etc/environment
-```
-
-</details>
-
-__Mote:__ By default, the [log file](https://docs.docker.com/engine/reference/commandline/container_logs) directory is:
-
-<details><summary>Linux Ubuntu 20.04.6 LTS</summary>
-<br>
-
-```
-      _/var/lib/docker/containers/<container_id>_
-```
-
-</details>
-
-on the host where the container is running.
-
-### 2. Deploying Keycloak standalone server on Docker Compose
-
-<br>
-<details><summary>Docker Desktop</summary>
-<br>
-
-#### 2.1 Deploying Keycloak standalone server on Docker Compose
-
-* Then navigate to the root directory of the RPS Game project on your computer and run
-  the [Docker Compose](https://docs.docker.com/compose) command below to
-  deploy [Keycloak 18.0.0](https://www.keycloak.org) on Docker Compose in the background:
-
-```
-    > docker compose -f docker-compose-kc.yml up -d
-```
-
-You should see the following output:
-
-```
-    [+] Running 4/4
-    ✔ Network rps_net                             Created     0.2s
-    ✔ Volume "rps_app_postgresql-data"            Created     0.0s
-    ✔ Container rps-app-postgresql-1              Started     2.0s
-    ✔ Container rps-app-keycloak-1                Started     2.1s
-```
-
-#### 2.2 Verifying deployment
-
-* Verify that [Keycloak 18.0.0](https://www.keycloak.org) and [PostgreSQL](https://www.postgresql.org) containers are up
-  and running by executing the following command:
-
-```
-    > docker compose -f docker-compose-kc.yml ps
-```
-
-You should see the following output:
-
-```
-    NAME                             IMAGE                                     COMMAND                  SERVICE             CREATED             STATUS              PORTS
-    rps-app-keycloak-1    m          rps-app-keycloak                          "/opt/bitnami/keyclo…"   keycloak            2 minutes ago       Up 2 minutes        0.0.0.0:28080->8080/tcp
-    rps-app-postgresql-1             bitnami/postgresql:14.2.0-debian-10-r95   "/opt/bitnami/script…"   postgresql          2 minutes ago       Up 2 minutes        0.0.0.0:15432->5432/tcp
-```
-
-It means that [Keycloak 18.0.0](https://www.keycloak.org) and [PostgreSQL](https://www.postgresql.org) containers are up
-and running.
-
-__Note:__ Make sure that necessary external ports are not in use. If so, kill the processes by executing the following commands:
-
-<details><summary>Windows 10</summary>
-
-```
-    > netstat -ano | findStr "<necessary external port>"
-    > tasklist /fi "<pid of the proccess>"
-```
-
-</details>
-
-<details><summary>Linux Ubuntu 20.04.6 LTS</summary>
-
-```
-    > sudo fuser -k <necessary external port>/tcp
-```
-
-</details>
-
-#### 2.3 Using the Keycloak
-
-* Navigate to the _keycloak_ microservice administration console:
-
-```
-    > http://localhost:28080/admin
-```
-
-Enter credentials below:
-
-| **user name**  | **password** |  
-|----------------|--------------|
-|     admin      |   admin      |
-
-and make sure that _rps-dev_ realm has been activated.
-
-#### 2.4 Taking down containers
-
-* When we don't need keycloak container anymore, we can take down containers and delete their corresponding
-  volumes (-v) using the down command below:
-
-```
-     > docker compose -f docker-compose-kc.yml down -v
-```
-
-</details>
-
-### 3. Deploying MongoDB, MariaDB and Redis standalone database servers on Docker Compose
-
-<br>
-<details><summary>Docker Desktop</summary>
-<br>
-
-#### 3.1 Deploying MongoDB, MariaDB and Redis standalone database servers on Docker Compose
-
-* Navigate (if it's not already in) to the root directory of the RPS Game project on your computer and run
-  the [Docker Compose](https://docs.docker.com/compose) command below to deploy standalone database servers on Docker
-  Compose in the background:
-
-```
-    > docker compose -f docker-compose-general.yml up -d
-```
-
-You should see the following output:
-
-```
-    [+] Running 3/3
-     ✔ Container rps-app-redis-1    Started     0.0s 
-     ✔ Container rps-app-mongodb-1  Started     0.0s 
-     ✔ Container rps-app-mariadb-1  Started     0.0s 
-```
-
-#### 3.2 Verifying deployment
-
-* Verify that [MongoDB](https://www.mongodb.com), [MariaDB](https://mariadb.org) and [Redis](https://redis.io)
-  containers are up and running by executing the following command:
-
-```
-    > docker compose -f docker-compose-general.yml ps
-```
-
-You should see the following output:
-
-```
-    NAME                             IMAGE                                     COMMAND                  SERVICE             CREATED             STATUS              PORTS
-    rps-app-mariadb-1                bitnami/mariadb:10.6                      "/opt/bitnami/script…"   mariadb             6 minutes ago       Up 5 minutes        0.0.0.0:13306->3306/tcp
-    rps-app-mongodb-1                mongo:4.4                                 "docker-entrypoint.s…"   mongo               6 minutes ago       Up 5 minutes        0.0.0.0:28017->27017/tcp
-    rps-app-redis-1                  bitnami/redis:4.0.9-r24                   "/app-entrypoint.sh …"   cache               6 minutes ago       Up 5 minutes        0.0.0.0:16379->6379/tcp
-```
-
-It means that [MongoDB](https://www.mongodb.com), [MariaDB](https://mariadb.org) and [Redis](https://redis.io) containers are up and running.
-
-#### 3.3 Taking down containers
-
-* When we don't need database containers anymore, we can take down containers and delete their corresponding
-  volumes (-v) using the down command below:
-
-```
-     > docker compose -f docker-compose-general.yml down -v
-```
-
-</details>
-
-### 4. Deploying Kafka cluster on Docker Compose
-
-<br>
-<details><summary>Docker Desktop</summary>
-<br>
-
-#### 4.1 Deploying Kafka cluster on Docker Compose
-
-* Navigate (if it's not already in) to the root directory of the RPS Game project on your computer and run
-  the [Docker Compose](https://docs.docker.com/compose) command below to deploy Kafka cluster on Docker Compose in the
-  background:
-
-```
-    > docker compose -f docker-compose-kafka.yml up -d
-```
-
-You should see the following output:
-
-```
-    [+] Running 6/6
-     ✔ Container rps-app-zk-3-1     Started     0.0s 
-     ✔ Container rps-app-zk-1-1     Started     0.0s 
-     ✔ Container rps-app-zk-2-1     Started     0.0s 
-     ✔ Container rps-app-kafka-3-1  Started     0.0s 
-     ✔ Container rps-app-kafka-1-1  Started     0.0s 
-     ✔ Container rps-app-kafka-2-1  Started     0.0s
-```
-
-#### 4.2 Verifying deployment
-
-* Verify that Zookeeper and Kafka containers are up and running by executing the
-  following [command](https://docs.docker.com/engine/reference/commandline/compose_ps):
-
-```
-    > docker compose -f docker-compose-kafka.yml ps
-```
-
-You should see the following output:
-
-```
-    NAME                             IMAGE                                     COMMAND                  SERVICE             CREATED             STATUS              PORTS
-    rps-app-kafka-1-1                bitnami/kafka:2.7.0                       "/opt/bitnami/script…"   kafka-1             4 minutes ago       Up 3 minutes        9092/tcp, 0.0.0.0:19093->9093/tcp
-    rps-app-kafka-2-1                bitnami/kafka:2.7.0                       "/opt/bitnami/script…"   kafka-2             4 minutes ago       Up 3 minutes        9092/tcp, 0.0.0.0:19094->9094/tcp
-    rps-app-kafka-3-1                bitnami/kafka:2.7.0                       "/opt/bitnami/script…"   kafka-3             4 minutes ago       Up 3 minutes        9092/tcp, 0.0.0.0:19095->9095/tcp
-    rps-app-zk-1-1                   bitnami/zookeeper:3.8.0                   "/opt/bitnami/script…"   zk-1                4 minutes ago       Up 4 minutes        2888/tcp, 3888/tcp, 8080/tcp, 0.0.0.0:12181->2181/tcp
-    rps-app-zk-2-1                   bitnami/zookeeper:3.8.0                   "/opt/bitnami/script…"   zk-2                4 minutes ago       Up 4 minutes        2888/tcp, 3888/tcp, 8080/tcp, 0.0.0.0:12182->2181/tcp
-    rps-app-zk-3-1                   bitnami/zookeeper:3.8.0                   "/opt/bitnami/script…"   zk-3                4 minutes ago       Up 4 minutes        2888/tcp, 3888/tcp, 8080/tcp, 0.0.0.0:12183->2181/tcp
-```
-
-It means that Zookeeper and Kafka containers are up and running.
-
-#### 4.3 Taking down containers
-
-* When we don't need Kafka cluster anymore, we can take down containers and delete their corresponding
-  volumes (-v) using the down command below:
-
-```
-     > docker compose -f docker-compose-kafka.yml down -v
-```
-
-</details>
-
-### 5. Deploying RPS Game Command microservice on Docker Compose
-
-<br>
-<details><summary>Docker Desktop</summary>
-<br>
-
-#### 5.1 Deploying RPS Game Command microservice on Docker Compose
-
-* Navigate (if it's not already in) to the root directory of the RPS Game project on your computer and run
-  the [Docker Compose](https://docs.docker.com/compose) command below to deploy the RPS Game Command microservice on
-  Docker Compose in the background:
-
-```
-    > docker compose -f docker-compose-api-rps-cmd.yml up -d
-```
-
-You should see the following output:
-
-```
-    [+] Running 1/1
-     ✔ Container rps-app-rps-cmd-service-1             Started       1.7s 
-```
-
-#### 5.2 Verifying deployment
-
-* Verify that RPS Game Command microservice container is up and running by executing the
-  following [command](https://docs.docker.com/engine/reference/commandline/compose_ps):
-
-```
-    > docker compose -f docker-compose-api-rps-cmd.yml ps
-```
-
-You should see the following output:
-
-```
-    NAME                             IMAGE                                     COMMAND                  SERVICE             CREATED             STATUS              PORTS
-    rps-app-rps-cmd-service-1        rps-app-rps-cmd-service                   "java -Dspring.profi…"   rps-cmd-service     2 minutes ago       Up 2 minutes        8080/tcp, 0.0.0.0:18081->80/tcp, 0.0.0.0:16566->6565/tcp
-```
-
-It means that RPS Game Command microservice is up and running.
-
-#### 5.3 Taking down containers
-
-* When we don't need RPS Game Command microservice anymore, we can take down container and delete their corresponding
-  volumes (-v) using the down command below:
-
-```
-     > docker compose -f docker-compose-api-rps-cmd.yml down -v
-```
-
-</details>
-
-### 6. Deploying RPS Game Query microservice on Docker Compose
-
-<br>
-<details><summary>Docker Desktop</summary>
-<br>
-
-#### 6.1 Deploying RPS Game Query microservice on Docker Compose
-
-* Navigate (if it's not already in) to the root directory of the RPS Game project on your computer and run
-  the [Docker Compose](https://docs.docker.com/compose) command below to deploy the RPS Game Query microservice on
-  Docker Compose in the background:
-
-```
-    > docker compose -f docker-compose-api-rps-qry.yml up -d
-```
-
-You should see the following output:
-
-```
-    [+] Running 1/1
-     ✔ Container rps-app-rps-qry-service-1             Started       2.3s 
-```
-
-#### 6.2 Verifying deployment
-
-* Verify that RPS Game Query microservice container is up and running by executing the
-  following [command](https://docs.docker.com/engine/reference/commandline/compose_ps):
-
-```
-    > docker compose -f docker-compose-api-rps-qry.yml ps
-```
-
-You should see the following output:
-
-```
-    NAME                             IMAGE                                     COMMAND                  SERVICE             CREATED             STATUS              PORTS
-    rps-app-rps-qry-service-1        rps-app-rps-qry-service                   "java -Dspring.profi…"   rps-qry-service     2 minutes ago       Up 2 minutes        8080/tcp, 0.0.0.0:18082->80/tcp, 0.0.0.0:16567->6565/tcp
-```
-
-It means that RPS Game Query microservice is up and running.
-
-#### 6.3 Taking down containers
-
-* When we don't need RPS Game Query microservice anymore, we can take down container and delete their corresponding
-  volumes (-v) using the down command below:
-
-```
-     > docker compose -f docker-compose-api-rps-qry.yml down -v
-```
-
-</details>
-
-### 7. Deploying Score Command microservice on Docker Compose
-
-<br>
-<details><summary>Docker Desktop</summary>
-<br>
-
-#### 7.1 Deploying Score Command microservice on Docker Compose
-
-* Navigate (if it's not already in) to the root directory of the RPS Game project on your computer and run
-  the [Docker Compose](https://docs.docker.com/compose) command below to deploy the Score Command microservice on Docker
-  Compose in the background:
-
-```
-    > docker compose -f docker-compose-api-score-cmd.yml up -d
-```
-
-You should see the following output:
-
-```
-    [+] Running 1/1
-     ✔ Container rps-app-score-cmd-service-1           Started       2.0s 
-```
-
-#### 7.2 Verifying deployment
-
-* Verify that Score Command microservice container is up and running by executing the
-  following [command](https://docs.docker.com/engine/reference/commandline/compose_ps):
-
-```
-    > docker compose -f docker-compose-api-score-cmd.yml ps
-```
-
-You should see the following output:
-
-```
-    NAME                             IMAGE                                     COMMAND                  SERVICE             CREATED             STATUS              PORTS
-    rps-app-score-cmd-service-1      rps-app-score-cmd-service                 "java -Dspring.profi…"   score-cmd-service   2 minutes ago       Up 2 minutes        8080/tcp, 0.0.0.0:18083->80/tcp, 0.0.0.0:16568->6565/tcp
-```
-
-It means that Score Command microservice is up and running.
-
-#### 7.3 Taking down containers
-
-* When we don't need Score Command microservice anymore, we can take down container and delete their corresponding
-  volumes (-v) using the down command below:
-
-```
-     > docker compose -f docker-compose-api-score-cmd.yml down -v
-```
-
-</details>
-
-### 8. Deploying Score Query microservice on Docker Compose
-
-<br>
-<details><summary>Docker Desktop</summary>
-<br>
-
-#### 8.1 Deploying Score Query microservice on Docker Compose
-
-* Navigate (if it's not already in) to the root directory of the RPS Game project on your computer and run
-  the [Docker Compose](https://docs.docker.com/compose) command below to deploy the Score Query microservice on Docker
-  Compose in the background:
-
-```
-    > docker compose -f docker-compose-api-score-qry.yml up -d
-```
-
-You should see the following output:
-
-```
-    [+] Running 1/1
-     ✔ Container rps-app-score-qry-service-1           Started       1.9s 
-```
-
-#### 8.2 Verifying deployment
-
-* Verify that Score Query microservice container is up and running by executing the
-  following [command](https://docs.docker.com/engine/reference/commandline/compose_ps):
-
-```
-    > docker compose -f docker-compose-api-score-qry.yml ps
-```
-
-You should see the following output:
-
-```
-    NAME                             IMAGE                                     COMMAND                  SERVICE             CREATED             STATUS              PORTS
-    rps-app-score-qry-service-1      rps-app-score-qry-service                 "java -Dspring.profi…"   score-qry-service   2 minutes ago       Up 2 minutes        8080/tcp, 0.0.0.0:18084->80/tcp, 0.0.0.0:16569->6565/tcp
-```
-
-It means that Score Query microservice is up and running.
-
-#### 8.3 Taking down containers
-
-* When we don't need Score Query microservice anymore, we can take down container and delete their corresponding
-  volumes (-v) using the down command below:
-
-```
-     > docker compose -f docker-compose-api-score-qry.yml down -v
-```
-
-</details>
-
-### 9. Deploying Nginx as api gateway for REST and gRPC microservices on Docker Compose
-
-<br>
-<details><summary>Docker Desktop</summary>
-<br>
-
-#### 9.1 Deploying Nginx as API gateway for REST and gRPC microservices on Docker Compose
-
-* Navigate (if it's not already in) to the root directory of the RPS Game project on your computer and run
-  the [Docker Compose](https://docs.docker.com/compose) command below to deploy [Nginx](https://www.nginx.com) as api gateway for REST and gRPC microservices on Docker Compose in the
-  background:
-
-```
-    > docker compose -f docker-compose-api-gw.yml up -d
-```
-
-You should see the following output:
-
-```
-    [+] Running 1/1
-     ✔ Container rps-app-nginx-1        Started     0.0s 
-```
-
-#### 9.2 Verifying deployment
-
-* Verify that [Nginx](https://www.nginx.com) container is up and running by executing the following [command](https://docs.docker.com/engine/reference/commandline/compose_ps):
-
-```
-    > docker compose -f docker-compose-api-gw.yml ps
-```
-
-You should see the following output:
-
-```
-  NAME                             IMAGE                                     COMMAND                  SERVICE             CREATED              STATUS                          PORTS
-  rps-app-nginx-1                            rps-app-nginx                             "nginx -g 'daemon of…"   nginx               About a minute ago   Up About a minute   
-```
-
-It means that Nginx container is up and running.
-
-__Note:__ The [Nginx](https://www.nginx.com) configuration is stored in the _./infrastructure/nginx/conf.d/default.conf_ file.
-
-[Building Microservices: Using an API Gateway](https://www.nginx.com/blog/building-microservices-using-an-api-gateway)
-
-#### 9.3 Taking down containers
-
-* When we don't need [Nginx](https://www.nginx.com) api gateway anymore, we can take down container and delete its corresponding volumes (-v) using the down command below:
-
-```
-     > docker compose -f docker-compose-api-gw.yml down -v
-```
-
-</details>
-
-### 10. Deploying Prometheus and Grafana backing service on Docker Compose
-
-<br>
-<details><summary>Docker Desktop</summary>
-<br>
-
-#### 10.1 Deploying Prometheus and Grafana on Docker Compose
-
-* Navigate (if it's not already in) to the root directory of the RPS Game project on your computer and run the [Docker Compose](https://docs.docker.com/compose) command below to deploy [Prometheus](https://prometheus.io) and [Grafana](https://prometheus.io/docs/visualization/grafana) on Docker Compose in the background:
-
-```
-    > docker compose -f docker-compose-metrics.yml up -d
-```
-
-You should see the following output:
-
-```
-    [+] Running 2/2
-     ✔ Container prometheus     Started     0.0s 
-     ✔ Container grafana        Started     0.0s 
-```
-
-#### 10.2 Verifying deployment
-
-* Verify that Prometheus and Grafana containers are up and running by executing the
-  following [command](https://docs.docker.com/engine/reference/commandline/compose_ps):
-
-```
-    > docker compose -f docker-compose-metrics.yml ps
-```
-
-You should see the following output:
-
-```
-  NAME                             IMAGE                                     COMMAND                  SERVICE             CREATED              STATUS                          PORTS
-  grafana                          grafana/grafana:10.0.1                    "/run.sh"                grafana             About a minute ago   Up About a minute               0.0.0.0:3000->3000/tcp
-  prometheus                       prom/prometheus:v2.45.0                   "/bin/prometheus --c…"   prometheus          About a minute ago   Up About a minute               0.0.0.0:9090->9090/tcp
-```
-
-It means that [Prometheus](https://prometheus.io) and [Grafana](https://prometheus.io/docs/visualization/grafana) containers are up and running.
-
-#### 10.3 Using Prometheus
-
-* Navigate to the _prometheus_ endpoint of microservices:
-
-```
-            http://localhost/rps-cmd-api/actuator/prometheus
-            http://localhost/rps-qry-api/actuator/prometheus
-            http://localhost/score-cmd-api/actuator/prometheus
-            http://localhost/score-qry-api/actuator/prometheus
-```
-
-and make sure that all the RPS game microservices are exposing metrics to [Prometheus](https://prometheus.io).
-
-* Then, navigate to the _target_ page (Status -> Targets) of the _prometheus_ microservice:
-
-```
-    > http://localhost:9090/targets
-```
-
-and make sure that [Prometheus](https://prometheus.io) is scraping from our microservices properly.
-
-![scraping jobs](img/prometheus.png)
-
-** Status gets refreshed every _5 seconds_
-
-__Note:__ The [Prometheus](https://prometheus.io) configuration file is located at _./infrastructure/metrics/prometheus/prometheus.yml_.
-
-#### 10.4 Using Grafana
-
-* Navigate to the _grafana_ microservice:
-
-```
-    > http://localhost:3000
-```
-
-the login window appears. Enter credentials below:
-
-| **user name**  | **password** |
-|----------------|--------------|
-|     admin      |   admin      |
-
-and then navigate to the _Dashboards_ page:
-
-```
-    > http://localhost:3000/dashboards
-```
-
-You will see the preconfigured dashboards powered by our _prometheus datasorce_ in the list:
-
-![grafana dashboards](img/grafana-dashboards.png)
-
-Select any dashboard from the list. You will be redirected to the dashboard main page. Select the application you want to monitor from the __Application__ dropdown list:
-
-![grafana dashboards application list](img/grafana-dashboard-apps-list.png)
-
-__Note:__ The [Grafana](https://grafana.com) preconfigured datasources are stored in the _./infrastructure/metrics/grafana/provisioning/datasources_ folder. The preconfigured [Grafana](https://grafana.com)
-dashboard templates are stored in the _./infrastructure/metrics/grafana/provisioning/dashboards_ folder. You can find more dashboard templates from [Grafana Dashboards](https://grafana.com/grafana/dashboards) website.
-
-[Grafana Tutorials](https://grafana.com/tutorials)
-
-#### 10.5 Taking down containers
-
-* When we don't need Prometheus and Grafana microservices anymore, we can take down containers and delete their corresponding
-  volumes (-v) using the down command below:
-
-```
-     > docker compose -f docker-compose-metrics.yml down -v
-```
-
-</details>
-
-### 11. Deploying Elasticsearch, Logstash, Filebeat and Kibana backing service on Docker Compose
-
-<br>
-<details><summary>Docker Desktop</summary>
-<br>
-
-#### 11.1 Deploying Elasticsearch, Logstash, Filebeat and Kibana on Docker Compose
-
-* Navigate (if it's not already in) to the root directory of the RPS Game project on your computer and run the [Docker Compose](https://docs.docker.com/compose) command below to deploy [Elasticsearch](https://www.elastic.co), [Logstash](https://www.elastic.co/logstash) and [Kibana](https://www.elastic.co/kibana) on Docker Compose in the background:
-
-```
-    > docker compose -f docker-compose-elk.yml up -d
-```
-
-You should see the following output:
-
-```
-    [+] Running 4/4
-     ✔ Container rps-app-elasticsearch-1              Started     5.9s 
-     ✔ Container rps-app-kibana-1                     Started     6.9s 
-     ✔ Container rps-app-logstash-1                   Started     7.0s 
-     ✔ Container rps-app-filebeat-1                   Started     8.0s
-```
-
-#### 11.2 Verifying deployment
-
-* Verify that [Elasticsearch](https://www.elastic.co), [Logstash](https://www.elastic.co/logstash), [Filebeat](https://www.elastic.co/beats/filebeat) and [Kibana](https://www.elastic.co/kibana) containers are up and running by executing the
-  following [command](https://docs.docker.com/engine/reference/commandline/compose_ps):
-
-```
-    > docker compose -f docker-compose-elk.yml ps
-```
-
-You should see the following output:
-
-```
-  NAME                             IMAGE                                     COMMAND                  SERVICE             CREATED             STATUS                  PORTS
-  rps-app-elasticsearch-1          elastic/elasticsearch:6.8.23              "/usr/local/bin/dock…"   elasticsearch       3 hours ago         Up Less than a second   0.0.0.0:9200->9200/tcp, 0.0.0.0:9300->9300/tcp
-  rps-app-filebeat-1               elastic/filebeat:6.8.23                   "/usr/local/bin/dock…"   filebeat            3 hours ago         Up 3 hours              
-  rps-app-kibana-1                 elastic/kibana:6.8.23                     "/usr/local/bin/kiba…"   kibana              3 hours ago         Up About a minute       0.0.0.0:5601->5601/tcp
-  rps-app-logstash-1               elastic/logstash:6.8.23                   "/usr/local/bin/dock…"   logstash            3 hours ago         Up 3 hours              0.0.0.0:5044->5044/tcp, 0.0.0.0:9600->9600/tcp, 0.0.0.0:50000->50000/tcp, 0.0.0.0:50000->50000/udp
-```
-
-It means that [Elasticsearch](https://www.elastic.co), [Logstash](https://www.elastic.co/logstash), [Filebeat](https://www.elastic.co/beats/filebeat) and [Kibana](https://www.elastic.co/kibana) containers are up and running.
-
-#### 11.3 Using Kibana
-
-* Navigate to the _kibana_ microservice:
-
-```
-    > http://localhost:5601
-```
-
-__Note:__ When attempting to access [Kibana](https://www.elastic.co/kibana) while it’s starting, a message saying that [Kibana](https://www.elastic.co/kibana) is not ready yet will be displayed in the browser. Give it a minute or two and then you are good to go.
-
-When using [Kibana](https://www.elastic.co/kibana), you will need to add the index __"rps-app-%{+YYYY.MM.dd}"__ we created earlier in logstash config file _./infrastructure/elk/logstash/pipeline/logstash.conf_ to get the information:
-
-```
-    elasticsearch {
-      hosts => "http://host.docker.internal:9200"
-      index => "rps-app-%{+YYYY.MM.dd}"
-      user => "${LOGSTASH_INTERNAL_USER}"
-      password => "${LOGSTASH_INTERNAL_PASSWORD}"
-    }
-```
-
-To do this, access the [Kibana](https://www.elastic.co/kibana) and on the left hand side menu, click the __Discover__ menu item.
-
-![kibana discover](img/kibana-home.png)
-
-[Kibana](https://www.elastic.co/kibana) uses index patterns for retrieving data from [Elasticsearch](https://www.elastic.co). So, to get started, you must create an index pattern. In this page, you should see an index that has been created by Logstash. To create a pattern for matching this index, enter __rps-app-*__ and then click the Next button.
-
-![kibana create index pattern](img/kibana-create-index-pattern.png)
-
-Then pick a field for filtering the data by time. Choose __@timestamp__ field from the __Time Filter field name__ drop-down list and click the __Create Index Pattern__ button.
-
-![kibana add time filter](img/kibana-time-filter.png)
-
-The __rps-app-*__ index pattern will be created.
-
-![kibana index created](img/kibana-index-created.png)
-
-Click again the __Discover__ menu item and the log events related to the RPS Game application will be shown:
-
-![kibana logs](img/kibana-logs.png)
-
-__Note:__ The [Elasticsearch](https://www.elastic.co) configuration is stored in the _./infrastructure/elk/elasticsearch/config/elasticsearch.yml_ file.  
-The [Logstash](https://www.elastic.co/logstash) configuration is stored in the _./infrastructure/elk/logstash_ folder.   
-The [Filebeat](https://www.elastic.co/beats/filebeat) configuration is stored in the _./infrastructure/elk/filebeat/filebeat.yml_ file.
-
-__Note:__ The [Filebeat](https://www.elastic.co/beats/filebeat) collects logs only from containers ending with __"-service"__. It can be changed in the _./infrastructure/elk/filebeat/filebeat.yml_ file.
-
-```
-        - condition:
-            contains:
-              docker.container.image: "-service" # collect logs from containers ending with "-service"
-```
-
-There are currently six official Beats from Elastic: [Beats Family](https://www.elastic.co/beats)
-
-The [Kibana](https://www.elastic.co/kibana) configuration is stored in the _./infrastructure/elk/kibana/config/kibana.yml_ file.
-
-[Running Elasticsearch on Docker](https://www.elastic.co/guide/en/elasticsearch/reference/6.8/docker.html)  
-[Running Kibana on Docker](https://www.elastic.co/guide/en/kibana/6.8/docker.html)  
-[Kibana Tutorials](https://www.elastic.co/guide/en/kibana/current/get-started.html)
-[Getting started with the Elastic Stack and Docker-Compose](https://www.elastic.co/blog/getting-started-with-the-elastic-stack-and-docker-compose)
-
-#### 11.4 Taking down containers
-
-* When we don't need [Elasticsearch](https://www.elastic.co), [Logstash](https://www.elastic.co/logstash) and [Kibana](https://www.elastic.co/kibana) backing microservices anymore, we can take down containers and delete their corresponding
-  volumes (-v) using the down command below:
-
-```
-     > docker compose -f docker-compose-elk.yml down -v
-```
-
-</details>
-
-### 12. Deploying Health Monitoring backing microservice and Adminer database management tool on Docker Compose
-
-<br>
-<details><summary>Docker Desktop</summary>
-<br>
-
-#### 12.1 Deploying Health Monitoring backing microservice and Adminer database management tool on Docker Compose
-
-* Navigate (if it's not already in) to the root directory of the RPS Game project on your computer and run the [Docker Compose](https://docs.docker.com/compose) command below to deploy [Health Monitoring](https://learn.microsoft.com/en-us/dotnet/architecture/microservices/implement-resilient-applications/monitor-app-health) and Adminer on Docker Compose in the background:
-
-```
-    > docker compose -f docker-compose-misc.yml up -d
-```
-
-__Note:__ [Health Monitoring](https://learn.microsoft.com/en-us/dotnet/architecture/microservices/implement-resilient-applications/monitor-app-health) backing microservice and [Adminer](https://www.adminer.org) database management tool are not necessary but can be useful.
-
-You should see the following output:
-
-```
-    [+] Running 2/2
-     ✔ Container adminer                    Started     5.9s 
-     ✔ Container webstatus                  Started     6.9s 
-```
-
-#### 12.2 Verifying deployment
-
-* Verify that [Health Monitoring](https://learn.microsoft.com/en-us/dotnet/architecture/microservices/implement-resilient-applications/monitor-app-health) and Adminer containers are up and running by executing the following [command](https://docs.docker.com/engine/reference/commandline/compose_ps):
-
-```
-    > docker compose -f docker-compose-misc.yml ps
-```
-
-You should see the following output:
-
-```
-  NAME                   IMAGE                                     COMMAND                  SERVICE             CREATED             STATUS                  PORTS
-  adminer                adminer:4.8.1                             "entrypoint.sh php -…"   adminer             About a minute ago  Up About a minute       0.0.0.0:19080->8080/tcp
-  webstatus              rps-app-webstatus                         "dotnet WebStatus.dll"   webstatus           About a minute ago  Up About a minute       80/tcp, 0.0.0.0:15000->5000/tcp
-```
-
-It means that [Health Monitoring](https://learn.microsoft.com/en-us/dotnet/architecture/microservices/implement-resilient-applications/monitor-app-health) and Adminer containers are up and running.
-
-#### 12.3 Using the Health Monitoring
-
-* Navigate to the _webstatus_ microservice:
-
-```
-    > http://localhost:5000/status/hc-ui
-```
-
-and make sure that all the RPS game microservices are up and running.
-
-![health-checks](img/hc.png)
-
-** Status gets refreshed every _10 seconds_
-
-[Health Monitoring](https://learn.microsoft.com/en-us/dotnet/architecture/microservices/implement-resilient-applications/monitor-app-health)
-
-#### 12.4 Taking down containers
-
-* When we don't need [Health Monitoring](https://learn.microsoft.com/en-us/dotnet/architecture/microservices/implement-resilient-applications/monitor-app-health) backing microservice and Adminer database management tool anymore, we can take down containers and delete their corresponding volumes (-v) using the down command below:
-
-```
-     > docker compose -f docker-compose-misc.yml down -v
-```
-
-</details>
-
-### 3. Running the RPS game microservices deployed on Docker Compose
-
-* Open any browser and navigate to a microservice Open API 3.0 definition (REST API).
-
-```
-            http://localhost/rps-cmd-api/swagger-ui/index.html
-            http://localhost/rps-qry-api/swagger-ui/index.html
-            http://localhost/score-cmd-api/swagger-ui/index.html
-            http://localhost/score-qry-api/swagger-ui/index.html
-```
-
-__Note:__ NGINX is used as API gateway so if you deploy the microservices on docker containers you should remove port
-number from the url.
+### 15. Notes
 
 ***
 
