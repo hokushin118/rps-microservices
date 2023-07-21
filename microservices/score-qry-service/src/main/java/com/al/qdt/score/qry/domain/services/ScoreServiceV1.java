@@ -1,23 +1,30 @@
 package com.al.qdt.score.qry.domain.services;
 
-import com.al.qdt.common.api.dto.ScoreAdminDto;
-import com.al.qdt.common.api.dto.ScoreDto;
 import com.al.qdt.common.domain.enums.Player;
+import com.al.qdt.cqrs.queries.SortingOrder;
+import com.al.qdt.score.qry.api.dto.ScoreAdminDto;
+import com.al.qdt.score.qry.api.dto.ScoreAdminPagedResponseDto;
+import com.al.qdt.score.qry.api.dto.ScorePagedResponseDto;
 
 import java.util.UUID;
 
 /**
  * Score REST API service.
+ *
  * @version 1
  */
 public interface ScoreServiceV1 {
 
     /**
-     * Returns all scores for admin users.
+     * Returns all scores with pagination for admin users.
      *
+     * @param currentPage  current page
+     * @param pageSize     page size
+     * @param sortBy       sorting field
+     * @param sortingOrder sorting order
      * @return collection of scores
      */
-    Iterable<ScoreAdminDto> all();
+    ScoreAdminPagedResponseDto all(int currentPage, int pageSize, String sortBy, SortingOrder sortingOrder);
 
     /**
      * Find score for admin users by id.
@@ -28,35 +35,51 @@ public interface ScoreServiceV1 {
     ScoreAdminDto findById(UUID id);
 
     /**
-     * Find scores for admin users by user id.
+     * Find scores by user id with pagination for admin users.
      *
-     * @param userId user id
+     * @param userId       user id
+     * @param currentPage  current page
+     * @param pageSize     page size
+     * @param sortBy       sorting field
+     * @param sortingOrder sorting order
      * @return found scores
      */
-    Iterable<ScoreAdminDto> findByUserId(UUID userId);
+    ScoreAdminPagedResponseDto findByUserId(UUID userId, int currentPage, int pageSize, String sortBy, SortingOrder sortingOrder);
 
     /**
-     * Find scores for admin users by winner.
+     * Find scores by winner with pagination for admin users.
      *
-     * @param player winner
+     * @param player       winner
+     * @param currentPage  current page
+     * @param pageSize     page size
+     * @param sortBy       sorting field
+     * @param sortingOrder sorting order
      * @return found scores
      */
-    Iterable<ScoreAdminDto> findByWinner(Player player);
+    ScoreAdminPagedResponseDto findByWinner(Player player, int currentPage, int pageSize, String sortBy, SortingOrder sortingOrder);
 
     /**
-     * Find scores for admin users by user id and winner.
+     * Find scores by user id and winner with pagination for admin users.
      *
-     * @param userId user id
-     * @param player winner
+     * @param userId       user id
+     * @param player       winner
+     * @param currentPage  current page
+     * @param pageSize     page size
+     * @param sortBy       sorting field
+     * @param sortingOrder sorting order
      * @return found scores
      */
-    Iterable<ScoreAdminDto> findByUserIdAndWinner(UUID userId, Player player);
+    ScoreAdminPagedResponseDto findByUserIdAndWinner(UUID userId, Player player, int currentPage, int pageSize, String sortBy, SortingOrder sortingOrder);
 
     /**
-     * Find my scores.
+     * Find my scores with pagination.
      *
-     * @param userId user id
+     * @param userId       user id
+     * @param currentPage  current page
+     * @param pageSize     page size
+     * @param sortBy       sorting field
+     * @param sortingOrder sorting order
      * @return found scores
      */
-    Iterable<ScoreDto> findMyScores(UUID userId);
+    ScorePagedResponseDto findMyScores(UUID userId, int currentPage, int pageSize, String sortBy, SortingOrder sortingOrder);
 }

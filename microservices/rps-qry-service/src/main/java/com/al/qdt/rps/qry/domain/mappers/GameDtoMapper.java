@@ -1,7 +1,7 @@
 package com.al.qdt.rps.qry.domain.mappers;
 
-import com.al.qdt.common.api.dto.GameAdminDto;
-import com.al.qdt.common.api.dto.GameDto;
+import com.al.qdt.rps.qry.api.dto.GameAdminDto;
+import com.al.qdt.rps.qry.api.dto.GameDto;
 import com.al.qdt.common.domain.mappers.CommonConfig;
 import com.al.qdt.rps.qry.domain.entities.Game;
 import org.mapstruct.Mapper;

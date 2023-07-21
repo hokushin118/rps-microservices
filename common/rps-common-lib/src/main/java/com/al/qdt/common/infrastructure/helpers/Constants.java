@@ -37,6 +37,8 @@ public class Constants {
     public static final String GAME_RESPONSE_EXPECTED_JSON = "{\"user_choice\":\"ROCK\",\"machine_choice\":\"SCISSORS\",\"result\":\"USER\"}";
     public static final String GAME_EXPECTED_JSON = "{\"id\":\"748873ec-f887-4090-93ff-f8b8cbb34c7a\",\"hand\":\"ROCK\"}";
     public static final String GAME_ADMIN_EXPECTED_JSON = "{\"id\":\"748873ec-f887-4090-93ff-f8b8cbb34c7a\",\"user_id\":\"558873ec-f887-4090-93ff-f8b8cbb34c7a\",\"hand\":\"ROCK\"}";
+    public static final String GAME_DTO_RESPONSE_EXPECTED_JSON = "{\"games\":[{\"id\":\"748873ec-f887-4090-93ff-f8b8cbb34c7a\",\"hand\":\"ROCK\"}],\"paging\":{\"current_page\":1,\"page_size\":10,\"total_elements\":1}}";
+    public static final String GAME_DTO_ADMIN_RESPONSE_EXPECTED_JSON = "{\"games\":[{\"id\":\"748873ec-f887-4090-93ff-f8b8cbb34c7a\",\"user_id\":\"748873ec-f887-4090-93ff-f8b8cbb34c7a\",\"hand\":\"ROCK\"}],\"paging\":{\"current_page\":1,\"page_size\":10,\"total_elements\":1}}";
     public static final String GAME_REQUEST_EXPECTED_JSON = "{\"hand\":\"ROCK\"}";
     public static final String HAND_EXAMPLE = "ROCK";
     public static final String GAMES_EXPECTED_JSON = "[{\"id\":\"748873ec-f887-4090-93ff-f8b8cbb34c7a\",\"hand\":\"ROCK\"}]";

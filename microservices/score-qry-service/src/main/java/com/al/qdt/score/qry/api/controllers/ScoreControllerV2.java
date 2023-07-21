@@ -1,17 +1,19 @@
 package com.al.qdt.score.qry.api.controllers;
 
 import com.al.qdt.common.api.errors.ApiError;
+import com.al.qdt.rps.grpc.v1.common.SortingOrder;
 import com.al.qdt.rps.grpc.v1.common.Player;
 import com.al.qdt.rps.grpc.v1.dto.ScoreAdminDto;
 import com.al.qdt.rps.grpc.v1.dto.ScoreDto;
 import com.al.qdt.rps.grpc.v1.services.ListOfScoresAdminResponse;
 import com.al.qdt.rps.grpc.v1.services.ListOfScoresResponse;
+import com.al.qdt.score.qry.api.dto.ScoreAdminPagedResponseDto;
+import com.al.qdt.score.qry.api.dto.ScorePagedResponseDto;
 import com.al.qdt.score.qry.domain.services.ScoreServiceV2;
 import com.al.qdt.score.qry.domain.services.security.AuthenticationService;
 import io.micrometer.core.annotation.Timed;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
-import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.ExampleObject;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -33,7 +35,16 @@ import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 import java.util.UUID;
 
-import static com.al.qdt.common.infrastructure.helpers.Constants.*;
+import static com.al.qdt.common.infrastructure.helpers.Constants.MALFORMED_JSON;
+import static com.al.qdt.common.infrastructure.helpers.Constants.SCORES_ADMIN_EXPECTED_JSON;
+import static com.al.qdt.common.infrastructure.helpers.Constants.SCORES_BY_USER_ID_NOT_FOUND_JSON;
+import static com.al.qdt.common.infrastructure.helpers.Constants.SCORES_EXPECTED_JSON;
+import static com.al.qdt.common.infrastructure.helpers.Constants.SCORES_NOT_FOUND_JSON;
+import static com.al.qdt.common.infrastructure.helpers.Constants.SCORE_ADMIN_EXPECTED_JSON;
+import static com.al.qdt.common.infrastructure.helpers.Constants.SCORE_BY_ID_NOT_FOUND_JSON;
+import static com.al.qdt.common.infrastructure.helpers.Constants.TEST_ID;
+import static com.al.qdt.common.infrastructure.helpers.Constants.TEST_WINNER;
+import static com.al.qdt.common.infrastructure.helpers.Constants.USER_ONE_ID_EXAMPLE;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
 /**
@@ -51,8 +62,19 @@ public class ScoreControllerV2 {
     private final AuthenticationService authenticationService;
 
     /**
-     * Returns all scores.
+     * Returns all scores with pagination.
+     * <p>
+     * GET
+     * /admin/scores?currentPage=1
+     * /admin/scores?currentPage=1&pageSize=10
+     * /admin/scores?currentPage=1&pageSize=10&sortBy=id
+     * /admin/scores?currentPage=1&pageSize=10&sortBy=id&sortingOrder=asc
      *
+     * @param userId       user id
+     * @param currentPage  current page
+     * @param pageSize     page size
+     * @param sortBy       sorting field
+     * @param sortingOrder sorting order
      * @return paged list of scores
      * @version 2
      */
@@ -65,7 +87,7 @@ public class ScoreControllerV2 {
                     description = "Successful operation",
                     content = @Content(
                             mediaType = APPLICATION_JSON_VALUE,
-                            array = @ArraySchema(schema = @Schema(implementation = ScoreAdminDto.class)),
+                            schema = @Schema(implementation = ScoreAdminPagedResponseDto.class),
                             examples = {
                                     @ExampleObject(
                                             value = SCORES_ADMIN_EXPECTED_JSON
@@ -87,20 +109,30 @@ public class ScoreControllerV2 {
     @GetMapping(path = "/${api.endpoint-admin}/${api.endpoint-scores}")
     @Timed(value = "score.all", description = "Time taken to return all scores", longTask = true)
     public ListOfScoresAdminResponse all(@Parameter(description = "User id of games that need to be fetched", example = USER_ONE_ID_EXAMPLE)
-                                    @Valid @RequestParam(value = "userId", required = false) UUID userId,
+                                         @Valid @RequestParam(value = "userId", required = false) UUID userId,
                                          @Parameter(description = "Winner of scores that need to be fetched", schema = @Schema(type = "string", allowableValues = {"USER", "DRAW", "MACHINE"}), example = TEST_WINNER)
-                                    @Valid @RequestParam(value = "winner", required = false) Player player) {
+                                         @Valid @RequestParam(value = "winner", required = false) Player player,
+                                         @Parameter(description = "Current page", example = "1")
+                                         @RequestParam(value = "currentPage", defaultValue = "${api.default-page-number}", required = false) int currentPage,
+                                         @Parameter(description = "Page size", example = "10")
+                                         @RequestParam(value = "pageSize", defaultValue = "${api.default-page-size}", required = false) int pageSize,
+                                         @Parameter(description = "Sorting field", example = "id")
+                                         @RequestParam(value = "sortBy", defaultValue = "${api.default-sort-by}", required = false) String sortBy,
+                                         @Parameter(description = "Sorting order",
+                                                 schema = @Schema(type = "string", allowableValues = {"ASC", "DESC"}),
+                                                 example = "ASC")
+                                         @RequestParam(value = "sortingOrder", defaultValue = "${api.default-sort-order}", required = false) SortingOrder sortingOrder) {
         log.info("REST CONTROLLER: Getting all scores.");
         if (userId != null && player != null) {
-            return this.scoreService.findByUserIdAndWinner(userId, player);
+            return this.scoreService.findByUserIdAndWinner(userId, player, currentPage, pageSize, sortBy, sortingOrder);
         }
         if (userId != null) {
-            return this.scoreService.findByUserId(userId);
+            return this.scoreService.findByUserId(userId, currentPage, pageSize, sortBy, sortingOrder);
         }
         if (player != null) {
-            return this.scoreService.findByWinner(player);
+            return this.scoreService.findByWinner(player, currentPage, pageSize, sortBy, sortingOrder);
         }
-        return this.scoreService.all();
+        return this.scoreService.all(currentPage, pageSize, sortBy, sortingOrder);
     }
 
     /**
@@ -153,14 +185,24 @@ public class ScoreControllerV2 {
     @Timed(value = "score.findById", description = "Time taken to find a score by its id", longTask = true)
     public ScoreAdminDto findById(@Parameter(description = "Id of score that needs to be fetched",
             schema = @Schema(type = "string"), example = TEST_ID, required = true)
-                             @Valid @NotNull @PathVariable(value = "id") UUID id) {
+                                  @Valid @NotNull @PathVariable(value = "id") UUID id) {
         log.info("REST CONTROLLER: Finding scores by id: {}.", id.toString());
         return this.scoreService.findById(id);
     }
 
     /**
-     * Find my scores.
+     * Find my scores with pagination.
+     * <p>
+     * GET
+     * /admin/scores?currentPage=1
+     * /admin/scores?currentPage=1&pageSize=10
+     * /admin/scores?currentPage=1&pageSize=10&sortBy=id
+     * /admin/scores?currentPage=1&pageSize=10&sortBy=id&sortingOrder=asc
      *
+     * @param currentPage  current page
+     * @param pageSize     page size
+     * @param sortBy       sorting field
+     * @param sortingOrder sorting order
      * @return found collection of scores
      * @version 2
      */
@@ -173,7 +215,7 @@ public class ScoreControllerV2 {
                     description = "Successful operation",
                     content = @Content(
                             mediaType = APPLICATION_JSON_VALUE,
-                            array = @ArraySchema(schema = @Schema(implementation = ScoreDto.class)),
+                            schema = @Schema(implementation = ScorePagedResponseDto.class),
                             examples = {
                                     @ExampleObject(
                                             value = SCORES_EXPECTED_JSON
@@ -205,10 +247,19 @@ public class ScoreControllerV2 {
     @ResponseStatus(HttpStatus.OK)
     @GetMapping(path = "/${api.endpoint-scores}")
     @Timed(value = "score.findMyScores", description = "Time taken to find my scores", longTask = true)
-    public ListOfScoresResponse findMyScores() {
+    public ListOfScoresResponse findMyScores(@Parameter(description = "Current page", example = "1")
+                                             @RequestParam(value = "currentPage", defaultValue = "${api.default-page-number}", required = false) int currentPage,
+                                             @Parameter(description = "Page size", example = "10")
+                                             @RequestParam(value = "pageSize", defaultValue = "${api.default-page-size}", required = false) int pageSize,
+                                             @Parameter(description = "Sorting field", example = "id")
+                                             @RequestParam(value = "sortBy", defaultValue = "${api.default-sort-by}", required = false) String sortBy,
+                                             @Parameter(description = "Sorting order",
+                                                     schema = @Schema(type = "string", allowableValues = {"ASC", "DESC"}),
+                                                     example = "ASC")
+                                             @RequestParam(value = "sortingOrder", defaultValue = "${api.default-sort-order}", required = false) SortingOrder sortingOrder) {
         final var userId = this.getUserId();
         log.info("REST CONTROLLER: Finding scores by my user id: {}.", userId);
-        return this.scoreService.findMyScores(userId);
+        return this.scoreService.findMyScores(userId, currentPage, pageSize, sortBy, sortingOrder);
     }
 
     /**

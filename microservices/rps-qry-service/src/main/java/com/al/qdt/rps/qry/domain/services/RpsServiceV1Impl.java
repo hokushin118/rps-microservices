@@ -16,9 +16,8 @@ import org.springframework.cache.annotation.Cacheable;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 import static com.al.qdt.rps.qry.infrastructure.config.CacheConfig.GAMES_ADMIN_CACHE_NAME;
 import static com.al.qdt.rps.qry.infrastructure.config.CacheConfig.GAMES_ADMIN_USER_ID_CACHE_NAME;
@@ -31,14 +30,104 @@ import static com.al.qdt.rps.qry.infrastructure.config.CacheConfig.GAME_CACHE_NA
 @RequiredArgsConstructor
 @CacheConfig(cacheNames = GAME_CACHE_NAMES)
 public class RpsServiceV1Impl implements RpsServiceV1 {
+    private static final int IDX_COUNT = 1;
+
     private final QueryDispatcher queryDispatcher;
     private final GameDtoMapper gameDtoMapper;
 
     @Override
-    @Cacheable(cacheNames = GAMES_ADMIN_CACHE_NAME, sync = true)
-    public Iterable<GameAdminDto> all() {
-        log.info("SERVICE: Getting all games...");
-        return this.toListOfGameAdminDto(this.queryDispatcher.send(new FindAllGamesQuery()));
+    @Cacheable(cacheNames = GAMES_ADMIN_CACHE_NAME, key = "#currentPage.toString().concat('-').concat(#pageSize.toString()).concat('-').concat(#sortBy).concat('-').concat(#sortingOrder.name())", sync = true)
+    public GameAdminPagedResponseDto all(int currentPage, int pageSize, String sortBy, SortingOrder sortingOrder) {
+        log.info("SERVICE: Getting all games with pagination...");
+        final var currentPageIndex = currentPage - IDX_COUNT;
+        final var findAllGamesQuery = FindAllGamesQuery.builder()
+                .currentPage(currentPageIndex)
+                .pageSize(pageSize)
+                .sortBy(sortBy)
+                .sortingOrder(sortingOrder)
+                .build();
+        final var games = this.queryDispatcher.send(findAllGamesQuery);
+        final var gameAdminDtoList = games.getValue().stream()
+                .map(game -> (Game) game)
+                .map(this.gameDtoMapper::toGameAdminDto)
+                .collect(Collectors.toList());
+        return GameAdminPagedResponseDto.builder()
+                .games(gameAdminDtoList)
+                .paging(PagingDto.builder()
+                        .currentPage(currentPage)
+                        .pageSize(pageSize)
+                        .totalElements((Long) games.getKey())
+                        .build())
+                .build();
+    }
+
+    @Override
+    @Cacheable(cacheNames = GAME_ADMIN_CACHE_NAME, key = "#id.toString()", sync = true)
+    public GameAdminDto findById(UUID id) {
+        log.info("SERVICE: Finding game by id: {}.", id);
+        final var findGameByIdQuery = FindGameByIdQuery.builder()
+                .id(id)
+                .build();
+        final var games = this.queryDispatcher.send(findGameByIdQuery);
+        return games.getValue().stream()
+                .map(game -> (Game) game)
+                .map(this.gameDtoMapper::toGameAdminDto)
+                .findFirst()
+                .get();
+    }
+
+    @Override
+    @Cacheable(cacheNames = GAMES_ADMIN_USER_ID_CACHE_NAME, key = "#userId.toString().concat('-').concat(#currentPage.toString()).concat('-').concat(#pageSize.toString()).concat('-').concat(#sortBy).concat('-').concat(#sortingOrder.name())", sync = true)
+    public GameAdminPagedResponseDto findByUserId(UUID userId, int currentPage, int pageSize, String sortBy, SortingOrder sortingOrder) {
+        log.info("SERVICE: Finding games by userId: {}.", userId);
+        final var currentPageIndex = currentPage - IDX_COUNT;
+        final var findGamesByUserIdQuery = FindGamesByUserIdQuery.builder()
+                .userId(userId)
+                .currentPage(currentPageIndex)
+                .pageSize(pageSize)
+                .sortBy(sortBy)
+                .sortingOrder(sortingOrder)
+                .build();
+        final var games = this.queryDispatcher.send(findGamesByUserIdQuery);
+        final var gameAdminDtoList = games.getValue().stream()
+                .map(game -> (Game) game)
+                .map(this.gameDtoMapper::toGameAdminDto)
+                .collect(Collectors.toList());
+        return GameAdminPagedResponseDto.builder()
+                .games(gameAdminDtoList)
+                .paging(PagingDto.builder()
+                        .currentPage(currentPage)
+                        .pageSize(pageSize)
+                        .totalElements((Long) games.getKey())
+                        .build())
+                .build();
+    }
+
+    @Override
+    @Cacheable(cacheNames = GAMES_MY_CACHE_NAME, key = "#userId.toString().concat('-').concat(#currentPage.toString()).concat('-').concat(#pageSize.toString()).concat('-').concat(#sortBy).concat('-').concat(#sortingOrder.name())", sync = true)
+    public GamePagedResponseDto findMyGames(UUID userId, int currentPage, int pageSize, String sortBy, SortingOrder sortingOrder) {
+        log.info("SERVICE: Finding scores by userId: {}.", userId);
+        final var currentPageIndex = currentPage - IDX_COUNT;
+        final var findGamesByUserIdQuery = FindGamesByUserIdQuery.builder()
+                .userId(userId)
+                .currentPage(currentPageIndex)
+                .pageSize(pageSize)
+                .sortBy(sortBy)
+                .sortingOrder(sortingOrder)
+                .build();
+        final var games = this.queryDispatcher.send(findGamesByUserIdQuery);
+        final var gameDtoList = games.getValue().stream()
+                .map(game -> (Game) game)
+                .map(this.gameDtoMapper::toGameDto)
+                .collect(Collectors.toList());
+        return GamePagedResponseDto.builder()
+                .games(gameDtoList)
+                .paging(PagingDto.builder()
+                        .currentPage(currentPage)
+                        .pageSize(pageSize)
+                        .totalElements((Long) games.getKey())
+                        .build())
+                .build();
     }
 
     @Override
@@ -70,29 +159,5 @@ public class RpsServiceV1Impl implements RpsServiceV1 {
     @Scheduled(fixedRateString = "#{rpsCacheProperties.getTtlValue()}")
     public void emptyAllCache() {
         log.info("SERVICE: Emptying {} cache...", GAMES_ADMIN_CACHE_NAME);
-    }
-
-    /**
-     * Converts game entities to dto objects.
-     *
-     * @param games games
-     * @return collection of game dto objects
-     */
-    private Iterable<GameDto> toListOfGameDto(Iterable<Game> games) {
-        final List<GameDto> gameDtoList = new ArrayList<>();
-        games.forEach(game -> gameDtoList.add(this.gameDtoMapper.toGameDto(game)));
-        return gameDtoList;
-    }
-
-    /**
-     * Converts game entities to dto objects.
-     *
-     * @param games games
-     * @return collection of game admin dto objects
-     */
-    private Iterable<GameAdminDto> toListOfGameAdminDto(Iterable<Game> games) {
-        final List<GameAdminDto> gameAdminDtoList = new ArrayList<>();
-        games.forEach(game -> gameAdminDtoList.add(this.gameDtoMapper.toGameAdminDto(game)));
-        return gameAdminDtoList;
     }
 }

@@ -1,12 +1,11 @@
 package com.al.qdt.rps.cmd.domain.services;
 
-import com.al.qdt.common.api.dto.GameResponseDto;
+import com.al.qdt.rps.cmd.api.dto.GameResponseDto;
 import com.al.qdt.common.domain.enums.Hand;
 import com.al.qdt.cqrs.infrastructure.CommandDispatcher;
 import com.al.qdt.rps.cmd.api.commands.AddScoreCommand;
 import com.al.qdt.rps.cmd.api.commands.DeleteGameCommand;
 import com.al.qdt.rps.cmd.api.commands.PlayGameCommand;
-import com.al.qdt.rps.cmd.domain.mappers.GameDtoMapper;
 import com.al.qdt.rps.cmd.domain.services.base.RpsBaseService;
 import io.micrometer.core.instrument.MeterRegistry;
 import lombok.extern.slf4j.Slf4j;
@@ -22,12 +21,10 @@ import static com.al.qdt.common.infrastructure.config.AsyncConfig.ASYNC_TASK_EXE
 @Service
 public class RpsServiceV1Impl extends RpsBaseService implements RpsServiceV1 {
     private final CommandDispatcher commandDispatcher;
-    private final GameDtoMapper gameDtoMapper;
 
-    public RpsServiceV1Impl(GameService gameService, MeterRegistry meterRegistry, CommandDispatcher commandDispatcher, GameDtoMapper gameDtoMapper) {
+    public RpsServiceV1Impl(GameService gameService, MeterRegistry meterRegistry, CommandDispatcher commandDispatcher) {
         super(gameService, meterRegistry);
         this.commandDispatcher = commandDispatcher;
-        this.gameDtoMapper = gameDtoMapper;
     }
 
     @Override

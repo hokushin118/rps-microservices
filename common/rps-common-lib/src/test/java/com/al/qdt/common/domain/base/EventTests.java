@@ -5,20 +5,17 @@ import com.al.qdt.common.infrastructure.events.rps.GamePlayedEvent;
 import com.al.qdt.common.infrastructure.events.score.ScoresAddedEvent;
 import com.al.qdt.common.infrastructure.events.score.ScoresDeletedEvent;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.PropertyNamingStrategy;
-import com.fasterxml.jackson.module.paramnames.ParameterNamesModule;
 import org.junit.jupiter.api.Tag;
 
 import static com.al.qdt.common.domain.enums.Hand.ROCK;
 import static com.al.qdt.common.domain.enums.Player.USER;
 import static com.al.qdt.common.infrastructure.helpers.Constants.TEST_UUID;
 import static com.al.qdt.common.infrastructure.helpers.Constants.USER_ONE_ID;
+import static com.al.qdt.common.infrastructure.helpers.Utils.createObjectMapper;
 
 @Tag(value = "event")
 public interface EventTests {
-    ObjectMapper objectMapper = new ObjectMapper()
-            .registerModule(new ParameterNamesModule())
-            .setPropertyNamingStrategy(PropertyNamingStrategy.SNAKE_CASE);
+    ObjectMapper objectMapper = createObjectMapper();
 
     /**
      * Creates test instance for game played event.

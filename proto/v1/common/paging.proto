@@ -1,0 +1,16 @@
+syntax = "proto3";
+
+package v1.common;
+
+option go_package = "/pb";
+
+option java_package = "com.al.qdt.rps.grpc.v1.common";
+option java_outer_classname = "PagingProtos";
+option java_multiple_files = true;
+
+/* The message definition of the paging. */
+message PagingDto {
+  int32 current_page = 1 [json_name = "current_page"]; // current page
+  int32 page_size = 2 [json_name = "page_size"]; // page size
+  int64 total_elements = 3 [json_name = "total_elements"]; // total elements
+}

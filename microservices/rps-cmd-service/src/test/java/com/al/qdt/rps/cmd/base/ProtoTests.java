@@ -21,6 +21,17 @@ public interface ProtoTests {
      *
      * @return proto3 message
      */
+    default BaseResponseDto createBaseResponseProtoDto() {
+        return BaseResponseDto.newBuilder()
+                .setMessage(SUCCESS_MESSAGE)
+                .build();
+    }
+
+    /**
+     * Creates test proto3 message for base response.
+     *
+     * @return proto3 message
+     */
     default BaseResponseDto createBaseResponseDto() {
         return BaseResponseDto.newBuilder()
                 .setMessage(SUCCESS_MESSAGE)
@@ -73,6 +84,19 @@ public interface ProtoTests {
     default GameRequest createGameRequest(Hand hand) {
         return GameRequest.newBuilder()
                 .setHand(hand)
+                .build();
+    }
+
+    /**
+     * Creates test proto3 message for game result.
+     *
+     * @return proto3 message
+     */
+    default GameResultDto createGameResultProtoDto() {
+        return GameResultDto.newBuilder()
+                .setUserChoice(ROCK.name())
+                .setMachineChoice(SCISSORS.name())
+                .setResult(USER.name())
                 .build();
     }
 }

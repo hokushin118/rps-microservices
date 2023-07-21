@@ -13,7 +13,7 @@ trait ProtoTests {
      *
      * @return score proto object
      */
-    ScoreDto createScoreDto() {
+    ScoreDto createScoreProtoDto() {
         ScoreDto.newBuilder()
                 .setWinner(USER.name())
                 .build()
@@ -27,7 +27,7 @@ trait ProtoTests {
      * @param winner round winner
      * @return score proto object
      */
-    ScoreAdminDto createScoreAdminDto(UUID id, UUID userId, Player winner) {
+    ScoreAdminDto createScoreAdminProtoDto(UUID id, UUID userId, Player winner) {
         ScoreAdminDto.newBuilder()
                 .setId(id.toString())
                 .setUserId(userId.toString())

@@ -1,6 +1,6 @@
 package com.al.qdt.rps.cmd.api.controllers;
 
-import com.al.qdt.common.api.dto.GameResponseDto;
+import com.al.qdt.rps.cmd.api.dto.GameResponseDto;
 import com.al.qdt.common.api.errors.ApiError;
 import com.al.qdt.common.domain.enums.Hand;
 import com.al.qdt.rps.cmd.domain.services.RpsServiceV1;
@@ -60,6 +60,8 @@ public class RpsControllerV1 {
      * @param hand game round user inputs, must not be null
      * @return game result
      * @version 1
+     * @deprecated <p>
+     * This method is deprecated.
      */
     @Operation(operationId = "play-json",
             summary = "Plays game",
@@ -124,6 +126,8 @@ public class RpsControllerV1 {
      * @param hand game round user inputs, must not be null
      * @return game result
      * @version 1.1
+     * @deprecated <p>
+     * This method is deprecated.
      */
     @Operation(operationId = "play-async-json",
             summary = "Plays game asynchronously",
@@ -187,6 +191,8 @@ public class RpsControllerV1 {
      *
      * @param id game id, must not be null or empty
      * @version 1
+     * @deprecated <p>
+     * This method is deprecated.
      */
     @Operation(operationId = "delete-by-id-json",
             summary = "Deletes game by id",
@@ -248,6 +254,8 @@ public class RpsControllerV1 {
      *
      * @param id game id, must not be null or empty
      * @version 1.1
+     * @deprecated <p>
+     * This method is deprecated.
      */
     @Operation(operationId = "delete-by-id-async-json",
             summary = "Deletes game by id asynchronously",

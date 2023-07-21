@@ -37,7 +37,7 @@ public class RpsGrpcServiceV1 extends RpsQryServiceGrpc.RpsQryServiceImplBase {
         } else {
             log.info("UNARY GRPC SERVICE: Getting all games...");
         }
-        responseObserver.onNext(this.rpsService.all());
+        responseObserver.onNext(this.rpsService.all(request.getCurrentPage().getValue(), request.getPageSize().getValue(), request.getSortBy().getValue(), request.getSortingOrder()));
         responseObserver.onCompleted();
     }
 

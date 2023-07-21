@@ -51,7 +51,9 @@ Source: [Architecting Cloud Native .NET Applications for Azure](https://learn.mi
 
 Microservices active profile is __dev__.
 
-### Prerequisites
+### 1. Setting up the environment
+
+#### 1.1 Prerequisites
 
 * [OpenJDK 11](https://openjdk.java.net/projects/jdk/11) or higher
 * [Maven 3.6.0](https://maven.apache.org) or higher
@@ -63,7 +65,7 @@ Microservices active profile is __dev__.
 * [Redis](https://redis.io)
 * [MariaDB Community Server 10.6.14](https://mariadb.org)
 
-### 1. Installing OpenJDK 11 on local machine
+#### 1.2 Installing OpenJDK 11 on local machine
 
 * Make sure you have [OpenJDK 11](https://openjdk.java.net/projects/jdk/11) or a higher version installed using the
   following command:
@@ -212,7 +214,7 @@ __Note:__ Do not include the __bin/__ portion of the Java installation location 
 
 </details>
 
-### 2. Installing Maven on local machine
+#### 1.3 Installing Maven on local machine
 
 * Make sure you have [Maven](https://openjdk.java.net/projects/jdk/11) or a higher version installed using the following
   command:
@@ -395,7 +397,7 @@ You should see the following output:
 
 </details>
 
-### 3. Cloning repository to the local machine
+### 2. Cloning repository to the local machine
 
 * Clone the __rps-microservices__ project to your local machine by executing the following command:
 
@@ -403,7 +405,35 @@ You should see the following output:
       > git clone https://github.com/hokushin118/rps-microservices.git
 ```
 
+### 3. Building the RPS game microservices on local machine
+
+* Once the cloning is completed, go to the _rps-microservices_ folder by executing the following command:
+
+```
+      > cd rps-microservices
+```
+
+Each microservice has multiple profiles:
+
+|  **profile name**  |  **is default**  |         **purpose**                |
+|--------------------|------------------|------------------------------------|
+|        dev         |        Yes       |  Development on local machine      |
+|        docker      |        No        |  Deployment on Docker Compose      |
+|        it          |        No        |  Running integration tests         |
+|        prod        |        No        |  Deployment on Kubernetes cluster  |
+
+* Execute the _mvn clean install_ command in the root directory of the project to build microservices and its
+  dependencies for running on a local machine.
+
+```
+      > mvn clean install
+```
+
+__Note:__ Each microservice and shared dependency should normally be hosted in its own git repository.
+
 ### 4. Deploying Keycloak standalone server on local machine
+
+#### 4.1 Deploying Keycloak standalone server
 
 <details><summary>Window 10</summary>
 
@@ -581,7 +611,7 @@ to store its configuration.
 
 [Keycloak on bare metal](https://www.keycloak.org/getting-started/getting-started-zip)
 
-#### Configure Keycloak server as a systemd service for Linux Ubuntu 20.04.6 LTS
+#### 4.2 Configure Keycloak server as a systemd service for Linux Ubuntu 20.04.6 LTS
 
 * You will need to create a _systemd service_ file to manage the Keycloak service. You can copy the sample systemd
   service with the following command:
@@ -637,12 +667,13 @@ You should see the following lines in the sys log file:
 [How To Use Systemctl to Manage Systemd Services and Units](https://www.digitalocean.com/community/tutorials/how-to-use-systemctl-to-manage-systemd-services-and-units)
 
 </details>
+
+#### 4.3 Creating Keycloak super user account
+
 <br>
 <details><summary>Windows 10 and Linux Ubuntu 20.04.6 LTS</summary>
 
-#### Creating Keycloak super user account
-
-* Open [http://localhost:8180](http://localhost:8180) and create a super user by filling the form with your preferred username and password.  
+* Open [http://localhost:8180](http://localhost:8180) and create a super user by filling the form with your preferred username and password.
 
 ![keycloak welcome page](img/kc-welcome-page.png)
 
@@ -660,7 +691,9 @@ For example:
 
 </details>
 
-### 5. Installing MongoDB on local machine
+### 5. Deploying MongoDB on local machine
+
+#### 5.1 Deploying MongoDB
 
 <details><summary>Window 10</summary>
 
@@ -765,7 +798,7 @@ You should see the following output:
 <br>
 <details><summary>Windows 10 and Linux Ubuntu 20.04.6 LTS</summary>
 
-#### Creating MongoDB root account
+#### 5.2 Creating MongoDB root account
 
 * Open the _command line tool_ and type the following command:
 
@@ -841,7 +874,7 @@ MongoDB [build-in roles](https://www.mongodb.com/docs/manual/reference/built-in-
 
 </details>
 
-### 6. Adding custom entries to the etc/host file for the Apache Zookeeper and Kafka applications
+### 6. Adding custom entries to the etc/host file for the Apache Zookeeper and Apache Kafka services
 
 <details><summary>Window 10</summary>
 <br>
@@ -870,6 +903,8 @@ Add the following entries and save the file:
 </details>
 
 ### 7. Deploying Apache Zookeeper on local machine
+
+#### 7.1 Deploying Apache Zookeeper
 
 <details><summary>Window 10</summary>
 
@@ -1053,6 +1088,8 @@ You should see the following output:
 
 ### 8. Deploying Apache Kafka on local machine
 
+#### 8.1 Deploying Apache Kafka
+
 <details><summary>Windows 10</summary>
 
 * Download and extract [kafka_2.13-2.7.0.tgz](https://archive.apache.org/dist/kafka/2.7.0/kafka_2.13-2.7.0.tgz) archive
@@ -1227,6 +1264,8 @@ and add the following lines to the file:
 
 ### 9. Deploying Redis on local machine
 
+#### 9.1 Deploying Redis
+
 <details><summary>Windows 10</summary>
 <br>
 * To install [Redis](https://redis.io) on Windows, we'll first need to [enable WSL2 (Windows Subsystem for Linux)](https://learn.microsoft.com/en-us/windows/wsl/install).
@@ -1329,7 +1368,9 @@ You should see the following output:
 
 </details>
 
-### 10. Installing MariaDB on local machine
+### 10. Deploying MariaDB on local machine
+
+#### 10.1 Deploying MariaDB
 
 <details><summary>Windows 10</summary>
 <br>
@@ -1431,7 +1472,7 @@ You will be prompted with several questions. Choose options as shown below.
 <br>
 <details><summary>Windows 10 and Linux Ubuntu 20.04.6 LTS</summary>
 
-#### Validating MariaDB root account
+#### 10.2 Validating MariaDB root account
 
 * Validate the configurations by connecting to MariaDB:
 
@@ -1445,28 +1486,9 @@ You will be prompted with password. Enter root password of 12345.
 
 [MariaDB Data-at-Rest Encryption Overview](https://mariadb.com/kb/en/data-at-rest-encryption-overview)
 
-### 11. Building and running the RPS game microservices on local machine
+### 11. Running the RPS game microservices on local machine
 
-* Once the infrastructure ([backing services](https://12factor.net/backing-services)) is deployed, you can build and run
-  microservices.
-
-Each microservice has multiple profiles:
-
-|  **profile name**  |  **is default**  |         **purpose**                |
-|--------------------|------------------|------------------------------------|
-|        dev         |        Yes       |  Development on local machine      |
-|        docker      |        No        |  Deployment on Docker Compose      |
-|        it          |        No        |  Running integration tests         |
-|        prod        |        No        |  Deployment on Kubernetes cluster  |
-
-* Execute the _mvn clean install_ command in the root directory of the project to build microservices and its
-  dependencies for running on local machine.
-
-```
-      > mvn clean install
-```
-
-__Note:__ Each microservice and shared dependency should normally be hosted in its own git repository.
+* Once the infrastructure ([backing services](https://12factor.net/backing-services)) is deployed, you can run microservices.
 
 * Run the microservices by executing the following commands:
 
@@ -1530,11 +1552,13 @@ Keycloak realm users and roles.
 
 Microservices active profile is __docker__.
 
-### Prerequisites
+### 1. Setting up the environment
+
+#### 1.1 Prerequisites
 
 * [Docker Desktop](https://www.docker.com/products/docker-desktop)
 
-### 1. Installation of Docker Desktop
+#### 1.2 Installation of Docker Desktop
 
 * Make sure you have [Docker Desktop](https://www.docker.com/products/docker-desktop) installed using the following
   command:
@@ -1568,7 +1592,7 @@ You should see the following output:
 
 </details>
 
-#### Setting up Docker Desktop (Windows 10 and Linux Ubuntu 20.04.6 LTS)
+#### 1.3 Setting up Docker Desktop (Windows 10 and Linux Ubuntu 20.04.6 LTS)
 
 * [Docker Compose](https://docs.docker.com/compose) is also
   required. [Docker Desktop](https://www.docker.com/products/docker-desktop)
@@ -1648,7 +1672,7 @@ You should see the following output:
 
 </details>
 
-__Mote:__ By default, the [log file](https://docs.docker.com/engine/reference/commandline/container_logs) directory is: 
+__Mote:__ By default, the [log file](https://docs.docker.com/engine/reference/commandline/container_logs) directory is:
 
 <details><summary>Linux Ubuntu 20.04.6 LTS</summary>
 <br>
@@ -1664,7 +1688,7 @@ on the host where the container is running.
 ### 2. Deploying Keycloak standalone server on Docker Compose
 
 <br>
-<details><summary>Windows 10 and Linux Ubuntu 20.04.6 LTS</summary>
+<details><summary>Docker Desktop</summary>
 <br>
 
 #### 2.1 Deploying Keycloak standalone server on Docker Compose
@@ -1756,7 +1780,7 @@ and make sure that _rps-dev_ realm has been activated.
 ### 3. Deploying MongoDB, MariaDB and Redis standalone database servers on Docker Compose
 
 <br>
-<details><summary>Windows 10 and Linux Ubuntu 20.04.6 LTS</summary>
+<details><summary>Docker Desktop</summary>
 <br>
 
 #### 3.1 Deploying MongoDB, MariaDB and Redis standalone database servers on Docker Compose
@@ -1812,7 +1836,7 @@ It means that [MongoDB](https://www.mongodb.com), [MariaDB](https://mariadb.org)
 ### 4. Deploying Kafka cluster on Docker Compose
 
 <br>
-<details><summary>Windows 10 and Linux Ubuntu 20.04.6 LTS</summary>
+<details><summary>Docker Desktop</summary>
 <br>
 
 #### 4.1 Deploying Kafka cluster on Docker Compose
@@ -1874,7 +1898,7 @@ It means that Zookeeper and Kafka containers are up and running.
 ### 5. Deploying RPS Game Command microservice on Docker Compose
 
 <br>
-<details><summary>Windows 10 and Linux Ubuntu 20.04.6 LTS</summary>
+<details><summary>Docker Desktop</summary>
 <br>
 
 #### 5.1 Deploying RPS Game Command microservice on Docker Compose
@@ -1926,7 +1950,7 @@ It means that RPS Game Command microservice is up and running.
 ### 6. Deploying RPS Game Query microservice on Docker Compose
 
 <br>
-<details><summary>Windows 10 and Linux Ubuntu 20.04.6 LTS</summary>
+<details><summary>Docker Desktop</summary>
 <br>
 
 #### 6.1 Deploying RPS Game Query microservice on Docker Compose
@@ -1978,7 +2002,7 @@ It means that RPS Game Query microservice is up and running.
 ### 7. Deploying Score Command microservice on Docker Compose
 
 <br>
-<details><summary>Windows 10 and Linux Ubuntu 20.04.6 LTS</summary>
+<details><summary>Docker Desktop</summary>
 <br>
 
 #### 7.1 Deploying Score Command microservice on Docker Compose
@@ -2030,7 +2054,7 @@ It means that Score Command microservice is up and running.
 ### 8. Deploying Score Query microservice on Docker Compose
 
 <br>
-<details><summary>Windows 10 and Linux Ubuntu 20.04.6 LTS</summary>
+<details><summary>Docker Desktop</summary>
 <br>
 
 #### 8.1 Deploying Score Query microservice on Docker Compose
@@ -2082,7 +2106,7 @@ It means that Score Query microservice is up and running.
 ### 9. Deploying Nginx as api gateway for REST and gRPC microservices on Docker Compose
 
 <br>
-<details><summary>Windows 10 and Linux Ubuntu 20.04.6 LTS</summary>
+<details><summary>Docker Desktop</summary>
 <br>
 
 #### 9.1 Deploying Nginx as API gateway for REST and gRPC microservices on Docker Compose
@@ -2136,7 +2160,7 @@ __Note:__ The [Nginx](https://www.nginx.com) configuration is stored in the _./i
 ### 10. Deploying Prometheus and Grafana backing service on Docker Compose
 
 <br>
-<details><summary>Windows 10 and Linux Ubuntu 20.04.6 LTS</summary>
+<details><summary>Docker Desktop</summary>
 <br>
 
 #### 10.1 Deploying Prometheus and Grafana on Docker Compose
@@ -2248,7 +2272,7 @@ dashboard templates are stored in the _./infrastructure/metrics/grafana/provisio
 ### 11. Deploying Elasticsearch, Logstash, Filebeat and Kibana backing service on Docker Compose
 
 <br>
-<details><summary>Windows 10 and Linux Ubuntu 20.04.6 LTS</summary>
+<details><summary>Docker Desktop</summary>
 <br>
 
 #### 11.1 Deploying Elasticsearch, Logstash, Filebeat and Kibana on Docker Compose
@@ -2321,19 +2345,19 @@ To do this, access the [Kibana](https://www.elastic.co/kibana) and on the left h
 
 Then pick a field for filtering the data by time. Choose __@timestamp__ field from the __Time Filter field name__ drop-down list and click the __Create Index Pattern__ button.
 
-![kibana add time filter](img/kibana-time-filter.png)  
+![kibana add time filter](img/kibana-time-filter.png)
 
 The __rps-app-*__ index pattern will be created.
 
-![kibana index created](img/kibana-index-created.png)  
+![kibana index created](img/kibana-index-created.png)
 
 Click again the __Discover__ menu item and the log events related to the RPS Game application will be shown:
 
-![kibana logs](img/kibana-logs.png)  
+![kibana logs](img/kibana-logs.png)
 
 __Note:__ The [Elasticsearch](https://www.elastic.co) configuration is stored in the _./infrastructure/elk/elasticsearch/config/elasticsearch.yml_ file.  
 The [Logstash](https://www.elastic.co/logstash) configuration is stored in the _./infrastructure/elk/logstash_ folder.   
-The [Filebeat](https://www.elastic.co/beats/filebeat) configuration is stored in the _./infrastructure/elk/filebeat/filebeat.yml_ file.   
+The [Filebeat](https://www.elastic.co/beats/filebeat) configuration is stored in the _./infrastructure/elk/filebeat/filebeat.yml_ file.
 
 __Note:__ The [Filebeat](https://www.elastic.co/beats/filebeat) collects logs only from containers ending with __"-service"__. It can be changed in the _./infrastructure/elk/filebeat/filebeat.yml_ file.
 
@@ -2366,7 +2390,7 @@ The [Kibana](https://www.elastic.co/kibana) configuration is stored in the _./in
 ### 12. Deploying Health Monitoring backing microservice and Adminer database management tool on Docker Compose
 
 <br>
-<details><summary>Windows 10 and Linux Ubuntu 20.04.6 LTS</summary>
+<details><summary>Docker Desktop</summary>
 <br>
 
 #### 12.1 Deploying Health Monitoring backing microservice and Adminer database management tool on Docker Compose

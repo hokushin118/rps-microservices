@@ -1,5 +1,6 @@
 package com.al.qdt.rps.qry.domain.repositories;
 
+import com.al.qdt.cqrs.queries.SortingOrder;
 import com.al.qdt.rps.qry.base.EntityTests;
 import com.al.qdt.rps.qry.infrastructure.config.TestConfig;
 import com.al.qdt.rps.qry.domain.entities.Game;
@@ -15,6 +16,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.context.annotation.Import;
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.test.context.ActiveProfiles;
 
 import static com.al.qdt.common.domain.enums.Hand.ROCK;
@@ -23,6 +25,7 @@ import static com.al.qdt.common.infrastructure.helpers.Constants.TEST_UUID;
 import static com.al.qdt.common.infrastructure.helpers.Constants.TEST_UUID_TWO;
 import static com.al.qdt.common.infrastructure.helpers.Constants.USER_ONE_ID;
 import static com.al.qdt.common.infrastructure.helpers.Constants.USER_TWO_ID;
+import static com.al.qdt.common.infrastructure.helpers.Utils.getSortingOrder;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.empty;
 import static org.hamcrest.Matchers.hasSize;
@@ -89,15 +92,15 @@ class GameRepositoryIT implements EntityTests {
     }
 
     @Test
-    @DisplayName("Testing findGameByUsername() method")
-    void findGameByUsernameTest() {
-        final var actualGames = this.gameRepository.findByUserId(USER_ONE_ID);
+    @DisplayName("Testing findByUserId() method")
+    void findGameByUserIdTest() {
+        final var actualGames = this.gameRepository.findByUserId(USER_ONE_ID, createPageRequest());
 
         assertNotNull(actualGames);
-        assertThat(actualGames, not(empty()));
-        assertThat(actualGames, hasSize(1));
-        assertEquals(USER_ONE_ID, actualGames.get(0).getUserId());
-        assertEquals(this.expectedGame.getUserId(), actualGames.get(0).getUserId());
+        assertThat(actualGames.getContent(), not(empty()));
+        assertThat(actualGames.getContent(), hasSize(1));
+        assertEquals(USER_ONE_ID, actualGames.getContent().get(0).getUserId());
+        assertEquals(this.expectedGame.getUserId(), actualGames.getContent().get(0).getUserId());
     }
 
     @Test
@@ -150,5 +153,17 @@ class GameRepositoryIT implements EntityTests {
         final var gameWithSameId = createGame(TEST_UUID, USER_ONE_ID, ROCK);
 
         assertThrows(DataIntegrityViolationException.class, () -> this.gameRepository.save(gameWithSameId));
+    }
+
+    /**
+     * Creating test page request.
+     *
+     * @return page request
+     */
+    private static PageRequest createPageRequest() {
+        // creating Sort instance
+        final var sort = getSortingOrder("id", SortingOrder.ASC);
+        // creating Pageable instance
+        return PageRequest.of(1, 10, sort);
     }
 }

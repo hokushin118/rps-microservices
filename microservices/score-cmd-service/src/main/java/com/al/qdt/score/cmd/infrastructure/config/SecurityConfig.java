@@ -36,12 +36,6 @@ import org.springframework.web.servlet.handler.HandlerMappingIntrospector;
 class SecurityConfig {
 
     /**
-     * OpenAPI v3.0 document path.
-     */
-    @Value("${springdoc.api-docs.path}")
-    private String restApiDocPath;
-
-    /**
      * OAuth 2.0 jwt set url.
      */
     @Value("${spring.security.oauth2.resourceserver.jwt.jwk-set-uri}")
@@ -90,7 +84,7 @@ class SecurityConfig {
                 // Actuator health and info probes, OpenAPI specs and UI should be accessible to anonymous
                 .antMatchers("/actuator/health", "/actuator/info", "/actuator/prometheus")
                 .permitAll()
-                .antMatchers(String.format("%s/**", this.restApiDocPath))
+                .antMatchers("/v3/api-docs/**")
                 .permitAll()
                 .antMatchers("/swagger-ui/**")
                 .permitAll()

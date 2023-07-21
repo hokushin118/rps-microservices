@@ -1,15 +1,16 @@
 package com.al.qdt.rps.qry.api.controllers;
 
-import com.al.qdt.common.api.dto.GameAdminDto;
-import com.al.qdt.common.api.dto.GameDto;
+import com.al.qdt.rps.qry.api.dto.GameAdminDto;
+import com.al.qdt.rps.qry.api.dto.GameAdminPagedResponseDto;
+import com.al.qdt.rps.qry.api.dto.GamePagedResponseDto;
 import com.al.qdt.common.api.errors.ApiError;
+import com.al.qdt.cqrs.queries.SortingOrder;
 import com.al.qdt.rps.qry.api.exceptions.GameNotFoundException;
 import com.al.qdt.rps.qry.domain.services.RpsServiceV1;
 import com.al.qdt.rps.qry.domain.services.security.AuthenticationService;
 import io.micrometer.core.annotation.Timed;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
-import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.ExampleObject;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -57,10 +58,23 @@ public class RpsControllerV1 {
     private final AuthenticationService authenticationService;
 
     /**
-     * Returns all games.
+     * Returns all games with pagination.
+     * <p>
+     * GET
+     * /admin/games?currentPage=1
+     * /admin/games?currentPage=1&pageSize=10
+     * /admin/games?currentPage=1&pageSize=10&sortBy=id
+     * /admin/games?currentPage=1&pageSize=10&sortBy=id&sortingOrder=asc
      *
+     * @param userId       user id
+     * @param currentPage  current page
+     * @param pageSize     page size
+     * @param sortBy       sorting field
+     * @param sortingOrder sorting order
      * @return collection of games
      * @version 1
+     * @deprecated <p>
+     * This method is deprecated.
      */
     @Operation(operationId = "all-json",
             summary = "Returns all games",
@@ -72,7 +86,7 @@ public class RpsControllerV1 {
                     description = "Successful operation",
                     content = @Content(
                             mediaType = APPLICATION_JSON_VALUE,
-                            array = @ArraySchema(schema = @Schema(implementation = GameAdminDto.class)),
+                            schema = @Schema(implementation = GameAdminPagedResponseDto.class),
                             examples = {
                                     @ExampleObject(
                                             value = GAMES_ADMIN_EXPECTED_JSON
@@ -93,18 +107,33 @@ public class RpsControllerV1 {
     @ResponseStatus(HttpStatus.OK)
     @GetMapping(path = "/${api.endpoint-admin}/${api.endpoint-games}")
     @Timed(value = "game.all", description = "Time taken to return all games", longTask = true)
-    public Iterable<GameAdminDto> all(@Parameter(description = "User id of games that need to be fetched", example = USER_ONE_ID_EXAMPLE)
-                                 @Valid @RequestParam(value = "userId", required = false) UUID userId) {
+    public GameAdminPagedResponseDto all(@Parameter(description = "User id of games that need to be fetched", example = USER_ONE_ID_EXAMPLE)
+                                         @Valid @RequestParam(value = "userId", required = false) UUID userId,
+                                         @Parameter(description = "Current page", example = "1")
+                                         @RequestParam(value = "currentPage", defaultValue = "${api.default-page-number}", required = false) int currentPage,
+                                         @Parameter(description = "Page size", example = "10")
+                                         @RequestParam(value = "pageSize", defaultValue = "${api.default-page-size}", required = false) int pageSize,
+                                         @Parameter(description = "Sorting field", example = "id")
+                                         @RequestParam(value = "sortBy", defaultValue = "${api.default-sort-by}", required = false) String sortBy,
+                                         @Parameter(description = "Sorting order",
+                                                 schema = @Schema(type = "string", allowableValues = {"ASC", "DESC"}),
+                                                 example = "ASC")
+                                         @RequestParam(value = "sortingOrder", defaultValue = "${api.default-sort-order}", required = false) SortingOrder sortingOrder) {
         log.info("REST CONTROLLER: Getting all games...");
-        return userId == null ? this.rpsService.all() : this.rpsService.findByUserId(userId);
+        return userId == null ? this.rpsService.all(currentPage, pageSize, sortBy, sortingOrder) : this.rpsService.findByUserId(userId, currentPage, pageSize, sortBy, sortingOrder);
     }
 
     /**
      * Find game by id.
+     * <p>
+     * GET
+     * /admin/games/550e8400-e29b-41d4-a716-446655440000
      *
      * @param id game id, must not be null or empty
      * @return found game
      * @version 1
+     * @deprecated <p>
+     * This method is deprecated.
      */
     @Operation(operationId = "find-by-id-json",
             summary = "Find game by id",
@@ -149,16 +178,28 @@ public class RpsControllerV1 {
     @GetMapping(path = "/${api.endpoint-admin}/${api.endpoint-games}/{id}")
     @Timed(value = "game.findById", description = "Time taken to find game by id", longTask = true)
     public GameAdminDto findById(@Parameter(description = "Id of game that needs to be fetched", example = TEST_ID, required = true)
-                            @Valid @NotNull @PathVariable(value = "id") UUID id) {
+                                 @Valid @NotNull @PathVariable(value = "id") UUID id) {
         log.info("REST CONTROLLER: Finding game by id: {}.", id.toString());
         return this.rpsService.findById(id);
     }
 
     /**
-     * Find all my games.
+     * Find all my games with pagination.
+     * <p>
+     * GET
+     * /games?currentPage=1
+     * /games?currentPage=1&pageSize=10
+     * /games?currentPage=1&pageSize=10&sortBy=id
+     * /games?currentPage=1&pageSize=10&sortBy=id&sortingOrder=asc
      *
+     * @param currentPage  current page
+     * @param pageSize     page size
+     * @param sortBy       sorting field
+     * @param sortingOrder sorting order
      * @return found collection of games
      * @version 1
+     * @deprecated <p>
+     * This method is deprecated.
      */
     @Operation(operationId = "find-my-games-json",
             summary = "Find my games",
@@ -170,7 +211,7 @@ public class RpsControllerV1 {
                     description = "Successful operation",
                     content = @Content(
                             mediaType = APPLICATION_JSON_VALUE,
-                            array = @ArraySchema(schema = @Schema(implementation = GameDto.class)),
+                            schema = @Schema(implementation = GamePagedResponseDto.class),
                             examples = {
                                     @ExampleObject(
                                             value = GAMES_EXPECTED_JSON
@@ -202,11 +243,20 @@ public class RpsControllerV1 {
     @ResponseStatus(HttpStatus.OK)
     @GetMapping(path = "/${api.endpoint-games}")
     @Timed(value = "game.findMyGames", description = "Time taken to find my games", longTask = true)
-    public Iterable<GameDto> findMyGames()
+    public GamePagedResponseDto findMyGames(@Parameter(description = "Current page", example = "1")
+                                            @RequestParam(value = "currentPage", defaultValue = "${api.default-page-number}", required = false) int currentPage,
+                                            @Parameter(description = "Page size", example = "10")
+                                            @RequestParam(value = "pageSize", defaultValue = "${api.default-page-size}", required = false) int pageSize,
+                                            @Parameter(description = "Sorting field", example = "id")
+                                            @RequestParam(value = "sortBy", defaultValue = "${api.default-sort-by}", required = false) String sortBy,
+                                            @Parameter(description = "Sorting order",
+                                                    schema = @Schema(type = "string", allowableValues = {"ASC", "DESC"}),
+                                                    example = "ASC")
+                                            @RequestParam(value = "sortingOrder", defaultValue = "${api.default-sort-order}", required = false) SortingOrder sortingOrder)
             throws GameNotFoundException {
         final var userId = this.getUserId();
         log.info("REST CONTROLLER: Finding my games by my user id: {}.", userId);
-        return this.rpsService.findMyGames(userId);
+        return this.rpsService.findMyGames(userId, currentPage, pageSize, sortBy, sortingOrder);
     }
 
     /**
