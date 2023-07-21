@@ -27,6 +27,7 @@ import java.util.UUID;
 
 import static com.al.qdt.common.domain.enums.Hand.ROCK;
 import static com.al.qdt.common.infrastructure.helpers.Constants.TEST_UUID;
+import static com.al.qdt.common.infrastructure.helpers.Utils.createObjectMapper;
 import static java.nio.charset.StandardCharsets.UTF_8;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -74,7 +75,7 @@ class RpsControllerV1Test implements DtoTests {
 
     @BeforeEach
     void setUp() {
-        this.objectMapper = new ObjectMapper();
+        this.objectMapper = createObjectMapper();
         this.gameDtoArgumentCaptor = ArgumentCaptor.forClass(Hand.class);
         this.idArgumentCaptor = ArgumentCaptor.forClass(UUID.class);
 

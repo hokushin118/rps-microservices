@@ -1,6 +1,7 @@
 package com.al.qdt.score.qry.api.controllers
 
 import com.al.qdt.common.api.advices.GlobalRestExceptionHandler
+import com.al.qdt.rps.grpc.v1.common.SortingOrder
 import com.al.qdt.rps.grpc.v1.services.ListOfScoresAdminResponse
 import com.al.qdt.rps.grpc.v1.services.ListOfScoresResponse
 import com.al.qdt.score.qry.base.MvcHelper
@@ -58,6 +59,10 @@ class ScoreControllerV2Spec extends Specification implements ProtoTests, MvcHelp
                 .addPlaceholderValue("api.version-two", "/v2")
                 .addPlaceholderValue("api.endpoint-scores", "scores")
                 .addPlaceholderValue("api.endpoint-admin", "admin")
+                .addPlaceholderValue("api.default-page-number", "1")
+                .addPlaceholderValue("api.default-page-size", "10")
+                .addPlaceholderValue("api.default-sort-by", "id")
+                .addPlaceholderValue("api.default-sort-order", SortingOrder.ASC.name())
                 .setMessageConverters(protobufJsonFormatHttpMessageConverter)
                 .setControllerAdvice(new GlobalRestExceptionHandler())
                 .build()
@@ -67,19 +72,23 @@ class ScoreControllerV2Spec extends Specification implements ProtoTests, MvcHelp
 
     def 'Testing of the all() method'() {
         given: 'Setup test data'
-        def firstScoreAdminDto = createScoreAdminDto TEST_UUID, USER_ONE_ID, USER
-        def secondScoreAdminDto = createScoreAdminDto TEST_UUID_TWO, USER_TWO_ID, USER
+        def firstScoreAdminDto = createScoreAdminProtoDto TEST_UUID, USER_ONE_ID, USER
+        def secondScoreAdminDto = createScoreAdminProtoDto TEST_UUID_TWO, USER_TWO_ID, USER
         def listOfScoresAdminResponse = ListOfScoresAdminResponse.newBuilder()
                 .addAllScores([firstScoreAdminDto, secondScoreAdminDto])
                 .build()
 
         and: 'Mock returns list of scores for admin users if invoked with no argument'
-        scoreService.all() >> listOfScoresAdminResponse
+        scoreService.all(1, 10, "id", SortingOrder.ASC) >> listOfScoresAdminResponse
 
         when: 'Calling the api'
         def result = mockMvc.perform(get("/v2/admin/scores")
                 .contentType(APPLICATION_JSON)
                 .accept(APPLICATION_JSON_VALUE)
+                .param("currentPage", "1")
+                .param("pageSize", "10")
+                .param("sortBy", "id")
+                .param("sortingOrder", SortingOrder.ASC.name())
                 .characterEncoding(UTF_8))
                 .andDo print()
 
@@ -104,7 +113,7 @@ class ScoreControllerV2Spec extends Specification implements ProtoTests, MvcHelp
 
     def 'Testing of the findById() method'() {
         given: 'Setup test data'
-        def expectedScoreAdminDto = createScoreAdminDto TEST_UUID, USER_ONE_ID, USER
+        def expectedScoreAdminDto = createScoreAdminProtoDto TEST_UUID, USER_ONE_ID, USER
 
         and: 'Mock returns a scores if invoked with id argument'
         scoreService.findById(TEST_UUID) >> expectedScoreAdminDto
@@ -131,7 +140,7 @@ class ScoreControllerV2Spec extends Specification implements ProtoTests, MvcHelp
     def 'Testing of the findMyScores() method'() {
         given: 'Setup test data'
         def userId = UUID.randomUUID()
-        def scoreDto = createScoreDto()
+        def scoreDto = createScoreProtoDto()
         def listOfScoresResponse = ListOfScoresResponse.newBuilder()
                 .addAllScores([scoreDto])
                 .build()
@@ -140,12 +149,16 @@ class ScoreControllerV2Spec extends Specification implements ProtoTests, MvcHelp
         authenticationService.getUserId() >> userId
 
         and: 'Mock returns list of user scores if invoked with userId argument'
-        scoreService.findMyScores(userId) >> listOfScoresResponse
+        scoreService.findMyScores(userId, 1, 10, "id", SortingOrder.ASC) >> listOfScoresResponse
 
         when: 'Calling the api'
         def result = mockMvc.perform(get("/v2/scores")
                 .contentType(APPLICATION_JSON)
                 .accept(APPLICATION_JSON_VALUE)
+                .param("currentPage", "1")
+                .param("pageSize", "10")
+                .param("sortBy", "id")
+                .param("sortingOrder", SortingOrder.ASC.name())
                 .characterEncoding(UTF_8))
                 .andDo print()
 

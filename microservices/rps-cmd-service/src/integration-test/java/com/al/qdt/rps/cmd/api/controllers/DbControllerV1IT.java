@@ -1,6 +1,6 @@
 package com.al.qdt.rps.cmd.api.controllers;
 
-import com.al.qdt.common.api.dto.BaseResponseDto;
+import com.al.qdt.rps.cmd.api.dto.BaseResponseDto;
 import com.al.qdt.rps.cmd.base.AbstractWebIntegrationTests;
 import com.al.qdt.rps.cmd.base.DtoTests;
 import com.al.qdt.rps.cmd.domain.services.DbServiceV1;
@@ -41,7 +41,7 @@ class DbControllerV1IT extends AbstractWebIntegrationTests implements DtoTests {
 
     @BeforeEach
     void setUp() {
-        this.baseResponse = createBaseResponse();
+        this.baseResponse = createBaseResponseDto();
     }
 
     @AfterEach

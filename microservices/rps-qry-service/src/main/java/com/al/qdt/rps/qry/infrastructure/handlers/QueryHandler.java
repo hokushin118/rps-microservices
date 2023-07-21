@@ -8,9 +8,9 @@ import com.al.qdt.rps.qry.api.queries.FindGamesByUserIdQuery;
 import java.util.List;
 
 public interface QueryHandler {
-    List<AbstractEntity> handle(FindAllGamesQuery query);
+    AbstractMap.SimpleImmutableEntry<Long, List<AbstractEntity>>  handle(FindAllGamesQuery query);
 
-    List<AbstractEntity> handle(FindGameByIdQuery query);
+    AbstractMap.SimpleImmutableEntry<Long, List<AbstractEntity>> handle(FindGameByIdQuery query);
 
-    List<AbstractEntity> handle(FindGamesByUserIdQuery query);
+    AbstractMap.SimpleImmutableEntry<Long, List<AbstractEntity>> handle(FindGamesByUserIdQuery query);
 }

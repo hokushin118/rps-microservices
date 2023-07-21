@@ -18,7 +18,9 @@ class FindScoresByUserIdQuerySpec extends ValidationBaseTest {
 
     // Run before every feature method
     def setup() {
-        expectedFindScoresByUserIdQuery = new FindScoresByUserIdQuery(USER_ONE_ID)
+        expectedFindScoresByUserIdQuery = FindScoresByUserIdQuery.builder()
+                .userId(USER_ONE_ID)
+                .build()
     }
 
     // Run after every feature method
@@ -33,7 +35,9 @@ class FindScoresByUserIdQuerySpec extends ValidationBaseTest {
 
     def 'Testing FindScoresByUserIdQuery equals() and hashCode() methods'() {
         given: 'Setup test data'
-        def actualFindScoresByUserIdQuery = new FindScoresByUserIdQuery(USER_ONE_ID)
+        def actualFindScoresByUserIdQuery = FindScoresByUserIdQuery.builder()
+                .userId(USER_ONE_ID)
+                .build()
 
         expect:
         assert expectedFindScoresByUserIdQuery == actualFindScoresByUserIdQuery &&
@@ -46,7 +50,9 @@ class FindScoresByUserIdQuerySpec extends ValidationBaseTest {
     @Unroll
     def 'Testing userId validating constrains with right parameters = #userId'(UUID userId) {
         given: 'Setup test data'
-        def findScoresByUserIdQuery = new FindScoresByUserIdQuery(userId)
+        def findScoresByUserIdQuery = FindScoresByUserIdQuery.builder()
+                .userId(userId)
+                .build()
 
         when: 'Validate test data'
         def constraintViolations = validator.validate findScoresByUserIdQuery
@@ -55,14 +61,16 @@ class FindScoresByUserIdQuerySpec extends ValidationBaseTest {
         assert constraintViolations.size() == ZERO_VIOLATIONS
 
         where:
-        userId       | _
-        USER_ONE_ID  | _
+        userId      | _
+        USER_ONE_ID | _
     }
 
     @Unroll
     def 'Testing userId validating constrains with wrong parameter - #userId'(UUID userId) {
         given: 'Setup test data'
-        def findScoresByUserIdQuery = new FindScoresByUserIdQuery(userId)
+        def findScoresByUserIdQuery = FindScoresByUserIdQuery.builder()
+                .userId(userId)
+                .build()
 
         when: 'Validate test data'
         Set<ConstraintViolation<FindScoresByUserIdQuery>> constraintViolations = validator.validate findScoresByUserIdQuery

@@ -1,6 +1,6 @@
 package com.al.qdt.rps.cmd.domain.services;
 
-import com.al.qdt.common.api.dto.BaseResponseDto;
+import com.al.qdt.rps.cmd.api.dto.BaseResponseDto;
 
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;

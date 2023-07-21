@@ -1,7 +1,11 @@
 package com.al.qdt.score.qry;
 
 import com.al.qdt.cqrs.infrastructure.QueryDispatcher;
-import com.al.qdt.score.qry.api.queries.*;
+import com.al.qdt.score.qry.api.queries.FindAllScoresQuery;
+import com.al.qdt.score.qry.api.queries.FindScoreByIdQuery;
+import com.al.qdt.score.qry.api.queries.FindScoresByUserIdAndWinnerQuery;
+import com.al.qdt.score.qry.api.queries.FindScoresByUserIdQuery;
+import com.al.qdt.score.qry.api.queries.FindScoresByWinnerQuery;
 import com.al.qdt.score.qry.infrastructure.handlers.QueryHandler;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

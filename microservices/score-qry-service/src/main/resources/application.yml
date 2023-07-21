@@ -138,9 +138,11 @@ management:
 # Open Api 3.0 configuration
 # https://springdoc.org
 springdoc:
-  api-docs:
-    path: /v3/api-docs
   swagger-ui:
+    config-url: ${server.servlet.context-path}/v3/api-docs/swagger-config
+    # disable swagger default url
+    disable-swagger-default-url: true
+    url: ${server.servlet.context-path}/v3/api-docs
     display-request-duration: true
     groups-order: DESC
     operationsSorter: method
@@ -173,6 +175,10 @@ api:
   version-two-async: /v2.1
   license-name: The GNU General Public License, Version 3
   license-url: https://www.gnu.org/licenses/gpl-3.0.txt
+  default-page-number: 1
+  default-page-size: 10
+  default-sort-by: id
+  default-sort-order: ASC
 
 # Application configuration
 app:

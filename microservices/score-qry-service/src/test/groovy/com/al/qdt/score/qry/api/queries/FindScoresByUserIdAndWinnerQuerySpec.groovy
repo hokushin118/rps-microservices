@@ -19,7 +19,10 @@ class FindScoresByUserIdAndWinnerQuerySpec extends ValidationBaseTest {
 
     // Run before every feature method
     def setup() {
-        expectedFindScoresByUserIdAndWinnerQuery = new FindScoresByUserIdAndWinnerQuery(USER_ONE_ID, TEST_WINNER)
+        expectedFindScoresByUserIdAndWinnerQuery = FindScoresByUserIdAndWinnerQuery.builder()
+                .userId(USER_ONE_ID)
+                .winner(TEST_WINNER)
+                .build()
     }
 
     // Run after every feature method
@@ -34,7 +37,10 @@ class FindScoresByUserIdAndWinnerQuerySpec extends ValidationBaseTest {
 
     def 'Testing FindScoresByUserIdAndWinnerQuery equals() and hashCode() methods'() {
         given: 'Setup test data'
-        def actualFindScoresByUserIdAndWinnerQuery = new FindScoresByUserIdAndWinnerQuery(USER_ONE_ID, TEST_WINNER)
+        def actualFindScoresByUserIdAndWinnerQuery = FindScoresByUserIdAndWinnerQuery.builder()
+                .userId(USER_ONE_ID)
+                .winner(TEST_WINNER)
+                .build()
 
         expect:
         assert expectedFindScoresByUserIdAndWinnerQuery == actualFindScoresByUserIdAndWinnerQuery &&
@@ -47,7 +53,10 @@ class FindScoresByUserIdAndWinnerQuerySpec extends ValidationBaseTest {
     @Unroll
     def 'Testing userId validating constrains with right parameters = #userId'(UUID userId) {
         given: 'Setup test data'
-        def findScoresByUserIdAndWinnerQuery = new FindScoresByUserIdAndWinnerQuery(userId, TEST_WINNER)
+        def findScoresByUserIdAndWinnerQuery = FindScoresByUserIdAndWinnerQuery.builder()
+                .userId(userId)
+                .winner(TEST_WINNER)
+                .build()
 
         when: 'Validate test data'
         def constraintViolations = validator.validate findScoresByUserIdAndWinnerQuery
@@ -56,14 +65,17 @@ class FindScoresByUserIdAndWinnerQuerySpec extends ValidationBaseTest {
         assert constraintViolations.size() == ZERO_VIOLATIONS
 
         where:
-        userId       | _
-        USER_ONE_ID  | _
+        userId      | _
+        USER_ONE_ID | _
     }
 
     @Unroll
     def 'Testing userId validating constrains with wrong parameter - #userId'(UUID userId) {
         given: 'Setup test data'
-        def findScoresByUserIdAndWinnerQuery = new FindScoresByUserIdAndWinnerQuery(userId, TEST_WINNER)
+        def findScoresByUserIdAndWinnerQuery = FindScoresByUserIdAndWinnerQuery.builder()
+                .userId(userId)
+                .winner(TEST_WINNER)
+                .build()
 
         when: 'Validate test data'
         Set<ConstraintViolation<FindScoresByUserIdAndWinnerQuery>> constraintViolations = validator.validate findScoresByUserIdAndWinnerQuery

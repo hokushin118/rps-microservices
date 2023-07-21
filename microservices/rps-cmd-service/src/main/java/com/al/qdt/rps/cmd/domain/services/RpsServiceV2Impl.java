@@ -4,7 +4,6 @@ import com.al.qdt.cqrs.infrastructure.CommandDispatcher;
 import com.al.qdt.rps.cmd.api.commands.AddScoreCommand;
 import com.al.qdt.rps.cmd.api.commands.DeleteGameCommand;
 import com.al.qdt.rps.cmd.api.commands.PlayGameCommand;
-import com.al.qdt.rps.cmd.domain.mappers.GameProtoMapper;
 import com.al.qdt.rps.cmd.domain.services.base.RpsBaseService;
 import com.al.qdt.rps.grpc.v1.dto.GameResultDto;
 import com.al.qdt.rps.grpc.v1.services.GameRequest;
@@ -22,12 +21,10 @@ import static com.al.qdt.common.infrastructure.config.AsyncConfig.ASYNC_TASK_EXE
 @Service
 public class RpsServiceV2Impl extends RpsBaseService implements RpsServiceV2 {
     private final CommandDispatcher commandDispatcher;
-    private final GameProtoMapper gameProtoMapper;
 
-    public RpsServiceV2Impl(GameService gameService, MeterRegistry meterRegistry, CommandDispatcher commandDispatcher, GameProtoMapper gameProtoMapper) {
+    public RpsServiceV2Impl(GameService gameService, MeterRegistry meterRegistry, CommandDispatcher commandDispatcher) {
         super(gameService, meterRegistry);
         this.commandDispatcher = commandDispatcher;
-        this.gameProtoMapper = gameProtoMapper;
     }
 
     @Override

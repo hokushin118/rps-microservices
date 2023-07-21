@@ -1,6 +1,6 @@
 package com.al.qdt.rps.cmd.domain.services;
 
-import com.al.qdt.common.api.dto.GameResponseDto;
+import com.al.qdt.rps.cmd.api.dto.GameResponseDto;
 import com.al.qdt.common.domain.enums.Hand;
 
 import java.util.UUID;

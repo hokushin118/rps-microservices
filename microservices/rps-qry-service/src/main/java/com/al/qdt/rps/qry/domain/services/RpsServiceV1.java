@@ -1,18 +1,24 @@
 package com.al.qdt.rps.qry.domain.services;
 
-import com.al.qdt.common.api.dto.GameAdminDto;
-import com.al.qdt.common.api.dto.GameDto;
+import com.al.qdt.rps.qry.api.dto.GameAdminDto;
+import com.al.qdt.rps.qry.api.dto.GameAdminPagedResponseDto;
+import com.al.qdt.rps.qry.api.dto.GamePagedResponseDto;
+import com.al.qdt.cqrs.queries.SortingOrder;
 
 import java.util.UUID;
 
 public interface RpsServiceV1 {
 
     /**
-     * Returns all games for admin users.
+     * Returns all games with pagination for admin users.
      *
+     * @param currentPage current page
+     * @param pageSize page size
+     * @param sortBy sorting field
+     * @param sortingOrder sorting order
      * @return collection of games
      */
-    Iterable<GameAdminDto> all();
+    GameAdminPagedResponseDto all(int currentPage, int pageSize, String sortBy, SortingOrder sortingOrder);
 
     /**
      * Find game by id for admin users.
@@ -23,18 +29,26 @@ public interface RpsServiceV1 {
     GameAdminDto findById(UUID id);
 
     /**
-     * Find games by user id for admin users.
+     * Find games by user id with pagination for admin users.
      *
      * @param userId user id
+     * @param currentPage current page
+     * @param pageSize page size
+     * @param sortBy sorting field
+     * @param sortingOrder sorting order
      * @return found games
      */
-    Iterable<GameAdminDto> findByUserId(UUID userId);
+    GameAdminPagedResponseDto findByUserId(UUID userId, int currentPage, int pageSize, String sortBy, SortingOrder sortingOrder);
 
     /**
-     * Find my games.
+     * Find my games with pagination.
      *
      * @param userId user id
+     * @param currentPage current page
+     * @param pageSize page size
+     * @param sortBy sorting field
+     * @param sortingOrder sorting order
      * @return found games
      */
-    Iterable<GameDto> findMyGames(UUID userId);
+    GamePagedResponseDto findMyGames(UUID userId, int currentPage, int pageSize, String sortBy, SortingOrder sortingOrder);
 }

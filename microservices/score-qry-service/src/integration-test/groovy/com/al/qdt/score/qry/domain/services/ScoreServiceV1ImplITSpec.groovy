@@ -1,6 +1,6 @@
 package com.al.qdt.score.qry.domain.services
 
-import com.al.qdt.common.api.dto.ScoreDto
+import com.al.qdt.score.qry.api.dto.ScoreDto
 import com.al.qdt.score.qry.base.AbstractIntegrationTests
 import com.al.qdt.score.qry.base.EntityTests
 import org.springframework.beans.factory.annotation.Autowired

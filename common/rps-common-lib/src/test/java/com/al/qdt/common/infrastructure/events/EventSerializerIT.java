@@ -37,6 +37,7 @@ import static com.al.qdt.common.infrastructure.helpers.Constants.EXECUTION_EXCEP
 import static com.al.qdt.common.infrastructure.helpers.Constants.INPUT_TOPIC_PREFIX;
 import static com.al.qdt.common.infrastructure.helpers.Constants.INTERRUPTION_EXCEPTION_MESSAGE;
 import static com.al.qdt.common.infrastructure.helpers.Constants.POLLING_INTERVAL;
+import static com.al.qdt.common.infrastructure.helpers.Utils.createObjectMapper;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
@@ -48,7 +49,7 @@ class EventSerializerIT extends AbstractTest {
     @Autowired
     EmbeddedKafkaBroker embeddedKafkaBroker;
 
-    final ObjectMapper objectMapper = new ObjectMapper();
+    final ObjectMapper objectMapper = createObjectMapper();
 
     @Test
     @DisplayName("Testing if all required dependencies in the context")

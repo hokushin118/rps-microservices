@@ -3,8 +3,6 @@ package com.al.qdt.score.cmd.api.controllers
 import com.al.qdt.common.api.advices.GlobalRestExceptionHandler
 import com.al.qdt.score.cmd.domain.services.ScoreServiceV1
 import com.al.qdt.score.cmd.domain.services.security.AuthenticationService
-import com.fasterxml.jackson.databind.ObjectMapper
-import com.fasterxml.jackson.databind.PropertyNamingStrategy
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter
 import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.setup.MockMvcBuilders
@@ -14,6 +12,7 @@ import spock.lang.Subject
 import spock.lang.Title
 
 import static com.al.qdt.common.infrastructure.helpers.Constants.TEST_UUID
+import static com.al.qdt.common.infrastructure.helpers.Utils.createObjectMapper
 import static java.nio.charset.StandardCharsets.UTF_8
 import static org.springframework.http.MediaType.APPLICATION_JSON
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete
@@ -37,8 +36,7 @@ class ScoreControllerV1Spec extends Specification {
     // Run before the first feature method
     def setupSpec() {
         mappingJackson2HttpMessageConverter = new MappingJackson2HttpMessageConverter()
-        mappingJackson2HttpMessageConverter.setObjectMapper(new ObjectMapper()
-                .setPropertyNamingStrategy(PropertyNamingStrategy.SNAKE_CASE) )
+        mappingJackson2HttpMessageConverter.setObjectMapper(createObjectMapper())
     }
 
     // Run before every feature method

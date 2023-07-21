@@ -1,14 +1,14 @@
 package com.al.qdt.score.qry.api.queries;
 
 import com.al.qdt.cqrs.queries.BaseQuery;
-import lombok.AllArgsConstructor;
 import lombok.Value;
+import lombok.experimental.SuperBuilder;
 
 import javax.validation.constraints.NotNull;
 import java.util.UUID;
 
 @Value
-@AllArgsConstructor
+@SuperBuilder
 public class FindScoreByIdQuery implements BaseQuery {
     public static final String ID_MUST_NOT_BE_NULL = "Identification must not be null";
 
