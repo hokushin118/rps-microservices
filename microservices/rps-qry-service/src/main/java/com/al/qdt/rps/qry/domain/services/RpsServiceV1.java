@@ -18,6 +18,7 @@ public interface RpsServiceV1 {
      * @param sortingOrder sorting order
      * @return collection of games
      */
+    @Deprecated(since = "2", forRemoval = true)
     GameAdminPagedResponseDto all(int currentPage, int pageSize, String sortBy, SortingOrder sortingOrder);
 
     /**
@@ -26,6 +27,7 @@ public interface RpsServiceV1 {
      * @param id game id
      * @return found game
      */
+    @Deprecated(since = "2", forRemoval = true)
     GameAdminDto findById(UUID id);
 
     /**
@@ -38,6 +40,7 @@ public interface RpsServiceV1 {
      * @param sortingOrder sorting order
      * @return found games
      */
+    @Deprecated(since = "2", forRemoval = true)
     GameAdminPagedResponseDto findByUserId(UUID userId, int currentPage, int pageSize, String sortBy, SortingOrder sortingOrder);
 
     /**
@@ -50,5 +53,6 @@ public interface RpsServiceV1 {
      * @param sortingOrder sorting order
      * @return found games
      */
+    @Deprecated(since = "2", forRemoval = true)
     GamePagedResponseDto findMyGames(UUID userId, int currentPage, int pageSize, String sortBy, SortingOrder sortingOrder);
 }
