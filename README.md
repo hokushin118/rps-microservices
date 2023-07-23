@@ -555,11 +555,11 @@ You can also use [minikube](https://minikube.sigs.k8s.io/docs/start) for local K
 
 Make sure Minikube, kubectl and helm are installed.
 
-[kubectl installation](https://kubernetes.io/docs/tasks/tools/install-kubectl)
-[Minikube installation](https://minikube.sigs.k8s.io/docs/start)
-[Helm installation](https://helm.sh/docs/intro/install)
-[How To Install Minikube on Ubuntu 22.04|20.04|18.04](https://computingforgeeks.com/how-to-install-minikube-on-ubuntu-debian-linux)
-[How To Install Docker On Ubuntu 22.04 | 20.04](https://cloudcone.com/docs/article/how-to-install-docker-on-ubuntu-22-04-20-04)
+[kubectl installation](https://kubernetes.io/docs/tasks/tools/install-kubectl)  
+[Minikube installation](https://minikube.sigs.k8s.io/docs/start)  
+[Helm installation](https://helm.sh/docs/intro/install)  
+[How To Install Minikube on Ubuntu 22.04|20.04|18.04](https://computingforgeeks.com/how-to-install-minikube-on-ubuntu-debian-linux)  
+[How To Install Docker On Ubuntu 22.04 | 20.04](https://cloudcone.com/docs/article/how-to-install-docker-on-ubuntu-22-04-20-04)  
 
 Start minikube cluster:
 
@@ -3909,6 +3909,10 @@ It means that RPS Game Command microservice is up and running.
      > docker compose -f docker-compose-api-rps-cmd.yml down -v
 ```
 
+</details>  
+<details><summary>Kubernetes</summary>
+<br>
+See: [Rock Paper Scissors game command microservice](https://github.com/hokushin118/rps-microservices/blob/master/microservices/rps-cmd-service/README.md) for details.
 </details>
 
 ### 7. Deploying RPS Game Query microservice
@@ -3959,6 +3963,10 @@ It means that RPS Game Query microservice is up and running.
      > docker compose -f docker-compose-api-rps-qry.yml down -v
 ```
 
+</details>  
+<details><summary>Kubernetes</summary>
+<br>
+See: [Rock Paper Scissors game query microservice](https://github.com/hokushin118/rps-microservices/blob/master/microservices/rps-qry-service/README.md) for details.
 </details>
 
 ### 8. Deploying Score Command microservice
@@ -4009,6 +4017,10 @@ It means that Score Command microservice is up and running.
      > docker compose -f docker-compose-api-score-cmd.yml down -v
 ```
 
+</details>  
+<details><summary>Kubernetes</summary>
+<br>
+See: [Score command microservice](https://github.com/hokushin118/rps-microservices/blob/master/microservices/score-cmd-service/README.md) for details.
 </details>
 
 ### 9. Deploying Score Query microservice
@@ -4059,6 +4071,10 @@ It means that Score Query microservice is up and running.
      > docker compose -f docker-compose-api-score-qry.yml down -v
 ```
 
+</details>  
+<details><summary>Kubernetes</summary>
+<br>
+See: [Score query microservice](https://github.com/hokushin118/rps-microservices/blob/master/microservices/score-qry-service/README.md) for details.
 </details>
 
 ### 10. Deploying Nginx as api gateway for REST and gRPC microservices
@@ -4150,7 +4166,7 @@ To check the status, run:
      > kubectl get namespaces --show-labels
 ```
 
-#### 10.2 Deploying Simple Fanout Ingress for RPS microservices (if not exists)
+#### 10.2 Deploying Simple Fanout Ingress for RPS microservices (if it does not exist yet )
 
 To create a [Simple Fanout Ingress](https://kubernetes.io/docs/concepts/services-networking/ingress) for the RPS
 microservices, run:
@@ -4249,7 +4265,7 @@ __Note:__ All tls ingresses terminate tls at Ingress level. You should see the f
 
 [TLS Termination](https://kubernetes.github.io/ingress-nginx/examples/tls-termination)
 
-#### 10.3 Adding custom entry to the etc/host file for the RPS game microservices (if not exists)
+#### 10.3 Adding custom entry to the etc/host file for the RPS game microservices (if it does not exist yet )
 
 Add a custom entry to the etc/hosts file using the nano text editor:
 
@@ -5240,7 +5256,7 @@ Each microservice has multiple profiles:
 |        it          |        No        |  Running integration tests         |
 |        prod        |        No        |  Deployment on Kubernetes cluster  |
 
-#### 11.1 Building the RPS game microservices on local machine
+#### 14.1 Building the RPS game microservices on local machine
 
 * Execute the _mvn clean install_ command in the root directory of the project to build microservices and its
   dependencies for running on local machine.
@@ -5251,7 +5267,7 @@ Each microservice has multiple profiles:
 
 __Note:__ Each microservice and shared dependency should normally be hosted in its own git repository.
 
-#### 11.2 Running the RPS game microservices on local machine
+#### 14.2 Running the RPS game microservices on local machine
 
 * Run the microservices by executing the following commands:
 
@@ -5271,8 +5287,7 @@ __Note:__ Each microservice and shared dependency should normally be hosted in i
       http://localhost:8084/score-qry-api/swagger-ui/index.html 
 ```
 
-</details>
-<br>
+</details>  
 <details><summary>Docker Compose</summary>
 <br>
 * Open any browser and navigate to a microservice Open API 3.0 definition (REST API).
@@ -5286,8 +5301,8 @@ __Note:__ Each microservice and shared dependency should normally be hosted in i
 
 __Note:__ NGINX is used as API gateway so if you deploy the microservices on docker containers you should remove port
 number from the url.
-</details>
-<br>
+
+</details>  
 <details><summary>Local Machine && Docker Desktop</summary>
 <br>
 * Click on the __Authorize__ button on the microservice Open API 3.0 definition page:
