@@ -402,8 +402,7 @@ You should see the following output:
 [How to Install Maven on Linux (Ubuntu)](https://www.digitalocean.com/community/tutorials/install-maven-linux-ubuntu)
 
 </details>
-</details>
-<br>
+</details>  
 <details><summary>Docker Compose</summary>
 <br>
 Microservices active profile is __docker__.
@@ -1035,8 +1034,7 @@ For example:
 [Keycloak Getting Started](https://www.keycloak.org/getting-started/getting-started-zip)  
 [How to export and import Realms in Keycloak](https://www.mastertheboss.com/keycloak/how-to-export-and-import-realms-in-keycloak)
 
-</details>
-<br>
+</details>  
 <details><summary>Docker Compose</summary>
 <br>
 
@@ -1993,8 +1991,7 @@ You should see the following output:
 
 </details>
 
-</details>
-<br>
+</details>  
 <details><summary>Docker Desktop</summary>
 <br>
 
@@ -3535,8 +3532,7 @@ and add the following lines to the file:
 
 </details>
 
-</details>
-<br>
+</details>  
 <details><summary>Docker Compose</summary>
 <br>
 
